@@ -1,0 +1,35 @@
+#+title: dotfiles readme
+#+options: toc: nil
+
+#+begin_src
+├── alacritty
+│   └── alacritty.yml
+├── emacs
+│   ├── early-init.el
+│   ├── emacs--init.org
+│   └── init.el
+├── fusuma
+│   └── config.yml
+├── gammastep
+│   └── config.ini
+├── i3
+│   └── config
+├── keymapper.conf
+├── kritarc
+├── picom
+│   └── picom.conf
+├── polybar
+│   └── config.ini
+├── rofi
+│   ├── config.rasi
+│   └── theme.rasi
+├── sway
+│   └── config
+├── topgrade.toml
+├── waybar
+│   ├── config
+│   └── style.css
+└── wofi
+    ├── config
+    └── style.css
+#+end_src
