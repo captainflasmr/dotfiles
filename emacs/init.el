@@ -361,6 +361,7 @@
   (magit-repository-directories
    '(
      ("/home/jdyer" . 0)
+     ("/home/jdyer/.config" . 0)
      ("/home/jdyer/bin" . 0)
      ("/home/jdyer/emacs-pkgs/new" . 2)
      ("/home/jdyer/DCIM/publish/hugo-katieboo85" . 0)
@@ -710,22 +711,20 @@
  ;; If there is more than one, they won't work right.
  '(case-fold-search t)
  '(connection-local-criteria-alist
-    '(((:application eshell)
-        eshell-connection-default-profile)) t)
+   '(((:application eshell)
+      eshell-connection-default-profile)) t)
  '(connection-local-profile-alist
-    '((eshell-connection-default-profile
-        (eshell-path-env-list))) t)
+   '((eshell-connection-default-profile
+      (eshell-path-env-list))) t)
  '(custom-safe-themes t)
  '(delete-selection-mode nil)
  '(ede-project-directories
-    '("/home/jdyer/DCIM/content" "/home/jdyer/nas" "/home/jdyer/examples" "/home/jdyer/bin" "/home/jdyer/DCIM"))
+   '("/home/jdyer/DCIM/content" "/home/jdyer/nas" "/home/jdyer/examples" "/home/jdyer/bin" "/home/jdyer/DCIM"))
  '(eshell-banner-message "")
  '(eshell-directory-name "~/DCIM/Backup/eshell")
  '(fit-window-to-buffer-horizontally t)
  '(hippie-expand-try-functions-list
-    '(try-complete-file-name-partially try-complete-file-name try-expand-all-abbrevs try-expand-dabbrev try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill try-complete-lisp-symbol-partially try-complete-lisp-symbol))
- '(package-selected-packages
-    '(jinx powerthesaurus marginalia orderless vertico elfeed emms doom-modeline magit dired-rainbow deadgrep ox-hugo dwim-shell-command doom-themes ef-themes gruvbox-theme find-file-rg ztree lorem-ipsum embark-consult visual-fill-column org-rainbow-tags org-ai org-bullets toc-org rainbow-mode indent-tools toml-mode yaml-mode highlight-indentation ada-mode company use-package))
+   '(try-complete-file-name-partially try-complete-file-name try-expand-all-abbrevs try-expand-dabbrev try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill try-complete-lisp-symbol-partially try-complete-lisp-symbol))
  '(warning-suppress-log-types '((frameset)))
  '(warning-suppress-types '((frameset))))
 

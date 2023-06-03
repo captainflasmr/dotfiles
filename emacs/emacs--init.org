@@ -480,6 +480,7 @@
     (magit-repository-directories
      '(
        ("/home/jdyer" . 0)
+       ("/home/jdyer/.config" . 0)
        ("/home/jdyer/bin" . 0)
        ("/home/jdyer/emacs-pkgs/new" . 2)
        ("/home/jdyer/DCIM/publish/hugo-katieboo85" . 0)
