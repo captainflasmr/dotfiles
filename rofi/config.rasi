@@ -1,0 +1,26 @@
+configuration {
+  display-drun: "Applications:";
+  display-window: "Windows:";
+  drun-display-format: "{name}";
+  font: "mono 12";
+  modes: "drun,window,ssh,run";
+  click-to-exit: true;
+  show-icons: true;
+  sort: false;
+  sorting-method: "normal";
+  case-sensitive: false;
+  cycle: true;
+  sidebar-mode: true;
+  sidebar-mode: true;
+  window-thumbnail: true;
+  drun-use-desktop-cache: true;
+  drun-reload-desktop-cache: true;
+  sidebar-mode: true;
+  combi-hide-mode-prefix: true;
+  timeout {
+      action: "kb-cancel";
+      delay:  0;
+  }
+}
+
+@theme "theme.rasi"

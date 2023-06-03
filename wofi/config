@@ -1,0 +1,8 @@
+mode=drun
+allow_images=true
+image_size=20
+width=400
+key_up=Control_L-p
+key_down=Control_L-n
+insensitive=true
+# key_exit=Alt_L-space
