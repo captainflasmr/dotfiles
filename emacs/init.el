@@ -141,7 +141,7 @@
 (setq icalendar-export-sexp-enumerate-all t)
 
 ;;
-;; -> simple use
+;; -> use-package one liner
 ;;
 (use-package company)
 (use-package ada-mode)
@@ -149,33 +149,17 @@
 (use-package yaml-mode)
 (use-package toml-mode)
 (use-package indent-tools)
-
-(use-package hydra
-  :ensure t ;; only if it's not already installed
-  :bind (("C-q" . hydra-jump-to-directory/body))
-  :config
-  (defhydra hydra-jump-to-directory
-    (:exit t)
-    "Jump to directory"
-    ("n" (find-file (concat home-dir "/nas")) "nas")
-    ("d" (find-file deft-directory) "content")
-    ("t" (find-file (concat deft-directory "/aaa--todo.org")) "todo")
-    ("s" (find-file (concat deft-directory "/aa--source_code.org")) "src")
-    ("j" (find-file home-dir) "home")
-    ("i" (find-file (concat home-dir "/.emacs.d/image-dired")) "image-dired")
-    ("b" (find-file (concat home-dir "/bin")) "bin")
-    ("e" (find-file (concat home-dir "/.emacs")) ".emacs")
-    ("m" (find-file (concat home-dir "/DCIM")) "DCIM")
-    ("c" (find-file (concat home-dir "/DCIM/Camera")) "Camera")
-    ("r" (find-file (concat home-dir "/DCIM/Screenshots")) "screenshots")
-    ("q" nil "Quit" :color blue)))
-
-(use-package rainbow-mode
-  :ensure t
-  :hook (prog-mode . rainbow-mode))
+(use-package embark-consult)
+(use-package lorem-ipsum)
+(use-package ztree)
+(use-package find-file-rg)
+(use-package gruvbox-theme)
+(use-package ef-themes)
+(use-package doom-themes)
+(use-package dwim-shell-command)
 
 ;;
-;; -> other use
+;; -> use-package
 ;;
 (use-package org
   :config
@@ -201,8 +185,7 @@
           ("SENT" . "#b4e")
           ("ARRV" . "#f52")
           ("CANC" . "#a32")
-          ("DONE" . "#7a6")))
-  )
+          ("DONE" . "#7a6"))))
 
 (use-package toc-org
   :commands toc-org-enable
@@ -224,18 +207,34 @@
   :config
   (setq org-rainbow-tags-mode 1))
 
+(use-package hydra
+  :ensure t ;; only if it's not already installed
+  :bind (("C-q" . hydra-jump-to-directory/body))
+  :config
+  (defhydra hydra-jump-to-directory
+    (:exit t)
+    "Jump to directory"
+    ("n" (find-file (concat home-dir "/nas")) "nas")
+    ("d" (find-file deft-directory) "content")
+    ("t" (find-file (concat deft-directory "/aaa--todo.org")) "todo")
+    ("s" (find-file (concat deft-directory "/aa--source_code.org")) "src")
+    ("j" (find-file home-dir) "home")
+    ("i" (find-file (concat home-dir "/.emacs.d/image-dired")) "image-dired")
+    ("b" (find-file (concat home-dir "/bin")) "bin")
+    ("e" (find-file (concat home-dir "/.emacs")) ".emacs")
+    ("m" (find-file (concat home-dir "/DCIM")) "DCIM")
+    ("c" (find-file (concat home-dir "/DCIM/Camera")) "Camera")
+    ("r" (find-file (concat home-dir "/DCIM/Screenshots")) "screenshots")
+    ("q" nil "Quit" :color blue)))
+
+(use-package rainbow-mode
+  :ensure t
+  :hook (prog-mode . rainbow-mode))
+
 (use-package visual-fill-column
   :config
   (setq visual-fill-column-center-text t))
 
-(use-package embark-consult)
-(use-package lorem-ipsum)
-(use-package ztree)
-(use-package find-file-rg)
-(use-package gruvbox-theme)
-(use-package ef-themes)
-(use-package doom-themes)
-(use-package dwim-shell-command)
 (use-package ox-hugo
   :config
   (setq org-hugo-front-matter-format "yaml")
@@ -319,6 +318,35 @@
     (with-current-buffer b
       (when (equal major-mode 'dired-mode)
         (font-lock-refresh-defaults)))))
+
+;;
+;; -> completion
+;;
+(use-package vertico
+  :custom
+  (vertico-cycle t)
+  (read-file-name-completion-ignore-case t)
+  (read-buffer-completion-ignore-case t)
+  (completion-ignore-case t)
+  (vertico-resize nil)
+  (vertico-count 10)
+  :init
+  (vertico-mode))
+
+(use-package orderless
+  :custom
+  (completion-styles '(substring orderless basic))
+  :init
+  (setq completion-styles '(orderless basic)
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles partial-completion)))))
+
+(use-package marginalia
+  :after vertico
+  :custom
+  (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
+  :init
+  (marginalia-mode))
 
 ;;
 ;; -> magit
@@ -451,35 +479,6 @@
         (setq elfeed-show-entry-switch #'my-show-elfeed)))
 
 ;;
-;; -> completion
-;;
-(use-package vertico
-  :custom
-  (vertico-cycle t)
-  (read-file-name-completion-ignore-case t)
-  (read-buffer-completion-ignore-case t)
-  (completion-ignore-case t)
-  (vertico-resize nil)
-  (vertico-count 10)
-  :init
-  (vertico-mode))
-
-(use-package orderless
-  :custom
-  (completion-styles '(substring orderless basic))
-  :init
-  (setq completion-styles '(orderless basic)
-        completion-category-defaults nil
-        completion-category-overrides '((file (styles partial-completion)))))
-
-(use-package marginalia
-  :after vertico
-  :custom
-  (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
-  :init
-  (marginalia-mode))
-
-;;
 ;; -> save-desktop
 ;;
 (desktop-save-mode 1)
@@ -492,7 +491,7 @@
 (push '(background-mode . :never) frameset-filter-alist)
 
 ;;
-;; -> keys
+;; -> keybinding
 ;;
 (bind-key* (kbd "M-S") 'consult-org-heading)
 (bind-key* (kbd "M-g i") 'imenu)
@@ -711,20 +710,21 @@
  ;; If there is more than one, they won't work right.
  '(case-fold-search t)
  '(connection-local-criteria-alist
-   '(((:application eshell)
-      eshell-connection-default-profile)) t)
+    '(((:application eshell)
+        eshell-connection-default-profile)) t)
  '(connection-local-profile-alist
-   '((eshell-connection-default-profile
-      (eshell-path-env-list))) t)
+    '((eshell-connection-default-profile
+        (eshell-path-env-list))) t)
  '(custom-safe-themes t)
  '(delete-selection-mode nil)
  '(ede-project-directories
-   '("/home/jdyer/DCIM/content" "/home/jdyer/nas" "/home/jdyer/examples" "/home/jdyer/bin" "/home/jdyer/DCIM"))
+    '("/home/jdyer/DCIM/content" "/home/jdyer/nas" "/home/jdyer/examples" "/home/jdyer/bin" "/home/jdyer/DCIM"))
  '(eshell-banner-message "")
  '(eshell-directory-name "~/DCIM/Backup/eshell")
  '(fit-window-to-buffer-horizontally t)
  '(hippie-expand-try-functions-list
-   '(try-complete-file-name-partially try-complete-file-name try-expand-all-abbrevs try-expand-dabbrev try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill try-complete-lisp-symbol-partially try-complete-lisp-symbol))
+    '(try-complete-file-name-partially try-complete-file-name try-expand-all-abbrevs try-expand-dabbrev try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill try-complete-lisp-symbol-partially try-complete-lisp-symbol))
+ '(safe-local-variable-values '((eval visual-fill-column-mode t)))
  '(warning-suppress-log-types '((frameset)))
  '(warning-suppress-types '((frameset))))
 
