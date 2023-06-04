@@ -9,6 +9,7 @@
   ;;
   ;; -> early init
   ;;
+  (setq gc-cons-threshold 100000000)
   (setq package-enable-at-startup t)
 #+end_src
 
@@ -19,30 +20,30 @@
   (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
   (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
   (defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
-                                :ref nil
-                                :files (:defaults (:exclude "extensions"))
-                                :build (:not elpaca--activate-package)))
+                          :ref nil
+                          :files (:defaults (:exclude "extensions"))
+                          :build (:not elpaca--activate-package)))
   (let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
-         (build (expand-file-name "elpaca/" elpaca-builds-directory))
-         (order (cdr elpaca-order))
-         (default-directory repo))
+          (build (expand-file-name "elpaca/" elpaca-builds-directory))
+          (order (cdr elpaca-order))
+          (default-directory repo))
     (add-to-list 'load-path (if (file-exists-p build) build repo))
     (unless (file-exists-p repo)
       (make-directory repo t)
       (when (< emacs-major-version 28) (require 'subr-x))
       (condition-case-unless-debug err
-          (if-let ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
-                   ((zerop (call-process "git" nil buffer t "clone"
-                                         (plist-get order :repo) repo)))
-                   ((zerop (call-process "git" nil buffer t "checkout"
-                                         (or (plist-get order :ref) "--"))))
-                   (emacs (concat invocation-directory invocation-name))
-                   ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
-                                         "--eval" "(byte-recompile-directory \".\" 0 'force)")))
-                   ((require 'elpaca))
-                   ((elpaca-generate-autoloads "elpaca" repo)))
-              (kill-buffer buffer)
-            (error "%s" (with-current-buffer buffer (buffer-string))))
+        (if-let ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
+                  ((zerop (call-process "git" nil buffer t "clone"
+                            (plist-get order :repo) repo)))
+                  ((zerop (call-process "git" nil buffer t "checkout"
+                            (or (plist-get order :ref) "--"))))
+                  (emacs (concat invocation-directory invocation-name))
+                  ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
+                            "--eval" "(byte-recompile-directory \".\" 0 'force)")))
+                  ((require 'elpaca))
+                  ((elpaca-generate-autoloads "elpaca" repo)))
+          (kill-buffer buffer)
+          (error "%s" (with-current-buffer buffer (buffer-string))))
         ((error) (warn "%s" err) (delete-directory repo 'recursive))))
     (unless (require 'elpaca-autoloads nil t)
       (require 'elpaca)
@@ -53,10 +54,10 @@
 
   ;; Install use-package support
   (elpaca elpaca-use-package
-          ;; Enable :elpaca use-package keyword.
-          (elpaca-use-package-mode)
-          ;; Assume :elpaca t unless otherwise specified.
-          (setq elpaca-use-package-by-default t))
+    ;; Enable :elpaca use-package keyword.
+    (elpaca-use-package-mode)
+    ;; Assume :elpaca t unless otherwise specified.
+    (setq elpaca-use-package-by-default t))
 
   ;; Block until current queue processed.
   (elpaca-wait)
@@ -77,9 +78,11 @@
   ;;
   ;; -> packages
   ;;
+  (setq gc-cons-threshold 100000000)
+
   (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                           ("elpa" . "https://elpa.gnu.org/packages/")
-                           ("org" . "https://orgmode.org/elpa/")))
+                            ("elpa" . "https://elpa.gnu.org/packages/")
+                            ("org" . "https://orgmode.org/elpa/")))
 
   ;;(setq package-archives '(("melpa" . "~/emacs-pkgs/melpa")
   ;;                          ("elpa" . "~/emacs-pkgs/elpa")
@@ -122,10 +125,10 @@
   ;;
   (setq home-dir "c:/users/jimbo")
   (let ((xPaths
-         '(
-           "c:/GnuWin32/bin"
-           "c:/GNAT/2021/bin"
-           )))
+          '(
+             "c:/GnuWin32/bin"
+             "c:/GNAT/2021/bin"
+             )))
     (setenv "PATH" (mapconcat 'identity xPaths ";"))
     (setq exec-path (append xPaths (list "." exec-directory))))
 #+end_src
@@ -147,20 +150,20 @@
   (require 'mu4e)
 
   (setq my/unified-inbox
-        (concat "maildir:/james@dyerdwelling.family/INBOX OR "
-                "maildir:/gmail/INBOX OR "
-                "maildir:/jimbob@dyerdwelling.family/INBOX OR "
-                "maildir:/gmail/[Gmail]/All Mail"))
+    (concat "maildir:/james@dyerdwelling.family/INBOX OR "
+      "maildir:/gmail/INBOX OR "
+      "maildir:/jimbob@dyerdwelling.family/INBOX OR "
+      "maildir:/gmail/[Gmail]/All Mail"))
 
   (setq my/unified-sent
-        (concat "maildir:/james@dyerdwelling.family/Sent OR "
-                "maildir:/gmail/[Gmail]/Sent Mail OR "
-                "maildir:/jimbob@dyerdwelling.family/Sent"))
+    (concat "maildir:/james@dyerdwelling.family/Sent OR "
+      "maildir:/gmail/[Gmail]/Sent Mail OR "
+      "maildir:/jimbob@dyerdwelling.family/Sent"))
 
   (setq my/unified-trash
-        (concat "maildir:/james@dyerdwelling.family/Trash OR "
-                "maildir:/gmail/[Gmail]/Trash OR "
-                "maildir:/jimbob@dyerdwelling.family/Trash"))
+    (concat "maildir:/james@dyerdwelling.family/Trash OR "
+      "maildir:/gmail/[Gmail]/Trash OR "
+      "maildir:/jimbob@dyerdwelling.family/Trash"))
 
   (defun my-mu4e-view-rendered-hook ()
     (select-window (get-buffer-window "*mu4e-headers*")))
@@ -174,9 +177,9 @@
     :bind
     ("C-c m" . mu4e)
     (:map mu4e-headers-mode-map
-          ("d" . mu4e-headers-mark-for-move))
+      ("d" . mu4e-headers-mark-for-move))
     (:map mu4e-view-mode-map
-          ("d" . mu4e-view-mark-for-move))
+      ("d" . mu4e-view-mark-for-move))
     :custom
     (smtpmail-smtp-server "mail.dyerdwelling.family")
     (smtpmail-smtp-service 25)
@@ -193,30 +196,30 @@
     (mu4e-search-threads nil)
     (mu4e-search-sort-field :date)
     (mu4e-bookmarks
-     `(
-       (:name "Unified Inbox" :query ,my/unified-inbox :key ?i)
-       (:name "Unified Sent"      :query ,my/unified-sent :key ?s)
-       (:name "Unified Trash" :query ,my/unified-trash :key ?t)
-       (:name "Big messages"      :query "size:5M..500M" :key 98)
-       (:name "Messages with images" :query "mime:image/*" :key 112)
-       ))
+      `(
+         (:name "Unified Inbox" :query ,my/unified-inbox :key ?i)
+         (:name "Unified Sent"      :query ,my/unified-sent :key ?s)
+         (:name "Unified Trash" :query ,my/unified-trash :key ?t)
+         (:name "Big messages"      :query "size:5M..500M" :key 98)
+         (:name "Messages with images" :query "mime:image/*" :key 112)
+         ))
     (mu4e-maildir-shortcuts
-     '(
-       ("/james@dyerdwelling.family/INBOX" . ?i)
-       ("/james@dyerdwelling.family/Drafts" . ?d)
-       ("/james@dyerdwelling.family/Sent" . ?s)
-       ("/james@dyerdwelling.family/Archive" . ?a)
-       ("/james@dyerdwelling.family/Trash" . ?t)
-       ;; ("/james@dyerdwelling.family/spam" . ?p)
-       ("/jimbob@dyerdwelling.family/INBOX" . ?m)
-       ("/jimbob@dyerdwelling.family/Sent" . ?e)
-       ("/jimbob@dyerdwelling.family/Trash" . ?r)
-       ("/gmail/INBOX" . ?g)
-       ("/gmail/[Gmail]/Sent Mail" . ?n)
-       ("/gmail/[Gmail]/All Mail" . ?l)
-       ("/gmail/[Gmail]/Trash" . ?w)
-       ("/gmail/[Gmail]/Chats" . ?c)
-       ))
+      '(
+         ("/james@dyerdwelling.family/INBOX" . ?i)
+         ("/james@dyerdwelling.family/Drafts" . ?d)
+         ("/james@dyerdwelling.family/Sent" . ?s)
+         ("/james@dyerdwelling.family/Archive" . ?a)
+         ("/james@dyerdwelling.family/Trash" . ?t)
+         ;; ("/james@dyerdwelling.family/spam" . ?p)
+         ("/jimbob@dyerdwelling.family/INBOX" . ?m)
+         ("/jimbob@dyerdwelling.family/Sent" . ?e)
+         ("/jimbob@dyerdwelling.family/Trash" . ?r)
+         ("/gmail/INBOX" . ?g)
+         ("/gmail/[Gmail]/Sent Mail" . ?n)
+         ("/gmail/[Gmail]/All Mail" . ?l)
+         ("/gmail/[Gmail]/Trash" . ?w)
+         ("/gmail/[Gmail]/Chats" . ?c)
+         ))
     (mu4e-trash-folder "/james@dyerdwelling.family/Trash")
     (mu4e-use-fancy-chars t)
     (mu4e-view-show-addresses t)
@@ -226,11 +229,11 @@
     (mu4e-split-view 'vertical)
     (mu4e-view-show-images t)
     (mu4e-headers-fields '((:flags      . 6)
-                           (:maildir   . 6)
-                           (:human-date . 12)
-                           (:from-or-to . 20)
-                           (:size      . 6)
-                           (:subject   . nil))))
+                            (:maildir   . 6)
+                            (:human-date . 12)
+                            (:from-or-to . 20)
+                            (:size      . 6)
+                            (:subject   . nil))))
 #+end_src
 
 * calendar
@@ -240,9 +243,9 @@
   ;; -> calendar
   ;;
   (setq calendar-date-display-form
-        '((format "%s-%.2d-%.2d" year
-                  (string-to-number month)
-                  (string-to-number day))))
+    '((format "%s-%.2d-%.2d" year
+        (string-to-number month)
+        (string-to-number day))))
   (setq calendar-date-style 'iso)
   (setq icalendar-export-hidden-diary-entries nil)
   (setq icalendar-export-sexp-enumerate-all t)
@@ -254,6 +257,12 @@
   ;;
   ;; -> use-package one liner
   ;;
+  (use-package dired-x
+    :config
+    (setq dired-guess-shell-alist-user
+      (append '(("\\.\\(jpg\\|jpeg\\|png\\|gif\\|bmp\\)$" "gwenview")
+                 ("\\.\\(mp4\\|mkv\\|avi\\|mov\\|wmv\\|flv\\|mpg\\)$" "mpv"))
+        dired-guess-shell-alist-user)))
   (use-package company)
   (use-package ada-mode)
   (use-package highlight-indentation)
@@ -290,17 +299,17 @@
     (setq org-tags-column 0)
     (setq org-toggle-link-display 1)
     (setq org-todo-keywords
-          '((sequence "TODO" "DOIN" "WAIT" "IGNR" "ORDR" "SENT" "ARRV" "|" "CANC" "DONE")))
+      '((sequence "TODO" "DOIN" "WAIT" "IGNR" "ORDR" "SENT" "ARRV" "|" "CANC" "DONE")))
     (setq org-todo-keyword-faces
-          '(("TODO" . "#e56")
-            ("DOIN" . "#57a")
-            ("WAIT" . "#b74")
-            ("IGNR" . "#b7e")
-            ("ORDR" . "#b4e")
-            ("SENT" . "#b4e")
-            ("ARRV" . "#f52")
-            ("CANC" . "#a32")
-            ("DONE" . "#7a6"))))
+      '(("TODO" . "#e56")
+         ("DOIN" . "#57a")
+         ("WAIT" . "#b74")
+         ("IGNR" . "#b7e")
+         ("ORDR" . "#b4e")
+         ("SENT" . "#b4e")
+         ("ARRV" . "#f52")
+         ("CANC" . "#a32")
+         ("DONE" . "#7a6"))))
 
   (use-package toc-org
     :commands toc-org-enable
@@ -334,12 +343,12 @@
       ("t" (find-file (concat deft-directory "/aaa--todo.org")) "todo")
       ("s" (find-file (concat deft-directory "/aa--source_code.org")) "src")
       ("j" (find-file home-dir) "home")
-      ("i" (find-file (concat home-dir "/.emacs.d/image-dired")) "image-dired")
       ("b" (find-file (concat home-dir "/bin")) "bin")
-      ("e" (find-file (concat home-dir "/.emacs")) ".emacs")
+      ("e" (find-file (concat home-dir "/.config/emacs/init.el")) ".init.el")
       ("m" (find-file (concat home-dir "/DCIM")) "DCIM")
       ("c" (find-file (concat home-dir "/DCIM/Camera")) "Camera")
       ("r" (find-file (concat home-dir "/DCIM/Screenshots")) "screenshots")
+      ("C-q" (quoted-insert 1) "quoted-insert")
       ("q" nil "Quit" :color blue)))
 
   (use-package rainbow-mode
@@ -348,7 +357,7 @@
 
   (use-package visual-fill-column
     :config
-    (setq visual-fill-column-center-text t))
+    (setq-default visual-fill-column-center-text t))
 
   (use-package ox-hugo
     :config
@@ -367,66 +376,66 @@
     :config
     (dired-rainbow-define-chmod directory "#0074d9" "d.*")
     (dired-rainbow-define html "#eb5286"
-                          ("css" "less" "sass" "scss" "htm" "html" "jhtm" "mht"
-                           "eml" "mustache" "xhtml"))
+      ("css" "less" "sass" "scss" "htm" "html" "jhtm" "mht"
+        "eml" "mustache" "xhtml"))
     (dired-rainbow-define xml "#f2d024"
-                          ("xml" "xsd" "xsl" "xslt" "wsdl" "bib" "json" "msg"
-                           "pgn" "rss" "yaml" "yml" "rdata" "sln" "csproj"
-                           "meta" "unity" "tres" "tscn" "import" "godot"))
+      ("xml" "xsd" "xsl" "xslt" "wsdl" "bib" "json" "msg"
+        "pgn" "rss" "yaml" "yml" "rdata" "sln" "csproj"
+        "meta" "unity" "tres" "tscn" "import" "godot"))
     (dired-rainbow-define document "#9561e2"
-                          ("docm" "doc" "docx" "odb" "odt" "pdb" "pdf" "ps"
-                           "rtf" "djvu" "epub" "odp" "ppt" "pptx" "xls" "xlsx"
-                           "vsd" "vsdx" "plantuml"))
+      ("docm" "doc" "docx" "odb" "odt" "pdb" "pdf" "ps"
+        "rtf" "djvu" "epub" "odp" "ppt" "pptx" "xls" "xlsx"
+        "vsd" "vsdx" "plantuml"))
     (dired-rainbow-define markdown "#4dc0b5"
-                          ("org" "org_archive" "etx" "info" "markdown" "md"
-                           "mkd" "nfo" "pod" "rst" "tex" "texi" "textfile" "txt"))
+      ("org" "org_archive" "etx" "info" "markdown" "md"
+        "mkd" "nfo" "pod" "rst" "tex" "texi" "textfile" "txt"))
     (dired-rainbow-define database "#6574cd"
-                          ("xlsx" "xls" "csv" "accdb" "db" "mdb" "sqlite" "nc"))
+      ("xlsx" "xls" "csv" "accdb" "db" "mdb" "sqlite" "nc"))
     (dired-rainbow-define media "#de751f"
-                          ("mp3" "mp4" "MP3" "MP4" "avi" "mpeg" "mpg" "flv"
-                           "ogg" "mov" "mid" "midi" "wav" "aiff" "flac" "mkv"))
+      ("mp3" "mp4" "MP3" "MP4" "avi" "mpeg" "mpg" "flv"
+        "ogg" "mov" "mid" "midi" "wav" "aiff" "flac" "mkv"))
     (dired-rainbow-define image "#f66d9b"
-                          ("tiff" "tif" "cdr" "gif" "ico" "jpeg" "jpg" "png"
-                           "psd" "eps" "svg"))
+      ("tiff" "tif" "cdr" "gif" "ico" "jpeg" "jpg" "png"
+        "psd" "eps" "svg"))
     (dired-rainbow-define log "#c17d11"
-                          ("log" "log.1" "log.2" "log.3" "log.4" "log.5" "log.6"
-                           "log.7" "log.8" "log.9"))
+      ("log" "log.1" "log.2" "log.3" "log.4" "log.5" "log.6"
+        "log.7" "log.8" "log.9"))
     (dired-rainbow-define shell "#f6993f"
-                          ("awk" "bash" "bat" "fish" "sed" "sh" "zsh" "vim"))
+      ("awk" "bash" "bat" "fish" "sed" "sh" "zsh" "vim"))
     (dired-rainbow-define interpreted "#38c172"
-                          ("py" "ipynb" "hy" "rb" "pl" "t" "msql" "mysql"
-                           "pgsql" "sql" "r" "clj" "cljs" "cljc" "cljx" "edn"
-                           "scala" "js" "jsx" "lua" "fnl" "gd"))
+      ("py" "ipynb" "hy" "rb" "pl" "t" "msql" "mysql"
+        "pgsql" "sql" "r" "clj" "cljs" "cljc" "cljx" "edn"
+        "scala" "js" "jsx" "lua" "fnl" "gd"))
     (dired-rainbow-define compiled "#6cb2eb"
-                          ("asm" "cl" "lisp" "el" "c" "h" "c++" "h++" "hpp"
-                           "hxx" "m" "cc" "cs" "cp" "cpp" "go" "f" "for" "ftn"
-                           "f90" "f95" "f03" "f08" "s" "rs" "active" "hs"
-                           "pyc" "java"))
+      ("asm" "cl" "lisp" "el" "c" "h" "c++" "h++" "hpp"
+        "hxx" "m" "cc" "cs" "cp" "cpp" "go" "f" "for" "ftn"
+        "f90" "f95" "f03" "f08" "s" "rs" "active" "hs"
+        "pyc" "java"))
     (dired-rainbow-define executable "#8cc4ff"
-                          ("com" "exe" "msi"))
+      ("com" "exe" "msi"))
     (dired-rainbow-define compressed "#51d88a"
-                          ("7z" "zip" "bz2" "tgz" "txz" "gz" "xz" "z" "Z" "jar"
-                           "war" "ear" "rar" "sar" "xpi" "apk" "xz" "tar" "rar"))
+      ("7z" "zip" "bz2" "tgz" "txz" "gz" "xz" "z" "Z" "jar"
+        "war" "ear" "rar" "sar" "xpi" "apk" "xz" "tar" "rar"))
     (dired-rainbow-define packaged "#faad63"
-                          ("deb" "rpm" "apk" "jad" "jar" "cab" "pak" "pk3" "vdf"
-                           "vpk" "bsp"))
+      ("deb" "rpm" "apk" "jad" "jar" "cab" "pak" "pk3" "vdf"
+        "vpk" "bsp"))
     (dired-rainbow-define encrypted "#f2d024"
-                          ("gpg" "pgp" "asc" "bfe" "enc" "signature" "sig" "p12"
-                           "pem"))
+      ("gpg" "pgp" "asc" "bfe" "enc" "signature" "sig" "p12"
+        "pem"))
     (dired-rainbow-define fonts "#f6993f"
-                          ("afm" "fon" "fnt" "pfb" "pfm" "ttf" "otf" "woff"
-                           "woff2" "eot"))
+      ("afm" "fon" "fnt" "pfb" "pfm" "ttf" "otf" "woff"
+        "woff2" "eot"))
     (dired-rainbow-define partition "#e3342f"
-                          ("dmg" "iso" "bin" "nrg" "qcow" "toast" "vcd" "vmdk"
-                           "bak"))
+      ("dmg" "iso" "bin" "nrg" "qcow" "toast" "vcd" "vmdk"
+        "bak"))
     (dired-rainbow-define vc "#6cb2eb"
-                          ("git" "gitignore" "gitattributes" "gitmodules"))
+      ("git" "gitignore" "gitattributes" "gitmodules"))
     (dired-rainbow-define config "#5040e2"
-                          ("cfg" "conf"))
+      ("cfg" "conf"))
     (dired-rainbow-define certificate "#6cb2eb"
-                          ("cer" "crt" "pfx" "p7b" "csr" "req" "key"))
+      ("cer" "crt" "pfx" "p7b" "csr" "req" "key"))
     (dired-rainbow-define junk "#7F7D7D"
-                          ("DS_Store" "projectile"))
+      ("DS_Store" "projectile"))
     (dired-rainbow-define-chmod executable-unix "#38c172" "-.*x.*")
 
     (dolist (b (buffer-list))
@@ -447,11 +456,11 @@
   (defun fido-style ()
     (interactive)
     (setq completion-auto-wrap t
-          completion-auto-help nil
-          completions-max-height 15
-          completion-styles '(initials flex)
-          icomplete-in-buffer t
-          max-mini-window-height 10)
+      completion-auto-help nil
+      completions-max-height 15
+      completion-styles '(initials flex)
+      icomplete-in-buffer t
+      max-mini-window-height 10)
     (fido-mode 1)
     (fido-vertical-mode 1))
 
@@ -480,8 +489,8 @@
     (completion-styles '(substring orderless basic))
     :init
     (setq completion-styles '(orderless basic)
-          completion-category-defaults nil
-          completion-category-overrides '((file (styles partial-completion)))))
+      completion-category-defaults nil
+      completion-category-overrides '((file (styles partial-completion)))))
 
   (use-package marginalia
     :after vertico
@@ -514,35 +523,35 @@
     :custom
     (magit-section-initial-visibility-alist (quote ((untracked . hide))))
     (magit-repolist-column-flag-alist
-     '((magit-untracked-files . "N")
-       (magit-unstaged-files . "U")
-       (magit-staged-files . "S")))
+      '((magit-untracked-files . "N")
+         (magit-unstaged-files . "U")
+         (magit-staged-files . "S")))
     (magit-repolist-columns
-     '(
-       ("Name" 25 magit-repolist-column-ident nil)
-       ("" 3 magit-repolist-column-flag)
-       ("Version" 25 magit-repolist-column-version
-        ((:sort magit-repolist-version<)))
-       ("B<U" 3 magit-repolist-column-unpulled-from-upstream
-        ((:right-align t)
-         (:sort <)))
-       ("B>U" 3 magit-repolist-column-unpushed-to-upstream
-        ((:right-align t)
-         (:sort <)))
-       ("Path" 99 magit-repolist-column-path nil))
-     )
+      '(
+         ("Name" 25 magit-repolist-column-ident nil)
+         ("" 3 magit-repolist-column-flag)
+         ("Version" 25 magit-repolist-column-version
+           ((:sort magit-repolist-version<)))
+         ("B<U" 3 magit-repolist-column-unpulled-from-upstream
+           ((:right-align t)
+             (:sort <)))
+         ("B>U" 3 magit-repolist-column-unpushed-to-upstream
+           ((:right-align t)
+             (:sort <)))
+         ("Path" 99 magit-repolist-column-path nil))
+      )
     (magit-repository-directories
-     '(
-       ("/home/jdyer" . 0)
-       ("/home/jdyer/.config" . 0)
-       ("/home/jdyer/bin" . 0)
-       ("/home/jdyer/emacs-pkgs/new" . 2)
-       ("/home/jdyer/DCIM/publish/hugo-katieboo85" . 0)
-       ("/home/jdyer/DCIM/Art/Content" . 2)
-       ("/home/jdyer/DCIM/themes" . 2)
-       ("/home/jdyer/DCIM/content" . 0)
-       )
-     )
+      '(
+         ("/home/jdyer" . 0)
+         ("/home/jdyer/.config" . 0)
+         ("/home/jdyer/bin" . 0)
+         ("/home/jdyer/emacs-pkgs/new" . 2)
+         ("/home/jdyer/DCIM/publish/hugo-katieboo85" . 0)
+         ("/home/jdyer/DCIM/Art/Content" . 2)
+         ("/home/jdyer/DCIM/themes" . 2)
+         ("/home/jdyer/DCIM/content" . 0)
+         )
+      )
     )
 #+end_src
 
@@ -601,39 +610,39 @@
     :bind
     ("C-x w" . elfeed)
     (:map elfeed-search-mode-map
-          ("n" . (lambda () (interactive) (next-line) (call-interactively 'elfeed-search-show-entry)))
-          ("p" . (lambda () (interactive) (previous-line) (call-interactively 'elfeed-search-show-entry)))
-          ("m" . (lambda () (interactive) (apply 'elfeed-search-toggle-all '(star)))))
+      ("n" . (lambda () (interactive) (next-line) (call-interactively 'elfeed-search-show-entry)))
+      ("p" . (lambda () (interactive) (previous-line) (call-interactively 'elfeed-search-show-entry)))
+      ("m" . (lambda () (interactive) (apply 'elfeed-search-toggle-all '(star)))))
     :custom
     (elfeed-search-remain-on-entry t)
     (elfeed-search-title-min-width 60)
     (elfeed-search-title-max-width 60)
     (elfeed-search-filter "@2-months-ago")
     (elfeed-feeds
-     '("https://www.dyerdwelling.family/index.xml"
-       "https://www.emacs.dyerdwelling.family/index.xml"
-       "https://www.emacs.dyerdwelling.family/tags/emacs/index.xml"
-       "http://emacsninja.com/feed.atom"
-       "http://www.omgubuntu.co.uk/feed"
-       "http://feeds.feedburner.com/XahsEmacsBlog"
-       "https://emacsair.me/feed.xml"
-       "https://www.ghacks.net/feed/"
-       "https://linuxstoney.com/feed"
-       "http://emacsredux.com/atom.xml"
-       "https://www.creativebloq.com/feed"
-       "https://feeds.howtogeek.com/HowToGeek"
-       "http://planet.emacslife.com/atom.xml"
-       "http://irreal.org/blog/?feed=rss2"
-       "https://itsfoss.com/feed/"
-       "https://9to5linux.com/feed/atom"
-       "https://opensource.com/feed"
-       "http://www.masteringemacs.org/feed/"
-       "https://jao.io/blog/rss.xml")))
+      '("https://www.dyerdwelling.family/index.xml"
+         "https://www.emacs.dyerdwelling.family/index.xml"
+         "https://www.emacs.dyerdwelling.family/tags/emacs/index.xml"
+         "http://emacsninja.com/feed.atom"
+         "http://www.omgubuntu.co.uk/feed"
+         "http://feeds.feedburner.com/XahsEmacsBlog"
+         "https://emacsair.me/feed.xml"
+         "https://www.ghacks.net/feed/"
+         "https://linuxstoney.com/feed"
+         "http://emacsredux.com/atom.xml"
+         "https://www.creativebloq.com/feed"
+         "https://feeds.howtogeek.com/HowToGeek"
+         "http://planet.emacslife.com/atom.xml"
+         "http://irreal.org/blog/?feed=rss2"
+         "https://itsfoss.com/feed/"
+         "https://9to5linux.com/feed/atom"
+         "https://opensource.com/feed"
+         "http://www.masteringemacs.org/feed/"
+         "https://jao.io/blog/rss.xml")))
 
   (setq elfeed-show-mode-hook
-        (lambda ()
-          (set-face-attribute 'variable-pitch (selected-frame) :font (font-spec :family "Source Code Pro" :size 18))
-          (setq elfeed-show-entry-switch #'my-show-elfeed)))
+    (lambda ()
+      (set-face-attribute 'variable-pitch (selected-frame) :font (font-spec :family "Source Code Pro" :size 18))
+      (setq elfeed-show-entry-switch #'my-show-elfeed)))
 #+end_src
 
 * save-desktop
@@ -759,19 +768,15 @@
   ;;
   ;; -> setqs
   ;;
-  ;; (setq-default mode-line-format "%b")
+  (setq debug-on-error t)
   (setq dired-dwim-target t)
-  ;; (setq dired-guess-shell-alist-default
-  ;;   (append '(("\\.\\(jpg\\|jpeg\\|png\\|gif\\|bmp\\)$" "gwenview")
-  ;;              ("\\t.\\(mp4\\|mkv\\|avi\\|mov\\|wmv\\|flv\\|mpg\\)$" "mpv"))
-  ;;     dired-guess-shell-alist-default))
   (setq window-persistent-parameters
-        '((parent-id . nil)
-          (outer-window-id . nil)
-          (window-id . nil)
-          (clone-of . t)))
+    '((parent-id . nil)
+       (outer-window-id . nil)
+       (window-id . nil)
+       (clone-of . t)))
   (setq tramp-default-method "ssh")
-  (setq enable-local-variables t)
+  (setq enable-local-variables :all)
   (setq proced-auto-update-interval 1)
   (setq compilation-always-kill t)
   (setq compilation-context-lines 3)
@@ -845,7 +850,7 @@
   (setq-default tab-width 3)
   (setq-default lisp-indent-offset 2)
   (add-hook 'sh-mode-hook
-            (lambda () (setq sh-basic-offset 3)))
+    (lambda () (setq sh-basic-offset 3)))
 #+end_src
 
 * backups
@@ -855,12 +860,12 @@
   ;; -> backups
   ;;
   (setq make-backup-files 1)
-  (setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
-        backup-by-copying t    ; Don't delink hardlinks
-        version-control t          ; Use version numbers on backups
-        delete-old-versions t  ; Automatically delete excess backups
-        kept-new-versions 10   ; how many of the newest versions to keep
-        kept-old-versions 5)    ; and how many of the old
+  (setq backup-directory-alist '(("." . "~/backup"))
+    backup-by-copying t    ; Don't delink hardlinks
+    version-control t          ; Use version numbers on backups
+    delete-old-versions t  ; Automatically delete excess backups
+    kept-new-versions 10   ; how many of the newest versions to keep
+    kept-old-versions 5)    ; and how many of the old
 #+end_src
 
 * hooks
@@ -879,11 +884,11 @@
   (add-hook 'eshell-mode-hook '(lambda ()(interactive)
                                  (define-key eshell-mode-map
                                    (kbd
-                                    "TAB") 'pcomplete-expand-and-complete)))
+                                     "TAB") 'pcomplete-expand-and-complete)))
   (add-hook 'shell-mode-hook '(lambda ()(interactive)
                                 (define-key shell-mode-map
                                   (kbd
-                                   "TAB") 'pcomplete-expand-and-complete)))
+                                    "TAB") 'pcomplete-expand-and-complete)))
 #+end_src
 
 * custom settings
@@ -893,28 +898,29 @@
   ;; -> custom settings
   ;;
   (custom-set-variables
-   ;; custom-set-variables was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   '(case-fold-search t)
-   '(connection-local-criteria-alist
-     '(((:application eshell)
-        eshell-connection-default-profile)) t)
-   '(connection-local-profile-alist
-     '((eshell-connection-default-profile
-        (eshell-path-env-list))) t)
-   '(custom-safe-themes t)
-   '(delete-selection-mode nil)
-   '(ede-project-directories
-     '("/home/jdyer/DCIM/content" "/home/jdyer/nas" "/home/jdyer/examples" "/home/jdyer/bin" "/home/jdyer/DCIM"))
-   '(eshell-banner-message "")
-   '(eshell-directory-name "~/DCIM/Backup/eshell")
-   '(fit-window-to-buffer-horizontally t)
-   '(hippie-expand-try-functions-list
-     '(try-complete-file-name-partially try-complete-file-name try-expand-all-abbrevs try-expand-dabbrev try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill try-complete-lisp-symbol-partially try-complete-lisp-symbol))
-   '(warning-suppress-log-types '((frameset)))
-   '(warning-suppress-types '((frameset))))
+    ;; custom-set-variables was added by Custom.
+    ;; If you edit it by hand, you could mess it up, so be careful.
+    ;; Your init file should contain only one such instance.
+    ;; If there is more than one, they won't work right.
+    '(case-fold-search t)
+    '(connection-local-criteria-alist
+       '(((:application eshell)
+           eshell-connection-default-profile)) t)
+    '(connection-local-profile-alist
+       '((eshell-connection-default-profile
+           (eshell-path-env-list))) t)
+    '(custom-enabled-themes '(gruvbox))
+    '(custom-safe-themes t)
+    '(delete-selection-mode nil)
+    '(ede-project-directories
+       '("/home/jdyer/DCIM/content" "/home/jdyer/nas" "/home/jdyer/examples" "/home/jdyer/bin" "/home/jdyer/DCIM"))
+    '(eshell-banner-message "")
+    '(eshell-directory-name "~/DCIM/Backup/eshell")
+    '(fit-window-to-buffer-horizontally t)
+    '(hippie-expand-try-functions-list
+       '(try-complete-file-name-partially try-complete-file-name try-expand-all-abbrevs try-expand-dabbrev try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill try-complete-lisp-symbol-partially try-complete-lisp-symbol))
+    '(warning-suppress-log-types '((frameset)))
+    '(warning-suppress-types '((frameset))))
 #+end_src
 
 * defuns
@@ -927,7 +933,7 @@
     "Toggle shell."
     (interactive)
     (if (window-live-p (get-buffer-window "*eshell*"))
-        (delete-window (get-buffer-window "*eshell*"))
+      (delete-window (get-buffer-window "*eshell*"))
       (eshell)))
 
   (defun my/org-sort-tags ()
@@ -946,10 +952,10 @@
     "Resize window back and forth."
     (interactive)
     (let ((edge (if horizontal
-                    (car (window-edges))
+                  (car (window-edges))
                   (car (cdr (window-edges))))))
       (if (= edge 0)
-          (enlarge-window delta horizontal)
+        (enlarge-window delta horizontal)
         (shrink-window delta horizontal))))
 
   (defun my/index ()
@@ -971,11 +977,11 @@
   (defun my/rsync (dest)
     "Rsync copy."
     (interactive
-     (list
-      (expand-file-name (read-file-name "rsync to:"
-                                        (dired-dwim-target-directory)))))
+      (list
+        (expand-file-name (read-file-name "rsync to:"
+                            (dired-dwim-target-directory)))))
     (let ((files (dired-get-marked-files nil current-prefix-arg))
-          (command "rsync -arvz --progress "))
+           (command "rsync -arvz --progress "))
       (dolist (file files)
         (setq command (concat command (shell-quote-argument file) " ")))
       (setq command (concat command (shell-quote-argument dest)))
@@ -986,13 +992,13 @@
     "Sort images in various ways."
     (interactive "p")
     (cond
-     ((equal current-prefix-arg nil)   ; no C-u
-      (setq dired-actual-switches "-lGghat"))
-     ((equal current-prefix-arg '(4))  ; C-u
-      (setq dired-actual-switches "-lGgha"))
-     ((equal current-prefix-arg 1)     ; C-u 1
-      (setq dired-actual-switches "-lGgha"))
-     )
+      ((equal current-prefix-arg nil)   ; no C-u
+        (setq dired-actual-switches "-lGghat"))
+      ((equal current-prefix-arg '(4))  ; C-u
+        (setq dired-actual-switches "-lGgha"))
+      ((equal current-prefix-arg 1)     ; C-u 1
+        (setq dired-actual-switches "-lGgha"))
+      )
     (setq w (selected-window))
     (delete-other-windows)
     (revert-buffer)
@@ -1008,10 +1014,10 @@
     "Comments or uncomments the current line or region."
     (interactive)
     (if (region-active-p)
-        (comment-or-uncomment-region
-         (region-beginning)(region-end))
       (comment-or-uncomment-region
-       (line-beginning-position)(line-end-position))))
+        (region-beginning)(region-end))
+      (comment-or-uncomment-region
+        (line-beginning-position)(line-end-position))))
 
   (defun my/get-file-size ()
     "Calculate files size for all the marked files."
@@ -1029,15 +1035,15 @@
       (with-temp-buffer
         (apply 'call-process "/usr/bin/du" nil t nil "-sch" files)
         (message "Size of all marked files: %s"
-                 (progn
-                   (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
-                   (match-string 1))))))
+          (progn
+            (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
+            (match-string 1))))))
 
   (defun my/fold ()
     "Fold text indented same of more than the cursor."
     (interactive)
     (if (eq selective-display (1+ (current-column)))
-        (set-selective-display 0)
+      (set-selective-display 0)
       (set-selective-display (1+ (current-column)))))
 
   (defun my/project-root ()
@@ -1045,19 +1051,19 @@
     (interactive)
     "Guess the project root of the given FILE-PATH."
     (let ((root default-directory)
-          (project (project-current)))
+           (project (project-current)))
       (when project
         (cond ((fboundp 'project-root)
-               (setq root (project-root project)))))))
+                (setq root (project-root project)))))))
 
   (defun my/grep (arg)
     "Wrapper to grep."
     (interactive "p")
     (if (equal major-mode 'dired-mode)
-        (setq search-term
-              (read-from-minibuffer "Search : "))
       (setq search-term
-            (read-from-minibuffer "Search : " (thing-at-point 'symbol)))
+        (read-from-minibuffer "Search : "))
+      (setq search-term
+        (read-from-minibuffer "Search : " (thing-at-point 'symbol)))
       )
     (deadgrep search-term default-directory))
 #+end_src
@@ -1069,67 +1075,67 @@
   ;; -> window positioning
   ;;
   (add-to-list 'display-buffer-alist
-               `(,(rx(or "elfeed-entry"))
-                 display-buffer-in-direction
-                 (direction . right)
-                 (window . root)
-                 (window-width . 0.45)))
+    `(,(rx(or "elfeed-entry"))
+       display-buffer-in-direction
+       (direction . right)
+       (window . root)
+       (window-width . 0.45)))
 
   (add-to-list 'display-buffer-alist
-               `(,(rx(or "image-dired"))
-                 display-buffer-in-direction
-                 (direction . right)
-                 (window . root)
-                 (window-width . 0.75)))
+    `(,(rx(or "image-dired"))
+       display-buffer-in-direction
+       (direction . right)
+       (window . root)
+       (window-width . 0.75)))
 
   (add-to-list 'display-buffer-alist
-               `(,(rx(or "image-dired-display-image"))
-                 display-buffer-in-direction
-                 (direction . right)
-                 (window . root)
-                 (window-width . 0.4)))
+    `(,(rx(or "image-dired-display-image"))
+       display-buffer-in-direction
+       (direction . right)
+       (window . root)
+       (window-width . 0.4)))
 
   (defvar right-repl-regexp
     (rx bos "*" (or"Occur"
-                   "deadgrep"
-                   "dictionary"
-                   "Proced")
-        (zero-or-more nonl))
+                  "deadgrep"
+                  "dictionary"
+                  "Proced")
+      (zero-or-more nonl))
     "Regexp for matching the buffer name of terminal or related tools.")
 
   (defvar btm-repl-regexp
     (rx bos "*" (or (and (? "e") "shell")
-                    (and (? "v") "term")
-                    "calendar"
-                    "Grep")
-        (zero-or-more nonl))
+                  (and (? "v") "term")
+                  "calendar"
+                  "Grep")
+      (zero-or-more nonl))
     "Regexp for matching the buffer name of terminal or related tools.")
 
   (defvar go-away-repl-regexp
     (rx bos "*" (or "Async")
-        (zero-or-more nonl))
+      (zero-or-more nonl))
     "Regexp for matching windows to disappear")
 
   (add-to-list 'display-buffer-alist
-               `(,go-away-repl-regexp
-                 display-buffer-no-window
-                 (inhibit-same-window . t)))
+    `(,go-away-repl-regexp
+       display-buffer-no-window
+       (inhibit-same-window . t)))
 
   (add-to-list 'display-buffer-alist
-               `(,btm-repl-regexp
-                 display-buffer-in-direction
-                 (direction . bottom)
-                 (window-height . 0.2)
-                 (preserve-size (t . nil))
-                 (body-function . select-window)))
+    `(,btm-repl-regexp
+       display-buffer-in-direction
+       (direction . bottom)
+       (window-height . 0.2)
+       (preserve-size (t . nil))
+       (body-function . select-window)))
 
   (add-to-list 'display-buffer-alist
-               `(,right-repl-regexp
-                 display-buffer-in-direction
-                 (direction . right)
-                 (window-width . 0.4)
-                 (preserve-size (t . nil))
-                 (body-function . select-window)))
+    `(,right-repl-regexp
+       display-buffer-in-direction
+       (direction . right)
+       (window-width . 0.4)
+       (preserve-size (t . nil))
+       (body-function . select-window)))
 #+end_src
 
 * skeletons
@@ -1172,13 +1178,13 @@
 
   (define-abbrev-table 'global-abbrev-table
     '(
-      ("jdimg" "" org-image-size-skel)
-      ("jdcol1" "" hugo-column-start)
-      ("jdcol2" "" hugo-column-split)
-      ("jdcol3" "" hugo-column-end)
-      ("jdvid" "" hugo-column-video)
-      ("btw" "by the way" nil)
-      )
+       ("jdimg" "" org-image-size-skel)
+       ("jdcol1" "" hugo-column-start)
+       ("jdcol2" "" hugo-column-split)
+       ("jdcol3" "" hugo-column-end)
+       ("jdvid" "" hugo-column-video)
+       ("btw" "by the way" nil)
+       )
     )
 #+end_src
 
@@ -1189,12 +1195,12 @@
   ;; org capture
   ;;
   (setq org-capture-templates
-        `(
-          ("p" "Post" plain
-           (file+headline
-            ,(concat home-dir "/DCIM/content/posts--all.org")
-            "Posts")
-           "** TODO %^{title} :2023:
+    `(
+       ("p" "Post" plain
+         (file+headline
+           ,(concat home-dir "/DCIM/content/posts--all.org")
+           "Posts")
+         "** TODO %^{title} :2023:
   :PROPERTIES:
   :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>-posts--%\\1
   :EXPORT_HUGO_SECTION: posts
@@ -1211,11 +1217,11 @@
   ,#+end_export
   " :prepend t :jump-to-captured t)
 
-          ("e" "Emacs" plain
-           (file+headline
-            ,(concat home-dir "/DCIM/content/emacs--all.org")
-            "Emacs")
-           "** TODO %^{title} :2023:
+       ("e" "Emacs" plain
+         (file+headline
+           ,(concat home-dir "/DCIM/content/emacs--all.org")
+           "Emacs")
+         "** TODO %^{title} :2023:
   :PROPERTIES:
   :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>-emacs--%\\1
   :EXPORT_HUGO_SECTION: emacs
@@ -1232,11 +1238,11 @@
   ,#+end_export
   " :prepend t :jump-to-captured t)
 
-          ("l" "Linux" plain
-           (file+headline
-            ,(concat home-dir "/DCIM/content/linux--all.org")
-            "Linux")
-           "** TODO %^{title} :2023:
+       ("l" "Linux" plain
+         (file+headline
+           ,(concat home-dir "/DCIM/content/linux--all.org")
+           "Linux")
+         "** TODO %^{title} :2023:
   :PROPERTIES:
   :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>-linux--%\\1
   :EXPORT_HUGO_SECTION: linux
@@ -1253,13 +1259,13 @@
   ,#+end_export
   " :prepend t :jump-to-captured t)
 
-          ("a" "Art")
+       ("a" "Art")
 
-          ("av" "Art Videos" plain
-           (file+headline
-            ,(concat home-dir "/DCIM/content/art--2018-now.org")
-            "Art")
-           "** TODO %^{title} Video :videos:painter:krita:artrage:2023:
+       ("av" "Art Videos" plain
+         (file+headline
+           ,(concat home-dir "/DCIM/content/art--2018-now.org")
+           "Art")
+         "** TODO %^{title} Video :videos:painter:krita:artrage:2023:
   :PROPERTIES:
   :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>--%\\1-%\\2
   :EXPORT_HUGO_SECTION: art--videos
@@ -1279,11 +1285,11 @@
   ,#+end_export
   " :prepend t :jump-to-captured t)
 
-          ("aa" "Art" plain
-           (file+headline
-            ,(concat home-dir "/DCIM/content/art--2018-now.org")
-            "Art")
-           "** TODO %^{title} :painter:krita:artrage:2023:
+       ("aa" "Art" plain
+         (file+headline
+           ,(concat home-dir "/DCIM/content/art--2018-now.org")
+           "Art")
+         "** TODO %^{title} :painter:krita:artrage:2023:
   :PROPERTIES:
   :EXPORT_FILE_NAME: %\\1
   :EXPORT_HUGO_SECTION: art--all
@@ -1304,11 +1310,11 @@
   ,#+end_export
   " :prepend t :jump-to-captured t)
 
-          ("ai" "Art AI" plain
-           (file+headline
-            ,(concat home-dir "/DCIM/content/art--2018-now.org")
-            "Art")
-           "** TODO %<%Y%m%d%H%M%S>--AI %^{title} :2023:
+       ("ai" "Art AI" plain
+         (file+headline
+           ,(concat home-dir "/DCIM/content/art--2018-now.org")
+           "Art")
+         "** TODO %<%Y%m%d%H%M%S>--AI %^{title} :2023:
   :PROPERTIES:
   :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>--%\\1
   :EXPORT_HUGO_SECTION: art--ai
@@ -1324,8 +1330,8 @@
 
   %?" :prepend t :jump-to-captured t)
 
-          )
-        )
+       )
+    )
 #+end_src
 
 * dwim
@@ -1335,214 +1341,214 @@
   ;; -> dwim
   ;;
   (defun my/dwim-convert-nospace () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "ConvertNoSpace"
-          "ConvertNoSpace '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "ConvertNoSpace"
+      "ConvertNoSpace '<<*>>'" :silent-success t))
 
   (defun my/dwim-audio-convert () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "AudioConvert"
-          "AudioConvert '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "AudioConvert"
+      "AudioConvert '<<*>>'" :silent-success t))
 
   (defun my/dwim-audio-info () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "AudioInfo"
-          "AudioInfo '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "AudioInfo"
+      "AudioInfo '<<*>>'" :silent-success t))
 
   (defun my/dwim-audio-normalise () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "AudioNormalise"
-          "AudioNormalise '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "AudioNormalise"
+      "AudioNormalise '<<*>>'" :silent-success t))
 
   (defun my/dwim-audio-trim-silence () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "AudioTrimSilence"
-          "AudioTrimSilence '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "AudioTrimSilence"
+      "AudioTrimSilence '<<*>>'" :silent-success t))
 
   (defun my/dwim-picture-auto-colour () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "PictureAutoColour"
-          "PictureAutoColour '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "PictureAutoColour"
+      "PictureAutoColour '<<*>>'" :silent-success t))
 
   (defun my/dwim-picture-convert () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "PictureConvert"
-          "PictureConvert '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "PictureConvert"
+      "PictureConvert '<<*>>'" :silent-success t))
 
   (defun my/dwim-picture-crush () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "PictureCrush"
-          "PictureCrush '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "PictureCrush"
+      "PictureCrush '<<*>>'" :silent-success t))
 
   (defun my/dwim-picture-info () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "PictureInfo"
-          "PictureInfo '<<*>>'" :silent-success nil))
+    (dwim-shell-command-on-marked-files
+      "PictureInfo"
+      "PictureInfo '<<*>>'" :silent-success nil))
 
   (defun my/dwim-picture-montage () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "PictureMontage"
-          "PictureMontage '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "PictureMontage"
+      "PictureMontage '<<*>>'" :silent-success t))
 
   (defun my/dwim-picture-organise () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "PictureOrganise"
-          "PictureOrganise '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "PictureOrganise"
+      "PictureOrganise '<<*>>'" :silent-success t))
 
   (defun my/dwim-picture-rotate-flip () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "PictureRotateFlip"
-          "PictureRotateFlip '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "PictureRotateFlip"
+      "PictureRotateFlip '<<*>>'" :silent-success t))
 
   (defun my/dwim-picture-rotate-left () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "PictureRotateLeft"
-          "PictureRotateLeft '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "PictureRotateLeft"
+      "PictureRotateLeft '<<*>>'" :silent-success t))
 
   (defun my/dwim-picture-rotate-right () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "PictureRotateRight"
-          "PictureRotateRight '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "PictureRotateRight"
+      "PictureRotateRight '<<*>>'" :silent-success t))
 
   (defun my/dwim-picture-scale () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "PictureScale"
-          "PictureScale '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "PictureScale"
+      "PictureScale '<<*>>'" :silent-success t))
 
   (defun my/dwim-picture-upscale () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "PictureUpscale"
-          "PictureUpscale '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "PictureUpscale"
+      "PictureUpscale '<<*>>'" :silent-success t))
 
   (defun my/dwim-picture-get-text () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "PictureGetText"
-          "PictureGetText '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "PictureGetText"
+      "PictureGetText '<<*>>'" :silent-success t))
 
   (defun my/dwim-picture-orientation () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "PictureOrientation"
-          "PictureOrientation '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "PictureOrientation"
+      "PictureOrientation '<<*>>'" :silent-success t))
 
   (defun my/dwim-video-concat () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "VideoConcat"
-          "VideoConcat '<<*>>'" :silent-success nil))
+    (dwim-shell-command-on-marked-files
+      "VideoConcat"
+      "VideoConcat '<<*>>'" :silent-success nil))
 
   (defun my/dwim-video-convert () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "VideoConvert"
-          "VideoConvert '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "VideoConvert"
+      "VideoConvert '<<*>>'" :silent-success t))
 
   (defun my/dwim-video-cut () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "VideoCut"
-          "VideoCut '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "VideoCut"
+      "VideoCut '<<*>>'" :silent-success t))
 
   (defun my/dwim-video-double () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "VideoDouble"
-          "VideoDouble '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "VideoDouble"
+      "VideoDouble '<<*>>'" :silent-success t))
 
   (defun my/dwim-video-extract-audio () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "VideoExtractAudio"
-          "VideoExtractAudio '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "VideoExtractAudio"
+      "VideoExtractAudio '<<*>>'" :silent-success t))
 
   (defun my/dwim-video-extract-frames () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "VideoExtractFrames"
-          "VideoExtractFrames '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "VideoExtractFrames"
+      "VideoExtractFrames '<<*>>'" :silent-success t))
 
   (defun my/dwim-video-filter () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "VideoFilter"
-          "VideoFilter '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "VideoFilter"
+      "VideoFilter '<<*>>'" :silent-success t))
 
   (defun my/dwim-video-from-frames () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "VideoFromFrames"
-          "VideoFromFrames '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "VideoFromFrames"
+      "VideoFromFrames '<<*>>'" :silent-success t))
 
   (defun my/dwim-video-info () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "VideoInfo"
-          "VideoInfo '<<*>>'" :silent-success nil))
+    (dwim-shell-command-on-marked-files
+      "VideoInfo"
+      "VideoInfo '<<*>>'" :silent-success nil))
 
   (defun my/dwim-video-remove-audio () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "VideoRemoveAudio"
-          "VideoRemoveAudio '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "VideoRemoveAudio"
+      "VideoRemoveAudio '<<*>>'" :silent-success t))
 
   (defun my/dwim-video-replace-video-audio () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "VideoReplaceVideoAudio"
-          "VideoReplaceVideoAudio '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "VideoReplaceVideoAudio"
+      "VideoReplaceVideoAudio '<<*>>'" :silent-success t))
 
   (defun my/dwim-video-rescale () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "VideoRescale"
-          "VideoRescale '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "VideoRescale"
+      "VideoRescale '<<*>>'" :silent-success t))
 
   (defun my/dwim-video-reverse () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "VideoReverse"
-          "VideoReverse '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "VideoReverse"
+      "VideoReverse '<<*>>'" :silent-success t))
 
   (defun my/dwim-video-rotate () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "VideoRotate"
-          "VideoRotate '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "VideoRotate"
+      "VideoRotate '<<*>>'" :silent-success t))
 
   (defun my/dwim-video-rotate-left () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "VideoRotateLeft"
-          "VideoRotateLeft '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "VideoRotateLeft"
+      "VideoRotateLeft '<<*>>'" :silent-success t))
 
   (defun my/dwim-video-rotate-right () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "VideoRotateRight"
-          "VideoRotateRight '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "VideoRotateRight"
+      "VideoRotateRight '<<*>>'" :silent-success t))
 
   (defun my/dwim-video-shrink () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "VideoShrink"
-          "VideoShrink '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "VideoShrink"
+      "VideoShrink '<<*>>'" :silent-success t))
 
   (defun my/dwim-video-slow-down () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "VideoSlowDown"
-          "VideoSlowDown '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "VideoSlowDown"
+      "VideoSlowDown '<<*>>'" :silent-success t))
 
   (defun my/dwim-video-speed-up () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "VideoSpeedUp"
-          "VideoSpeedUp '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "VideoSpeedUp"
+      "VideoSpeedUp '<<*>>'" :silent-success t))
 
   (defun my/dwim-video-zoom () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "VideoZoom"
-          "VideoZoom '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "VideoZoom"
+      "VideoZoom '<<*>>'" :silent-success t))
 
   (defun my/dwim-video-whatsapp-convert () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "WhatsAppConvert"
-          "WhatsAppConvert '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "WhatsAppConvert"
+      "WhatsAppConvert '<<*>>'" :silent-success t))
 
   (defun my/dwim-picture-correct () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "PictureCorrect"
-          "PictureCorrect '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "PictureCorrect"
+      "PictureCorrect '<<*>>'" :silent-success t))
 
   (defun my/dwim-picture-2-pdf () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "Picture2pdf"
-          "Picture2pdf '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "Picture2pdf"
+      "Picture2pdf '<<*>>'" :silent-success t))
 
   (defun my/dwim-other-tag-date () "" (interactive)
-         (dwim-shell-command-on-marked-files
-          "OtherTagDate"
-          "OtherTagDate '<<*>>'" :silent-success t))
+    (dwim-shell-command-on-marked-files
+      "OtherTagDate"
+      "OtherTagDate '<<*>>'" :silent-success t))
 #+end_src
 
 * visuals
@@ -1572,12 +1578,12 @@
   ;; -> custom set-faces
   ;;
   (custom-set-faces
-   ;; custom-set-faces was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.2 :family "Source Code Pro"))))
-   '(mode-line ((t (:background "#000000" :foreground "#f4f4f4" :box nil)))))
+    ;; custom-set-faces was added by Custom.
+    ;; If you edit it by hand, you could mess it up, so be careful.
+    ;; Your init file should contain only one such instance.
+    ;; If there is more than one, they won't work right.
+    '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.2 :family "Source Code Pro"))))
+    '(mode-line ((t (:background "#000000" :foreground "#f4f4f4" :box nil)))))
 #+end_src
 
 * visual truncation and line wrapping
@@ -1622,7 +1628,7 @@
   (use-package jinx
     :hook (emacs-startup . global-jinx-mode)
     :bind (("M-$" . jinx-correct)
-           ("C-M-$" . jinx-languages)))
+            ("C-M-$" . jinx-languages)))
 #+end_src
 * tests
 
@@ -1647,11 +1653,11 @@
         (setq str (replace-regexp-in-string "\"" "" str))
         (setq wrd (split-string str "," t " "))
         (setq new
-              (concat
-               "[\""
-               (s-join "\", \"" wrd)
-               "\"]")
-              )
+          (concat
+            "[\""
+            (s-join "\", \"" wrd)
+            "\"]")
+          )
         (goto-char (point-min))
         (while (search-forward-regexp "^tags = \\(\\[.*\\]\\)$" nil t)
           (replace-match new nil nil nil 1))
@@ -1663,11 +1669,11 @@
         (setq str (replace-regexp-in-string "\"" "" str))
         (setq wrd (split-string str "," t " "))
         (setq new
-              (concat
-               "\""
-               (s-join "\", \"" wrd)
-               "\"")
-              )
+          (concat
+            "\""
+            (s-join "\", \"" wrd)
+            "\"")
+          )
         (goto-char (point-min))
         (while (search-forward-regexp "^author = \\(\\[.*\\]\\)$" nil t)
           (replace-match new nil nil nil 1))
@@ -1707,11 +1713,11 @@
     "
     Exclusion of directories to convert to spaces."
     (not
-     (or
-      (string-match "/home/jdyer/DCIM/static" dir)
-      (string-match "/home/jdyer/DCIM/Camera" dir)
+      (or
+        (string-match "/home/jdyer/DCIM/static" dir)
+        (string-match "/home/jdyer/DCIM/Camera" dir)
+        )
       )
-     )
     )
 
   (defun my/cleanup-files (my/tab-width &optional to-tabs)
@@ -1722,7 +1728,7 @@
     (setq-default c-basic-offset my/tab-width)
 
     (if to-tabs
-        (setq-default indent-tabs-mode t)
+      (setq-default indent-tabs-mode t)
       (setq-default indent-tabs-mode nil))
 
     (setq-default make-backup-files nil)
@@ -1730,13 +1736,13 @@
     (message all-files nil)
     (setq all-files nil)
     (setq all-files
-          (append
-           (directory-files-recursively
-            "/home/jdyer/DCIM" "\\(?:.cpp$\\|\\.c$\\)" nil 'tab-predicate-exclusion-p)
-           (directory-files-recursively
-            "/home/jdyer/DCIM" "\\(?:.ads$\\|\\.adb$\\)" nil 'tab-predicate-exclusion-p)
-           )
-          )
+      (append
+        (directory-files-recursively
+          "/home/jdyer/DCIM" "\\(?:.cpp$\\|\\.c$\\)" nil 'tab-predicate-exclusion-p)
+        (directory-files-recursively
+          "/home/jdyer/DCIM" "\\(?:.ads$\\|\\.adb$\\)" nil 'tab-predicate-exclusion-p)
+        )
+      )
     (message "----------------------------------------")
     (message "\nNow cleaning up (may take some time)...")
     (message "----------------------------------------")
@@ -1747,7 +1753,7 @@
         (whitespace-cleanup)
 
         (if to-tabs
-            (tabify (point-min) (point-max))
+          (tabify (point-min) (point-max))
           (untabify (point-min) (point-max)))
 
         (font-lock-set-defaults)
@@ -1776,8 +1782,8 @@
   ;;      ))
 
   (setq-default mode-line-buffer-identification
-                '(:eval
-                  (propertized-buffer-identification "%b")))
+    '(:eval
+       (propertized-buffer-identification "%b")))
 
   (defun find-file-vanilla ()
     "Simple find file from current directory using the linux find command."
@@ -1788,17 +1794,17 @@
     (setq find-command "fd --absolute-path --type f -0")
 
     (setq file-list
-          (mapcar
-           (lambda (path)
-             (file-relative-name path default-directory))
-           (split-string
-            (shell-command-to-string find-command)
-            "\0" t)))
+      (mapcar
+        (lambda (path)
+          (file-relative-name path default-directory))
+        (split-string
+          (shell-command-to-string find-command)
+          "\0" t)))
 
     (setq file
-          (completing-read
-           (format "Find file in %s: " (default-directory))
-           file-list))
+      (completing-read
+        (format "Find file in %s: " (default-directory))
+        file-list))
     (when file (find-file (expand-file-name file default-directory))))
 
   (add-to-list 'auto-mode-alist '("\\.org_archive\\'" . org-mode))
@@ -1820,10 +1826,10 @@
   (defun predicate-exclusion-p (dir)
     "Exclusion of directories."
     (not
-     (or
-      (string-match "/home/jdyer/examples/CPPrograms/nil" dir)
+      (or
+        (string-match "/home/jdyer/examples/CPPrograms/nil" dir)
+        )
       )
-     )
     )
 
   (defun my/generate-etags ()
@@ -1835,13 +1841,13 @@
     (message "Getting file list...")
     (setq all-files nil)
     (setq all-files
-          (append
-           (directory-files-recursively
-            "/home/jdyer/examples" "\\(?:\\.cpp$\\|\\.c$\\|\\.h$\\)" nil 'predicate-exclusion-p)
-           (directory-files-recursively
-            "/home/jdyer/examples" "\\(?:\\.ads$\\|\\.adb$\\)" nil 'predicate-exclusion-p)
-           )
-          )
+      (append
+        (directory-files-recursively
+          "/home/jdyer/examples" "\\(?:\\.cpp$\\|\\.c$\\|\\.h$\\)" nil 'predicate-exclusion-p)
+        (directory-files-recursively
+          "/home/jdyer/examples" "\\(?:\\.ads$\\|\\.adb$\\)" nil 'predicate-exclusion-p)
+        )
+      )
 
     (dolist (file all-files)
       (shell-command (concat "etags \"" file "\"g --append -o \"/home/jdyer/examples/TAGS\""))
@@ -1857,31 +1863,31 @@
   (defun my-imenu-create-index ()
     "Create an index using definitions starting with ';; ->'."
     (let ((index-alist '())
-          (regex "^;;[[:space:]]->\\(.+\\)$"))
+           (regex "^;;[[:space:]]->\\(.+\\)$"))
       (save-excursion
         (goto-char (point-min))
         (while (re-search-forward regex nil t)
           (let ((name (s-trim (match-string 1)))
-                (pos (match-beginning 0)))
+                 (pos (match-beginning 0)))
             (push (cons name (set-marker (make-marker) pos)) index-alist))))
       (setq imenu--index-alist (sort
-                                index-alist
-                                (lambda (a b)
-                                  (string< (car a) (car b)))))))
+                                 index-alist
+                                 (lambda (a b)
+                                   (string< (car a) (car b)))))))
 
   ;; (setq imenu-create-index-function #'my-imenu-create-index)
 
   (add-hook 'emacs-lisp-mode-hook
-            (lambda ()
-              (setq imenu-sort-function 'imenu--sort-by-name)
-              (setq imenu-generic-expression
-                    '(
-                      (nil "^;;[[:space:]]+-> \\(.*\\)$" 1)
-                      ("defun" "^.*([[:space:]]*defun[[:space:]]+\\([[:word:]-/]+\\)" 1)
-                      ("use-package" "^.*([[:space:]]*use-package[[:space:]]+\\([[:word:]-]+\\)" 1)
-                      )
-                    )
-              (imenu-add-menubar-index)))
+    (lambda ()
+      (setq imenu-sort-function 'imenu--sort-by-name)
+      (setq imenu-generic-expression
+        '(
+           (nil "^;;[[:space:]]+-> \\(.*\\)$" 1)
+           ("defun" "^.*([[:space:]]*defun[[:space:]]+\\([[:word:]-/]+\\)" 1)
+           ("use-package" "^.*([[:space:]]*use-package[[:space:]]+\\([[:word:]-]+\\)" 1)
+           )
+        )
+      (imenu-add-menubar-index)))
 
   (defun my/dired-duplicate-file ()
     "Duplicate the current file in Dired."
@@ -1893,10 +1899,10 @@
   (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
 
   (add-hook 'yaml-mode-hook
-            '(lambda ()
-               (define-key yaml-mode-map "\C-m" 'newline-and-indent)
-               (highlight-indentation-mode)
-               ))
+    '(lambda ()
+       (define-key yaml-mode-map "\C-m" 'newline-and-indent)
+       (highlight-indentation-mode)
+       ))
 
   ;; (global-set-key (kbd "C-c >") 'indent-tools-hydra/body)
 
@@ -1910,36 +1916,36 @@
   With PREFIX, change `my/uniq-log-word'."
     (interactive "P")
     (let* ((word (cond (prefix
-                        (setq my/uniq-log-word
-                              (read-string "Log word: ")))
-                       ((region-active-p)
-                        (setq my/uniq-log-word
-                              (buffer-substring (region-beginning)
-                                                (region-end))))
-                       (my/uniq-log-word
-                        my/uniq-log-word)
-                       (t
-                        "Reached")))
-           (config
-            (cond
-             ((equal major-mode 'emacs-lisp-mode)
-              (cons (format "(message \"%s: \\([0-9]+\\)\")" word)
+                         (setq my/uniq-log-word
+                           (read-string "Log word: ")))
+                   ((region-active-p)
+                     (setq my/uniq-log-word
+                       (buffer-substring (region-beginning)
+                         (region-end))))
+                   (my/uniq-log-word
+                     my/uniq-log-word)
+                   (t
+                     "Reached")))
+            (config
+              (cond
+                ((equal major-mode 'emacs-lisp-mode)
+                  (cons (format "(message \"%s: \\([0-9]+\\)\")" word)
                     (format "(message \"%s: %%s\")" word)))
-             ((equal major-mode 'swift-mode)
-              (cons (format "print(\"%s: \\([0-9]+\\)\")" word)
+                ((equal major-mode 'swift-mode)
+                  (cons (format "print(\"%s: \\([0-9]+\\)\")" word)
                     (format "print(\"%s: %%s\")" word)))
-             ((equal major-mode 'ada-mode)
-              (cons (format "Ada.Text_Io.Put_Line (\"%s: \\([0-9]+\\)\");" word)
+                ((equal major-mode 'ada-mode)
+                  (cons (format "Ada.Text_Io.Put_Line (\"%s: \\([0-9]+\\)\");" word)
                     (format "Ada.Text_Io.Put_Line (\"%s: %%s\");" word)))
-             ((equal major-mode 'c++-mode)
-              (cons (format "std::cout << \"%s: \\([0-9]+\\)\" << std::endl;" word)
+                ((equal major-mode 'c++-mode)
+                  (cons (format "std::cout << \"%s: \\([0-9]+\\)\" << std::endl;" word)
                     (format "std::cout << \"%s: %%s\" << std::endl;" word)))
-             (t
-              (error "%s not supported" major-mode))))
-           (match-regexp (car config))
-           (format-string (cdr config))
-           (max-num 0)
-           (case-fold-search nil))
+                (t
+                  (error "%s not supported" major-mode))))
+            (match-regexp (car config))
+            (format-string (cdr config))
+            (max-num 0)
+            (case-fold-search nil))
 
       (when my/uniq-log-word
         (save-excursion
@@ -1952,13 +1958,13 @@
         (end-of-line))
 
       (insert (concat
-               (if (looking-at-p "^ *$") "" "\n")
-               (format format-string
-                       (if my/uniq-log-word
-                           (number-to-string (1+ max-num))
-                         (string-trim
-                          (shell-command-to-string
-                           "grep -E '^[a-z]{6}$' /usr/share/dict/words | shuf -n 1"))))))
+                (if (looking-at-p "^ *$") "" "\n")
+                (format format-string
+                  (if my/uniq-log-word
+                    (number-to-string (1+ max-num))
+                    (string-trim
+                      (shell-command-to-string
+                        "grep -E '^[a-z]{6}$' /usr/share/dict/words | shuf -n 1"))))))
       (call-interactively 'indent-for-tab-command)))
 
   (global-set-key (kbd "C-M-j") 'my/insert-uniq-log-word)

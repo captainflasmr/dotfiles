@@ -272,3 +272,5 @@ xsettingsd/
 yakuake.notifyrc
 yakuakerc
 znt/
+/emacs/.org-id-locations
+/emacs/image-dired/
