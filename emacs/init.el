@@ -45,6 +45,16 @@
 ;;
 (require 'mu4e)
 
+(defun my/mu4e-fix-lock ()
+  "Deletes the mu database lock file if it exists, then restarts mu4e."
+  (interactive)
+  (let ((mu-db-dir (expand-file-name "~/.cache/mu/xapian")))
+    (when (file-exists-p (concat mu-db-dir "/flintlock"))
+      (delete-file (concat mu-db-dir "/flintlock"))
+      (message "Deleted mu lock file"))
+    (mu4e-quit) ; close all instances of mu4e
+    (run-at-time "5 sec" nil 'mu4e))) ; wait 5 seconds and restart
+
 (setq my/unified-inbox
   (concat "maildir:/james@dyerdwelling.family/INBOX OR "
     "maildir:/gmail/INBOX OR "
@@ -374,6 +384,8 @@
   (unbind-key "M-2" magit-mode-map)
   (unbind-key "M-3" magit-mode-map)
   (unbind-key "M-4" magit-mode-map)
+  (magit-add-section-hook
+    'magit-status-sections-hook 'magit-insert-tracked-files nil 'append)
   :custom
   (magit-section-initial-visibility-alist (quote ((untracked . hide))))
   (magit-repolist-column-flag-alist
@@ -404,6 +416,7 @@
        ("/home/jdyer/DCIM/Art/Content" . 2)
        ("/home/jdyer/DCIM/themes" . 2)
        ("/home/jdyer/DCIM/content" . 0)
+       ("/home/jdyer/DCIM/publish" . 0)
        )
     )
   )
@@ -1408,10 +1421,8 @@ to produce the following:
           ("C-M-$" . jinx-languages)))
 
 ;;
-;; -> tests
+;; -> hugo processing
 ;;
-;; to be able to attach from dired
-(add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
 
 (defun my/hugo-org-export-post-processing (file)
   "My/org-export-hook."
@@ -1462,27 +1473,52 @@ to produce the following:
     )
   )
 
+(defun my/hugo-md-post-split-columns (file)
+  "My/hugo-md-post-split-columns."
+  (progn
+    (with-temp-buffer
+      (insert-file-contents file)
+
+      (goto-char (point-min))
+      (search-forward-regexp "^thumbnail:" nil t)
+      (search-forward-regexp "---" nil t)
+      (insert "\n{{< columns 12 12 6 6 6 >}}\n")
+
+      (search-forward-regexp "^{{< figure.*$" nil t)
+      (insert "\n\n---||---\n")
+
+      (goto-char (point-max))
+      (insert "\n{{< /columns >}}")
+
+      (message (concat "Writing org-post-processing to : " file))
+      (write-region (point-min) (point-max) file)
+      )
+    )
+  )
+
 (defun my/hugo-org-export-files-in-directory (directory)
   "Process all markdown (.md) files in DIRECTORY using a defined function."
   (interactive "DChoose a directory to process md files: ")
   (dolist (file (directory-files directory t "\\.md$"))
-    (my/hugo-org-export-post-processing file)))
+    (my/hugo-md-post-split-columns file)))
 
 (defun my/hugo-org-export-subtree ()
   "Hugo export processing."
   (interactive)
   (org-hugo-export-wim-to-md)
+  (save-excursion
+    (re-search-backward ":PROPERTIES:" nil t)
+    (let* ((export-path (concat "~/DCIM/content/" (org-entry-get (point) "EXPORT_HUGO_SECTION") "/"))
+            (export-file (concat export-path(concat (org-entry-get (point) "EXPORT_FILE_NAME") ".md"))))
+      (message export-file)
+      (my/hugo-md-post-split-columns export-file)))
   (shell-command "web rsync emacs"))
-
-;; (save-excursion
-;;   (re-search-backward ":PROPERTIES:" nil t)
-;;   (let* ((export-path (concat "~/DCIM/content/" (org-entry-get (point) "EXPORT_HUGO_SECTION") "/"))
-;;           (export-file (concat export-path(concat (org-entry-get (point) "EXPORT_FILE_NAME") ".md"))))
-;;     (message export-file)
-;;     (my/hugo-org-export-post-processing export-file))))
 
 (global-set-key (kbd "C-c x") #'my/hugo-org-export-subtree)
 
+;;
+;; -> development
+;;
 (defun tab-predicate-exclusion-p (dir)
   "
   Exclusion of directories to convert to spaces."
@@ -1538,23 +1574,6 @@ to produce the following:
     )
   (message (concat "Finished Doing : " (number-to-string (length all-files)) " files!")))
 
-;; (setq-default mode-line-format
-;;   '("%e"
-;;      ;; mode-line-front-space
-;;      ;; mode-line-mule-info
-;;      ;; mode-line-client
-;;      mode-line-modified
-;;      ;; mode-line-remote
-;;      ;; mode-line-frame-identification
-;;      mode-line-buffer-identification
-;;      "   "
-;;      ;; mode-line-position
-;;      ;; (vc-mode vc-mode)
-;;      "  "
-;;      ;; mode-line-modes
-;;      mode-line-end-spaces
-;;      ))
-
 (setq-default mode-line-buffer-identification
   '(:eval
      (propertized-buffer-identification "%b")))
@@ -1584,15 +1603,6 @@ to produce the following:
 (add-to-list 'auto-mode-alist '("\\.org_archive\\'" . org-mode))
 
 (setq ada-eglot-gpr-file "/home/jdyer/examples/gnat-examples/menace/menace.gpr")
-
-;; (eval-after-load "eglot.el"
-;;   (progn
-;;     (add-to-list 'eglot-ignored-server-capabilities :documentHighlightProvider)))
-
-;; (eval-after-load "eglot.el"
-;;   (progn
-;;     (add-to-list 'eglot-stay-out-of 'progress)))
-
 
 ;;
 ;; —> Pattern exclusions
@@ -1628,9 +1638,6 @@ to produce the following:
     )
   )
 
-;;
-;; -> development
-;;
 (defun my-imenu-create-index ()
   "Create an index using definitions starting with ';; ->'."
   (let ((index-alist '())
