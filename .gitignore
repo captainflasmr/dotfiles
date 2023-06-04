@@ -274,3 +274,5 @@ yakuakerc
 znt/
 /emacs/.org-id-locations
 /emacs/image-dired/
+/emacs/bookmarks
+/emacs/init-bak.el
