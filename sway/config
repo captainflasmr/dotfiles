@@ -14,6 +14,12 @@ client.placeholder      #000000 #0c0c0c #cccccc #000000   #0c0c0c
 
 client.background       #aaaaaa
 
+for_window [class="Emacs"] opacity 0.92
+for_window [class="dolphin"] opacity 0.9
+for_window [class="firefox"] opacity 0.99
+for_window [class="thunderbird"] opacity 0.9
+# for_window [app_id=".*"] opacity $opacity
+
 # startup
 exec {
    /home/jdyer/bin/startup.sh
@@ -68,6 +74,8 @@ input "1539:247:SINO_WEALTH_USB_Keyboard" {
 #
 # Basics:
 #
+bindsym $mod+Shift+p exec wl-color-picker
+
 bindsym $mod+Shift+w exec styli.sh -y -d ~/wallpaper
 
 # programs
@@ -176,7 +184,7 @@ bindsym $mod+a focus parent
 
 # Reload the configuration file
 bindsym $mod+Shift+c reload
-bindsym $mod+Shift+p exec waybar
+# bindsym $mod+Shift+p exec waybar
 
 #
 # Resizing containers:

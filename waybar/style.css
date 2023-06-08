@@ -1,17 +1,22 @@
 * {
     /* `otf-font-awesome` is required to be installed for icons */
+    /* font-family: Helvetic; */
     /* font-family: SourceCodePro, Roboto, Helvetica, Arial, sans-serif; */
-    /* font-family: SourceCodePro; */
-    font-family: DroidSansMono;
-    color: #bbb;
-    padding: 0.2em 0em 0.2em 0em;
+    font-family: SourceCodePro;
+    /* font-family: DroidSansMono; */
+    color: #aaa;
+    padding: 0.2em 0.2em 0.2em 0.2em;
     border-radius: 6px;
-    font-size: 16px;
-    margin: 0 0 0 0;
+    font-size: 14px;
+    margin: 0.1em 0em 0.1em 0em;
+
 }
 
+@define-color theme-fg rgba(0, 0, 0, 0.6);
+@define-color theme-bg rgba(220, 220, 220, 0.9);
+
 window#waybar {
-    background-color: rgba(30, 30, 30, 0.8);
+    background-color: rgba(30, 30, 30, 0.5);
     border-bottom: 0px solid rgba(100, 114, 125, 0.5);
     transition-property: background-color;
     transition-duration: .5s;
@@ -26,7 +31,7 @@ window#waybar.empty {
     background-color: transparent;
 }
 window#waybar.solo {
-    background-color: #FFFFFF;
+    background-color: #aaa;
 }
 */
 
@@ -41,14 +46,14 @@ button {
 /* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
 button:hover {
     background: #aaa;
-    box-shadow: inset 0 -3px #ffffff;
+    box-shadow: inset 0 -3px #aaa;
 }
 
 #workspaces button {
     padding: 0 10px;
     /* background: #444; */
     /* background-color: transparent; */
-    color: #ffffff;
+    color: #aaa;
 }
 
 #workspaces button:hover {
@@ -57,7 +62,7 @@ button:hover {
 
 #workspaces button.focused {
     background-color: #333;
-    box-shadow: inset 0 -3px #ffffff;
+    box-shadow: inset 0 -3px #aaa;
 }
 
 #workspaces button.urgent {
@@ -66,7 +71,7 @@ button:hover {
 
 #mode {
     background-color: #64727D;
-    border-bottom: 3px solid #ffffff;
+    border-bottom: 3px solid #aaa;
 }
 
 #clock,
@@ -86,7 +91,7 @@ button:hover {
 #scratchpad,
 #mpd {
     padding: 0 10px;
-    color: #ffffff;
+    color: #aaa;
 }
 
 #window,
@@ -105,11 +110,13 @@ button:hover {
 }
 
 #clock {
-    background-color: #222;
+    background-color: @theme-fg;
+    color: @theme-bg;
 }
 
 #battery {
-    background-color: #222;
+    background-color: @theme-fg;
+    color: @theme-bg;
 }
 
 #battery.charging, #battery.plugged {
@@ -139,23 +146,28 @@ label:focus {
 }
 
 #cpu {
-    background-color: #222;
+    background-color: @theme-fg;
+    color: @theme-bg;
 }
 
 #memory {
-    background-color: #222;
+    background-color: @theme-fg;
+    color: @theme-bg;
 }
 
 #disk {
-    background-color: #222;
+    background-color: @theme-fg;
+    color: @theme-bg;
 }
 
 #backlight {
-    background-color: #222;
+    background-color: @theme-fg;
+    color: @theme-bg;
 }
 
 #network {
-    background-color: #222;
+    background-color: @theme-fg;
+    color: @theme-bg;
 }
 
 #network.disconnected {
@@ -196,7 +208,8 @@ label:focus {
 }
 
 #temperature {
-    background-color: #222
+    background-color: @theme-fg;
+    color: @theme-bg;
 }
 
 #temperature.critical {
@@ -204,7 +217,7 @@ label:focus {
 }
 
 #tray {
-    background-color: #255;
+    background-color: @theme-fg;
 }
 
 #tray > .passive {
