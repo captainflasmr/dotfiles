@@ -3,18 +3,17 @@
 ;;
 (setq gc-cons-threshold 100000000)
 
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                          ("elpa" . "https://elpa.gnu.org/packages/")
-                          ("org" . "https://orgmode.org/elpa/")))
+;; (setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                          ;; ("elpa" . "https://elpa.gnu.org/packages/")
+                          ;; ("org" . "https://orgmode.org/elpa/")))
 
 ;;(setq package-archives '(("melpa" . "~/emacs-pkgs/melpa")
 ;;                          ("elpa" . "~/emacs-pkgs/elpa")
 ;;                          ("org" . "~/emacs-pkgs/org-mode/lisp")))
 
 (package-initialize)
-(package-refresh-contents)
-;; (unless package-archive-contents
-;; (package-refresh-contents))
+(unless package-archive-contents
+(package-refresh-contents))
 
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
@@ -235,7 +234,7 @@
     ("n" (find-file (concat home-dir "/nas")) "nas")
     ("d" (find-file deft-directory) "content")
     ("t" (find-file (concat deft-directory "/aaa--todo.org")) "todo")
-    ("s" (find-file (concat deft-directory "/aa--source_code.org")) "src")
+    ("s" (find-file (concat deft-directory "/aaa--source_code.org")) "src")
     ("j" (find-file home-dir) "home")
     ("b" (find-file (concat home-dir "/bin")) "bin")
     ("e" (find-file (concat home-dir "/.config/emacs/init.el")) ".init.el")
@@ -268,7 +267,7 @@
 (use-package dired-rainbow
   :defer 0
   :config
-  (dired-rainbow-define-chmod directory "#0074d9" "d.*")
+  (dired-rainbow-define-chmod directory "#4d81a8" "d.*")
   (dired-rainbow-define html "#eb5286"
     ("css" "less" "sass" "scss" "htm" "html" "jhtm" "mht"
       "eml" "mustache" "xhtml"))
@@ -280,7 +279,7 @@
     ("docm" "doc" "docx" "odb" "odt" "pdb" "pdf" "ps"
       "rtf" "djvu" "epub" "odp" "ppt" "pptx" "xls" "xlsx"
       "vsd" "vsdx" "plantuml"))
-  (dired-rainbow-define markdown "#4dc0b5"
+  (dired-rainbow-define markdown "#999999"
     ("org" "org_archive" "etx" "info" "markdown" "md"
       "mkd" "nfo" "pod" "rst" "tex" "texi" "textfile" "txt"))
   (dired-rainbow-define database "#6574cd"
@@ -288,7 +287,7 @@
   (dired-rainbow-define media "#de751f"
     ("mp3" "mp4" "MP3" "MP4" "avi" "mpeg" "mpg" "flv"
       "ogg" "mov" "mid" "midi" "wav" "aiff" "flac" "mkv"))
-  (dired-rainbow-define image "#f66d9b"
+  (dired-rainbow-define image "#c17d11"
     ("tiff" "tif" "cdr" "gif" "ico" "jpeg" "jpg" "png"
       "psd" "eps" "svg"))
   (dired-rainbow-define log "#c17d11"
@@ -296,18 +295,12 @@
       "log.7" "log.8" "log.9"))
   (dired-rainbow-define shell "#f6993f"
     ("awk" "bash" "bat" "fish" "sed" "sh" "zsh" "vim"))
-  (dired-rainbow-define interpreted "#38c172"
-    ("py" "ipynb" "hy" "rb" "pl" "t" "msql" "mysql"
-      "pgsql" "sql" "r" "clj" "cljs" "cljc" "cljx" "edn"
-      "scala" "js" "jsx" "lua" "fnl" "gd"))
   (dired-rainbow-define compiled "#6cb2eb"
     ("asm" "cl" "lisp" "el" "c" "h" "c++" "h++" "hpp"
       "hxx" "m" "cc" "cs" "cp" "cpp" "go" "f" "for" "ftn"
       "f90" "f95" "f03" "f08" "s" "rs" "active" "hs"
       "pyc" "java"))
-  (dired-rainbow-define executable "#8cc4ff"
-    ("com" "exe" "msi"))
-  (dired-rainbow-define compressed "#51d88a"
+  (dired-rainbow-define compressed "#e3342f"
     ("7z" "zip" "bz2" "tgz" "txz" "gz" "xz" "z" "Z" "jar"
       "war" "ear" "rar" "sar" "xpi" "apk" "xz" "tar" "rar"))
   (dired-rainbow-define packaged "#faad63"
@@ -324,12 +317,10 @@
       "bak"))
   (dired-rainbow-define vc "#6cb2eb"
     ("git" "gitignore" "gitattributes" "gitmodules"))
-  (dired-rainbow-define config "#5040e2"
+  (dired-rainbow-define config "#7260e2"
     ("cfg" "conf"))
   (dired-rainbow-define certificate "#6cb2eb"
     ("cer" "crt" "pfx" "p7b" "csr" "req" "key"))
-  (dired-rainbow-define junk "#7F7D7D"
-    ("DS_Store" "projectile"))
   (dired-rainbow-define-chmod executable-unix "#38c172" "-.*x.*")
 
   (dolist (b (buffer-list))
@@ -577,6 +568,7 @@
 (define-key dired-mode-map (kbd "?") 'my/get-file-size)
 (define-key dired-mode-map (kbd "C-<return>") 'browse-url-of-dired-file)
 (define-key dired-mode-map (kbd "C-t d") 'my/image-dired-sort)
+(define-key dired-mode-map (kbd "C-c d") 'my/dired-duplicate-file)
 (bind-key* (kbd "C-M-SPC") 'window-toggle-side-windows)
 (global-unset-key (kbd "C-z"))
 
@@ -609,6 +601,7 @@
 ;;
 (setq debug-on-error t)
 (setq dired-dwim-target t)
+(setq dired-listing-switches "-alh")
 (setq window-persistent-parameters
   '((parent-id . nil)
      (outer-window-id . nil)
@@ -699,23 +692,24 @@
   kept-old-versions 5)    ; and how many of the old
 
 ;;
-;; -> hooks
-;;
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-(add-hook 'calendar-mode-hook 'diary-mark-entries)
-(add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
-(add-hook 'diary-mark-entries-hook 'diary-mark-included-diary-files)
-(add-hook 'proced-mode-hook 'proced-settings)
-(add-hook 'prog-mode-hook #'hl-line-mode)
-(add-hook 'text-mode-hook #'hl-line-mode)
-(add-hook 'eshell-mode-hook '(lambda ()(interactive)
-                               (define-key eshell-mode-map
-                                 (kbd
-                                   "TAB") 'pcomplete-expand-and-complete)))
-(add-hook 'shell-mode-hook '(lambda ()(interactive)
-                              (define-key shell-mode-map
-                                (kbd
-                                  "TAB") 'pcomplete-expand-and-complete)))
+  ;; -> hooks
+  ;;
+;;  (add-hook 'dired-mode-hook 'dired-hide-details-mode)
+  (add-hook 'before-save-hook 'delete-trailing-whitespace)
+  (add-hook 'calendar-mode-hook 'diary-mark-entries)
+  (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
+  (add-hook 'diary-mark-entries-hook 'diary-mark-included-diary-files)
+  (add-hook 'proced-mode-hook 'proced-settings)
+  (add-hook 'prog-mode-hook #'hl-line-mode)
+  (add-hook 'text-mode-hook #'hl-line-mode)
+  (add-hook 'eshell-mode-hook '(lambda ()(interactive)
+                                 (define-key eshell-mode-map
+                                   (kbd
+                                     "TAB") 'pcomplete-expand-and-complete)))
+  (add-hook 'shell-mode-hook '(lambda ()(interactive)
+                                (define-key shell-mode-map
+                                  (kbd
+                                    "TAB") 'pcomplete-expand-and-complete)))
 
 ;;
 ;; -> custom settings
@@ -732,7 +726,7 @@
  '(connection-local-profile-alist
     '((eshell-connection-default-profile
         (eshell-path-env-list))) t)
- '(custom-enabled-themes '(gruvbox))
+ '(custom-enabled-themes '(ef-day))
  '(custom-safe-themes t)
  '(delete-selection-mode nil)
  '(ede-project-directories
@@ -1521,7 +1515,7 @@ to produce the following:
 ;;
 (defun tab-predicate-exclusion-p (dir)
   "
-  Exclusion of directories to convert to spaces."
+    Exclusion of directories to convert to spaces."
   (not
     (or
       (string-match "/home/jdyer/DCIM/static" dir)
@@ -1667,12 +1661,19 @@ to produce the following:
       )
     (imenu-add-menubar-index)))
 
-(defun my/dired-duplicate-file ()
+(defun my/dired-duplicate-file (arg)
   "Duplicate the current file in Dired."
-  (interactive)
+  (interactive "p")
   (let ((filename (dired-get-filename)))
-    (copy-file filename (concat (file-name-sans-extension filename) "-old." (file-name-extension filename)))
-    (revert-buffer)))
+    (setq target (concat (file-name-sans-extension filename)
+                   "-old"
+                   (if (> arg 1) (number-to-string arg))
+                   (file-name-extension filename t)))
+    (if (file-directory-p filename)
+      (copy-directory filename target)
+      (copy-file filename target))
+    )
+  )
 
 (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
 
@@ -1691,7 +1692,7 @@ to produce the following:
 
 (defun my/insert-uniq-log-word (prefix)
   "Inserts `my/uniq-log-word' incrementing counter.
-With PREFIX, change `my/uniq-log-word'."
+  With PREFIX, change `my/uniq-log-word'."
   (interactive "P")
   (let* ((word (cond (prefix
                        (setq my/uniq-log-word
@@ -1746,3 +1747,27 @@ With PREFIX, change `my/uniq-log-word'."
     (call-interactively 'indent-for-tab-command)))
 
 (global-set-key (kbd "C-M-j") 'my/insert-uniq-log-word)
+
+(defun my/rename-media ()
+  (interactive)
+  (setq counter 5000)
+  (setq regex-list
+    '(
+       "/[0-9]\\{14\\}--\\(20[0-9-\.].*\\)__"
+       "\\([Ss]creenshot_[0-9_].*\\)__"
+       "\\([Ss]creenshot_[0-9_].*\\)\.jpg"
+       "\\([Yy]ou[Cc]ut_[0-9_].*\\)__"
+       "--\\(VID_[0-9_].*\\)__"
+       "--\\(IMG[0-9_\(\)].*\\)__"
+       "--\\(IMG-[0-9_\(\)].*\\)-WA"
+       )
+    )
+  (dolist (regex-i regex-list)
+    (goto-char (point-min))
+    (while (re-search-forward regex-i nil t)
+      (setq counter (+ counter 1))
+      (replace-match (concat "DSC" (format "%05d" counter)) t t nil 1)
+      (message (match-string 1))
+      )
+    )
+  )
