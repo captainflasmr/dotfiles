@@ -1,0 +1,12 @@
+[ElisaFileIndexer]
+RootPath[$e]=$HOME/MyMusicLibrary
+
+[KFileDialog Settings]
+detailViewIconSize=16
+
+[UiSettings]
+ColorScheme=Breeze Light
+
+[Views]
+ColorScheme=Breeze Light
+SortOrderPreferences=Album::==AscendingOrder
