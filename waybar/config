@@ -6,10 +6,25 @@
     "spacing": 0, // Gaps between modules (4px)
     "margin-top": 5,
     // Choose the order of the modules
-    "modules-left": ["sway/workspaces", "sway/mode", "sway/scratchpad", "custom/media"],
+    "modules-left": ["sway/workspaces", "wlr/workspaces", "sway/mode", "sway/scratchpad", "custom/media"],
     "modules-center": ["sway/window"],
     "modules-right": ["cpu", "temperature", "memory", "battery", "clock", "tray"],
     // Modules configuration
+    "wlr/workspaces": {
+        "disable-scroll": true,
+        "all-outputs": true,
+        "format": "{name}: {icon}",
+        "format-icons": {
+            "1": "😃",
+            "2": "🐱",
+            "3": "😠",
+            "4": "🤓",
+            "5": "",
+            "urgent": "",
+            "focused": "",
+            "default": ""
+        }
+    },
     "sway/workspaces": {
         "disable-scroll": true,
         "all-outputs": true,

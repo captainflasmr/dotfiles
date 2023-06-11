@@ -1,13 +1,16 @@
-# config for sway
-
+#
+# -> visuals
+#
 gaps inner 10px
 gaps outer 0px
-gaps top -7px
+gaps top 0px
 gaps bottom 0px
 
-# class                 border  backgr. text    indicator child_border
-client.focused          #000000 #0b4b55 #cccccc #999999   #bbbbbb
-client.focused_inactive #333333 #333333 #cccccc #484e50   #5f676a
+default_border pixel 4px
+
+# -> class              border  backgr. text    indicator child_border
+client.focused          #000000 #0b4b55 #cccccc #999999   #E0B36F
+client.focused_inactive #333333 #333333 #cccccc #484e50   #E0B36F
 client.unfocused        #333333 #222222 #cccccc #292d2e   #222222
 client.urgent           #2f343a #900000 #cccccc #900000   #900000
 client.placeholder      #000000 #0c0c0c #cccccc #000000   #0c0c0c
@@ -18,16 +21,19 @@ for_window [class="Emacs"] opacity 0.92
 for_window [class="dolphin"] opacity 0.9
 for_window [class="firefox"] opacity 0.99
 for_window [class="thunderbird"] opacity 0.9
-# for_window [app_id=".*"] opacity $opacity
 
-# startup
+#
+# -> startup
+#
 exec {
    /home/jdyer/bin/startup.sh
    exec gammastep-indicator
+   exec /home/jdyer/bin/launch_waybar
 }
 
-default_border pixel 4px
-
+#
+# -> global
+#
 set $mod Mod4
 
 set $left h
@@ -37,8 +43,14 @@ set $right l
 
 set $term alacritty
 
+#
+# -> font
+#
 font pango:SourceCodePro Medium 12
 
+#
+# -> keys
+#
 bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
 bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +2%
 bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -2%
@@ -46,11 +58,13 @@ bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -2%
 Bindsym XF86MonBrightnessUp exec brightnessctl set +5%
 bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
 
-# input
+#
+# -> input
+#
 input type:touchpad {
     tap enabled
     natural_scroll enabled
-    pointer_accel 0.8
+    pointer_accel 0.5
 }
 
 input type:touch {
@@ -75,7 +89,6 @@ input "1539:247:SINO_WEALTH_USB_Keyboard" {
 # Basics:
 #
 bindsym $mod+Shift+p exec wl-color-picker
-
 bindsym $mod+Shift+w exec styli.sh -y -d ~/wallpaper
 
 # programs
@@ -88,30 +101,17 @@ bindsym $mod+w exec firefox
 bindsym $mod+s exec pamac-manager
 bindsym $mod+p exec keepassxc
 
-# Allow switching between workspaces with left and right swipes
-bindgesture swipe:4:left workspace next
-bindgesture swipe:4:right workspace prev
-# bindgesture swipe:3:left ydotool alt+left
-# bindgesture swipe:3:right ydotool alt+right
-
-# Start a terminal
+# terminal
 bindsym $mod+Return exec $term
 bindsym control+alt+t exec $term
 
-# Kill focused window
+# kill
 bindsym $mod+Shift+q kill
 bindsym Alt+F4 kill
 
-# Start your launcher
+# launcher
 bindsym alt+space exec wofi --show
 bindsym $mod+d exec --no-startup-id dmenu_run
-
-# Drag floating windows by holding down $mod and left mouse button.
-# Resize them with right mouse button + $mod.
-# Despite the name, also works for non-floating windows.
-# Change normal to inverse to use left mouse button for resizing and right
-# mouse button for dragging.
-floating_modifier $mod normal
 
 # exit
 bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
@@ -120,27 +120,15 @@ bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. 
 # Moving around:
 #
 # Move your focus around
-bindsym $mod+$left focus left
-bindsym $mod+$down focus down
-bindsym $mod+$up focus up
-bindsym $mod+$right focus right
-bindsym control+alt+o focus left
-# Or use $mod+[up|down|left|right]
 bindsym $mod+Left focus left
-bindsym $mod+Down focus down
-bindsym $mod+Up focus up
 bindsym $mod+Right focus right
-
-# Move the focused window with the same, but add Shift
-bindsym $mod+Shift+$left move left
-bindsym $mod+Shift+$down move down
-bindsym $mod+Shift+$up move up
-bindsym $mod+Shift+$right move right
-# Ditto, with arrow keys
-bindsym $mod+Shift+Left move left
-bindsym $mod+Shift+Down move down
-bindsym $mod+Shift+Up move up
-bindsym $mod+Shift+Right move right
+bindsym $mod+Up focus up
+bindsym $mod+Down focus down
+bindsym $mod+$left focus left
+bindsym $mod+$right focus right
+bindsym $mod+$up focus up
+bindsym $mod+$down focus down
+bindsym control+alt+o focus left
 
 #
 # Workspaces:
@@ -159,6 +147,7 @@ bindsym $mod+7 workspace number 7
 bindsym $mod+8 workspace number 8
 bindsym $mod+9 workspace number 9
 bindsym $mod+0 workspace number 10
+
 # Move focused container to workspace
 bindsym $mod+Shift+1 move container to workspace number 1
 bindsym $mod+Shift+2 move container to workspace number 2
@@ -171,50 +160,27 @@ bindsym $mod+Shift+8 move container to workspace number 8
 bindsym $mod+Shift+9 move container to workspace number 9
 bindsym $mod+Shift+0 move container to workspace number 10
 
+#
+# -> full screen
+#
 bindsym $mod+f fullscreen
 
-# Toggle the current focus between tiling and floating mode
-bindsym $mod+Shift+space floating toggle
-
-# Swap focus between the tiling area and the floating area
-bindsym $mod+space focus mode_toggle
-
-# Move focus to the parent container
-bindsym $mod+a focus parent
-
-# Reload the configuration file
+#
+# -> reload
+#
 bindsym $mod+Shift+c reload
-# bindsym $mod+Shift+p exec waybar
 
 #
-# Resizing containers:
+# -> resize
 #
-mode "resize" {
-    bindsym $left resize shrink width 10px
-    bindsym $down resize grow height 10px
-    bindsym $up resize shrink height 10px
-    bindsym $right resize grow width 10px
-
-    # Ditto, with arrow keys
-    bindsym Left resize shrink width 10px
-    bindsym Down resize grow height 10px
-    bindsym Up resize shrink height 10px
-    bindsym Right resize grow width 10px
-
-    # Return to default mode
-    bindsym Return mode "default"
-    bindsym Escape mode "default"
-}
-bindsym $mod+r mode "resize"
-
 bindsym control+alt+u resize grow width 25px
 bindsym control+alt+i resize shrink width 25px
 
 #
 # Status Bar:
 #
-bar {
-    swaybar_command waybar
-}
+# bar {
+#     swaybar_command waybar
+# }
 
 include /etc/sway/config.d/*
