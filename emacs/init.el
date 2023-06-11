@@ -183,6 +183,7 @@
 ;;
 ;; -> use-package
 ;;
+(use-package org-tempo)
 (use-package org
   :config
   (setq org-tags-sort-function 'org-string-collate-greaterp)
@@ -740,7 +741,7 @@
  '(hippie-expand-try-functions-list
     '(try-complete-file-name-partially try-complete-file-name try-expand-all-abbrevs try-expand-dabbrev try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill try-complete-lisp-symbol-partially try-complete-lisp-symbol))
  '(package-selected-packages
-    '(dired-x ztree yaml-mode visual-fill-column vertico use-package toml-mode toc-org rainbow-mode powerthesaurus ox-hugo org-rainbow-tags org-bullets org-ai orderless marginalia magit lorem-ipsum jinx indent-tools highlight-indentation gruvbox-theme find-file-rg emms embark-consult elfeed ef-themes dwim-shell-command doom-themes doom-modeline dired-rainbow deadgrep company ada-mode))
+    '(org-tempo dired-x ztree yaml-mode visual-fill-column vertico use-package toml-mode toc-org rainbow-mode powerthesaurus ox-hugo org-rainbow-tags org-bullets org-ai orderless marginalia magit lorem-ipsum jinx indent-tools highlight-indentation gruvbox-theme find-file-rg emms embark-consult elfeed ef-themes dwim-shell-command doom-themes doom-modeline dired-rainbow deadgrep company ada-mode))
  '(warning-suppress-log-types '((frameset)))
  '(warning-suppress-types '((frameset))))
 
