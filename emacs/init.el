@@ -157,8 +157,13 @@
 (use-package dired-x
   :config
   (setq dired-guess-shell-alist-user
-    (append '(("\\.\\(jpg\\|jpeg\\|png\\|gif\\|bmp\\)$" "gwenview")
-               ("\\.\\(mp4\\|mkv\\|avi\\|mov\\|wmv\\|flv\\|mpg\\)$" "mpv"))
+    (append '(
+               ("\\.\\(jpg\\|jpeg\\|png\\|gif\\|bmp\\)$" "gwenview")
+               ("\\.\\(mp4\\|mkv\\|avi\\|mov\\|wmv\\|flv\\|mpg\\)$" "mpv")
+               ("\\.\\(mp3\\|wav\\|ogg\\|\\)$" "mpv")
+               ("\\.\\(odt\\|ods\\)$" "libreoffice")
+               ("\\.\\(html\\|htm\\)$" "firefox")
+               )
       dired-guess-shell-alist-user)))
 (use-package company)
 (use-package ada-mode)
@@ -399,15 +404,13 @@
     )
   (magit-repository-directories
     '(
-       ("/home/jdyer" . 0)
        ("/home/jdyer/.config" . 0)
        ("/home/jdyer/bin" . 0)
        ("/home/jdyer/emacs-pkgs/new" . 2)
-       ("/home/jdyer/DCIM/publish/hugo-katieboo85" . 0)
        ("/home/jdyer/DCIM/Art/Content" . 2)
        ("/home/jdyer/DCIM/themes" . 2)
        ("/home/jdyer/DCIM/content" . 0)
-       ("/home/jdyer/DCIM/publish" . 0)
+       ("/home/jdyer/publish" . 0)
        )
     )
   )
@@ -661,7 +664,7 @@
 (setq reb-re-syntax 'string)
 (setq require-final-newline t)
 (setq truncate-lines t)
-(setq visible-bell nil)
+(setq visible-bell t)
 (setq wdired-allow-to-change-permissions t)
 (setq diary-show-holidays-flag nil)
 (setq suggest-key-bindings nil)
@@ -1022,23 +1025,16 @@
 
      ("e" "Emacs" plain
        (file+headline
-         ,(concat home-dir "/DCIM/content/emacs--all.org")
+         ,(concat home-dir "/DCIM/content/emacs--todo.org")
          "Emacs")
-       "** TODO %^{title} :2023:
+       "** TODO %^{title} :emacs:2023:
 :PROPERTIES:
 :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>-emacs--%\\1
 :EXPORT_HUGO_SECTION: emacs
 :EXPORT_HUGO_LASTMOD: <%<%Y-%m-%d>>
 :EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :thumbnail /emacs/%<%Y%m%d%H%M%S>-emacs--%\\1.jpg
 :END:
-#+begin_export md
-{{< columns 12 12 6 6 6 >}}
-#+end_export
 %?
----||---
-#+begin_export md
-{{< /columns >}}
-#+end_export
 " :prepend t :jump-to-captured t)
 
      ("l" "Linux" plain

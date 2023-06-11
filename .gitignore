@@ -74,7 +74,6 @@ discoverrc
 dolphinrc
 drkonqirc
 easytag/
-elisarc
 emacs/.emacs.desktop
 emacs/.emacs.desktop.lock
 emacs/abbrev_defs
@@ -276,3 +275,5 @@ znt/
 /emacs/image-dired/
 /emacs/bookmarks
 /emacs/init-bak.el
+copyq/
+emacs/tramp
