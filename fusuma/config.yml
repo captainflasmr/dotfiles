@@ -1,29 +1,21 @@
 swipe:
   4:
     left:
-      command: 'xdotool key ctrl+alt+l'
+      # command: 'ydotool key ctrl+alt+l'
+      command: ydotool key 29:1 56:1 38:1 key 29:0 56:0 38:0
       threshold: 0.5
     right:
-      command: 'xdotool key ctrl+alt+h'
-      threshold: 0.5
-    up:
-      command: 'xdotool key super+F8'
-      threshold: 0.5
-    down:
-      command: 'xdotool key ctrl+F10'
+      # command: 'ydotool key ctrl+alt+h'
+      command: ydotool key 29:1 56:1 35:1 key 29:0 56:0 35:0
       threshold: 0.5
   3:
     left:
-      command: 'xdotool key alt+Right'
+      # command: 'ydotool key alt+Right'
+      command: ydotool key 56:1 106:1 56:0 106:0
       threshold: 0.5
     right:
-      command: 'xdotool key alt+Left'
-      threshold: 0.5
-    up:
-      command: 'xdotool key super+F8'
-      threshold: 0.5
-    down:
-      command: 'xdotool key ctrl+F10'
+      # command: 'ydotool key alt+Left'
+      command: ydotool key 56:1 105:1 56:0 105:0
       threshold: 0.5
 
   threshold:
