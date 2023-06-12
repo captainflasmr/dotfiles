@@ -10,7 +10,7 @@ default_border pixel 4px
 
 # -> class              border  backgr. text    indicator child_border
 client.focused          #000000 #0b4b55 #cccccc #999999   #E0B36F
-client.focused_inactive #333333 #333333 #cccccc #484e50   #E0B36F
+client.focused_inactive #333333 #333333 #cccccc #484e50   #444444
 client.unfocused        #333333 #222222 #cccccc #292d2e   #222222
 client.urgent           #2f343a #900000 #cccccc #900000   #900000
 client.placeholder      #000000 #0c0c0c #cccccc #000000   #0c0c0c
