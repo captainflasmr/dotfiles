@@ -67,14 +67,14 @@ bindsym $mod+shift+p exec kcolorchooser
 bindsym $mod+shift+w exec styli.sh --fehbg bg-center -d ~/wallpaper
 
 # programs
-bindsym $mod+shift+s exec spectacle
-bindsym $mod+e exec dolphin
-bindsym $mod+i exec plasma-open-settings
-bindsym $mod+c exec emacs
-bindsym $mod+m exec thunderbird
-bindsym $mod+w exec firefox
-bindsym $mod+s exec pamac-manager
-bindsym $mod+p exec keepassxc
+# bindsym $mod+shift+s exec spectacle
+# bindsym $mod+e exec dolphin
+# bindsym $mod+i exec plasma-open-settings
+# bindsym $mod+c exec emacs
+# bindsym $mod+m exec thunderbird
+# bindsym $mod+w exec firefox
+# bindsym $mod+s exec pamac-manager
+# bindsym $mod+p exec keepassxc
 
 # terminal
 bindsym $mod+return exec $term
