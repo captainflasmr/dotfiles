@@ -81,8 +81,8 @@
   (setq gc-cons-threshold 100000000)
 
   ;; (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                            ;; ("elpa" . "https://elpa.gnu.org/packages/")
-                            ;; ("org" . "https://orgmode.org/elpa/")))
+  ;; ("elpa" . "https://elpa.gnu.org/packages/")
+  ;; ("org" . "https://orgmode.org/elpa/")))
 
   ;;(setq package-archives '(("melpa" . "~/emacs-pkgs/melpa")
   ;;                          ("elpa" . "~/emacs-pkgs/elpa")
@@ -90,7 +90,7 @@
 
   (package-initialize)
   (unless package-archive-contents
-  (package-refresh-contents))
+    (package-refresh-contents))
 
   (unless (package-installed-p 'use-package)
     (package-install 'use-package))
@@ -275,8 +275,11 @@
                  ("\\.\\(mp3\\|wav\\|ogg\\|\\)$" "mpv")
                  ("\\.\\(odt\\|ods\\)$" "libreoffice")
                  ("\\.\\(html\\|htm\\)$" "firefox")
+                 ("\\.\\(pdf\\|epub\\)$" "okular")
                  )
         dired-guess-shell-alist-user)))
+  (use-package sxhkdrc-mode)
+  (add-to-list 'auto-mode-alist `(,(rx "sxhkdrc" string-end) . sxhkdrc-mode))
   (use-package company)
   (use-package ada-mode)
   (use-package highlight-indentation)
@@ -885,7 +888,7 @@
   ;;
   ;; -> hooks
   ;;
-;;  (add-hook 'dired-mode-hook 'dired-hide-details-mode)
+  ;;  (add-hook 'dired-mode-hook 'dired-hide-details-mode)
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
   (add-hook 'calendar-mode-hook 'diary-mark-entries)
   (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)

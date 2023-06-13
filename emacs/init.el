@@ -4,8 +4,8 @@
 (setq gc-cons-threshold 100000000)
 
 ;; (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                          ;; ("elpa" . "https://elpa.gnu.org/packages/")
-                          ;; ("org" . "https://orgmode.org/elpa/")))
+;; ("elpa" . "https://elpa.gnu.org/packages/")
+;; ("org" . "https://orgmode.org/elpa/")))
 
 ;;(setq package-archives '(("melpa" . "~/emacs-pkgs/melpa")
 ;;                          ("elpa" . "~/emacs-pkgs/elpa")
@@ -13,7 +13,7 @@
 
 (package-initialize)
 (unless package-archive-contents
-(package-refresh-contents))
+  (package-refresh-contents))
 
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
@@ -163,8 +163,11 @@
                ("\\.\\(mp3\\|wav\\|ogg\\|\\)$" "mpv")
                ("\\.\\(odt\\|ods\\)$" "libreoffice")
                ("\\.\\(html\\|htm\\)$" "firefox")
+               ("\\.\\(pdf\\|epub\\)$" "okular")
                )
       dired-guess-shell-alist-user)))
+(use-package sxhkdrc-mode)
+(add-to-list 'auto-mode-alist `(,(rx "sxhkdrc" string-end) . sxhkdrc-mode))
 (use-package company)
 (use-package ada-mode)
 (use-package highlight-indentation)
@@ -696,24 +699,24 @@
   kept-old-versions 5)    ; and how many of the old
 
 ;;
-  ;; -> hooks
-  ;;
+;; -> hooks
+;;
 ;;  (add-hook 'dired-mode-hook 'dired-hide-details-mode)
-  (add-hook 'before-save-hook 'delete-trailing-whitespace)
-  (add-hook 'calendar-mode-hook 'diary-mark-entries)
-  (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
-  (add-hook 'diary-mark-entries-hook 'diary-mark-included-diary-files)
-  (add-hook 'proced-mode-hook 'proced-settings)
-  (add-hook 'prog-mode-hook #'hl-line-mode)
-  (add-hook 'text-mode-hook #'hl-line-mode)
-  (add-hook 'eshell-mode-hook '(lambda ()(interactive)
-                                 (define-key eshell-mode-map
-                                   (kbd
-                                     "TAB") 'pcomplete-expand-and-complete)))
-  (add-hook 'shell-mode-hook '(lambda ()(interactive)
-                                (define-key shell-mode-map
-                                  (kbd
-                                    "TAB") 'pcomplete-expand-and-complete)))
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(add-hook 'calendar-mode-hook 'diary-mark-entries)
+(add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
+(add-hook 'diary-mark-entries-hook 'diary-mark-included-diary-files)
+(add-hook 'proced-mode-hook 'proced-settings)
+(add-hook 'prog-mode-hook #'hl-line-mode)
+(add-hook 'text-mode-hook #'hl-line-mode)
+(add-hook 'eshell-mode-hook '(lambda ()(interactive)
+                               (define-key eshell-mode-map
+                                 (kbd
+                                   "TAB") 'pcomplete-expand-and-complete)))
+(add-hook 'shell-mode-hook '(lambda ()(interactive)
+                              (define-key shell-mode-map
+                                (kbd
+                                  "TAB") 'pcomplete-expand-and-complete)))
 
 ;;
 ;; -> custom settings
@@ -730,7 +733,7 @@
  '(connection-local-profile-alist
     '((eshell-connection-default-profile
         (eshell-path-env-list))) t)
- '(custom-enabled-themes '(ef-day))
+ '(custom-enabled-themes '(gruvbox))
  '(custom-safe-themes t)
  '(delete-selection-mode nil)
  '(ede-project-directories
@@ -741,7 +744,7 @@
  '(hippie-expand-try-functions-list
     '(try-complete-file-name-partially try-complete-file-name try-expand-all-abbrevs try-expand-dabbrev try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill try-complete-lisp-symbol-partially try-complete-lisp-symbol))
  '(package-selected-packages
-    '(org-tempo dired-x ztree yaml-mode visual-fill-column vertico use-package toml-mode toc-org rainbow-mode powerthesaurus ox-hugo org-rainbow-tags org-bullets org-ai orderless marginalia magit lorem-ipsum jinx indent-tools highlight-indentation gruvbox-theme find-file-rg emms embark-consult elfeed ef-themes dwim-shell-command doom-themes doom-modeline dired-rainbow deadgrep company ada-mode))
+    '(org-tempo dired-x ztree yaml-mode visual-fill-column vertico use-package toml-mode toc-org sxhkdrc-mode rainbow-mode powerthesaurus ox-hugo org-rainbow-tags org-bullets org-ai orderless marginalia magit lorem-ipsum jinx indent-tools highlight-indentation gruvbox-theme find-file-rg emms embark-consult elfeed ef-themes dwim-shell-command doom-themes doom-modeline dired-rainbow deadgrep company ada-mode))
  '(warning-suppress-log-types '((frameset)))
  '(warning-suppress-types '((frameset))))
 
