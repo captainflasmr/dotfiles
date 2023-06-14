@@ -1,16 +1,37 @@
+# /usr/include/linux/input-event-codes.h
+
+# KP_Left
+#     ydotool key 42:1
+
+# @KP_Left
+#     ydotool key 42:0
+
+super+Return
+    alacritty
+
+control+alt+t
+    alacritty
+
 super+shift+s
     spectacle
-super + e
-	dolphin
+
+super+e
+    dolphin
+
 super+i
     plasma-open-settings
+
 super+c
     emacs
+
 super+m
     thunderbird
+
 super+w
     firefox
+
 super+s
     pamac-manager
+
 super+p
     keepassxc
