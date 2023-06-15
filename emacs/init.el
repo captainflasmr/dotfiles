@@ -248,11 +248,13 @@
 
 (use-package hydra
   :ensure t ;; only if it's not already installed
-  :bind (("C-q" . hydra-jump-to-directory/body))
+  :bind (("C-q" . hydra-jump-to-somewhere/body))
   :config
-  (defhydra hydra-jump-to-directory
+  (defhydra hydra-jump-to-somewhere
     (:exit t)
-    "Jump to directory"
+    "Jump to somewhere"
+    ("a" emms-browse-by-album "albums")
+    ("p" emms "playing")
     ("n" (find-file (concat home-dir "/nas")) "nas")
     ("d" (find-file deft-directory) "content")
     ("t" (find-file (concat deft-directory "/aaa--todo.org")) "todo")
@@ -458,8 +460,6 @@
   (emms-browser-mode . turn-on-follow-mode)
   (emms-browser-mode . hl-line-mode)
   :bind
-  ("S-<f2>" . emms)
-  ("<f2>" . emms-browse-by-album)
   ("S-<return>" . emms-next)
   ("C-M-<return>" . emms-random)
   :custom
@@ -550,8 +550,6 @@
 (global-set-key (kbd "C-S-<left>") '(lambda ()(interactive)(my/resize-window -4 t)))
 (global-set-key (kbd "C-S-<down>") '(lambda ()(interactive)(my/resize-window 2)))
 (global-set-key (kbd "C-S-<up>") '(lambda ()(interactive)(my/resize-window -2)))
-(global-set-key (kbd "<f12>") 'xref-find-definitions)
-(global-set-key (kbd "S-<f12>") 'my/grep)
 (global-set-key (kbd "C-c b") '(lambda ()(interactive)(async-shell-command "do_backup home" "*backup*")))
 (global-set-key (kbd "C-c c") 'org-capture)
 (global-set-key (kbd "C-c f") 'my/fold)
@@ -569,6 +567,7 @@
 (global-set-key (kbd "M-;") 'my/comment-or-uncomment)
 (global-set-key [S-f1] 'font-lock-mode)
 (global-set-key [f1] 'display-line-numbers-mode)
+(global-set-key [f2] 'whitespace-mode)
 (global-set-key [f4] 'my/eshell)
 (global-set-key (kbd "C-`") 'my/eshell)
 (global-set-key [f5] 'gud-cont)
@@ -577,11 +576,12 @@
 (global-set-key [f6] 'fd-find-complete)
 (global-set-key [f7] 'display-fill-column-indicator-mode)
 (global-set-key [f8] 'next-error)
-(global-set-key (kbd "C-M-m") 'next-error)
 (global-set-key [S-f8] 'find-file-rg-at-point)
 (global-set-key [f9] 'gud-break)
 (global-set-key [f10] 'gud-next)
 (global-set-key [f11] 'gud-step)
+(global-set-key [f12] 'xref-find-definitions)
+(global-set-key [S-f12] 'my/grep)
 (global-set-key (kbd "C-c i d") '(lambda () (interactive)(insert (format-time-string "<%Y-%m-%d>"))))
 (global-set-key (kbd "C-c i t") '(lambda () (interactive)(insert (format-time-string "%Y%m%d%H%M%S"))))
 (define-key dired-mode-map (kbd "C") 'my/rsync)
@@ -757,7 +757,7 @@
  '(hippie-expand-try-functions-list
     '(try-complete-file-name-partially try-complete-file-name try-expand-all-abbrevs try-expand-dabbrev try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill try-complete-lisp-symbol-partially try-complete-lisp-symbol))
  '(package-selected-packages
-    '(jinx powerthesaurus elfeed doom-modeline dired-rainbow deadgrep ox-hugo org-rainbow-tags org-ai org-bullets org-tempo dwim-shell-command doom-themes find-file-rg indent-tools toml-mode highlight-indentation dired-x ztree yaml-mode visual-fill-column vertico use-package toc-org sxhkdrc-mode rainbow-mode orderless marginalia magit lorem-ipsum hydra gruvbox-theme emms embark-consult ef-themes company ada-mode))
+    '(org-tempo dired-x ztree yaml-mode visual-fill-column vertico use-package toml-mode toc-org sxhkdrc-mode rainbow-mode powerthesaurus ox-hugo org-rainbow-tags org-bullets org-ai orderless marginalia magit lorem-ipsum jinx indent-tools highlight-indentation gruvbox-theme find-file-rg emms embark-consult elfeed ef-themes dwim-shell-command doom-themes doom-modeline dired-rainbow deadgrep company ada-mode))
  '(warning-suppress-log-types '((frameset)))
  '(warning-suppress-types '((frameset))))
 
