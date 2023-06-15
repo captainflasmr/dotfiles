@@ -25,12 +25,12 @@ decrease_master_size=Ctrl+Alt+U,,Decrease Master Area Size
 decrease_master_win_count=none,Meta+[,Decrease Master Area Window Count
 decrease_window_height=none,Meta+Ctrl+K,Decrease Window Height
 decrease_window_width=none,Meta+Ctrl+H,Decrease Window Width
-focus_bottom_window=none,Meta+J,Focus Bottom Window
+focus_bottom_window=Meta+J,Meta+J,Focus Bottom Window
 focus_left_window=Meta+H,Meta+H,Focus Left Window
 focus_next_window=none,,Focus Next Window
 focus_prev_window=Ctrl+Alt+O,,Focus Previous Window
 focus_right_window=Meta+L,Meta+L,Focus Right Window
-focus_upper_window=none,Meta+K,Focus Upper Window
+focus_upper_window=Meta+K,Meta+K,Focus Upper Window
 increase_master_size=Ctrl+Alt+I,,Increase Master Area Size
 increase_master_win_count=none,Meta+],Increase Master Area Window Count
 increase_window_height=none,Meta+Ctrl+J,Increase Window Height
@@ -76,7 +76,7 @@ _k_friendly_name=Accessibility
 [kcm_touchpad]
 Disable Touchpad=Touchpad Off,Touchpad Off,Disable Touchpad
 Enable Touchpad=Touchpad On,Touchpad On,Enable Touchpad
-Toggle Touchpad=Touchpad Toggle,Touchpad Toggle\tMeta+Ctrl+Zenkaku Hankaku,Toggle Touchpad
+Toggle Touchpad=Touchpad Toggle,Touchpad Toggle,Toggle Touchpad
 _k_friendly_name=Touchpad
 
 [kded5]
@@ -104,7 +104,7 @@ _launch=none,none,krita
 [ksmserver]
 Halt Without Confirmation=none,,Halt Without Confirmation
 Lock Session=Screensaver,Meta+L\tScreensaver,Lock Session
-Log Out=Ctrl+Alt+Del,Ctrl+Alt+Del,Log Out
+Log Out=Meta+Shift+E\tCtrl+Alt+Del,Ctrl+Alt+Del,Log Out
 Log Out Without Confirmation=none,,Log Out Without Confirmation
 Reboot Without Confirmation=none,,Reboot Without Confirmation
 _k_friendly_name=Session Management
@@ -272,11 +272,11 @@ view_zoom_out=Meta+-,Meta+-,Zoom Out
 
 [mediacontrol]
 _k_friendly_name=Media Controller
-mediavolumedown=none,none,Media volume down
-mediavolumeup=none,none,Media volume up
+mediavolumedown=none,,Media volume down
+mediavolumeup=none,,Media volume up
 nextmedia=Media Next,Media Next,Media playback next
 pausemedia=Media Pause,Media Pause,Pause media playback
-playmedia=none,none,Play media playback
+playmedia=none,,Play media playback
 playpausemedia=Media Play,Media Play,Play/Pause media playback
 previousmedia=Media Previous,Media Previous,Media playback previous
 stopmedia=Media Stop,Media Stop,Stop media playback
