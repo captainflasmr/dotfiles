@@ -5,13 +5,18 @@ update_info=filepicker.upd:filepicker-remove-old-previews-entry,fonts_global.upd
 _k_friendly_name=Activity Manager
 switch-to-activity-cd915191-804f-4d50-8fc3-f8e5c0279f54=none,none,Switch to activity "Default"
 
+[Alacritty.desktop]
+New=none,none,New Terminal
+_k_friendly_name=Alacritty
+_launch=Meta+Return\tCtrl+Alt+T,none,Alacritty
+
 [ArtRage.desktop]
 _k_friendly_name=ArtRage
 _launch=none,none,ArtRage
 
 [KDE Keyboard Layout Switcher]
 Switch keyboard layout to English (US)=none,none,Switch keyboard layout to English (US)
-Switch to Next Keyboard Layout=Ctrl+Alt+K,none,Switch to Next Keyboard Layout
+Switch to Next Keyboard Layout=Ctrl+Alt+K,Meta+Alt+K,Switch to Next Keyboard Layout
 _k_friendly_name=Keyboard Layout Switcher
 
 [bismuth]
@@ -24,7 +29,7 @@ focus_bottom_window=none,Meta+J,Focus Bottom Window
 focus_left_window=Meta+H,Meta+H,Focus Left Window
 focus_next_window=none,,Focus Next Window
 focus_prev_window=Ctrl+Alt+O,,Focus Previous Window
-focus_right_window=,Meta+L,Focus Right Window
+focus_right_window=Meta+L,Meta+L,Focus Right Window
 focus_upper_window=none,Meta+K,Focus Upper Window
 increase_master_size=Ctrl+Alt+I,,Increase Master Area Size
 increase_master_win_count=none,Meta+],Increase Master Area Window Count
@@ -52,6 +57,10 @@ toggle_three_column_layout=none,,Toggle Three Column Layout
 toggle_tile_layout=none,Meta+T,Toggle Tile Layout
 toggle_window_floating=none,Meta+F,Toggle Active Window Floating
 
+[emacs.desktop]
+_k_friendly_name=Emacs
+_launch=Meta+C,none,Emacs
+
 [gimp-2.desktop]
 _k_friendly_name=gimp
 _launch=none,none,gimp
@@ -67,13 +76,13 @@ _k_friendly_name=Accessibility
 [kcm_touchpad]
 Disable Touchpad=Touchpad Off,Touchpad Off,Disable Touchpad
 Enable Touchpad=Touchpad On,Touchpad On,Enable Touchpad
-Toggle Touchpad=Touchpad Toggle,Touchpad Toggle,Toggle Touchpad
+Toggle Touchpad=Touchpad Toggle,Touchpad Toggle\tMeta+Ctrl+Zenkaku Hankaku,Toggle Touchpad
 _k_friendly_name=Touchpad
 
 [kded5]
 Show System Activity=Ctrl+Esc,Ctrl+Esc,Show System Activity
 _k_friendly_name=KDE Daemon
-display=Display\tMeta+P,Display\tMeta+P,Switch Display
+display=Display,Display\tMeta+P,Switch Display
 
 [khotkeys]
 _k_friendly_name=Custom Shortcuts Service
@@ -112,14 +121,15 @@ Increase Opacity=none,,Increase Opacity of Active Window by 5%
 Invert Screen Colors=none,none,Invert Screen Colors
 Kill Window=Ctrl+Alt+Esc,Meta+Ctrl+Esc,Kill Window
 MinimizeAll=Meta+Shift+D,none,MinimizeAll
+Move Tablet to Next Output=none,none,Move the tablet to the next output
 MoveMouseToCenter=Meta+F6,Meta+F6,Move Mouse to Centre
 MoveMouseToFocus=Meta+F5,Meta+F5,Move Mouse to Focus
-MoveWindowToCenter=Meta+C,none,Move Window to Center
+MoveWindowToCenter=none,none,Move Window to Center
 MoveZoomDown=none,none,Move Zoomed Area Downwards
 MoveZoomLeft=none,none,Move Zoomed Area to Left
 MoveZoomRight=none,none,Move Zoomed Area to Right
 MoveZoomUp=none,none,Move Zoomed Area Upwards
-Overview=Meta+W,Meta+W,Toggle Overview
+Overview=none,Meta+W,Toggle Overview
 Setup Window Shortcut=none,,Setup Window Shortcut
 Show Desktop=Meta+D,Meta+D,Peek at Desktop
 ShowDesktopGrid=Ctrl+F8,Meta+F8,Show Desktop Grid
@@ -185,7 +195,7 @@ Walk Through Windows of Current Application Alternative (Reverse)=none,,Walk Thr
 Window Above Other Windows=none,,Keep Window Above Others
 Window Below Other Windows=none,,Keep Window Below Others
 Window Close=Alt+F4,Alt+F4,Close Window
-Window Fullscreen=none,,Make Window Fullscreen
+Window Fullscreen=Meta+F,,Make Window Fullscreen
 Window Grow Horizontal=none,,Expand Window Horizontally
 Window Grow Vertical=none,,Expand Window Vertically
 Window Lower=none,,Lower Window
@@ -213,7 +223,7 @@ Window Pack Up=none,,Move Window Up
 Window Quick Tile Bottom=Meta+Down,Meta+Down,Quick Tile Window to the Bottom
 Window Quick Tile Bottom Left=none,,Quick Tile Window to the Bottom Left
 Window Quick Tile Bottom Right=none,,Quick Tile Window to the Bottom Right
-Window Quick Tile Left=Meta+Left,Meta+Left,Quick Tile Window to the Left
+Window Quick Tile Left=none,Meta+Left,Quick Tile Window to the Left
 Window Quick Tile Right=Meta+Right,Meta+Right,Quick Tile Window to the Right
 Window Quick Tile Top=Meta+Up,Meta+Up,Quick Tile Window to the Top
 Window Quick Tile Top Left=none,,Quick Tile Window to the Top Left
@@ -260,59 +270,6 @@ view_actual_size=none,Meta+0,Zoom to Actual Size
 view_zoom_in=Meta+=,Meta++,Zoom In
 view_zoom_out=Meta+-,Meta+-,Zoom Out
 
-[lattedock]
-_k_friendly_name=Latte Dock
-activate entry 1=none,Meta+1,Activate Entry 1
-activate entry 10=none,Meta+0,Activate Entry 10
-activate entry 11=Meta+Z,Meta+Z,Activate Entry 11
-activate entry 12=Meta+X,Meta+X,Activate Entry 12
-activate entry 13=none,Meta+C,Activate Entry 13
-activate entry 14=Meta+V,Meta+V,Activate Entry 14
-activate entry 15=Meta+B,Meta+B,Activate Entry 15
-activate entry 16=Meta+N,Meta+N,Activate Entry 16
-activate entry 17=Meta+M,Meta+M,Activate Entry 17
-activate entry 18=Meta+\\,,Meta+\\,,Activate Entry 18
-activate entry 19=none,Meta+.,Activate Entry 19
-activate entry 2=none,Meta+2,Activate Entry 2
-activate entry 3=none,Meta+3,Activate Entry 3
-activate entry 4=none,Meta+4,Activate Entry 4
-activate entry 5=none,Meta+5,Activate Entry 5
-activate entry 6=none,Meta+6,Activate Entry 6
-activate entry 7=none,Meta+7,Activate Entry 7
-activate entry 8=none,Meta+8,Activate Entry 8
-activate entry 9=none,Meta+9,Activate Entry 9
-activate widget 200=Meta+Alt+F1,none,Activate Application Menu Widget
-clear-history=none,none,Clear Clipboard History
-clipboard_action=Ctrl+Alt+X,Meta+Ctrl+X,Automatic Action Popup Menu
-cycleNextAction=none,none,Next History Item
-cyclePrevAction=none,none,Previous History Item
-edit_clipboard=none,none,Edit Contents…
-new instance for entry 1=Meta+Ctrl+1,Meta+Ctrl+1,New Instance for Entry 1
-new instance for entry 10=Meta+Ctrl+0,Meta+Ctrl+0,New Instance for Entry 10
-new instance for entry 11=Meta+Ctrl+Z,Meta+Ctrl+Z,New Instance for Entry 11
-new instance for entry 12=Meta+Ctrl+X,Meta+Ctrl+X,New Instance for Entry 12
-new instance for entry 13=Meta+Ctrl+C,Meta+Ctrl+C,New Instance for Entry 13
-new instance for entry 14=Meta+Ctrl+V,Meta+Ctrl+V,New Instance for Entry 14
-new instance for entry 15=Meta+Ctrl+B,Meta+Ctrl+B,New Instance for Entry 15
-new instance for entry 16=Meta+Ctrl+N,Meta+Ctrl+N,New Instance for Entry 16
-new instance for entry 17=Meta+Ctrl+M,Meta+Ctrl+M,New Instance for Entry 17
-new instance for entry 18=Meta+Ctrl+\\,,Meta+Ctrl+\\,,New Instance for Entry 18
-new instance for entry 19=Meta+Ctrl+.,Meta+Ctrl+.,New Instance for Entry 19
-new instance for entry 2=Meta+Ctrl+2,Meta+Ctrl+2,New Instance for Entry 2
-new instance for entry 3=Meta+Ctrl+3,Meta+Ctrl+3,New Instance for Entry 3
-new instance for entry 4=Meta+Ctrl+4,Meta+Ctrl+4,New Instance for Entry 4
-new instance for entry 5=Meta+Ctrl+5,Meta+Ctrl+5,New Instance for Entry 5
-new instance for entry 6=Meta+Ctrl+6,Meta+Ctrl+6,New Instance for Entry 6
-new instance for entry 7=Meta+Ctrl+7,Meta+Ctrl+7,New Instance for Entry 7
-new instance for entry 8=Meta+Ctrl+8,Meta+Ctrl+8,New Instance for Entry 8
-new instance for entry 9=Meta+Ctrl+9,Meta+Ctrl+9,New Instance for Entry 9
-repeat_action=Ctrl+Alt+R,Meta+Ctrl+R,Manually Invoke Action on Current Clipboard
-show latte global settings=none,none,Show Latte Global Settings
-show latte view=Meta+`,Meta+`,Show Latte Dock/Panel
-show view settings=Meta+A,Meta+A,Cycle Through Dock/Panel Settings Windows
-show-barcode=none,none,Show Barcode…
-show-on-mouse-pos=none,Meta+V,Show Items at Mouse Position
-
 [mediacontrol]
 _k_friendly_name=Media Controller
 mediavolumedown=none,none,Media volume down
@@ -332,11 +289,15 @@ _launch=Meta+E,Meta+E,Dolphin
 _k_friendly_name=KCalc
 _launch=Launch (1),Launch (1),KCalc
 
+[org.kde.kcolorchooser.desktop]
+_k_friendly_name=KColorChooser
+_launch=Meta+Shift+P,none,KColorChooser
+
 [org.kde.konsole.desktop]
 NewTab=none,none,Open a New Tab
 NewWindow=none,none,Open a New Window
 _k_friendly_name=Konsole
-_launch=Ctrl+Alt+T,Ctrl+Alt+T,Konsole
+_launch=none,Ctrl+Alt+T,Konsole
 
 [org.kde.krunner.desktop]
 RunClipboard=Alt+Shift+F2,Alt+Shift+F2,Run command on clipboard contents
@@ -357,6 +318,10 @@ WindowUnderCursorScreenShot=Meta+Ctrl+Print,Meta+Ctrl+Print,Capture Window Under
 _k_friendly_name=Spectacle
 _launch=Print,Print,Launch Spectacle
 
+[org.keepassxc.KeePassXC.desktop]
+_k_friendly_name=KeePassXC
+_launch=Meta+P,none,KeePassXC
+
 [org_kde_powerdevil]
 Decrease Keyboard Brightness=Keyboard Brightness Down,Keyboard Brightness Down,Decrease Keyboard Brightness
 Decrease Screen Brightness=Monitor Brightness Down,Monitor Brightness Down,Decrease Screen Brightness
@@ -369,6 +334,10 @@ Sleep=Sleep,Sleep,Suspend
 Toggle Keyboard Backlight=Keyboard Light On/Off,Keyboard Light On/Off,Toggle Keyboard Backlight
 Turn Off Screen=none,none,Turn Off Screen
 _k_friendly_name=Power Management
+
+[pamac-manager.desktop]
+_k_friendly_name=pamac-manager
+_launch=Meta+S,none,pamac-manager
 
 [plasmashell]
 _k_friendly_name=Plasma
@@ -397,7 +366,7 @@ repeat_action=none,Meta+Ctrl+R,Manually Invoke Action on Current Clipboard
 show dashboard=Ctrl+F12,Ctrl+F12,Show Desktop
 show-barcode=none,,Show Barcode…
 show-on-mouse-pos=none,Meta+V,Show Items at Mouse Position
-stop current activity=Meta+S,Meta+S,Stop Current Activity
+stop current activity=none,Meta+S,Stop Current Activity
 switch to next activity=none,,Switch to Next Activity
 switch to previous activity=none,,Switch to Previous Activity
 toggle do not disturb=none,,Toggle do not disturb
@@ -406,10 +375,20 @@ toggle do not disturb=none,,Toggle do not disturb
 _k_friendly_name=System Settings
 _launch=Tools,Tools,System Settings
 kcm-kscreen=none,none,Display Configuration
-kcm-lookandfeel=none,none,Global Theme
+kcm-lookandfeel=Meta+I,none,Global Theme
 kcm-users=none,none,Users
 powerdevilprofilesconfig=none,none,Energy Saving
 screenlocker=none,none,Screen Locking
+
+[thunderbird.desktop]
+ComposeMessage=none,none,Write new message
+OpenAddressBook=none,none,Open address book
+_k_friendly_name=Thunderbird
+_launch=Meta+M,none,Thunderbird
+
+[wallpaper_change_kde.sh.desktop]
+_k_friendly_name=wallpaper_change_kde.sh
+_launch=Meta+Shift+W,none,/home/jdyer/bin/wallpaper_change_kde.sh
 
 [yakuake]
 _k_friendly_name=Yakuake
