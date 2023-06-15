@@ -1,0 +1,42 @@
+MenuBar=Disabled
+State=AAAA/wAAAAD9AAAAAwAAAAAAAAC4AAAB9fwCAAAAAvsAAAAWAGYAbwBsAGQAZQByAHMARABvAGMAawAAAAAA/////wAAAAIA////+wAAABQAcABsAGEAYwBlAHMARABvAGMAawEAAAAxAAAB9QAAAFQA////AAAAAQAAAAAAAAAA/AIAAAAB+wAAABAAaQBuAGYAbwBEAG8AYwBrAAAAAAD/////AAAAAgD///8AAAADAAAAAAAAAAD8AQAAAAH7AAAAGAB0AGUAcgBtAGkAbgBhAGwARABvAGMAawAAAAAA/////wAAAAIA////AAACPwAAAfUAAAAEAAAABAAAAAgAAAAI/AAAAAEAAAACAAAAAQAAABYAbQBhAGkAbgBUAG8AbwBsAEIAYQByAQAAAAD/////AAAAAAAAAAA=
+
+[CompactMode]
+FontWeight=50
+
+[ContextMenu]
+ShowCopyMoveMenu=true
+
+[DetailsMode]
+ExpandableFolders=false
+FontWeight=50
+PreviewSize=32
+
+[General]
+BrowseThroughArchives=true
+GlobalViewProps=false
+RememberOpenedTabs=false
+ShowFullPath=true
+SortingChoice=CaseInsensitiveSorting
+UseTabForSwitchingSplitView=true
+Version=202
+ViewPropsTimestamp=2021,9,5,16,41,28.639
+
+[IconsMode]
+FontWeight=50
+PreviewSize=128
+
+[KFileDialog Settings]
+Places Icons Auto-resize=false
+Places Icons Static Size=22
+
+[MainWindow]
+MenuBar=Disabled
+RestorePositionForNextInstance=false
+ToolBarsMovable=Disabled
+
+[PreviewSettings]
+Plugins=appimagethumbnail,audiothumbnail,blenderthumbnail,comicbookthumbnail,cursorthumbnail,djvuthumbnail,ebookthumbnail,exrthumbnail,directorythumbnail,fontthumbnail,pothumbnail,imagethumbnail,jpegthumbnail,kraorathumbnail,windowsexethumbnail,windowsimagethumbnail,opendocumentthumbnail,gsthumbnail,rawthumbnail,svgthumbnail,textthumbnail,ffmpegthumbs
+
+[VersionControl]
+enabledPlugins=Git,Subversion
