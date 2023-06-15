@@ -1,0 +1,13 @@
+[General]
+onLaunchAction=UseLastUsedCapturemode
+rememberLastRectangularRegion=Never
+showCaptureInstructions=false
+useReleaseToCapture=true
+
+[GuiConfig]
+captureMode=0
+quitAfterSaveCopyExport=true
+
+[Save]
+defaultSaveLocation=file:///home/jdyer/DCIM/Screenshots
+lastSaveLocation=file:///home/jdyer/DCIM/Screenshots/Screenshot_20230615_151640.png
