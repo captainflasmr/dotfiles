@@ -3,24 +3,19 @@
 #
 gaps inner 10px
 gaps outer 0px
-gaps top 0px
+gaps top -7px
 gaps bottom 0px
 
-default_border pixel 4px
+default_border pixel 3px
 
 # -> class              border  backgr. text    indicator child_border
-client.focused          #000000 #0b4b55 #cccccc #999999   #E0B36F
+client.focused          #000000 #0b4b55 #cccccc #999999   #999999
 client.focused_inactive #333333 #333333 #cccccc #484e50   #444444
 client.unfocused        #333333 #222222 #cccccc #292d2e   #222222
 client.urgent           #2f343a #900000 #cccccc #900000   #900000
 client.placeholder      #000000 #0c0c0c #cccccc #000000   #0c0c0c
 
 client.background       #aaaaaa
-
-for_window [class="Emacs"] opacity 0.92
-for_window [class="dolphin"] opacity 0.9
-for_window [class="firefox"] opacity 0.99
-for_window [class="thunderbird"] opacity 0.9
 
 #
 # -> startup
@@ -57,13 +52,13 @@ bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ to
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +2% && $refresh_i3status
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -2% && $refresh_i3status
 
-bindsym XF86MonBrightnessUp exec brightnessctl set +5%
-bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
+bindsym XF86MonBrightnessUp exec brightnessctl set +10%
+bindsym XF86MonBrightnessDown exec brightnessctl set 10%-
 
 #
 # -> Key bindings
 #
-bindsym $mod+shift+p exec kcolorchooser
+# bindsym $mod+shift+p exec kcolorchooser
 bindsym $mod+shift+w exec styli.sh --fehbg bg-center -d ~/wallpaper
 
 # programs
@@ -89,7 +84,7 @@ bindsym Mod1+space exec rofi -show drun
 bindsym $mod+d exec --no-startup-id dmenu_run
 
 # exit
-bindsym $mod+shift+x exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+bindsym $mod+shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
 #
 # Moving around:
