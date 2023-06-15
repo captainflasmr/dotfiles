@@ -1,10 +1,8 @@
-# /usr/include/linux/input-event-codes.h
+super+shift+p
+    kcolorchooser
 
-# KP_Left
-#     ydotool key 42:1
-
-# @KP_Left
-#     ydotool key 42:0
+super+shift+w
+    styli.sh -k -d ~/wallpaper
 
 super+Return
     alacritty
