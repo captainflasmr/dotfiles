@@ -80,13 +80,13 @@
   ;;
   (setq gc-cons-threshold 100000000)
 
-  ;; (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-  ;; ("elpa" . "https://elpa.gnu.org/packages/")
-  ;; ("org" . "https://orgmode.org/elpa/")))
+  (setq package-archives '(("melpa" . "https://melpa.org/packages/")
+			    ("elpa" . "https://elpa.gnu.org/packages/")
+			    ("org" . "https://orgmode.org/elpa/")))
 
-  ;;(setq package-archives '(("melpa" . "~/emacs-pkgs/melpa")
-  ;;                          ("elpa" . "~/emacs-pkgs/elpa")
-  ;;                          ("org" . "~/emacs-pkgs/org-mode/lisp")))
+  ;; (setq package-archives '(("melpa" . "~/emacs-pkgs/melpa")
+  ;;                           ("elpa" . "~/emacs-pkgs/elpa")
+  ;;                           ("org" . "~/emacs-pkgs/org-mode/lisp")))
 
   (package-initialize)
   (unless package-archive-contents
@@ -107,13 +107,22 @@
   ;;
   ;; -> packages (extra)
   ;;
-  (add-to-list 'load-path "/home/jdyer/emacs-pkgs/new/fd-find")
-  (require 'fd-find)
-  (add-to-list 'load-path "/home/jdyer/emacs-pkgs/new/tmtxt-async-tasks")
-  (require 'tmtxt-async-tasks)
-  (add-to-list 'load-path "/home/jdyer/emacs-pkgs/new/tmtxt-dired-async")
-  (require 'tmtxt-dired-async)
-  (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
+  (use-package fd-find
+    :load-path "~/.config/emacs/elisp/fd-find")
+
+  (use-package tmtxt-async-tasks
+    :load-path "~/.config/emacs/elisp/tmtxt-async-tasks")
+
+  (use-package tmtxt-dired-async
+    :load-path "~/.config/emacs/elisp/tmtxt-dired-async")
+
+  ;; (add-to-list 'load-path "/home/jdyer/emacs-pkgs/new/fd-find")
+  ;; (require 'fd-find)
+  ;; (add-to-list 'load-path "/home/jdyer/emacs-pkgs/new/tmtxt-async-tasks")
+  ;; (require 'tmtxt-async-tasks)
+  ;; (add-to-list 'load-path "/home/jdyer/emacs-pkgs/new/tmtxt-dired-async")
+  ;; (require 'tmtxt-dired-async)
+  ;; (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
 #+end_src
 
 * windows specific
@@ -178,6 +187,7 @@
     (select-window (get-buffer-window "*mu4e-headers*")))
 
   (use-package mu4e
+    :load-path "/usr/share/emacs/site-lisp/mu4e"
     :ensure nil
     :defer 30
     :init (mu4e t)
@@ -194,7 +204,7 @@
     (smtpmail-smtp-service 25)
     (send-mail-function 'smtpmail-send-it)
     (user-mail-address "james@dyerdwelling.family")
-    (mu4e-update-interval 600)
+    (mu4e-update-interval 300)
     (mu4e-attachment-dir "~/Downloads")
     (mu4e-compose-signature-auto-include nil)
     (mu4e-drafts-folder "/james@dyerdwelling.family/Drafts")
@@ -266,6 +276,9 @@
   ;;
   ;; -> use-package one liner
   ;;
+  (use-package kbd-mode
+  :load-path "~/.config/emacs/elisp/")
+
   (use-package dired-x
     :config
     (setq dired-guess-shell-alist-user

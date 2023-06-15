@@ -3,13 +3,13 @@
 ;;
 (setq gc-cons-threshold 100000000)
 
-;; (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-;; ("elpa" . "https://elpa.gnu.org/packages/")
-;; ("org" . "https://orgmode.org/elpa/")))
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+			  ("elpa" . "https://elpa.gnu.org/packages/")
+			  ("org" . "https://orgmode.org/elpa/")))
 
-;;(setq package-archives '(("melpa" . "~/emacs-pkgs/melpa")
-;;                          ("elpa" . "~/emacs-pkgs/elpa")
-;;                          ("org" . "~/emacs-pkgs/org-mode/lisp")))
+;; (setq package-archives '(("melpa" . "~/emacs-pkgs/melpa")
+;;                           ("elpa" . "~/emacs-pkgs/elpa")
+;;                           ("org" . "~/emacs-pkgs/org-mode/lisp")))
 
 (package-initialize)
 (unless package-archive-contents
@@ -26,13 +26,22 @@
 ;;
 ;; -> packages (extra)
 ;;
-(add-to-list 'load-path "/home/jdyer/emacs-pkgs/new/fd-find")
-(require 'fd-find)
-(add-to-list 'load-path "/home/jdyer/emacs-pkgs/new/tmtxt-async-tasks")
-(require 'tmtxt-async-tasks)
-(add-to-list 'load-path "/home/jdyer/emacs-pkgs/new/tmtxt-dired-async")
-(require 'tmtxt-dired-async)
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
+(use-package fd-find
+  :load-path "~/.config/emacs/elisp/fd-find")
+
+(use-package tmtxt-async-tasks
+  :load-path "~/.config/emacs/elisp/tmtxt-async-tasks")
+
+(use-package tmtxt-dired-async
+  :load-path "~/.config/emacs/elisp/tmtxt-dired-async")
+
+;; (add-to-list 'load-path "/home/jdyer/emacs-pkgs/new/fd-find")
+;; (require 'fd-find)
+;; (add-to-list 'load-path "/home/jdyer/emacs-pkgs/new/tmtxt-async-tasks")
+;; (require 'tmtxt-async-tasks)
+;; (add-to-list 'load-path "/home/jdyer/emacs-pkgs/new/tmtxt-dired-async")
+;; (require 'tmtxt-dired-async)
+;; (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
 
 ;;
 ;; -> linux specific
@@ -74,6 +83,7 @@
   (select-window (get-buffer-window "*mu4e-headers*")))
 
 (use-package mu4e
+  :load-path "/usr/share/emacs/site-lisp/mu4e"
   :ensure nil
   :defer 30
   :init (mu4e t)
@@ -90,7 +100,7 @@
   (smtpmail-smtp-service 25)
   (send-mail-function 'smtpmail-send-it)
   (user-mail-address "james@dyerdwelling.family")
-  (mu4e-update-interval 600)
+  (mu4e-update-interval 300)
   (mu4e-attachment-dir "~/Downloads")
   (mu4e-compose-signature-auto-include nil)
   (mu4e-drafts-folder "/james@dyerdwelling.family/Drafts")
@@ -154,6 +164,9 @@
 ;;
 ;; -> use-package one liner
 ;;
+(use-package kbd-mode
+:load-path "~/.config/emacs/elisp/")
+
 (use-package dired-x
   :config
   (setq dired-guess-shell-alist-user
@@ -744,7 +757,7 @@
  '(hippie-expand-try-functions-list
     '(try-complete-file-name-partially try-complete-file-name try-expand-all-abbrevs try-expand-dabbrev try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill try-complete-lisp-symbol-partially try-complete-lisp-symbol))
  '(package-selected-packages
-    '(org-tempo dired-x ztree yaml-mode visual-fill-column vertico use-package toml-mode toc-org sxhkdrc-mode rainbow-mode powerthesaurus ox-hugo org-rainbow-tags org-bullets org-ai orderless marginalia magit lorem-ipsum jinx indent-tools highlight-indentation gruvbox-theme find-file-rg emms embark-consult elfeed ef-themes dwim-shell-command doom-themes doom-modeline dired-rainbow deadgrep company ada-mode))
+    '(jinx powerthesaurus elfeed doom-modeline dired-rainbow deadgrep ox-hugo org-rainbow-tags org-ai org-bullets org-tempo dwim-shell-command doom-themes find-file-rg indent-tools toml-mode highlight-indentation dired-x ztree yaml-mode visual-fill-column vertico use-package toc-org sxhkdrc-mode rainbow-mode orderless marginalia magit lorem-ipsum hydra gruvbox-theme emms embark-consult ef-themes company ada-mode))
  '(warning-suppress-log-types '((frameset)))
  '(warning-suppress-types '((frameset))))
 

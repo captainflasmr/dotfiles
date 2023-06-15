@@ -77,8 +77,8 @@ bindsym $mod+shift+w exec styli.sh --fehbg bg-center -d ~/wallpaper
 # bindsym $mod+p exec keepassxc
 
 # terminal
-bindsym $mod+return exec $term
-bindsym control+Mod1+t exec $term
+# bindsym $mod+return exec $term
+# bindsym control+Mod1+t exec $term
 
 # kill
 bindsym $mod+shift+q kill
@@ -89,7 +89,7 @@ bindsym Mod1+space exec rofi -show drun
 bindsym $mod+d exec --no-startup-id dmenu_run
 
 # exit
-bindsym $mod+shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+bindsym $mod+shift+x exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
 #
 # Moving around:

@@ -75,7 +75,7 @@ input type:touch {
 input type:keyboard {
   events enabled
   xkb_layout gb
-  xkb_options caps:ctrl_modifier
+  # xkb_options caps:ctrl_modifier
 }
 
 # input type:tablet_tool {
@@ -120,7 +120,7 @@ bindsym Mod1+space exec wofi --show
 bindsym $mod+d exec --no-startup-id dmenu_run
 
 # exit
-bindsym $mod+shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+bindsym $mod+shift+x exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
 
 #
 # Moving around:
