@@ -8,6 +8,7 @@ emaildefaults
 emailidentities
 emacs/abbrev_defs
 emacs/auto-save-list/
+emacs/bookmarks
 emacs/ede-projects.el
 emacs/elpa
 emacs/elisp/fd-find/
@@ -17,10 +18,12 @@ emacs/emms/
 emacs/history
 emacs/image-dired/
 emacs/network-security.data
-emacs/session.10466c6578000168683740700000007360010
+emacs/.org-id-locations
+emacs/session.*
 emacs/tramp
 emacs/transient/
 enchant
+filetypesrc
 GIMP
 goa-1.0
 gtk-3.0
@@ -32,6 +35,9 @@ htop
 kactivitymanagerdrc
 kactivitymanagerd-statsrc
 kalendaracrc
+katemetainfos
+katerc
+katevirc
 kcminputrc
 kconf_updaterc
 KDE
@@ -69,6 +75,7 @@ libaccounts-glib
 libvirt
 lightlyrc
 lightlyshaders.conf
+Meltytech/
 microsoft-edge-beta
 mimeapps.list
 Mousepad
@@ -101,6 +108,7 @@ Trolltech.conf
 user-dirs.dirs
 user-dirs.locale
 vivaldi
+vlc/
 xsettingsd
 yakuakerc
 yay
