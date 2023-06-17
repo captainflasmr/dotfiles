@@ -9,6 +9,6 @@
   allow-cmd true
 )
 
-(defsrc caps)
+(defsrc caps ralt)
 
-(deflayer mine lctl)
+(deflayer mine lctl scrlck)
