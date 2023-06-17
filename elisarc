@@ -4,9 +4,12 @@ RootPath[$e]=$HOME/MyMusicLibrary
 [KFileDialog Settings]
 detailViewIconSize=16
 
+[PlayerSettings]
+ScanAtStartup=false
+
 [UiSettings]
-ColorScheme=Breeze Light
+ColorScheme=Breeze Dark
 
 [Views]
-ColorScheme=Breeze Light
+ColorScheme=Breeze Dark
 SortOrderPreferences=Album::==AscendingOrder
