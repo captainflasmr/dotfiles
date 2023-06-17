@@ -107,9 +107,9 @@ Sync Baloo to Digikam=false
 Sync Digikam to Baloo=false
 
 [Batch Queue Manager Settings]
-BqmBottomSplitter=AAAA/wAAAAEAAAACAAAAhQAAAIUB/////wEAAAABAA==
-BqmTopSplitter=AAAA/wAAAAEAAAADAAAAhQAAAG4AAACTAf////8BAAAAAQA=
-BqmVerticalSplitter=AAAA/wAAAAEAAAACAAAAjQAAAIMB/////wEAAAACAA==
+BqmBottomSplitter=AAAA/wAAAAEAAAACAAAAjAAAAIUB/////wEAAAABAA==
+BqmTopSplitter=AAAA/wAAAAEAAAADAAAAhQAAAIoAAADdAf////8BAAAAAQA=
+BqmVerticalSplitter=AAAA/wAAAAEAAAACAAAAmwAAAI8B/////wEAAAACAA==
 
 [Camera Settings]
 DefaultTargetAlbumId=0
@@ -136,7 +136,7 @@ EnableCM=true
 GamutCheckMaskColor=126,255,255
 LastMismatchBehavior=2049
 LastMissingProfileBehavior=2050
-LastSpecifiedAssignProfile=
+LastSpecifiedAssignProfile[$e]=/usr/share/digikam/profiles/
 LastSpecifiedInputProfile=
 LastUncalibratedBehavior=2080
 ManagedPreviews=true
@@ -843,7 +843,7 @@ tagPaths=1
 
 [Database Settings]
 Database Connectoptions=
-Database Encrypted Password=AwKHh4c=
+Database Encrypted Password=AwIKCgo=
 Database Hostname=
 Database Name=/home/jdyer/Photos/
 Database Name Face=/home/jdyer/Photos/
@@ -1123,7 +1123,7 @@ Selection=
 Sort Order=0
 SortColumn=0
 SortOrder=0
-SplitterState=AAAA/wAAAAEAAAACAAABegAAAGYB/////wEAAAACAA==
+SplitterState=AAAA/wAAAAEAAAACAAABjwAAAGwB/////wEAAAACAA==
 
 [GPS Search Sidebar][GPSSearch Map Widget]
 Backend=marble
@@ -1171,7 +1171,7 @@ Show Only Face Tags For Assigning Name=true
 Show Permanent Delete Dialog=true
 Show Splash=true
 Show Trash Delete Dialog=true
-State=AAAA/wAAAAD9AAAAAAAAB2wAAAOcAAAABAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAEAAAAWAG0AYQBpAG4AVABvAG8AbABCAGEAcgEAAAAA/////wAAAAAAAAAA
+State=AAAA/wAAAAD9AAAAAAAAB3AAAAOSAAAABAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAEAAAAWAG0AYQBpAG4AVABvAG8AbABCAGEAcgEAAAAA/////wAAAAAAAAAA
 String Comparison Type=0
 ToolBarsMovable=Disabled
 Use Large Thumbs=true
@@ -1257,7 +1257,7 @@ RestoreToolSettings=true
 Show Thumbbar=false
 ShowImageSettingsDialog=true
 SixteenBitsImage=false
-SplitterState=AAAA/wAAAAEAAAACAAAM5AAAAS4B/////wAAAAABAQ==
+SplitterState=AAAA/wAAAAEAAAACAAAM5AAAAUUB/////wAAAAABAQ==
 State=AAAA/wAAAAD9AAAAAAAAA6kAAAORAAAABAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAEAAAAWAG0AYQBpAG4AVABvAG8AbABCAGEAcgEAAAAA/////wAAAAAAAAAA
 TIFFCompression=false
 ToolBarsMovable=Disabled
@@ -1455,7 +1455,7 @@ Clear On Close=false
 FullScreen Hide SideBars=false
 FullScreen Hide StatusBar=false
 FullScreen Hide ToolBars=false
-Horizontal Splitter State=AAAA/wAAAAEAAAADAAABLgAAAFcAAAEuAf////8AAAAAAQE=
+Horizontal Splitter State=AAAA/wAAAAEAAAADAAABRQAAAFcAAAFFAf////8AAAAAAQE=
 Navigate By Pair=false
 Show Thumbbar=true
 
@@ -1619,8 +1619,8 @@ Version Properties View Mode=2
 
 [MainWindow]
 InitialAlbumID=1
-SplitterState=AAAA/wAAAAEAAAADAAABFAAABhYAAAEuAf////8AAAAAAQE=
-ThumbbarState=AAAA/wAAAAD9AAAAAQAAAAIAAAAAAAAAAPwBAAAAAfsAAAAmAG0AYQBpAG4AdwBpAG4AZABvAHcAXwB0AGgAdQBtAGIAYgBhAHIAAAAAAP////8AAABXAP///wAABOgAAAOcAAAABAAAAAQAAAAIAAAACPwAAAAA
+SplitterState=AAAA/wAAAAEAAAADAAABFAAABhYAAAFFAf////8AAAAAAQE=
+ThumbbarState=AAAA/wAAAAD9AAAAAQAAAAIAAAAAAAAAAPwBAAAAAfsAAAAmAG0AYQBpAG4AdwBpAG4AZABvAHcAXwB0AGgAdQBtAGIAYgBhAHIAAAAAAP////8AAABXAP///wAABMkAAAOSAAAABAAAAAQAAAAIAAAACPwAAAAA
 
 [MediaPlayer AVFilterAudio]
 enable=true
