@@ -2,53 +2,63 @@
 #+options: toc: nil
 
 #+begin_src bash
-  .gitignore
-  alacritty/
-  alacritty/alacritty.yml
-  autostart/
-  autostart/startup.sh.desktop
-  dolphinrc
-  dunst/
-  dunst/dunstrc
-  elisarc
-  emacs/
-  emacs/early-init.el
-  emacs/elisp/
-  emacs/elisp/kbd-mode.el
-  emacs/emacs--init.org
-  emacs/init.el
-  fusuma/
-  fusuma/config.yml
-  gammastep/
-  gammastep/config.ini
-  hypr/
-  hypr/hyprland.conf
-  i3/
-  i3/config
-  keymapper.conf
-  kglobalshortcutsrc
-  kmonad/
-  kmonad/keyboard.kbd
-  kmonad/numpad.kbd
-  kritarc
-  picom/
-  picom/picom.conf
-  polybar/
-  polybar/config.ini
-  readme.org
-  rofi/
-  rofi/config.rasi
-  rofi/theme.rasi
-  spectaclerc
-  sway/
-  sway/config
-  sxhkd/
-  sxhkd/sxhkdrc
-  topgrade.toml
-  waybar/
-  waybar/config
-  waybar/style.css
-  wofi/
-  wofi/config
-  wofi/style.css
+.gitignore
+Thunar/
+Thunar/accels.scm
+Thunar/uca.xml
+alacritty/
+alacritty/alacritty.yml
+autostart/
+autostart/startup.sh.desktop
+digikam_systemrc
+digikamrc
+dolphinrc
+dunst/
+dunst/dunstrc
+elisarc
+emacs/
+emacs/early-init.el
+emacs/elisp/
+emacs/elisp/kbd-mode.el
+emacs/emacs--init.org
+emacs/init.el
+fusuma/
+fusuma/config.yml
+gammastep/
+gammastep/config.ini
+hypr/
+hypr/hyprland.conf
+i3/
+i3/config
+keymapper.conf
+kglobalshortcutsrc
+kmonad/
+kmonad/keyboard.kbd
+kmonad/numpad.kbd
+kmonad/tutorial.kbd
+kritarc
+mpv/
+mpv/mpv.conf
+picom/
+picom/picom.conf
+polybar/
+polybar/config.ini
+readme.org
+rofi/
+rofi/config.rasi
+rofi/theme.rasi
+spectaclerc
+sway/
+sway/config
+sxhkd/
+sxhkd/sxhkdrc
+topgrade.toml
+waybar/
+waybar/config
+waybar/style.css
+wofi/
+wofi/config
+wofi/style.css
+xfce4/xfconf/xfce-perchannel-xml/
+xfce4/xfconf/xfce-perchannel-xml/thunar.xml
 #+end_src
