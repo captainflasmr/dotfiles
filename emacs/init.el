@@ -746,7 +746,7 @@
  '(connection-local-profile-alist
     '((eshell-connection-default-profile
         (eshell-path-env-list))) t)
- '(custom-enabled-themes '(gruvbox))
+ '(custom-enabled-themes '(doom-one))
  '(custom-safe-themes t)
  '(delete-selection-mode nil)
  '(ede-project-directories
@@ -1031,13 +1031,7 @@
 :EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :thumbnail /posts/%<%Y%m%d%H%M%S>-posts--%\\1.jpg
 :END:
 #+begin_export md
-{{< columns 12 12 6 6 6 >}}
-#+end_export
 %?
----||---
-#+begin_export md
-{{< /columns >}}
-#+end_export
 " :prepend t :jump-to-captured t)
 
      ("e" "Emacs" plain
@@ -1065,14 +1059,7 @@
 :EXPORT_HUGO_LASTMOD: %<%Y-%m-%d>
 :EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :thumbnail /linux/%<%Y%m%d%H%M%S>-emacs--%\\1.jpg
 :END:
-#+begin_export md
-{{< columns 12 12 6 6 6 >}}
-#+end_export
 %?
----||---
-#+begin_export md
-{{< /columns >}}
-#+end_export
 " :prepend t :jump-to-captured t)
 
      ("a" "Art")
@@ -1087,18 +1074,12 @@
 :EXPORT_HUGO_SECTION: art--videos
 :EXPORT_HUGO_LASTMOD: %<%Y-%m-%d>
 :EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :thumbnail /art--videos/%<%Y%m%d%H%M%S>--%\\1-%\\2.jpg
+:VIDEO:
 :END:
-#+begin_export md
-{{< columns 12 12 6 6 6 >}}
-#+end_export
 #+begin_export md
 {{< youtube %^{youtube} >}}
 #+end_export
----||---
 %?
-#+begin_export md
-{{< /columns >}}
-#+end_export
 " :prepend t :jump-to-captured t)
 
      ("aa" "Art" plain
@@ -1111,19 +1092,13 @@
 :EXPORT_HUGO_SECTION: art--all
 :EXPORT_HUGO_LASTMOD: %<%Y-%m-%d>
 :EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :thumbnail /art--all/%\\1.jpg
+:VIDEO:
 :END:
-#+begin_export md
-{{< columns 12 12 6 6 6 >}}
-#+end_export
 #+attr_org: :width 300px
 #+attr_html: :width 100%
 #+begin_export md
 #+end_export
----||---
 %?
-#+begin_export md
-{{< /columns >}}
-#+end_export
 " :prepend t :jump-to-captured t)
 
      ("ai" "Art AI" plain
@@ -1136,6 +1111,7 @@
 :EXPORT_HUGO_SECTION: art--ai
 :EXPORT_HUGO_LASTMOD: %<%Y-%m-%d>
 :EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :thumbnail /art--ai/%<%Y%m%d%H%M%S>--%\\1.jpg
+:VIDEO:
 :END:
 Here is more experimentation using [[https://playgroundai.com]] and
 passing in some of my art!
@@ -1720,6 +1696,9 @@ to produce the following:
                    "Reached")))
           (config
             (cond
+              ((equal major-mode 'sh-mode)
+                (cons (format "echo \"%s: \\([0-9]+\\)\"" word)
+                  (format "echo \"%s: %%s\"" word)))
               ((equal major-mode 'emacs-lisp-mode)
                 (cons (format "(message \"%s: \\([0-9]+\\)\")" word)
                   (format "(message \"%s: %%s\")" word)))
