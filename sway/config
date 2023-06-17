@@ -1,15 +1,15 @@
 #
 # -> visuals
 #
-gaps inner 10px
+gaps inner 8px
 gaps outer 0px
 gaps top 0px
 gaps bottom 0px
 
-default_border pixel 4px
+default_border pixel 3px
 
 # -> class              border  backgr. text    indicator child_border
-client.focused          #000000 #0b4b55 #cccccc #999999   #E0B36F
+client.focused          #000000 #0b4b55 #cccccc #999999   #D0A25E
 client.focused_inactive #333333 #333333 #cccccc #484e50   #444444
 client.unfocused        #333333 #222222 #cccccc #292d2e   #222222
 client.urgent           #2f343a #900000 #cccccc #900000   #900000
@@ -19,8 +19,18 @@ client.background       #aaaaaa
 
 for_window [class="Emacs"] opacity 0.92
 for_window [app_id="thunar"] opacity 0.9
-for_window [class="firefox"] opacity 0.99
+# for_window [class="firefox"] opacity 0.99
 for_window [class="thunderbird"] opacity 0.9
+
+# Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
+output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
+#
+# Idle / Lockscreen
+#
+exec swayidle -w \
+         timeout 300 'swaylock -f -c 000000' \
+         timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+         before-sleep 'swaylock -f -c 000000'
 
 #
 # -> startup
@@ -31,17 +41,17 @@ exec {
    /home/jdyer/bin/launch_waybar
 }
 
-set $gnome-schema org.gnome.desktop.interface
+# set $gnome-schema org.gnome.desktop.interface
 
-exec_always {
-    gsettings set $gnome-schema gtk-theme "Catppuccin-Mocha-Standard-Mauve-Dark"
-    # gsettings set $gnome-schema gtk-theme "Adwaita"
-    gsettings set $gnome-schema color-scheme prefer-dark
-    gsettings set $gnome-schema icon-theme "Tela-circle-dracula"
-    # gsettings set $gnome-schema icon-theme "KwinDE"
-    gsettings set $gnome-schema cursor-theme "breeze_cursors"
-    gsettings set $gnome-schema font-name "Noto Sans,  11"
-}
+# exec_always {
+#     # gsettings set $gnome-schema gtk-theme "Catppuccin-Mocha-Standard-Mauve-Dark"
+#     gsettings set $gnome-schema gtk-theme "Adwaita"
+#     gsettings set $gnome-schema color-scheme prefer-dark
+#     # gsettings set $gnome-schema icon-theme "Tela-circle-dracula"
+#     gsettings set $gnome-schema icon-theme "KwinDE"
+#     gsettings set $gnome-schema cursor-theme "breeze_cursors"
+#     gsettings set $gnome-schema font-name "Noto Sans,  11"
+# }
 
 #
 # -> global
@@ -113,7 +123,8 @@ bindsym $mod+shift+w exec styli.sh -y -d ~/wallpaper
 bindsym $mod+shift+s exec grim -t jpeg -g "$(slurp)" ~/DCIM/Screenshots/$(date +'%Y-%m-%d-%H-%M-%S.jpg')
 bindsym $mod+e exec thunar
 # bindsym $mod+i exec plasma-open-settings
-bindsym $mod+i exec gnome-tweaks
+# bindsym $mod+i exec gnome-tweaks
+bindsym $mod+i exec nwg-look
 bindsym $mod+c exec emacs
 bindsym $mod+m exec thunderbird
 bindsym $mod+w exec firefox
@@ -148,6 +159,17 @@ bindsym $mod+Right focus right
 bindsym $mod+Up focus up
 bindsym $mod+Down focus down
 bindsym control+Mod1+o focus left
+
+# Move the focused window with the same, but add Shift
+bindsym $mod+Shift+$left move left
+bindsym $mod+Shift+$down move down
+bindsym $mod+Shift+$up move up
+bindsym $mod+Shift+$right move right
+# Ditto, with arrow keys
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
 
 #
 # Workspaces:
