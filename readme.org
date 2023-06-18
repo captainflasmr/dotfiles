@@ -26,6 +26,8 @@ fusuma/
 fusuma/config.yml
 gammastep/
 gammastep/config.ini
+htop/
+htop/htoprc
 hypr/
 hypr/hyprland.conf
 i3/
@@ -33,6 +35,7 @@ i3/config
 keymapper.conf
 kglobalshortcutsrc
 kmonad/
+kmonad/Keycode.hs
 kmonad/keyboard.kbd
 kmonad/numpad.kbd
 kmonad/tutorial.kbd
