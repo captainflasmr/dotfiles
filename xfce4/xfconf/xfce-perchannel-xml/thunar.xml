@@ -6,7 +6,7 @@
   <property name="last-window-maximized" type="bool" value="true"/>
   <property name="last-separator-position" type="int" value="170"/>
   <property name="last-details-view-zoom-level" type="string" value="THUNAR_ZOOM_LEVEL_38_PERCENT"/>
-  <property name="last-details-view-column-widths" type="string" value="50,50,123,115,50,50,50,50,449,50,50,69,50,130"/>
+  <property name="last-details-view-column-widths" type="string" value="50,50,123,115,50,50,50,50,334,50,50,287,50,130"/>
   <property name="last-details-view-visible-columns" type="string" value="THUNAR_COLUMN_DATE_MODIFIED,THUNAR_COLUMN_NAME,THUNAR_COLUMN_SIZE,THUNAR_COLUMN_TYPE"/>
   <property name="last-sort-column" type="string" value="THUNAR_COLUMN_NAME"/>
   <property name="last-sort-order" type="string" value="GTK_SORT_DESCENDING"/>
@@ -16,4 +16,6 @@
   <property name="last-toolbar-visible-buttons" type="string" value="0,1,1,0,1,0,0,1,1,1,1,1,1,0,1,1,1,1"/>
   <property name="last-splitview-separator-position" type="int" value="866"/>
   <property name="default-view" type="string" value="ThunarDetailsView"/>
+  <property name="misc-exec-shell-scripts-by-default" type="bool" value="true"/>
+  <property name="last-menubar-visible" type="bool" value="true"/>
 </channel>
