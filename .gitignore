@@ -1,4 +1,5 @@
 GIMP
+GREYC/
 KDE
 KeePassXCrc
 Meltytech/
@@ -15,6 +16,8 @@ bluedevilglobalrc
 chromium
 copyq
 dconf
+emacs/.emacs.desktop
+emacs/.emacs.desktop.lock
 emacs/.org-id-locations
 emacs/abbrev_defs
 emacs/auto-save-list/
@@ -31,11 +34,13 @@ emacs/network-security.data
 emacs/session.*
 emacs/tramp
 emacs/transient/
+emacs/url/
 emaildefaults
 emailidentities
 enchant
 filetypesrc
 fontconfig
+gmic/
 goa-1.0
 gtk-3.0
 gtk-4.0
@@ -126,3 +131,7 @@ xsettingsd
 yakuakerc
 yay
 znt
+/.gsd-keyboard.settings-ported
+/kactivitymanagerd-switcher
+/nomacs/
+/nwg-displays/
