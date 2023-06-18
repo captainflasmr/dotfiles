@@ -14,7 +14,7 @@ super+shift+s
     spectacle
 
 super+e
-    dolphin
+    thunar ~/DCIM/Camera
 
 super+i
     plasma-open-settings
