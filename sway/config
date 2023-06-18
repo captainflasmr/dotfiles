@@ -121,7 +121,7 @@ bindsym $mod+shift+w exec styli.sh -y -d ~/wallpaper
 
 # programs
 bindsym $mod+shift+s exec grim -t jpeg -g "$(slurp)" ~/DCIM/Screenshots/$(date +'%Y-%m-%d-%H-%M-%S.jpg')
-bindsym $mod+e exec thunar
+bindsym $mod+e exec thunar ~/DCIM/Camera
 # bindsym $mod+i exec plasma-open-settings
 # bindsym $mod+i exec gnome-tweaks
 bindsym $mod+i exec nwg-look
