@@ -10,6 +10,8 @@ default_border pixel 3px
 
 # -> class              border  backgr. text    indicator child_border
 client.focused          #000000 #0b4b55 #cccccc #999999   #D0A25E
+# client.focused          #000000 #0b4b55 #cccccc #999999   #ffffff
+# client.focused          #000000 #0b4b55 #cccccc #999999   #2563A2
 client.focused_inactive #333333 #333333 #cccccc #484e50   #444444
 client.unfocused        #333333 #222222 #cccccc #292d2e   #222222
 client.urgent           #2f343a #900000 #cccccc #900000   #900000
@@ -27,10 +29,10 @@ output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
 #
 # Idle / Lockscreen
 #
-exec swayidle -w \
-         timeout 300 'swaylock -f -c 000000' \
-         timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
-         before-sleep 'swaylock -f -c 000000'
+# exec swayidle -w \
+#          timeout 300 'swaylock -f -c 000000' \
+#          timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+#          before-sleep 'swaylock -f -c 000000'
 
 #
 # -> startup
@@ -141,7 +143,7 @@ bindsym Mod1+F4 kill
 
 # launcher
 bindsym Mod1+space exec wofi --show
-bindsym $mod+d exec --no-startup-id dmenu_run
+bindsym $mod+d exec --no-startup-id dmenu_run -fn "Mono:pixelsize=22"
 
 # exit
 bindsym $mod+shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
