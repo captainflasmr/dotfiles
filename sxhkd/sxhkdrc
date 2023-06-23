@@ -33,3 +33,6 @@ super+s
 
 super+p
     keepassxc
+
+super+d
+    dmenu_run -fn "Mono:pixelsize=22"
