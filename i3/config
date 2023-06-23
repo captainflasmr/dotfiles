@@ -81,7 +81,7 @@ bindsym Mod1+F4 kill
 
 # launcher
 bindsym Mod1+space exec rofi -show drun
-bindsym $mod+d exec --no-startup-id dmenu_run
+bindsym $mod+d exec --no-startup-id dmenu_run -fn "Mono:pixelsize=22"
 
 # exit
 bindsym $mod+shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
