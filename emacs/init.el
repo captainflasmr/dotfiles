@@ -4,8 +4,8 @@
 (setq gc-cons-threshold 100000000)
 
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			  ("elpa" . "https://elpa.gnu.org/packages/")
-			  ("org" . "https://orgmode.org/elpa/")))
+                          ("elpa" . "https://elpa.gnu.org/packages/")
+                          ("org" . "https://orgmode.org/elpa/")))
 
 ;; (setq package-archives '(("melpa" . "~/emacs-pkgs/melpa")
 ;;                           ("elpa" . "~/emacs-pkgs/elpa")
@@ -165,7 +165,7 @@
 ;; -> use-package one liner
 ;;
 (use-package kbd-mode
-:load-path "~/.config/emacs/elisp/")
+  :load-path "~/.config/emacs/elisp/")
 
 (use-package dired-x
   :config
@@ -582,6 +582,7 @@
 (global-set-key [f11] 'gud-step)
 (global-set-key [f12] 'xref-find-definitions)
 (global-set-key [S-f12] 'my/grep)
+(global-set-key (kbd "M-?") 'my/grep)
 (global-set-key (kbd "C-c i d") '(lambda () (interactive)(insert (format-time-string "<%Y-%m-%d>"))))
 (global-set-key (kbd "C-c i t") '(lambda () (interactive)(insert (format-time-string "%Y%m%d%H%M%S"))))
 (define-key dired-mode-map (kbd "C") 'my/rsync)
@@ -621,7 +622,7 @@
 ;;
 (setq debug-on-error t)
 (setq dired-dwim-target t)
-(setq dired-listing-switches "-alh")
+(setq dired-listing-switches "-alGgh")
 (setq window-persistent-parameters
   '((parent-id . nil)
      (outer-window-id . nil)
@@ -746,7 +747,7 @@
  '(connection-local-profile-alist
     '((eshell-connection-default-profile
         (eshell-path-env-list))) t)
- '(custom-enabled-themes '(doom-one))
+ '(custom-enabled-themes '(gruvbox))
  '(custom-safe-themes t)
  '(delete-selection-mode nil)
  '(ede-project-directories
@@ -762,145 +763,150 @@
  '(warning-suppress-types '((frameset))))
 
 ;;
-;; -> defuns
-;;
-(defun my/eshell ()
-  "Toggle shell."
-  (interactive)
-  (if (window-live-p (get-buffer-window "*eshell*"))
-    (delete-window (get-buffer-window "*eshell*"))
-    (eshell)))
+  ;; -> defuns
+  ;;
+  (defun my/eshell ()
+    "Toggle shell."
+    (interactive)
+    (if (window-live-p (get-buffer-window "*eshell*"))
+      (delete-window (get-buffer-window "*eshell*"))
+      (eshell)))
 
-(defun my/org-sort-tags ()
-  "On a heading sort the tags."
-  (interactive)
-  (when (org-at-heading-p)
-    (org-set-tags (sort (org-get-tags) #'string<))))
+  (defun my/org-sort-tags ()
+    "On a heading sort the tags."
+    (interactive)
+    (when (org-at-heading-p)
+      (org-set-tags (sort (org-get-tags) #'string<))))
 
-(defun proced-settings()
-  (proced-toggle-auto-update 1))
+  (defun proced-settings()
+    (proced-toggle-auto-update 1))
 
-(defun my-show-elfeed (buffer)
-  (display-buffer buffer))
+  (defun my-show-elfeed (buffer)
+    (display-buffer buffer))
 
-(defun my/resize-window (delta &optional horizontal)
-  "Resize window back and forth."
-  (interactive)
-  (let ((edge (if horizontal
-                (car (window-edges))
-                (car (cdr (window-edges))))))
-    (if (= edge 0)
-      (enlarge-window delta horizontal)
-      (shrink-window delta horizontal))))
+  (defun my/resize-window (delta &optional horizontal)
+    "Resize window back and forth."
+    (interactive)
+    (let ((edge (if horizontal
+                  (car (window-edges))
+                  (car (cdr (window-edges))))))
+      (if (= edge 0)
+        (enlarge-window delta horizontal)
+        (shrink-window delta horizontal))))
 
-(defun my/index ()
-  "Generate occur index."
-  (interactive)
-  (beginning-of-buffer)
-  (occur ";;[[:space:]]->"))
+  (defun my/index ()
+    "Generate occur index."
+    (interactive)
+    (beginning-of-buffer)
+    (occur ";;[[:space:]]->"))
 
-(defun save-macro (name)
-  "Save a macro."
-  (interactive "SName of the macro: ")
-  (kmacro-name-last-macro name)
-  (find-file user-init-file)
-  (goto-char (point-max))
-  (newline)
-  (insert-kbd-macro name)
-  (newline))
+  (defun save-macro (name)
+    "Save a macro."
+    (interactive "SName of the macro: ")
+    (kmacro-name-last-macro name)
+    (find-file user-init-file)
+    (goto-char (point-max))
+    (newline)
+    (insert-kbd-macro name)
+    (newline))
 
-(defun my/rsync (dest)
-  "Rsync copy."
-  (interactive
-    (list
-      (expand-file-name (read-file-name "rsync to:"
-                          (dired-dwim-target-directory)))))
-  (let ((files (dired-get-marked-files nil current-prefix-arg))
-         (command "rsync -arvz --progress "))
-    (dolist (file files)
-      (setq command (concat command (shell-quote-argument file) " ")))
-    (setq command (concat command (shell-quote-argument dest)))
-    (async-shell-command command "*rsync*")
-    (other-window 1)))
+  (defun my/rsync (dest)
+    "Rsync copy."
+    (interactive
+      (list
+        (expand-file-name (read-file-name "rsync to:"
+                            (dired-dwim-target-directory)))))
+    (let ((files (dired-get-marked-files nil current-prefix-arg))
+           (command "rsync -arvz --progress "))
+      (dolist (file files)
+        (setq command (concat command (shell-quote-argument file) " ")))
+      (setq command (concat command (shell-quote-argument dest)))
+      (async-shell-command command "*rsync*")
+      (other-window 1)))
 
-(defun my/image-dired-sort (arg)
-  "Sort images in various ways."
-  (interactive "p")
-  (cond
-    ((equal current-prefix-arg nil)   ; no C-u
-      (setq dired-actual-switches "-lGghat"))
-    ((equal current-prefix-arg '(4))  ; C-u
-      (setq dired-actual-switches "-lGgha"))
-    ((equal current-prefix-arg 1)     ; C-u 1
-      (setq dired-actual-switches "-lGgha"))
-    )
-  (setq w (selected-window))
-  (delete-other-windows)
-  (revert-buffer)
-  (image-dired ".")
-  (setq idw (selected-window))
-  (select-window w)
-  (dired-unmark-all-marks)
-  (select-window idw)
-  (image-dired-display-thumbnail-original-image)
-  (image-dired-line-up-dynamic))
+  (defun my/image-dired-sort (arg)
+    "Sort images in various ways."
+    (interactive "p")
+    (cond
+      ((equal current-prefix-arg nil)   ; no C-u
+        (setq dired-actual-switches "-lGghat"))
+      ((equal current-prefix-arg '(4))  ; C-u
+        (setq dired-actual-switches "-lGgha"))
+      ((equal current-prefix-arg 1)     ; C-u 1
+        (setq dired-actual-switches "-lGgha"))
+      )
+    (setq w (selected-window))
+    (delete-other-windows)
+    (revert-buffer)
+    (image-dired ".")
+    (setq idw (selected-window))
+    (select-window w)
+    (dired-unmark-all-marks)
+    (select-window idw)
+    (image-dired-display-thumbnail-original-image)
+    (image-dired-line-up-dynamic))
 
-(defun my/comment-or-uncomment ()
-  "Comments or uncomments the current line or region."
-  (interactive)
-  (if (region-active-p)
-    (comment-or-uncomment-region
-      (region-beginning)(region-end))
-    (comment-or-uncomment-region
-      (line-beginning-position)(line-end-position))))
+  (defun my/comment-or-uncomment ()
+    "Comments or uncomments the current line or region."
+    (interactive)
+    (if (region-active-p)
+      (comment-or-uncomment-region
+        (region-beginning)(region-end))
+      (comment-or-uncomment-region
+        (line-beginning-position)(line-end-position))))
 
-(defun my/get-file-size ()
-  "Calculate files size for all the marked files."
-  (interactive)
-  (let ((files (dired-get-marked-files)) command)
-    (setq command (concat "du -hc "))
-    (dolist (file files)
-      (setq command (concat command (shell-quote-argument file) " ")))
-    (async-shell-command command "*file size*")))
+  (defun my/get-file-size ()
+    "Calculate files size for all the marked files."
+    (interactive)
+    (let ((files (dired-get-marked-files)) command)
+      (setq command (concat "du -hc "))
+      (dolist (file files)
+        (setq command (concat command (shell-quote-argument file) " ")))
+      (async-shell-command command "*file size*")))
 
-(defun dired-get-size ()
-  "Get total size of Dired."
-  (interactive)
-  (let ((files (dired-get-marked-files)))
-    (with-temp-buffer
-      (apply 'call-process "/usr/bin/du" nil t nil "-sch" files)
-      (message "Size of all marked files: %s"
-        (progn
-          (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
-          (match-string 1))))))
+  (defun dired-get-size ()
+    "Get total size of Dired."
+    (interactive)
+    (let ((files (dired-get-marked-files)))
+      (with-temp-buffer
+        (apply 'call-process "/usr/bin/du" nil t nil "-sch" files)
+        (message "Size of all marked files: %s"
+          (progn
+            (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
+            (match-string 1))))))
 
-(defun my/fold ()
-  "Fold text indented same of more than the cursor."
-  (interactive)
-  (if (eq selective-display (1+ (current-column)))
-    (set-selective-display 0)
-    (set-selective-display (1+ (current-column)))))
+  (defun my/fold ()
+    "Fold text indented same of more than the cursor."
+    (interactive)
+    (if (eq selective-display (1+ (current-column)))
+      (set-selective-display 0)
+      (set-selective-display (1+ (current-column)))))
 
-(defun my/project-root ()
-  "Return project root defined by user."
-  (interactive)
-  "Guess the project root of the given FILE-PATH."
-  (let ((root default-directory)
-         (project (project-current)))
-    (when project
-      (cond ((fboundp 'project-root)
-              (setq root (project-root project)))))))
+  (defun my/project-root ()
+    "Return project root defined by user."
+    (interactive)
+    "Guess the project root of the given FILE-PATH."
+    (let ((root default-directory)
+           (project (project-current)))
+      (when project
+        (cond ((fboundp 'project-root)
+                (setq root (project-root project)))))))
 
 (defun my/grep (arg)
   "Wrapper to grep."
   (interactive "p")
-  (if (equal major-mode 'dired-mode)
-    (setq search-term
-      (read-from-minibuffer "Search : "))
-    (setq search-term
-      (read-from-minibuffer "Search : " (thing-at-point 'symbol)))
+  (let ((search-term
+          (if (equal major-mode 'dired-mode)
+            (read-from-minibuffer "Search : ")
+            (read-from-minibuffer "Search : " (thing-at-point 'symbol)))))
+    (if (> arg 1)
+      (progn
+        (setq current-prefix-arg nil)
+        (deadgrep search-term "~")
+        )
+      (deadgrep search-term default-directory))
     )
-  (deadgrep search-term default-directory))
+  )
 
 ;;
 ;; -> window positioning
@@ -1739,27 +1745,3 @@ to produce the following:
     (call-interactively 'indent-for-tab-command)))
 
 (global-set-key (kbd "C-M-j") 'my/insert-uniq-log-word)
-
-(defun my/rename-media ()
-  (interactive)
-  (setq counter 5000)
-  (setq regex-list
-    '(
-       "/[0-9]\\{14\\}--\\(20[0-9-\.].*\\)__"
-       "\\([Ss]creenshot_[0-9_].*\\)__"
-       "\\([Ss]creenshot_[0-9_].*\\)\.jpg"
-       "\\([Yy]ou[Cc]ut_[0-9_].*\\)__"
-       "--\\(VID_[0-9_].*\\)__"
-       "--\\(IMG[0-9_\(\)].*\\)__"
-       "--\\(IMG-[0-9_\(\)].*\\)-WA"
-       )
-    )
-  (dolist (regex-i regex-list)
-    (goto-char (point-min))
-    (while (re-search-forward regex-i nil t)
-      (setq counter (+ counter 1))
-      (replace-match (concat "DSC" (format "%05d" counter)) t t nil 1)
-      (message (match-string 1))
-      )
-    )
-  )

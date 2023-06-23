@@ -81,8 +81,8 @@
   (setq gc-cons-threshold 100000000)
 
   (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			    ("elpa" . "https://elpa.gnu.org/packages/")
-			    ("org" . "https://orgmode.org/elpa/")))
+                            ("elpa" . "https://elpa.gnu.org/packages/")
+                            ("org" . "https://orgmode.org/elpa/")))
 
   ;; (setq package-archives '(("melpa" . "~/emacs-pkgs/melpa")
   ;;                           ("elpa" . "~/emacs-pkgs/elpa")
@@ -277,7 +277,7 @@
   ;; -> use-package one liner
   ;;
   (use-package kbd-mode
-  :load-path "~/.config/emacs/elisp/")
+    :load-path "~/.config/emacs/elisp/")
 
   (use-package dired-x
     :config
@@ -749,6 +749,7 @@
   (global-set-key [f11] 'gud-step)
   (global-set-key [f12] 'xref-find-definitions)
   (global-set-key [S-f12] 'my/grep)
+  (global-set-key (kbd "M-?") 'my/grep)
   (global-set-key (kbd "C-c i d") '(lambda () (interactive)(insert (format-time-string "<%Y-%m-%d>"))))
   (global-set-key (kbd "C-c i t") '(lambda () (interactive)(insert (format-time-string "%Y%m%d%H%M%S"))))
   (define-key dired-mode-map (kbd "C") 'my/rsync)
@@ -796,7 +797,7 @@
   ;;
   (setq debug-on-error t)
   (setq dired-dwim-target t)
-  (setq dired-listing-switches "-alh")
+  (setq dired-listing-switches "-alGgh")
   (setq window-persistent-parameters
     '((parent-id . nil)
        (outer-window-id . nil)
@@ -1084,16 +1085,22 @@
         (cond ((fboundp 'project-root)
                 (setq root (project-root project)))))))
 
-  (defun my/grep (arg)
-    "Wrapper to grep."
-    (interactive "p")
-    (if (equal major-mode 'dired-mode)
-      (setq search-term
-        (read-from-minibuffer "Search : "))
-      (setq search-term
-        (read-from-minibuffer "Search : " (thing-at-point 'symbol)))
-      )
-    (deadgrep search-term default-directory))
+(defun my/grep (arg)
+  "Wrapper to grep."
+  (interactive "p")
+  (let ((search-term
+          (if (equal major-mode 'dired-mode)
+            (read-from-minibuffer "Search : ")
+            (read-from-minibuffer "Search : " (thing-at-point 'symbol)))))
+    (if (> arg 1)
+      (progn
+        (setq current-prefix-arg nil)
+        (deadgrep search-term "~")
+        )
+      (deadgrep search-term default-directory))
+    )
+  )
+
 #+end_src
 
 * window positioning
@@ -1969,29 +1976,5 @@
       (call-interactively 'indent-for-tab-command)))
 
   (global-set-key (kbd "C-M-j") 'my/insert-uniq-log-word)
-
-  (defun my/rename-media ()
-    (interactive)
-    (setq counter 5000)
-    (setq regex-list
-      '(
-         "/[0-9]\\{14\\}--\\(20[0-9-\.].*\\)__"
-         "\\([Ss]creenshot_[0-9_].*\\)__"
-         "\\([Ss]creenshot_[0-9_].*\\)\.jpg"
-         "\\([Yy]ou[Cc]ut_[0-9_].*\\)__"
-         "--\\(VID_[0-9_].*\\)__"
-         "--\\(IMG[0-9_\(\)].*\\)__"
-         "--\\(IMG-[0-9_\(\)].*\\)-WA"
-         )
-      )
-    (dolist (regex-i regex-list)
-      (goto-char (point-min))
-      (while (re-search-forward regex-i nil t)
-        (setq counter (+ counter 1))
-        (replace-match (concat "DSC" (format "%05d" counter)) t t nil 1)
-        (message (match-string 1))
-        )
-      )
-    )
 
 #+end_src
