@@ -407,7 +407,7 @@
   (use-package dired-rainbow
     :defer 0
     :config
-    (dired-rainbow-define-chmod directory "#4d81a8" "d.*")
+    (dired-rainbow-define-chmod directory "#83a3be" "d.*")
     (dired-rainbow-define html "#eb5286"
       ("css" "less" "sass" "scss" "htm" "html" "jhtm" "mht"
         "eml" "mustache" "xhtml"))
@@ -784,7 +784,7 @@
   (tool-bar-mode -1)
   (set-fringe-mode '(20 . 20))
   (show-paren-mode 1)
-  (tooltip-mode -1)
+  (setq tooltip-mode nil)
   (transient-mark-mode 1)
   (winner-mode 1)
 #+end_src
@@ -814,7 +814,7 @@
   (setq shr-max-width 80)
   (setq shr-width 70)
   (setq truncate-partial-width-windows t)
-  (setq tooltip-hide-delay 60)
+  (setq tooltip-hide-delay 0)
   (setq-default fill-column 75)
   (when (fboundp 'imagemagick-register-types)
     (imagemagick-register-types))
@@ -908,8 +908,8 @@
   (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
   (add-hook 'diary-mark-entries-hook 'diary-mark-included-diary-files)
   (add-hook 'proced-mode-hook 'proced-settings)
-  (add-hook 'prog-mode-hook #'hl-line-mode)
-  (add-hook 'text-mode-hook #'hl-line-mode)
+;;  (add-hook 'prog-mode-hook #'hl-line-mode)
+;;  (add-hook 'text-mode-hook #'hl-line-mode)
   (add-hook 'eshell-mode-hook '(lambda ()(interactive)
                                  (define-key eshell-mode-map
                                    (kbd
@@ -1736,245 +1736,259 @@
 * development
 
 #+begin_src elisp
-  ;;
-  ;; -> development
-  ;;
-  (defun tab-predicate-exclusion-p (dir)
-    "
-      Exclusion of directories to convert to spaces."
-    (not
-      (or
-        (string-match "/home/jdyer/DCIM/static" dir)
-        (string-match "/home/jdyer/DCIM/Camera" dir)
-        )
-      )
-    )
-
-  (defun my/cleanup-files (my/tab-width &optional to-tabs)
-    "Cleanup source file formatting."
-    (setq-default tab-width my/tab-width)
-    (setq-default ada-indent my/tab-width)
-    (setq-default c-default-style "linux")
-    (setq-default c-basic-offset my/tab-width)
-
-    (if to-tabs
-      (setq-default indent-tabs-mode t)
-      (setq-default indent-tabs-mode nil))
-
-    (setq-default make-backup-files nil)
-
-    (message all-files nil)
-    (setq all-files nil)
-    (setq all-files
-      (append
-        (directory-files-recursively
-          "/home/jdyer/DCIM" "\\(?:.cpp$\\|\\.c$\\)" nil 'tab-predicate-exclusion-p)
-        (directory-files-recursively
-          "/home/jdyer/DCIM" "\\(?:.ads$\\|\\.adb$\\)" nil 'tab-predicate-exclusion-p)
-        )
-      )
-    (message "----------------------------------------")
-    (message "\nNow cleaning up (may take some time)...")
-    (message "----------------------------------------")
-
-    (dolist (file all-files)
-      (message file)
-      (with-current-buffer (find-file-noselect file)
-        (whitespace-cleanup)
-
-        (if to-tabs
-          (tabify (point-min) (point-max))
-          (untabify (point-min) (point-max)))
-
-        (font-lock-set-defaults)
-        (indent-region (point-min) (point-max))
-        (save-buffer)
-        (kill-buffer)
-        )
-      )
-    (message (concat "Finished Doing : " (number-to-string (length all-files)) " files!")))
-
-  (setq-default mode-line-buffer-identification
-    '(:eval
-       (propertized-buffer-identification "%b")))
-
-  (defun find-file-vanilla ()
-    "Simple find file from current directory using the linux find command."
-    (interactive)
-
-    ;; (setq find-command "find -type f -printf \"$PWD/%p\\0\"")
-    ;; (setq find-command "rg --files --null")
-    (setq find-command "fd --absolute-path --type f -0")
-
-    (setq file-list
-      (mapcar
-        (lambda (path)
-          (file-relative-name path default-directory))
-        (split-string
-          (shell-command-to-string find-command)
-          "\0" t)))
-
-    (setq file
-      (completing-read
-        (format "Find file in %s: " (default-directory))
-        file-list))
-    (when file (find-file (expand-file-name file default-directory))))
-
-  (add-to-list 'auto-mode-alist '("\\.org_archive\\'" . org-mode))
-
-  (setq ada-eglot-gpr-file "/home/jdyer/examples/gnat-examples/menace/menace.gpr")
-
-  ;;
-  ;; —> Pattern exclusions
-  ;;
-  (defun predicate-exclusion-p (dir)
-    "Exclusion of directories."
-    (not
-      (or
-        (string-match "/home/jdyer/examples/CPPrograms/nil" dir)
-        )
-      )
-    )
-
-  (defun my/generate-etags ()
-    "Generate etags for relevant source code files."
-    (interactive)
     ;;
-    ;; —> getting the files
+    ;; -> development
     ;;
-    (message "Getting file list...")
-    (setq all-files nil)
-    (setq all-files
-      (append
-        (directory-files-recursively
-          "/home/jdyer/examples" "\\(?:\\.cpp$\\|\\.c$\\|\\.h$\\)" nil 'predicate-exclusion-p)
-        (directory-files-recursively
-          "/home/jdyer/examples" "\\(?:\\.ads$\\|\\.adb$\\)" nil 'predicate-exclusion-p)
+    (defun tab-predicate-exclusion-p (dir)
+      "
+        Exclusion of directories to convert to spaces."
+      (not
+        (or
+          (string-match "/home/jdyer/DCIM/static" dir)
+          (string-match "/home/jdyer/DCIM/Camera" dir)
+          )
         )
       )
 
-    (dolist (file all-files)
-      (shell-command (concat "etags \"" file "\"g --append -o \"/home/jdyer/examples/TAGS\""))
-      )
-    )
+    (defun my/cleanup-files (my/tab-width &optional to-tabs)
+      "Cleanup source file formatting."
+      (setq-default tab-width my/tab-width)
+      (setq-default ada-indent my/tab-width)
+      (setq-default c-default-style "linux")
+      (setq-default c-basic-offset my/tab-width)
 
-  (defun my-imenu-create-index ()
-    "Create an index using definitions starting with ';; ->'."
-    (let ((index-alist '())
-           (regex "^;;[[:space:]]->\\(.+\\)$"))
-      (save-excursion
-        (goto-char (point-min))
-        (while (re-search-forward regex nil t)
-          (let ((name (s-trim (match-string 1)))
-                 (pos (match-beginning 0)))
-            (push (cons name (set-marker (make-marker) pos)) index-alist))))
-      (setq imenu--index-alist (sort
-                                 index-alist
-                                 (lambda (a b)
-                                   (string< (car a) (car b)))))))
+      (if to-tabs
+        (setq-default indent-tabs-mode t)
+        (setq-default indent-tabs-mode nil))
 
-  ;; (setq imenu-create-index-function #'my-imenu-create-index)
+      (setq-default make-backup-files nil)
 
-  (add-hook 'emacs-lisp-mode-hook
-    (lambda ()
-      (setq imenu-sort-function 'imenu--sort-by-name)
-      (setq imenu-generic-expression
-        '(
-           (nil "^;;[[:space:]]+-> \\(.*\\)$" 1)
-           ("defun" "^.*([[:space:]]*defun[[:space:]]+\\([[:word:]-/]+\\)" 1)
-           ("use-package" "^.*([[:space:]]*use-package[[:space:]]+\\([[:word:]-]+\\)" 1)
-           )
+      (message all-files nil)
+      (setq all-files nil)
+      (setq all-files
+        (append
+          (directory-files-recursively
+            "/home/jdyer/DCIM" "\\(?:.cpp$\\|\\.c$\\)" nil 'tab-predicate-exclusion-p)
+          (directory-files-recursively
+            "/home/jdyer/DCIM" "\\(?:.ads$\\|\\.adb$\\)" nil 'tab-predicate-exclusion-p)
+          )
         )
-      (imenu-add-menubar-index)))
+      (message "----------------------------------------")
+      (message "\nNow cleaning up (may take some time)...")
+      (message "----------------------------------------")
 
-  (defun my/dired-duplicate-file (arg)
-    "Duplicate the current file in Dired."
-    (interactive "p")
-    (let ((filename (dired-get-filename)))
-      (setq target (concat (file-name-sans-extension filename)
-                     "-old"
-                     (if (> arg 1) (number-to-string arg))
-                     (file-name-extension filename t)))
-      (if (file-directory-p filename)
-        (copy-directory filename target)
-        (copy-file filename target))
+      (dolist (file all-files)
+        (message file)
+        (with-current-buffer (find-file-noselect file)
+          (whitespace-cleanup)
+
+          (if to-tabs
+            (tabify (point-min) (point-max))
+            (untabify (point-min) (point-max)))
+
+          (font-lock-set-defaults)
+          (indent-region (point-min) (point-max))
+          (save-buffer)
+          (kill-buffer)
+          )
+        )
+      (message (concat "Finished Doing : " (number-to-string (length all-files)) " files!")))
+
+    (setq-default mode-line-buffer-identification
+      '(:eval
+         (propertized-buffer-identification "%b")))
+
+    (defun find-file-vanilla ()
+      "Simple find file from current directory using the linux find command."
+      (interactive)
+
+      ;; (setq find-command "find -type f -printf \"$PWD/%p\\0\"")
+      ;; (setq find-command "rg --files --null")
+      (setq find-command "fd --absolute-path --type f -0")
+
+      (setq file-list
+        (mapcar
+          (lambda (path)
+            (file-relative-name path default-directory))
+          (split-string
+            (shell-command-to-string find-command)
+            "\0" t)))
+
+      (setq file
+        (completing-read
+          (format "Find file in %s: " (default-directory))
+          file-list))
+      (when file (find-file (expand-file-name file default-directory))))
+
+    (add-to-list 'auto-mode-alist '("\\.org_archive\\'" . org-mode))
+
+    (setq ada-eglot-gpr-file "/home/jdyer/examples/gnat-examples/menace/menace.gpr")
+
+    ;;
+    ;; —> Pattern exclusions
+    ;;
+    (defun predicate-exclusion-p (dir)
+      "Exclusion of directories."
+      (not
+        (or
+          (string-match "/home/jdyer/examples/CPPrograms/nil" dir)
+          )
+        )
       )
-    )
 
-  (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
+    (defun my/generate-etags ()
+      "Generate etags for relevant source code files."
+      (interactive)
+      ;;
+      ;; —> getting the files
+      ;;
+      (message "Getting file list...")
+      (setq all-files nil)
+      (setq all-files
+        (append
+          (directory-files-recursively
+            "/home/jdyer/examples" "\\(?:\\.cpp$\\|\\.c$\\|\\.h$\\)" nil 'predicate-exclusion-p)
+          (directory-files-recursively
+            "/home/jdyer/examples" "\\(?:\\.ads$\\|\\.adb$\\)" nil 'predicate-exclusion-p)
+          )
+        )
 
-  (add-hook 'yaml-mode-hook
-    '(lambda ()
-       (define-key yaml-mode-map "\C-m" 'newline-and-indent)
-       (highlight-indentation-mode)
-       ))
+      (dolist (file all-files)
+        (shell-command (concat "etags \"" file "\"g --append -o \"/home/jdyer/examples/TAGS\""))
+        )
+      )
 
-  ;; (global-set-key (kbd "C-c >") 'indent-tools-hydra/body)
-
-  ;; (set-face-background 'highlight-indentation-face "#e3e3d3")
-  ;; (set-face-background 'highlight-indentation-current-column-face "#c3b3b3")
-
-  (defvar my/uniq-log-word "poop")
-
-  (defun my/insert-uniq-log-word (prefix)
-    "Inserts `my/uniq-log-word' incrementing counter.
-    With PREFIX, change `my/uniq-log-word'."
-    (interactive "P")
-    (let* ((word (cond (prefix
-                         (setq my/uniq-log-word
-                           (read-string "Log word: ")))
-                   ((region-active-p)
-                     (setq my/uniq-log-word
-                       (buffer-substring (region-beginning)
-                         (region-end))))
-                   (my/uniq-log-word
-                     my/uniq-log-word)
-                   (t
-                     "Reached")))
-            (config
-              (cond
-                ((equal major-mode 'sh-mode)
-                  (cons (format "echo \"%s: \\([0-9]+\\)\"" word)
-                    (format "echo \"%s: %%s\"" word)))
-                ((equal major-mode 'emacs-lisp-mode)
-                  (cons (format "(message \"%s: \\([0-9]+\\)\")" word)
-                    (format "(message \"%s: %%s\")" word)))
-                ((equal major-mode 'swift-mode)
-                  (cons (format "print(\"%s: \\([0-9]+\\)\")" word)
-                    (format "print(\"%s: %%s\")" word)))
-                ((equal major-mode 'ada-mode)
-                  (cons (format "Ada.Text_Io.Put_Line (\"%s: \\([0-9]+\\)\");" word)
-                    (format "Ada.Text_Io.Put_Line (\"%s: %%s\");" word)))
-                ((equal major-mode 'c++-mode)
-                  (cons (format "std::cout << \"%s: \\([0-9]+\\)\" << std::endl;" word)
-                    (format "std::cout << \"%s: %%s\" << std::endl;" word)))
-                (t
-                  (error "%s not supported" major-mode))))
-            (match-regexp (car config))
-            (format-string (cdr config))
-            (max-num 0)
-            (case-fold-search nil))
-
-      (when my/uniq-log-word
+    (defun my-imenu-create-index ()
+      "Create an index using definitions starting with ';; ->'."
+      (let ((index-alist '())
+             (regex "^;;[[:space:]]->\\(.+\\)$"))
         (save-excursion
           (goto-char (point-min))
-          (while (re-search-forward match-regexp nil t)
-            (when (> (string-to-number (match-string 1)) max-num)
-              (setq max-num (string-to-number (match-string 1)))))))
+          (while (re-search-forward regex nil t)
+            (let ((name (s-trim (match-string 1)))
+                   (pos (match-beginning 0)))
+              (push (cons name (set-marker (make-marker) pos)) index-alist))))
+        (setq imenu--index-alist (sort
+                                   index-alist
+                                   (lambda (a b)
+                                     (string< (car a) (car b)))))))
 
-      (unless (looking-at-p "^ *$")
-        (end-of-line))
+    ;; (setq imenu-create-index-function #'my-imenu-create-index)
 
-      (insert (concat
-                (if (looking-at-p "^ *$") "" "\n")
-                (format format-string
-                  (if my/uniq-log-word
-                    (number-to-string (1+ max-num))
-                    (string-trim
-                      (shell-command-to-string
-                        "grep -E '^[a-z]{6}$' /usr/share/dict/words | shuf -n 1"))))))
-      (call-interactively 'indent-for-tab-command)))
+    (add-hook 'emacs-lisp-mode-hook
+      (lambda ()
+        (setq imenu-sort-function 'imenu--sort-by-name)
+        (setq imenu-generic-expression
+          '(
+             (nil "^;;[[:space:]]+-> \\(.*\\)$" 1)
+             ("defun" "^.*([[:space:]]*defun[[:space:]]+\\([[:word:]-/]+\\)" 1)
+             ("use-package" "^.*([[:space:]]*use-package[[:space:]]+\\([[:word:]-]+\\)" 1)
+             )
+          )
+        (imenu-add-menubar-index)))
 
-  (global-set-key (kbd "C-M-j") 'my/insert-uniq-log-word)
+    (defun my/dired-duplicate-file (arg)
+      "Duplicate the current file in Dired."
+      (interactive "p")
+      (let ((filename (dired-get-filename)))
+        (setq target (concat (file-name-sans-extension filename)
+                       "-old"
+                       (if (> arg 1) (number-to-string arg))
+                       (file-name-extension filename t)))
+        (if (file-directory-p filename)
+          (copy-directory filename target)
+          (copy-file filename target))
+        )
+      )
 
+    (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
+
+    (add-hook 'yaml-mode-hook
+      '(lambda ()
+         (define-key yaml-mode-map "\C-m" 'newline-and-indent)
+         (highlight-indentation-mode)
+         ))
+
+    ;; (global-set-key (kbd "C-c >") 'indent-tools-hydra/body)
+
+    ;; (set-face-background 'highlight-indentation-face "#e3e3d3")
+    ;; (set-face-background 'highlight-indentation-current-column-face "#c3b3b3")
+
+    (defvar my/uniq-log-word "poop")
+
+    (defun my/insert-uniq-log-word (prefix)
+      "Inserts `my/uniq-log-word' incrementing counter.
+      With PREFIX, change `my/uniq-log-word'."
+      (interactive "P")
+      (let* ((word (cond (prefix
+                           (setq my/uniq-log-word
+                             (read-string "Log word: ")))
+                     ((region-active-p)
+                       (setq my/uniq-log-word
+                         (buffer-substring (region-beginning)
+                           (region-end))))
+                     (my/uniq-log-word
+                       my/uniq-log-word)
+                     (t
+                       "Reached")))
+              (config
+                (cond
+                  ((equal major-mode 'sh-mode)
+                    (cons (format "echo \"%s: \\([0-9]+\\)\"" word)
+                      (format "echo \"%s: %%s\"" word)))
+                  ((equal major-mode 'emacs-lisp-mode)
+                    (cons (format "(message \"%s: \\([0-9]+\\)\")" word)
+                      (format "(message \"%s: %%s\")" word)))
+                  ((equal major-mode 'swift-mode)
+                    (cons (format "print(\"%s: \\([0-9]+\\)\")" word)
+                      (format "print(\"%s: %%s\")" word)))
+                  ((equal major-mode 'ada-mode)
+                    (cons (format "Ada.Text_Io.Put_Line (\"%s: \\([0-9]+\\)\");" word)
+                      (format "Ada.Text_Io.Put_Line (\"%s: %%s\");" word)))
+                  ((equal major-mode 'c++-mode)
+                    (cons (format "std::cout << \"%s: \\([0-9]+\\)\" << std::endl;" word)
+                      (format "std::cout << \"%s: %%s\" << std::endl;" word)))
+                  (t
+                    (error "%s not supported" major-mode))))
+              (match-regexp (car config))
+              (format-string (cdr config))
+              (max-num 0)
+              (case-fold-search nil))
+
+        (when my/uniq-log-word
+          (save-excursion
+            (goto-char (point-min))
+            (while (re-search-forward match-regexp nil t)
+              (when (> (string-to-number (match-string 1)) max-num)
+                (setq max-num (string-to-number (match-string 1)))))))
+
+        (unless (looking-at-p "^ *$")
+          (end-of-line))
+
+        (insert (concat
+                  (if (looking-at-p "^ *$") "" "\n")
+                  (format format-string
+                    (if my/uniq-log-word
+                      (number-to-string (1+ max-num))
+                      (string-trim
+                        (shell-command-to-string
+                          "grep -E '^[a-z]{6}$' /usr/share/dict/words | shuf -n 1"))))))
+        (call-interactively 'indent-for-tab-command)))
+
+    (global-set-key (kbd "C-M-j") 'my/insert-uniq-log-word)
+
+  (defun test (arg)
+    (interactive "p")
+    (when (re-search-backward "#\\([[:xdigit:]]\\{6\\}\\)" nil t)
+      (let* ((value (string-to-number (match-string 1) 16))
+              (new-value
+                (if (> arg 1)
+                  (+ value (string-to-number "010101" 16))
+                  (- value (string-to-number "010101" 16))
+                  )))
+        (message (number-to-string arg))
+        (replace-match (message (format "%06x" new-value)) nil nil nil 1)
+        )
+      )
+    )
 #+end_src
