@@ -19,9 +19,13 @@
   (package-install 'use-package))
 
 (require 'use-package)
+(setq use-package-compute-statistics t)
+;; and run use-package-report after init.
 (setq use-package-always-ensure t)
 (setq use-package-verbose t)
 (setq warning-minimum-level :emergency)
+
+(require 'dired-x)
 
 ;;
 ;; -> packages (extra)
@@ -166,19 +170,6 @@
 ;;
 (use-package kbd-mode
   :load-path "~/.config/emacs/elisp/")
-
-(use-package dired-x
-  :config
-  (setq dired-guess-shell-alist-user
-    (append '(
-               ("\\.\\(jpg\\|jpeg\\|png\\|gif\\|bmp\\)$" "gwenview")
-               ("\\.\\(mp4\\|mkv\\|avi\\|mov\\|wmv\\|flv\\|mpg\\)$" "mpv")
-               ("\\.\\(mp3\\|wav\\|ogg\\|\\)$" "mpv")
-               ("\\.\\(odt\\|ods\\)$" "libreoffice")
-               ("\\.\\(html\\|htm\\)$" "firefox")
-               ("\\.\\(pdf\\|epub\\)$" "okular")
-               )
-      dired-guess-shell-alist-user)))
 (use-package sxhkdrc-mode)
 (add-to-list 'auto-mode-alist `(,(rx "sxhkdrc" string-end) . sxhkdrc-mode))
 (use-package company)
@@ -199,33 +190,6 @@
 ;;
 ;; -> use-package
 ;;
-(use-package org-tempo)
-(use-package org
-  :config
-  (setq org-tags-sort-function 'org-string-collate-greaterp)
-  (setq org-agenda-include-diary t)
-  (setq org-export-with-sub-superscripts nil)
-  (setq org-hugo-base-dir "~/DCIM")
-  (setq org-image-actual-width (list 50))
-  (setq org-log-done 'time)
-  (setq org-startup-folded t)
-  (setq org-startup-indented t)
-  (setq org-startup-with-inline-images t)
-  (setq org-tags-column 0)
-  (setq org-toggle-link-display 1)
-  (setq org-todo-keywords
-    '((sequence "TODO" "DOIN" "WAIT" "IGNR" "ORDR" "SENT" "ARRV" "|" "CANC" "DONE")))
-  (setq org-todo-keyword-faces
-    '(("TODO" . "#e56")
-       ("DOIN" . "#57a")
-       ("WAIT" . "#b74")
-       ("IGNR" . "#b7e")
-       ("ORDR" . "#b4e")
-       ("SENT" . "#b4e")
-       ("ARRV" . "#f52")
-       ("CANC" . "#a32")
-       ("DONE" . "#7a6"))))
-
 (use-package toc-org
   :commands toc-org-enable
   :init (add-hook 'org-mode-hook 'toc-org-enable))
@@ -620,6 +584,15 @@
 ;;
 ;; -> setqs
 ;;
+(setq dired-guess-shell-alist-user
+'(
+   ("\\.\\(jpg\\|jpeg\\|png\\|gif\\|bmp\\)$" "gwenview")
+   ("\\.\\(mp4\\|mkv\\|avi\\|mov\\|wmv\\|flv\\|mpg\\)$" "mpv")
+   ("\\.\\(mp3\\|wav\\|ogg\\|\\)$" "mpv")
+   ("\\.\\(odt\\|ods\\)$" "libreoffice")
+   ("\\.\\(html\\|htm\\)$" "firefox")
+   ("\\.\\(pdf\\|epub\\)$" "okular")
+   ))
 (setq debug-on-error t)
 (setq dired-dwim-target t)
 (setq dired-listing-switches "-alGgh")
@@ -713,184 +686,182 @@
   kept-old-versions 5)    ; and how many of the old
 
 ;;
-  ;; -> hooks
-  ;;
-  ;;  (add-hook 'dired-mode-hook 'dired-hide-details-mode)
-  (add-hook 'before-save-hook 'delete-trailing-whitespace)
-  (add-hook 'calendar-mode-hook 'diary-mark-entries)
-  (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
-  (add-hook 'diary-mark-entries-hook 'diary-mark-included-diary-files)
-  (add-hook 'proced-mode-hook 'proced-settings)
+;; -> hooks
+;;
+(add-hook 'dired-mode-hook #'dired-hide-details-mode)
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(add-hook 'calendar-mode-hook 'diary-mark-entries)
+(add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
+(add-hook 'diary-mark-entries-hook 'diary-mark-included-diary-files)
+(add-hook 'proced-mode-hook 'proced-settings)
 ;;  (add-hook 'prog-mode-hook #'hl-line-mode)
 ;;  (add-hook 'text-mode-hook #'hl-line-mode)
-  (add-hook 'eshell-mode-hook '(lambda ()(interactive)
-                                 (define-key eshell-mode-map
-                                   (kbd
-                                     "TAB") 'pcomplete-expand-and-complete)))
-  (add-hook 'shell-mode-hook '(lambda ()(interactive)
-                                (define-key shell-mode-map
-                                  (kbd
-                                    "TAB") 'pcomplete-expand-and-complete)))
+(add-hook 'eshell-mode-hook '(lambda ()(interactive)
+                               (define-key eshell-mode-map
+                                 (kbd
+                                   "TAB") 'pcomplete-expand-and-complete)))
+(add-hook 'shell-mode-hook '(lambda ()(interactive)
+                              (define-key shell-mode-map
+                                (kbd
+                                  "TAB") 'pcomplete-expand-and-complete)))
 
 ;;
 ;; -> custom settings
 ;;
 (custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(case-fold-search t)
- '(connection-local-criteria-alist
-    '(((:application eshell)
-        eshell-connection-default-profile)) t)
- '(connection-local-profile-alist
-    '((eshell-connection-default-profile
-        (eshell-path-env-list))) t)
- '(custom-enabled-themes '(gruvbox))
- '(custom-safe-themes t)
- '(delete-selection-mode nil)
- '(ede-project-directories
-    '("/home/jdyer/DCIM/content" "/home/jdyer/nas" "/home/jdyer/examples" "/home/jdyer/bin" "/home/jdyer/DCIM"))
- '(eshell-banner-message "")
- '(eshell-directory-name "~/DCIM/Backup/eshell")
- '(fit-window-to-buffer-horizontally t)
- '(hippie-expand-try-functions-list
-    '(try-complete-file-name-partially try-complete-file-name try-expand-all-abbrevs try-expand-dabbrev try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill try-complete-lisp-symbol-partially try-complete-lisp-symbol))
- '(package-selected-packages
-    '(org-tempo dired-x ztree yaml-mode visual-fill-column vertico use-package toml-mode toc-org sxhkdrc-mode rainbow-mode powerthesaurus ox-hugo org-rainbow-tags org-bullets org-ai orderless marginalia magit lorem-ipsum jinx indent-tools highlight-indentation gruvbox-theme general find-file-rg emms embark-consult elfeed ef-themes dwim-shell-command doom-themes doom-modeline dired-rainbow deadgrep company ada-mode))
- '(warning-suppress-log-types '((frameset)))
- '(warning-suppress-types '((frameset))))
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+  '(case-fold-search t)
+  '(connection-local-criteria-alist
+     '(((:application eshell)
+         eshell-connection-default-profile)) t)
+  '(connection-local-profile-alist
+     '((eshell-connection-default-profile
+         (eshell-path-env-list))) t)
+  '(custom-enabled-themes '(gruvbox))
+  '(custom-safe-themes t)
+  '(delete-selection-mode nil)
+  '(ede-project-directories
+     '("/home/jdyer/DCIM/content" "/home/jdyer/nas" "/home/jdyer/examples" "/home/jdyer/bin" "/home/jdyer/DCIM"))
+  '(eshell-banner-message "")
+  '(eshell-directory-name "~/DCIM/Backup/eshell")
+  '(fit-window-to-buffer-horizontally t)
+  '(hippie-expand-try-functions-list
+     '(try-complete-file-name-partially try-complete-file-name try-expand-all-abbrevs try-expand-dabbrev try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill try-complete-lisp-symbol-partially try-complete-lisp-symbol))
+  '(warning-suppress-log-types '((frameset)))
+  '(warning-suppress-types '((frameset))))
 
 ;;
-  ;; -> defuns
-  ;;
-  (defun my/eshell ()
-    "Toggle shell."
-    (interactive)
-    (if (window-live-p (get-buffer-window "*eshell*"))
-      (delete-window (get-buffer-window "*eshell*"))
-      (eshell)))
+;; -> defuns
+;;
+(defun my/eshell ()
+  "Toggle shell."
+  (interactive)
+  (if (window-live-p (get-buffer-window "*eshell*"))
+    (delete-window (get-buffer-window "*eshell*"))
+    (eshell)))
 
-  (defun my/org-sort-tags ()
-    "On a heading sort the tags."
-    (interactive)
-    (when (org-at-heading-p)
-      (org-set-tags (sort (org-get-tags) #'string<))))
+(defun my/org-sort-tags ()
+  "On a heading sort the tags."
+  (interactive)
+  (when (org-at-heading-p)
+    (org-set-tags (sort (org-get-tags) #'string<))))
 
-  (defun proced-settings()
-    (proced-toggle-auto-update 1))
+(defun proced-settings()
+  (proced-toggle-auto-update 1))
 
-  (defun my-show-elfeed (buffer)
-    (display-buffer buffer))
+(defun my-show-elfeed (buffer)
+  (display-buffer buffer))
 
-  (defun my/resize-window (delta &optional horizontal)
-    "Resize window back and forth."
-    (interactive)
-    (let ((edge (if horizontal
-                  (car (window-edges))
-                  (car (cdr (window-edges))))))
-      (if (= edge 0)
-        (enlarge-window delta horizontal)
-        (shrink-window delta horizontal))))
+(defun my/resize-window (delta &optional horizontal)
+  "Resize window back and forth."
+  (interactive)
+  (let ((edge (if horizontal
+                (car (window-edges))
+                (car (cdr (window-edges))))))
+    (if (= edge 0)
+      (enlarge-window delta horizontal)
+      (shrink-window delta horizontal))))
 
-  (defun my/index ()
-    "Generate occur index."
-    (interactive)
-    (beginning-of-buffer)
-    (occur ";;[[:space:]]->"))
+(defun my/index ()
+  "Generate occur index."
+  (interactive)
+  (beginning-of-buffer)
+  (occur ";;[[:space:]]->"))
 
-  (defun save-macro (name)
-    "Save a macro."
-    (interactive "SName of the macro: ")
-    (kmacro-name-last-macro name)
-    (find-file user-init-file)
-    (goto-char (point-max))
-    (newline)
-    (insert-kbd-macro name)
-    (newline))
+(defun save-macro (name)
+  "Save a macro."
+  (interactive "SName of the macro: ")
+  (kmacro-name-last-macro name)
+  (find-file user-init-file)
+  (goto-char (point-max))
+  (newline)
+  (insert-kbd-macro name)
+  (newline))
 
-  (defun my/rsync (dest)
-    "Rsync copy."
-    (interactive
-      (list
-        (expand-file-name (read-file-name "rsync to:"
-                            (dired-dwim-target-directory)))))
-    (let ((files (dired-get-marked-files nil current-prefix-arg))
-           (command "rsync -arvz --progress "))
-      (dolist (file files)
-        (setq command (concat command (shell-quote-argument file) " ")))
-      (setq command (concat command (shell-quote-argument dest)))
-      (async-shell-command command "*rsync*")
-      (other-window 1)))
+(defun my/rsync (dest)
+  "Rsync copy."
+  (interactive
+    (list
+      (expand-file-name (read-file-name "rsync to:"
+                          (dired-dwim-target-directory)))))
+  (let ((files (dired-get-marked-files nil current-prefix-arg))
+         (command "rsync -arvz --progress "))
+    (dolist (file files)
+      (setq command (concat command (shell-quote-argument file) " ")))
+    (setq command (concat command (shell-quote-argument dest)))
+    (async-shell-command command "*rsync*")
+    (other-window 1)))
 
-  (defun my/image-dired-sort (arg)
-    "Sort images in various ways."
-    (interactive "p")
-    (cond
-      ((equal current-prefix-arg nil)   ; no C-u
-        (setq dired-actual-switches "-lGghat"))
-      ((equal current-prefix-arg '(4))  ; C-u
-        (setq dired-actual-switches "-lGgha"))
-      ((equal current-prefix-arg 1)     ; C-u 1
-        (setq dired-actual-switches "-lGgha"))
-      )
-    (setq w (selected-window))
-    (delete-other-windows)
-    (revert-buffer)
-    (image-dired ".")
-    (setq idw (selected-window))
-    (select-window w)
-    (dired-unmark-all-marks)
-    (select-window idw)
-    (image-dired-display-thumbnail-original-image)
-    (image-dired-line-up-dynamic))
+(defun my/image-dired-sort (arg)
+  "Sort images in various ways."
+  (interactive "p")
+  (cond
+    ((equal current-prefix-arg nil)   ; no C-u
+      (setq dired-actual-switches "-lGghat"))
+    ((equal current-prefix-arg '(4))  ; C-u
+      (setq dired-actual-switches "-lGgha"))
+    ((equal current-prefix-arg 1)     ; C-u 1
+      (setq dired-actual-switches "-lGgha"))
+    )
+  (setq w (selected-window))
+  (delete-other-windows)
+  (revert-buffer)
+  (image-dired ".")
+  (setq idw (selected-window))
+  (select-window w)
+  (dired-unmark-all-marks)
+  (select-window idw)
+  (image-dired-display-thumbnail-original-image)
+  (image-dired-line-up-dynamic))
 
-  (defun my/comment-or-uncomment ()
-    "Comments or uncomments the current line or region."
-    (interactive)
-    (if (region-active-p)
-      (comment-or-uncomment-region
-        (region-beginning)(region-end))
-      (comment-or-uncomment-region
-        (line-beginning-position)(line-end-position))))
+(defun my/comment-or-uncomment ()
+  "Comments or uncomments the current line or region."
+  (interactive)
+  (if (region-active-p)
+    (comment-or-uncomment-region
+      (region-beginning)(region-end))
+    (comment-or-uncomment-region
+      (line-beginning-position)(line-end-position))))
 
-  (defun my/get-file-size ()
-    "Calculate files size for all the marked files."
-    (interactive)
-    (let ((files (dired-get-marked-files)) command)
-      (setq command (concat "du -hc "))
-      (dolist (file files)
-        (setq command (concat command (shell-quote-argument file) " ")))
-      (async-shell-command command "*file size*")))
+(defun my/get-file-size ()
+  "Calculate files size for all the marked files."
+  (interactive)
+  (let ((files (dired-get-marked-files)) command)
+    (setq command (concat "du -hc "))
+    (dolist (file files)
+      (setq command (concat command (shell-quote-argument file) " ")))
+    (async-shell-command command "*file size*")))
 
-  (defun dired-get-size ()
-    "Get total size of Dired."
-    (interactive)
-    (let ((files (dired-get-marked-files)))
-      (with-temp-buffer
-        (apply 'call-process "/usr/bin/du" nil t nil "-sch" files)
-        (message "Size of all marked files: %s"
-          (progn
-            (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
-            (match-string 1))))))
+(defun dired-get-size ()
+  "Get total size of Dired."
+  (interactive)
+  (let ((files (dired-get-marked-files)))
+    (with-temp-buffer
+      (apply 'call-process "/usr/bin/du" nil t nil "-sch" files)
+      (message "Size of all marked files: %s"
+        (progn
+          (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
+          (match-string 1))))))
 
-  (defun my/fold ()
-    "Fold text indented same of more than the cursor."
-    (interactive)
-    (if (eq selective-display (1+ (current-column)))
-      (set-selective-display 0)
-      (set-selective-display (1+ (current-column)))))
+(defun my/fold ()
+  "Fold text indented same of more than the cursor."
+  (interactive)
+  (if (eq selective-display (1+ (current-column)))
+    (set-selective-display 0)
+    (set-selective-display (1+ (current-column)))))
 
-  (defun my/project-root ()
-    "Return project root defined by user."
-    (interactive)
-    "Guess the project root of the given FILE-PATH."
-    (let ((root default-directory)
-           (project (project-current)))
-      (when project
-        (cond ((fboundp 'project-root)
-                (setq root (project-root project)))))))
+(defun my/project-root ()
+  "Return project root defined by user."
+  (interactive)
+  "Guess the project root of the given FILE-PATH."
+  (let ((root default-directory)
+         (project (project-current)))
+    (when project
+      (cond ((fboundp 'project-root)
+              (setq root (project-root project)))))))
 
 (defun my/grep (arg)
   "Wrapper to grep."
@@ -1365,12 +1336,12 @@ to produce the following:
 ;; -> custom set-faces
 ;;
 (custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.2 :family "Source Code Pro"))))
- '(mode-line ((t (:background "#000000" :foreground "#f4f4f4" :box nil)))))
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+  '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.2 :family "Source Code Pro"))))
+  '(mode-line ((t (:background "#000000" :foreground "#f4f4f4" :box nil)))))
 
 ;;
 ;; -> visual truncation and line wrapping
@@ -1506,245 +1477,245 @@ to produce the following:
 (global-set-key (kbd "C-c x") #'my/hugo-org-export-subtree)
 
 ;;
-  ;; -> development
+;; -> development
+;;
+(defun tab-predicate-exclusion-p (dir)
+  "
+        Exclusion of directories to convert to spaces."
+  (not
+    (or
+      (string-match "/home/jdyer/DCIM/static" dir)
+      (string-match "/home/jdyer/DCIM/Camera" dir)
+      )
+    )
+  )
+
+(defun my/cleanup-files (my/tab-width &optional to-tabs)
+  "Cleanup source file formatting."
+  (setq-default tab-width my/tab-width)
+  (setq-default ada-indent my/tab-width)
+  (setq-default c-default-style "linux")
+  (setq-default c-basic-offset my/tab-width)
+
+  (if to-tabs
+    (setq-default indent-tabs-mode t)
+    (setq-default indent-tabs-mode nil))
+
+  (setq-default make-backup-files nil)
+
+  (message all-files nil)
+  (setq all-files nil)
+  (setq all-files
+    (append
+      (directory-files-recursively
+        "/home/jdyer/DCIM" "\\(?:.cpp$\\|\\.c$\\)" nil 'tab-predicate-exclusion-p)
+      (directory-files-recursively
+        "/home/jdyer/DCIM" "\\(?:.ads$\\|\\.adb$\\)" nil 'tab-predicate-exclusion-p)
+      )
+    )
+  (message "----------------------------------------")
+  (message "\nNow cleaning up (may take some time)...")
+  (message "----------------------------------------")
+
+  (dolist (file all-files)
+    (message file)
+    (with-current-buffer (find-file-noselect file)
+      (whitespace-cleanup)
+
+      (if to-tabs
+        (tabify (point-min) (point-max))
+        (untabify (point-min) (point-max)))
+
+      (font-lock-set-defaults)
+      (indent-region (point-min) (point-max))
+      (save-buffer)
+      (kill-buffer)
+      )
+    )
+  (message (concat "Finished Doing : " (number-to-string (length all-files)) " files!")))
+
+(setq-default mode-line-buffer-identification
+  '(:eval
+     (propertized-buffer-identification "%b")))
+
+(defun find-file-vanilla ()
+  "Simple find file from current directory using the linux find command."
+  (interactive)
+
+  ;; (setq find-command "find -type f -printf \"$PWD/%p\\0\"")
+  ;; (setq find-command "rg --files --null")
+  (setq find-command "fd --absolute-path --type f -0")
+
+  (setq file-list
+    (mapcar
+      (lambda (path)
+        (file-relative-name path default-directory))
+      (split-string
+        (shell-command-to-string find-command)
+        "\0" t)))
+
+  (setq file
+    (completing-read
+      (format "Find file in %s: " (default-directory))
+      file-list))
+  (when file (find-file (expand-file-name file default-directory))))
+
+(add-to-list 'auto-mode-alist '("\\.org_archive\\'" . org-mode))
+
+(setq ada-eglot-gpr-file "/home/jdyer/examples/gnat-examples/menace/menace.gpr")
+
+;;
+;; —> Pattern exclusions
+;;
+(defun predicate-exclusion-p (dir)
+  "Exclusion of directories."
+  (not
+    (or
+      (string-match "/home/jdyer/examples/CPPrograms/nil" dir)
+      )
+    )
+  )
+
+(defun my/generate-etags ()
+  "Generate etags for relevant source code files."
+  (interactive)
   ;;
-  (defun tab-predicate-exclusion-p (dir)
-    "
-      Exclusion of directories to convert to spaces."
-    (not
-      (or
-        (string-match "/home/jdyer/DCIM/static" dir)
-        (string-match "/home/jdyer/DCIM/Camera" dir)
-        )
+  ;; —> getting the files
+  ;;
+  (message "Getting file list...")
+  (setq all-files nil)
+  (setq all-files
+    (append
+      (directory-files-recursively
+        "/home/jdyer/examples" "\\(?:\\.cpp$\\|\\.c$\\|\\.h$\\)" nil 'predicate-exclusion-p)
+      (directory-files-recursively
+        "/home/jdyer/examples" "\\(?:\\.ads$\\|\\.adb$\\)" nil 'predicate-exclusion-p)
       )
     )
 
-  (defun my/cleanup-files (my/tab-width &optional to-tabs)
-    "Cleanup source file formatting."
-    (setq-default tab-width my/tab-width)
-    (setq-default ada-indent my/tab-width)
-    (setq-default c-default-style "linux")
-    (setq-default c-basic-offset my/tab-width)
-
-    (if to-tabs
-      (setq-default indent-tabs-mode t)
-      (setq-default indent-tabs-mode nil))
-
-    (setq-default make-backup-files nil)
-
-    (message all-files nil)
-    (setq all-files nil)
-    (setq all-files
-      (append
-        (directory-files-recursively
-          "/home/jdyer/DCIM" "\\(?:.cpp$\\|\\.c$\\)" nil 'tab-predicate-exclusion-p)
-        (directory-files-recursively
-          "/home/jdyer/DCIM" "\\(?:.ads$\\|\\.adb$\\)" nil 'tab-predicate-exclusion-p)
-        )
-      )
-    (message "----------------------------------------")
-    (message "\nNow cleaning up (may take some time)...")
-    (message "----------------------------------------")
-
-    (dolist (file all-files)
-      (message file)
-      (with-current-buffer (find-file-noselect file)
-        (whitespace-cleanup)
-
-        (if to-tabs
-          (tabify (point-min) (point-max))
-          (untabify (point-min) (point-max)))
-
-        (font-lock-set-defaults)
-        (indent-region (point-min) (point-max))
-        (save-buffer)
-        (kill-buffer)
-        )
-      )
-    (message (concat "Finished Doing : " (number-to-string (length all-files)) " files!")))
-
-  (setq-default mode-line-buffer-identification
-    '(:eval
-       (propertized-buffer-identification "%b")))
-
-  (defun find-file-vanilla ()
-    "Simple find file from current directory using the linux find command."
-    (interactive)
-
-    ;; (setq find-command "find -type f -printf \"$PWD/%p\\0\"")
-    ;; (setq find-command "rg --files --null")
-    (setq find-command "fd --absolute-path --type f -0")
-
-    (setq file-list
-      (mapcar
-        (lambda (path)
-          (file-relative-name path default-directory))
-        (split-string
-          (shell-command-to-string find-command)
-          "\0" t)))
-
-    (setq file
-      (completing-read
-        (format "Find file in %s: " (default-directory))
-        file-list))
-    (when file (find-file (expand-file-name file default-directory))))
-
-  (add-to-list 'auto-mode-alist '("\\.org_archive\\'" . org-mode))
-
-  (setq ada-eglot-gpr-file "/home/jdyer/examples/gnat-examples/menace/menace.gpr")
-
-  ;;
-  ;; —> Pattern exclusions
-  ;;
-  (defun predicate-exclusion-p (dir)
-    "Exclusion of directories."
-    (not
-      (or
-        (string-match "/home/jdyer/examples/CPPrograms/nil" dir)
-        )
-      )
+  (dolist (file all-files)
+    (shell-command (concat "etags \"" file "\"g --append -o \"/home/jdyer/examples/TAGS\""))
     )
+  )
 
-  (defun my/generate-etags ()
-    "Generate etags for relevant source code files."
-    (interactive)
-    ;;
-    ;; —> getting the files
-    ;;
-    (message "Getting file list...")
-    (setq all-files nil)
-    (setq all-files
-      (append
-        (directory-files-recursively
-          "/home/jdyer/examples" "\\(?:\\.cpp$\\|\\.c$\\|\\.h$\\)" nil 'predicate-exclusion-p)
-        (directory-files-recursively
-          "/home/jdyer/examples" "\\(?:\\.ads$\\|\\.adb$\\)" nil 'predicate-exclusion-p)
-        )
-      )
+(defun my-imenu-create-index ()
+  "Create an index using definitions starting with ';; ->'."
+  (let ((index-alist '())
+         (regex "^;;[[:space:]]->\\(.+\\)$"))
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward regex nil t)
+        (let ((name (s-trim (match-string 1)))
+               (pos (match-beginning 0)))
+          (push (cons name (set-marker (make-marker) pos)) index-alist))))
+    (setq imenu--index-alist (sort
+                               index-alist
+                               (lambda (a b)
+                                 (string< (car a) (car b)))))))
 
-    (dolist (file all-files)
-      (shell-command (concat "etags \"" file "\"g --append -o \"/home/jdyer/examples/TAGS\""))
+;; (setq imenu-create-index-function #'my-imenu-create-index)
+
+(add-hook 'emacs-lisp-mode-hook
+  (lambda ()
+    (setq imenu-sort-function 'imenu--sort-by-name)
+    (setq imenu-generic-expression
+      '(
+         (nil "^;;[[:space:]]+-> \\(.*\\)$" 1)
+         ("defun" "^.*([[:space:]]*defun[[:space:]]+\\([[:word:]-/]+\\)" 1)
+         ("use-package" "^.*([[:space:]]*use-package[[:space:]]+\\([[:word:]-]+\\)" 1)
+         )
       )
+    (imenu-add-menubar-index)))
+
+(defun my/dired-duplicate-file (arg)
+  "Duplicate the current file in Dired."
+  (interactive "p")
+  (let ((filename (dired-get-filename)))
+    (setq target (concat (file-name-sans-extension filename)
+                   "-old"
+                   (if (> arg 1) (number-to-string arg))
+                   (file-name-extension filename t)))
+    (if (file-directory-p filename)
+      (copy-directory filename target)
+      (copy-file filename target))
     )
+  )
 
-  (defun my-imenu-create-index ()
-    "Create an index using definitions starting with ';; ->'."
-    (let ((index-alist '())
-           (regex "^;;[[:space:]]->\\(.+\\)$"))
+(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
+
+(add-hook 'yaml-mode-hook
+  '(lambda ()
+     (define-key yaml-mode-map "\C-m" 'newline-and-indent)
+     (highlight-indentation-mode)
+     ))
+
+;; (global-set-key (kbd "C-c >") 'indent-tools-hydra/body)
+
+;; (set-face-background 'highlight-indentation-face "#e3e3d3")
+;; (set-face-background 'highlight-indentation-current-column-face "#c3b3b3")
+
+(defvar my/uniq-log-word "poop")
+
+(defun my/insert-uniq-log-word (prefix)
+  "Inserts `my/uniq-log-word' incrementing counter.
+      With PREFIX, change `my/uniq-log-word'."
+  (interactive "P")
+  (let* ((word (cond (prefix
+                       (setq my/uniq-log-word
+                         (read-string "Log word: ")))
+                 ((region-active-p)
+                   (setq my/uniq-log-word
+                     (buffer-substring (region-beginning)
+                       (region-end))))
+                 (my/uniq-log-word
+                   my/uniq-log-word)
+                 (t
+                   "Reached")))
+          (config
+            (cond
+              ((equal major-mode 'sh-mode)
+                (cons (format "echo \"%s: \\([0-9]+\\)\"" word)
+                  (format "echo \"%s: %%s\"" word)))
+              ((equal major-mode 'emacs-lisp-mode)
+                (cons (format "(message \"%s: \\([0-9]+\\)\")" word)
+                  (format "(message \"%s: %%s\")" word)))
+              ((equal major-mode 'swift-mode)
+                (cons (format "print(\"%s: \\([0-9]+\\)\")" word)
+                  (format "print(\"%s: %%s\")" word)))
+              ((equal major-mode 'ada-mode)
+                (cons (format "Ada.Text_Io.Put_Line (\"%s: \\([0-9]+\\)\");" word)
+                  (format "Ada.Text_Io.Put_Line (\"%s: %%s\");" word)))
+              ((equal major-mode 'c++-mode)
+                (cons (format "std::cout << \"%s: \\([0-9]+\\)\" << std::endl;" word)
+                  (format "std::cout << \"%s: %%s\" << std::endl;" word)))
+              (t
+                (error "%s not supported" major-mode))))
+          (match-regexp (car config))
+          (format-string (cdr config))
+          (max-num 0)
+          (case-fold-search nil))
+
+    (when my/uniq-log-word
       (save-excursion
         (goto-char (point-min))
-        (while (re-search-forward regex nil t)
-          (let ((name (s-trim (match-string 1)))
-                 (pos (match-beginning 0)))
-            (push (cons name (set-marker (make-marker) pos)) index-alist))))
-      (setq imenu--index-alist (sort
-                                 index-alist
-                                 (lambda (a b)
-                                   (string< (car a) (car b)))))))
+        (while (re-search-forward match-regexp nil t)
+          (when (> (string-to-number (match-string 1)) max-num)
+            (setq max-num (string-to-number (match-string 1)))))))
 
-  ;; (setq imenu-create-index-function #'my-imenu-create-index)
+    (unless (looking-at-p "^ *$")
+      (end-of-line))
 
-  (add-hook 'emacs-lisp-mode-hook
-    (lambda ()
-      (setq imenu-sort-function 'imenu--sort-by-name)
-      (setq imenu-generic-expression
-        '(
-           (nil "^;;[[:space:]]+-> \\(.*\\)$" 1)
-           ("defun" "^.*([[:space:]]*defun[[:space:]]+\\([[:word:]-/]+\\)" 1)
-           ("use-package" "^.*([[:space:]]*use-package[[:space:]]+\\([[:word:]-]+\\)" 1)
-           )
-        )
-      (imenu-add-menubar-index)))
+    (insert (concat
+              (if (looking-at-p "^ *$") "" "\n")
+              (format format-string
+                (if my/uniq-log-word
+                  (number-to-string (1+ max-num))
+                  (string-trim
+                    (shell-command-to-string
+                      "grep -E '^[a-z]{6}$' /usr/share/dict/words | shuf -n 1"))))))
+    (call-interactively 'indent-for-tab-command)))
 
-  (defun my/dired-duplicate-file (arg)
-    "Duplicate the current file in Dired."
-    (interactive "p")
-    (let ((filename (dired-get-filename)))
-      (setq target (concat (file-name-sans-extension filename)
-                     "-old"
-                     (if (> arg 1) (number-to-string arg))
-                     (file-name-extension filename t)))
-      (if (file-directory-p filename)
-        (copy-directory filename target)
-        (copy-file filename target))
-      )
-    )
-
-  (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
-
-  (add-hook 'yaml-mode-hook
-    '(lambda ()
-       (define-key yaml-mode-map "\C-m" 'newline-and-indent)
-       (highlight-indentation-mode)
-       ))
-
-  ;; (global-set-key (kbd "C-c >") 'indent-tools-hydra/body)
-
-  ;; (set-face-background 'highlight-indentation-face "#e3e3d3")
-  ;; (set-face-background 'highlight-indentation-current-column-face "#c3b3b3")
-
-  (defvar my/uniq-log-word "poop")
-
-  (defun my/insert-uniq-log-word (prefix)
-    "Inserts `my/uniq-log-word' incrementing counter.
-    With PREFIX, change `my/uniq-log-word'."
-    (interactive "P")
-    (let* ((word (cond (prefix
-                         (setq my/uniq-log-word
-                           (read-string "Log word: ")))
-                   ((region-active-p)
-                     (setq my/uniq-log-word
-                       (buffer-substring (region-beginning)
-                         (region-end))))
-                   (my/uniq-log-word
-                     my/uniq-log-word)
-                   (t
-                     "Reached")))
-            (config
-              (cond
-                ((equal major-mode 'sh-mode)
-                  (cons (format "echo \"%s: \\([0-9]+\\)\"" word)
-                    (format "echo \"%s: %%s\"" word)))
-                ((equal major-mode 'emacs-lisp-mode)
-                  (cons (format "(message \"%s: \\([0-9]+\\)\")" word)
-                    (format "(message \"%s: %%s\")" word)))
-                ((equal major-mode 'swift-mode)
-                  (cons (format "print(\"%s: \\([0-9]+\\)\")" word)
-                    (format "print(\"%s: %%s\")" word)))
-                ((equal major-mode 'ada-mode)
-                  (cons (format "Ada.Text_Io.Put_Line (\"%s: \\([0-9]+\\)\");" word)
-                    (format "Ada.Text_Io.Put_Line (\"%s: %%s\");" word)))
-                ((equal major-mode 'c++-mode)
-                  (cons (format "std::cout << \"%s: \\([0-9]+\\)\" << std::endl;" word)
-                    (format "std::cout << \"%s: %%s\" << std::endl;" word)))
-                (t
-                  (error "%s not supported" major-mode))))
-            (match-regexp (car config))
-            (format-string (cdr config))
-            (max-num 0)
-            (case-fold-search nil))
-
-      (when my/uniq-log-word
-        (save-excursion
-          (goto-char (point-min))
-          (while (re-search-forward match-regexp nil t)
-            (when (> (string-to-number (match-string 1)) max-num)
-              (setq max-num (string-to-number (match-string 1)))))))
-
-      (unless (looking-at-p "^ *$")
-        (end-of-line))
-
-      (insert (concat
-                (if (looking-at-p "^ *$") "" "\n")
-                (format format-string
-                  (if my/uniq-log-word
-                    (number-to-string (1+ max-num))
-                    (string-trim
-                      (shell-command-to-string
-                        "grep -E '^[a-z]{6}$' /usr/share/dict/words | shuf -n 1"))))))
-      (call-interactively 'indent-for-tab-command)))
-
-  (global-set-key (kbd "C-M-j") 'my/insert-uniq-log-word)
+(global-set-key (kbd "C-M-j") 'my/insert-uniq-log-word)
 
 (defun test (arg)
   (interactive "p")
@@ -1760,3 +1731,38 @@ to produce the following:
       )
     )
   )
+
+(defun colour-shift (delta type)
+  (let ((old-pos (point)))
+    (forward-word)
+    (search-backward-regexp "#\\([[:xdigit:]]\\{6\\}\\)" nil t)
+    (setq str (match-string-no-properties 1))
+    (setq hsl (color-rgb-to-hsl
+                (/ (float (string-to-number (substring-no-properties str 0 2) 16)) (float 255))
+                (/ (float (string-to-number (substring-no-properties str 2 4) 16)) (float 255))
+                (/ (float (string-to-number (substring-no-properties str 4 6) 16)) (float 255))))
+    (cond
+      ((= type 1) ;; value
+        (setq hslmod (list (nth 0 hsl) (nth 1 hsl) (+ (nth 2 hsl) delta)))
+        (setq hslmod (mapcar (lambda (x) (if (> x 1.0) 1.0 (if (< x 0.0) 0.0 x))) hslmod)))
+      ((= type 4) ;; hue
+        (setq hslmod (list (+ (nth 0 hsl) delta) (nth 1 hsl) (nth 2 hsl))))
+      ((= type 16) ;; saturation
+        (setq hslmod (list (nth 0 hsl) (+ (nth 1 hsl) delta) (nth 2 hsl) delta))
+        (setq hslmod (mapcar (lambda (x) (if (> x 1.0) 1.0 (if (< x 0.0) 0.0 x))) hslmod)))
+      ((= type 64) ;; random
+        (setq hslmod (list (/ (random 256) 255.0) (/ (random 256) 255.0) (/ (random 256) 255.0)))
+        (setq hslmod (mapcar (lambda (x) (if (> x 1.0) 1.0 (if (< x 0.0) 0.0 x))) hslmod)))
+      (t ;; value
+        (setq hslmod (list (nth 0 hsl) (nth 1 hsl) (+ (nth 2 hsl) delta)))
+        (setq hslmod (mapcar (lambda (x) (if (> x 1.0) 1.0 (if (< x 0.0) 0.0 x))) hslmod)))
+      )
+    (setq rgb (color-hsl-to-rgb (nth 0 hslmod) (nth 1 hslmod) (nth 2 hslmod)))
+    (setq hex (substring-no-properties (color-rgb-to-hex (nth 0 rgb) (nth 1 rgb) (nth 2 rgb) 2) 1))
+    (replace-match (format "%06x" (string-to-number hex 16)) nil nil nil 1)
+    (goto-char old-pos)
+    )
+  )
+
+(global-set-key (kbd "C-j") '(lambda (arg)(interactive "p")(colour-shift 0.005 arg)))
+(global-set-key (kbd "C-M-j") '(lambda (arg)(interactive "p")(colour-shift -0.005 arg)))
