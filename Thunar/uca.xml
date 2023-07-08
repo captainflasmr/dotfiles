@@ -54,7 +54,18 @@
 	<description>PictureOrganise</description>
 	<range>*</range>
 	<patterns>*</patterns>
-	<all-files/>
+	<image-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>VideoOrganise</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole PictureOrganise %F</command>
+	<description>VideoOrganise</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<video-files/>
 </action>
 <action>
 	<icon></icon>
@@ -121,6 +132,17 @@
 	<range>*</range>
 	<patterns>*</patterns>
 	<audio-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>VideoConcat</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole VideoConcat %F</command>
+	<description>VideoConcat</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<video-files/>
 </action>
 <action>
 	<icon></icon>
