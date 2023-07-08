@@ -3,4 +3,4 @@ disableFaceEngine=false
 disableOpenCL=true
 enableLogging=false
 useHighDpiPixmaps=false
-useHighDpiScaling=false
+useHighDpiScaling=true

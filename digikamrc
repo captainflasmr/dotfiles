@@ -36,6 +36,7 @@ Image Sorting=1
 Item Left Click Action=1
 Preview Convert To Eight Bit=true
 Preview Load Full Image Size=false
+Preview Scale Fit To Window=false
 Preview Show Icons=true
 Rating Filter Condition=0
 Recursive Albums=true
@@ -79,7 +80,7 @@ ToolTips Show Video Aspect Ratio=true
 ToolTips Show Video Codec=true
 ToolTips Show Video Duration=true
 ToolTips Show Video Frame Rate=true
-TreeView Font=Sans Serif,9,-1,5,50,0,0,0,0,0
+TreeView Font=Tex Gyre Heros,12,-1,5,50,0,0,0,0,0
 Update Type=0
 
 [AlbumFolderView Sidebar]
@@ -102,14 +103,31 @@ AlbumTreeViewSortColumn=0
 AlbumTreeViewSortOrder=0
 CaseSensitive=0
 
+[All Metadata Edit Settings]
+All EXIF Edit Page=5
+All IPTC Edit Page=8
+All Sync EXIF Artists=true
+All Sync EXIF Comment=true
+All Sync EXIF Copyright=true
+All Sync EXIF Date=true
+All Sync IPTC Caption=true
+All Sync IPTC Date=true
+All Sync JFIF Comment=true
+All Sync XMP Caption=true
+All Sync XMP Date=true
+All XMP Edit Page=7
+
 [Baloo Settings]
 Sync Baloo to Digikam=false
 Sync Digikam to Baloo=false
 
 [Batch Queue Manager Settings]
+1920x1080 screen: XPosition=0
+1920x1080 screen: YPosition=0
 BqmBottomSplitter=AAAA/wAAAAEAAAACAAAAjAAAAIUB/////wEAAAABAA==
 BqmTopSplitter=AAAA/wAAAAEAAAADAAAAhQAAAIoAAADdAf////8BAAAAAQA=
 BqmVerticalSplitter=AAAA/wAAAAEAAAACAAAAmwAAAI8B/////wEAAAACAA==
+eDP-1=eDP-1
 
 [Camera Settings]
 DefaultTargetAlbumId=0
@@ -123,7 +141,7 @@ UseDefaultTargetAlbum=false
 UseFileMetadata=false
 
 [Collection Settings]
-LastAddedCollectionPath=
+LastAddedCollectionPath=/mnt/veracrypt1
 
 [Color Management]
 BPCAlgorithm=true
@@ -147,7 +165,7 @@ RenderingIntent=0
 WorkProfileFile[$e]=/usr/share/digikam/profiles/srgb-d65.icm
 
 [CoreDB Settings]
-Recently Used Tags=223,100
+Recently Used Tags=28,22,97,44,87,25,24,27,105,153
 
 [DMetadata Settings]
 readingAllTags=false
@@ -843,7 +861,7 @@ tagPaths=1
 
 [Database Settings]
 Database Connectoptions=
-Database Encrypted Password=AwIKCgo=
+Database Encrypted Password=AwLGxsY=
 Database Hostname=
 Database Name=/home/jdyer/Photos/
 Database Name Face=/home/jdyer/Photos/
@@ -872,13 +890,16 @@ Minimized=false
 RestoreSize=-1
 
 [Digikam Right Sidebar]
-ActiveTab=1
+ActiveTab=4
 DigikamProperties Expanded=true
 FileProperties Expanded=true
 ItemProperties Expanded=true
-Minimized=false
+LocationProperties Expanded=true
+Minimized=true
 PhotographProperties Expanded=true
-RestoreSize=-1
+RestoreSize=210
+RightsProperties Expanded=true
+TagsProperties Expanded=true
 VideoProperties Expanded=true
 
 [Digikam Right Sidebar][Captions Tags Properties Tab]
@@ -886,10 +907,10 @@ Contact Expanded=true
 ItemDescEdit Tab=1
 ItemDescEditTab CaptionsLang=x-default
 ItemDescEditTab SearchBarCaseSensitive=0
-ItemDescEditTab TagCheckViewCurrentIndex=
-ItemDescEditTab TagCheckViewExpansion=0,100
+ItemDescEditTab TagCheckViewCurrentIndex=25
+ItemDescEditTab TagCheckViewExpansion=0,24
 ItemDescEditTab TagCheckViewRestoreChecked=false
-ItemDescEditTab TagCheckViewSelection=
+ItemDescEditTab TagCheckViewSelection=25
 ItemDescEditTab TagCheckViewSortColumn=0
 ItemDescEditTab TagCheckViewSortOrder=0
 ItemDescEditTab TagCheckViewToggle Auto Tags=0
@@ -942,7 +963,7 @@ Current XMP Item=
 EXIF Level=0
 EXIFTOOL Level=0
 IPTC Level=0
-ImagePropertiesMetaData Tab=3
+ImagePropertiesMetaData Tab=0
 MAKERNOTE Level=0
 XMP Level=0
 
@@ -1063,16 +1084,17 @@ UseWholeAlbumsEntry=true
 UseWholeTagsEntry=false
 
 [Find Duplicates View]
-AlbumComboBox-Checked=
-AlbumComboBox-CurrentIndex=
-AlbumComboBox-Expansion=
+AlbumComboBox-Checked=30,84,649,672,96,99,149,129,32,58,60,65,1,680,55,662,217,205,83,152,211,158,47,180,25,3,11,196,652,100,647,126,19,156,160,27,92,143,45,125,106,87,46,88,203,82,29,70,157,95,134,101,145,219,154,74,132,59,108,7,648,218,681,105,209,683,678,120,79,221,664,37,43,20,66,2,22,670,97,98,80,35,676,658,44,646,89,153,107,48,10,668,33,26,140,36,199,645,34,67,68,144,49,24,12,6,222,655,237,38,5,56,39,77,116,86,236,659,53,112,9,102,667,69,135,111,76,127,14,52,677,674,215,62,675,155,198,661,4,679,54,136,85,61,117,201,51,73,214,71,41,137,130,75,18,150,124,235,192,131,40,202,72,23,42,21,654,90,663,128,94,133,665,17,118,142,660,57,8,81,673,104,115,119,91,63,78,93,216,139,141,151,123,50,204,669,197,28,212,64,109,666,114,121,657,16,13,122,671,682,31,-2,656,110,210,113,103,15,653
+AlbumComboBox-CurrentIndex=11
+AlbumComboBox-Expansion=1
 AlbumComboBox-RestoreChecked=true
-AlbumComboBox-Selection=
+AlbumComboBox-Selection=11
 AlbumComboBox-SortColumn=0
 AlbumComboBox-SortOrder=0
 AlbumTypeEntry=0
 Last maximum similarity=100
 Last minimum similarity=90
+Last reference image method=0
 Last search album tag relation=0
 Last search results restriction=0
 Lower bound for minimum similarity=40
@@ -1153,31 +1175,91 @@ CaseSensitive=0
 
 [General Settings]
 1920x1080 screen: Window-Maximized=true
-Application Font=Sans Serif,9,-1,5,50,0,0,0,0,0
+Application Font=Tex Gyre Heros,12,-1,5,50,0,0,0,0,0
 Application Style=fusion
-Apply Sidebar Changes Directly=false
+Apply Sidebar Changes Directly=true
 Clean core DB At Start=false
 Detect faces in newly added images=false
 Draw Frames To Grouped Items=true
 Expand New Current Item On Click=true
+Finger Prints Generator First Run=true
 FullScreen Hide SideBars=false
 FullScreen Hide StatusBar=false
 FullScreen Hide ThumbBar=true
 FullScreen Hide ToolBars=false
 Icon Theme=
-Scan At Start=true
+Scan At Start=false
 Scroll Current Item To Center=false
 Show Only Face Tags For Assigning Name=true
 Show Permanent Delete Dialog=true
 Show Splash=true
 Show Trash Delete Dialog=true
-State=AAAA/wAAAAD9AAAAAAAAB3AAAAOSAAAABAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAEAAAAWAG0AYQBpAG4AVABvAG8AbABCAGEAcgEAAAAA/////wAAAAAAAAAA
+State=AAAA/wAAAAD9AAAAAAAAB3QAAAOeAAAABAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAEAAAAWAG0AYQBpAG4AVABvAG8AbABCAGEAcgEAAAAA/////wAAAAAAAAAA
 String Comparison Type=0
 ToolBarsMovable=Disabled
 Use Large Thumbs=true
-Use Native File Dialog=false
+Use Native File Dialog=true
 Use Trash=true
 Version=8.0.0
+
+[Geolocation Edit Settings]
+Bookmarks visible=false
+Current Tab=0
+Map Layout=0
+Show oldest images first=false
+Splitter H1 CollapsedSize=0
+SplitterState H1=AAAA/wAAAAEAAAACAAAAAAAAAAAB/////wEAAAABAA==
+SplitterState V1=AAAA/wAAAAEAAAACAAAAQgAAAMAB/////wEAAAACAA==
+
+[Geolocation Edit Settings][Correlator Widget]
+GPX File Open Last Directory=/home/jdyer/Documents
+Interpolate=true
+Max Gap Time=00:00:30
+Max Inter Dist Time=00:15:00
+Offset Sign=0
+Offset Time=00:00:00
+SelectedImages=false
+ShowTracksOnMap=true
+Time Zone=13
+
+[Geolocation Edit Settings][Map Widget]
+Backend=marble
+Center=geo:52,6
+GoogleMaps Map Type=ROADMAP
+GoogleMaps Show Map Type Control=true
+GoogleMaps Show Navigation Control=true
+GoogleMaps Show Scale Control=true
+Marble Map Theme=earth/srtm/srtm.dgml
+Marble Projection=spherical
+Marble Show Compass=false
+Marble Show Navigation=false
+Marble Show Overview Map=false
+Marble Show Scale Bar=false
+Marker Grouping Radius=1
+Mouse Mode=16
+Preview Grouped Items=true
+Preview Single Items=true
+Show Thumbnails=true
+Show numbers on items=true
+Thumbnail Grouping Radius=30
+Thumbnail Size=60
+Zoom=marble:900
+
+[Geolocation Edit Settings][Reverse Geocoding Widget]
+Hide options=false
+Language=0
+Metadata location=true
+RG Backend=0
+Spacers count=0
+Tags location=false
+
+[Geolocation Edit Settings][Search Widget]
+Keep old results=false
+Search backend=osm
+
+[Geolocation Edit Settings][Tree View]
+Header State=\x00\x00\x00\xff\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\r\x00\x0e\x00\x00\x00\x03\x00\x00\x00\n\x00\x00\x00d\x00\x00\x00\x0b\x00\x00\x00d\x00\x00\x00\t\x00\x00\x00d\x00\x00\x04\x12\x00\x00\x00\r\x01\x01\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00d\xff\xff\xff\xff\x00\x00\x00\x81\x00\x00\x00\x00\x00\x00\x00\r\x00\x00\x00<\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00d\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00d\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00d\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00d\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00d\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00d\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00d\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00d\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\xb6\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x03\xe8\x00\x00\x00\x00d
+Image List Thumbnail Size=60
 
 [Grouping Behaviour]
 Do BQM operations on all=2
@@ -1190,6 +1272,7 @@ Rename all=2
 
 [Image Properties SideBar]
 EXIF Tags Filter=
+EXIFTOOL Tags Filter=
 
 [Image Quality Settings]
 Accepted Threshold=60
@@ -1258,7 +1341,7 @@ Show Thumbbar=false
 ShowImageSettingsDialog=true
 SixteenBitsImage=false
 SplitterState=AAAA/wAAAAEAAAACAAAM5AAAAUUB/////wAAAAABAQ==
-State=AAAA/wAAAAD9AAAAAAAAA6kAAAORAAAABAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAEAAAAWAG0AYQBpAG4AVABvAG8AbABCAGEAcgEAAAAA/////wAAAAAAAAAA
+State=AAAA/wAAAAD9AAAAAAAAA7EAAAOXAAAABAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAEAAAAWAG0AYQBpAG4AVABvAG8AbABCAGEAcgEAAAAA/////wAAAAAAAAAA
 TIFFCompression=false
 ToolBarsMovable=Disabled
 Unclip Color=0
@@ -1282,9 +1365,12 @@ ActiveTab=0
 DigikamProperties Expanded=true
 FileProperties Expanded=true
 ItemProperties Expanded=true
+LocationProperties Expanded=true
 Minimized=true
 PhotographProperties Expanded=true
 RestoreSize=-1
+RightsProperties Expanded=true
+TagsProperties Expanded=true
 VideoProperties Expanded=true
 
 [ImageViewer Settings][Right Sidebar][Captions Tags Properties Tab]
@@ -1442,6 +1528,23 @@ Toggle Auto Tags=0
 [ItemIconViewTagSearchBar Search Text Tool]
 CaseSensitive=0
 
+[KMLExport Settings]
+Altitude Mode=0
+GPX Altitude Mode=0
+GPXFile=
+KMLFileName=kmldocument
+Line Width=4
+Time Zone=12
+Track Color=#17eeee
+Track Opacity=64
+UrlDestDir=https://www.example.com/
+UseGPXTracks=false
+baseDestDir=/tmp/
+iconSize=33
+localTarget=true
+optimize_googlemap=false
+size=320
+
 [Labels Sidebar]
 ColorSelection=
 Expansion=
@@ -1449,6 +1552,8 @@ PickSelection=
 RatingSelection=
 
 [LightTable Settings]
+1920x1080 screen: XPosition=0
+1920x1080 screen: YPosition=0
 Auto Load Right Panel=true
 Auto Sync Preview=true
 Clear On Close=false
@@ -1458,15 +1563,19 @@ FullScreen Hide ToolBars=false
 Horizontal Splitter State=AAAA/wAAAAEAAAADAAABRQAAAFcAAAFFAf////8AAAAAAQE=
 Navigate By Pair=false
 Show Thumbbar=true
+eDP-1=eDP-1
 
 [LightTable Settings][Left Sidebar]
 ActiveTab=0
 DigikamProperties Expanded=true
 FileProperties Expanded=true
 ItemProperties Expanded=true
+LocationProperties Expanded=true
 Minimized=true
 PhotographProperties Expanded=true
 RestoreSize=31
+RightsProperties Expanded=true
+TagsProperties Expanded=true
 VideoProperties Expanded=true
 
 [LightTable Settings][Left Sidebar][Captions Tags Properties Tab]
@@ -1543,9 +1652,12 @@ ActiveTab=0
 DigikamProperties Expanded=true
 FileProperties Expanded=true
 ItemProperties Expanded=true
+LocationProperties Expanded=true
 Minimized=true
 PhotographProperties Expanded=true
 RestoreSize=30
+RightsProperties Expanded=true
+TagsProperties Expanded=true
 VideoProperties Expanded=true
 
 [LightTable Settings][Right Sidebar][Captions Tags Properties Tab]
@@ -1619,8 +1731,8 @@ Version Properties View Mode=2
 
 [MainWindow]
 InitialAlbumID=1
-SplitterState=AAAA/wAAAAEAAAADAAABFAAABhYAAAFFAf////8AAAAAAQE=
-ThumbbarState=AAAA/wAAAAD9AAAAAQAAAAIAAAAAAAAAAPwBAAAAAfsAAAAmAG0AYQBpAG4AdwBpAG4AZABvAHcAXwB0AGgAdQBtAGIAYgBhAHIAAAAAAP////8AAABXAP///wAABMkAAAOSAAAABAAAAAQAAAAIAAAACPwAAAAA
+SplitterState=AAAA/wAAAAEAAAADAAAB3wAABUsAAAAAAf////8AAAAAAQE=
+ThumbbarState=AAAA/wAAAAD9AAAAAQAAAAIAAAAAAAAAAPwBAAAAAfsAAAAmAG0AYQBpAG4AdwBpAG4AZABvAHcAXwB0AGgAdQBtAGIAYgBhAHIAAAAAAP////8AAAA9AP///wAABUsAAAOeAAAABAAAAAQAAAAIAAAACPwAAAAA
 
 [MediaPlayer AVFilterAudio]
 enable=true
@@ -1688,6 +1800,9 @@ font=Sans Serif,20,-1,5,75,0,0,0,0,0
 outline=true
 outline_color=0,0,255
 
+[Metadata Edit Dialog]
+Tab Index=0
+
 [Metadata Settings]
 Album Date Source=1
 Custom Sidecar Extensions=
@@ -1743,18 +1858,28 @@ SortOrder=0
 [SearchBar Search Text Tool]
 CaseSensitive=0
 
+[Select Reference]
+AlbumComboBox-Checked=
+AlbumComboBox-CurrentIndex=
+AlbumComboBox-Expansion=1
+AlbumComboBox-RestoreChecked=true
+AlbumComboBox-Selection=
+AlbumComboBox-SortColumn=0
+AlbumComboBox-SortOrder=0
+UseWholeAlbumsEntry=false
+
 [Setup Dialog]
 Albumview Tab=0
 Camera Tab=0
 Editor Tab=0
 ICC Tab=0
-Metadata SubTab=0
-Metadata Tab=0
+Metadata SubTab=4
+Metadata Tab=6
 Misc Tab=0
 Plugin Tab=0
-Setup Page=5
+Setup Page=1
 Template Tab=0
-ToolTip Tab=1
+ToolTip Tab=0
 Video Tab=0
 
 [Sketch Search View]
@@ -1769,6 +1894,7 @@ UseWholeAlbumsEntry=true
 
 [Spell Check Settings]
 AlternativeLang=x-default,de-DE,en-US,es-ES,fr-FR,it-IT,pt-PT
+DefaultLanguage=
 EnableSpellCheck=false
 IgnoredWords=digiKam,Showfoto,Apple,Nikon,Android,Canon,Sony,Samsung,Panasonic,Olympus,Exif,IPTC,Xmp
 TranslatorEngine=0
@@ -1793,7 +1919,18 @@ RestoreChecked=false
 Selection=
 SortColumn=0
 SortOrder=0
-TagsSource=false
+TagsSource=true
+
+[Tags Manager]
+CurrentIndex=28
+Expansion=0
+RestoreChecked=false
+Selection=28
+SortColumn=0
+SortOrder=0
+
+[Tags Manager List]
+Items=22,97,28,24,87
 
 [TimeLine Sidebar]
 CurrentIndex=
