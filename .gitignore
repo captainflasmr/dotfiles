@@ -94,6 +94,7 @@ emacs/init_*
 emacs/multisession/files/emoji/emoji--recent.value
 emacs/projects
 emacs/recentf
+emacs/tramp
 emacs/transient/
 emacs/tree-sitter
 emaildefaults
