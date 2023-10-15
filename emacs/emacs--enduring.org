@@ -1,0 +1,233 @@
+#+title: ENDURING emacs configuration
+#+options: toc:nil
+#+property: header-args :tangle ~/.config/emacs/init.el
+#+startup: contents
+
+* Intro
+
+A backronym for an Emacs configuration called ENDURING:
+
+Efficient
+No-nonsense
+Dependable
+Utilitarian
+Robust
+Intuitive
+Nifty
+General-purpose
+
+This backronym emphasizes the enduring qualities of your Emacs configuration, highlighting its efficiency, stability, and adaptability over the years.
+
+This idea came from setting up an emacs newbie at work.  He was running emacs on a system that had emacs 23.1.1 (circa 2009) installed and also has access to 27.2
+
+What if I could create a functional sane set of emacs defaults across all different versions, so for example he could learn the basic keybindings which would carry across each work project and also at home using the latest 29.1
+
+The settings within this configuration are my own idea of emacs sane values which give the basic vanilla emacs the following notable features:
+
+- dark theme by default
+- tidied up interface to remove toolbar (kept menu bar and scroll bars)
+- buffer / file completion in the minibuffer
+- colourful buffer list
+- saving versioned backup files into ~/backup
+- programming indents to 4 spaces and no tabs N
+- access to recently opened files
+- saving desktop by default on exit
+- winner-mode so can undo any window mistakes
+
+and other bits and bobs (see comments below)
+
+* Init
+
+#+begin_src elisp
+(require 'org)
+(require 'grep)
+
+;; don't resize framee
+(setq frame-inhibit-implied-resize t)
+
+;; title bar to print full path of visited filename
+(setq frame-title-format "%f")
+
+;; turn on font-lock mode which shows colouring and formatting
+(global-font-lock-mode t)
+
+;; enable(1) disable(-1) tool-bar / scroll-bar / menu-bar
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(menu-bar-mode -1)
+
+;; save the desktop state including frames / buffers and splits
+(desktop-save-mode 1)
+
+;; show parenthesis matching
+(show-paren-mode t)
+
+;; remember recent files opened
+(recentf-mode 1)
+(setq recentf-max-menu-items 200)
+(setq recentf-max-saved-items 200)
+
+;; allow shift and cursor keys to move between split windows
+(windmove-default-keybindings)
+
+;; reverts externally changed files
+(global-auto-revert-mode t)
+
+;; turn off audible bell
+(setq visible-bell t)
+
+;; make ^K kill thru newline
+(setq kill-whole-line t)
+
+;; minibuffer completion for file and buffer switching
+(ido-mode 1)
+(setq ido-everywhere 1)
+(setq ido-default-buffer-method 'selected-window)
+(setq ido-default-file-method 'selected-window)
+(icomplete-mode 1)
+
+;; minibuffer history to be saved
+(savehist-mode 1)
+
+;; adds the column number in the modeline
+(column-number-mode 1)
+
+;; revert windows with winner-undo
+(winner-mode 1)
+
+;; always confirm before exiting emacs
+(setq confirm-kill-emacs 'y-or-n-p)
+
+;; keybindings
+(global-set-key [f6] 'find-name-dired)
+(global-set-key (kbd "M-?") 'rgrep)
+(global-set-key (kbd "C-x m") 'recentf-open-files)
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+(global-set-key (kbd "C-c j") 'winner-undo)
+(global-set-key (kbd "C-c k") 'winner-redo)
+(global-set-key (kbd "M-0") 'delete-window)
+(global-set-key (kbd "M-1") 'delete-other-windows)
+(global-set-key (kbd "M-2") 'split-window-vertically)
+(global-set-key (kbd "M-3") 'split-window-horizontally)
+(global-set-key (kbd "M-j") (lambda()(interactive)(next-line (/ (window-height) 12))))
+(global-set-key (kbd "M-k") (lambda()(interactive)(previous-line (/ (window-height) 12))))
+(global-set-key (kbd "M-n") (lambda()(interactive)(next-line (/ (window-height) 6))))
+(global-set-key (kbd "M-p") (lambda()(interactive)(previous-line (/ (window-height) 6))))
+(global-set-key (kbd "M-l") (lambda()(interactive)(select-window (next-window (selected-window)))))
+(global-set-key (kbd "M-h") (lambda()(interactive)(select-window (previous-window (selected-window)))))
+(global-set-key (kbd "M-i") (lambda ()(interactive)(my/resize-window 4 t)))
+(global-set-key (kbd "M-u") (lambda ()(interactive)(my/resize-window -4 t)))
+(global-set-key (kbd "M-;") 'my/comment-or-uncomment)
+(global-unset-key (kbd "C-z"))
+
+;; hooks
+(defun disable-M-h ()
+  (local-unset-key (kbd "M-h")))
+(add-hook 'org-mode-hook 'disable-M-h)
+
+;; scrolling
+(setq scroll-margin 20)
+(setq scroll-preserve-screen-position t)
+
+;; trash and backup in seperate location
+(setq delete-by-moving-to-trash t)
+(setq make-backup-files t)
+(setq backup-directory-alist '(("." . "~/backup"))
+  backup-by-copying t ; Don't delink hardlinks
+  version-control t ; Use version numbers on backups
+  delete-old-versions t; automatically delete excess backups
+  kept-new-versions 10 ; how many of the newest versions to keep
+  kept-old-versions 5); how many of the old
+
+;; delete selected text, may be more intuitive for newbie
+(setq delete-selection-mode nil)
+
+;; allows all local variables for less friction
+(setq enable-local-variables :all)
+
+;; no line wrapping
+(setq-default truncate-lines t)
+
+(global-set-key (kbd "C-x TAB") 'indent-region)
+
+;; indent using spaces
+(setq-default indent-tabs-mode nil)
+
+;; tab indent
+(setq-default tab-width 4)
+
+;; dired
+(setq dired-listing-switches "-alGgh")
+
+;; grep
+(eval-after-load 'grep
+  '(progn
+     (dolist (dir '("nas" ".cache" "cache" "elpa" "chromium" ".local/share" "syncthing" ".mozilla" ".local/lib" "Games"))
+       (push dir grep-find-ignored-directories))
+     (dolist (file '(".cache" "*cache*" "*.iso" "*.xmp" "*.jpg" "*.mp4"))
+       (push file grep-find-ignored-files))
+     ))
+
+;; keybinding
+(defvar my-jump-keymap (make-sparse-keymap))
+(define-key my-jump-keymap (kbd "n") (lambda () (interactive) (find-file "~/nas")))
+(define-key my-jump-keymap (kbd "e") (lambda () (interactive) (find-file "~/.config/emacs/init.el")))
+(define-key my-jump-keymap (kbd "f") (lambda () (interactive) (find-file "~/.config")))
+(define-key my-jump-keymap (kbd "t") (lambda () (interactive) (find-file "~/DCIM/content/aaa--todo.org")))
+(define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~")))
+(define-key my-jump-keymap (kbd "d") (lambda () (interactive) (find-file "~/DCIM/content")))
+(define-key my-jump-keymap (kbd "C-q") 'quoted-insert)
+(global-set-key (kbd "C-q") my-jump-keymap)
+
+(setq-default mode-line-modified
+  '(:eval (if (and (buffer-file-name) (buffer-modified-p))
+            (propertize " * Modified " 'face
+              `(:background "#c60017" :foreground "#ffffff")) "")))
+
+(setq-default mode-line-format
+  '("%e"
+     mode-line-modified
+     (:eval
+       (propertize (format "%s" (abbreviate-file-name default-directory))
+         'face '(:inherit bold))
+       )
+     (:eval
+       (if (not (equal major-mode 'dired-mode))
+         (propertize (format "%s " (buffer-name))
+           'face '(:inherit bold))
+         " "))
+     mode-line-position
+     mode-line-modes
+     "-%-"))
+
+;; my/functions
+(defun my/resize-window (delta &optional horizontal)
+  "Resize window back and forth."
+  (interactive)
+  (let ((edge (if horizontal
+                (car (window-edges))
+                (car (cdr (window-edges))))))
+    (if (= edge 0)
+      (enlarge-window delta horizontal)
+      (shrink-window delta horizontal))))
+
+(defun my/comment-or-uncomment ()
+  "Comments or uncomments the current line or region."
+  (interactive)
+  (if (region-active-p)
+    (comment-or-uncomment-region
+      (region-beginning)(region-end))
+    (comment-or-uncomment-region
+      (line-beginning-position)(line-end-position))))
+
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+  '(default ((t (:background "#191919" :foreground "#aaaaaa" :weight regular :height 130 :width normal :family "Droid Sans Mono"))))
+  '(fringe ((t (:background "#191919"))))
+  '(mode-line ((t (:background "#dddddd" :foreground "#000000"))))
+  '(cursor ((t (:background "#ffffff"))))
+  '(vertical-border ((t (:foreground "#444444")))))
+#+end_src

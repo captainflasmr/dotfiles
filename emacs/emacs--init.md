@@ -1,0 +1,2441 @@
+1.  [early-init](#org0e97341)
+2.  [requires](#org1f22206)
+3.  [package-archives](#org9def425)
+4.  [package-extra](#orged5c5ac)
+5.  [use-package](#orge0aadf5)
+6.  [completion](#org6f5ad48)
+7.  [navigation](#org2af304e)
+8.  [unbinding](#org2e5deba)
+9.  [magit](#org0773595)
+10. [emms](#org02ecce1)
+11. [elfeed](#orgcf576c4)
+12. [save-desktop](#orgd216537)
+13. [expansion](#org22a0612)
+14. [keybinding](#org431e554)
+15. [inserts](#org25c22cc)
+16. [modes](#orgc0aabbc)
+17. [bell](#org10665e3)
+18. [setqs](#org8f1194d)
+19. [confirm](#org7ca8a02)
+20. [backups](#org77585e0)
+21. [hooks](#orgca1dfa3)
+22. [custom-settings](#org8960323)
+23. [defuns](#org1cbc96c)
+24. [window-positioning](#org26ad030)
+25. [skeletons](#orgcb3ac3f)
+26. [org-capture](#org257d3ae)
+27. [org](#org0ce1c64)
+28. [dwim](#org1ba63a8)
+29. [scroll](#org3accc39)
+30. [font](#org8ea768e)
+31. [custom-set-faces](#org18c3932)
+32. [image-dired](#orgc9fd151)
+33. [visuals](#org10943f5)
+34. [imenu](#orgfda56d3)
+35. [recentf](#org9bc5d00)
+36. [modeline](#org280d205)
+37. [markdown](#orga12e85a)
+38. [find](#org4481619)
+39. [grep](#org0c8a2d1)
+40. [spelling](#orgbab3b00)
+41. [hugo](#org16eb698)
+42. [gdb](#orgfbfbd4b)
+43. [compilation](#org624e9cc)
+44. [auto-mode-alist](#org5145d72)
+45. [programming](#org79431d9)
+46. [diff](#org9f1d572)
+47. [ada](#org6c9dc59)
+48. [treesitter](#orge668c5a)
+49. [whitespace](#orga3e0586)
+50. [dashboard](#org081dda2)
+51. [project](#org52af628)
+52. [indentation](#org911fc7f)
+53. [etags](#orgd1564db)
+54. [colour-shift](#org04c9700)
+55. [development](#org2cd0069)
+
+
+<a id="org0e97341"></a>
+
+# early-init
+
+```elisp
+;;
+;; -> early-init
+;;
+(setq package-enable-at-startup t)
+```
+
+
+<a id="org1f22206"></a>
+
+# requires
+
+```elisp
+;;
+;; -> requires
+;;
+(require 'package)
+(require 'org)
+(require 'dired-x)
+```
+
+
+<a id="org9def425"></a>
+
+# package-archives
+
+```elisp
+;;
+;; -> package-archives
+;;
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                          ("elpa" . "https://elpa.gnu.org/packages/")
+                          ("org" . "https://orgmode.org/elpa/")))
+
+;; (setq package-archives '(("melpa" . "~/emacs-pkgs/melpa")
+;;                           ("elpa" . "~/emacs-pkgs/elpa")
+;;                           ("org" . "~/emacs-pkgs/org-mode/lisp")))
+
+
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+(setq use-package-verbose t)
+(setq use-package-always-ensure t)
+(require 'use-package)
+(setq load-prefer-newer t)
+
+;; (package-initialize)
+
+;; (unless package-archive-contents
+;;   (package-refresh-contents))
+
+;; ;
+                                        ;   (setq use-package-compute-statistics t) ;; and run use-package-report after init.
+;; ;
+                                        ; (setq warning-minimum-level :emergency)
+```
+
+
+<a id="orged5c5ac"></a>
+
+# package-extra
+
+```elisp
+;;
+;; -> package-extra
+;;
+(use-package fd-find
+  :load-path "~/repos/fd-find")
+```
+
+
+<a id="orge0aadf5"></a>
+
+# use-package
+
+```elisp
+;;
+;; -> use-package
+;;
+(use-package git-timemachine)
+(use-package ox-gfm)
+(use-package gnuplot)
+(use-package ahk-mode)
+(use-package kbd-mode
+  :load-path "~/.config/emacs/elisp/")
+(use-package embark-consult)
+(use-package lorem-ipsum)
+(use-package find-file-rg)
+(use-package gruvbox-theme)
+(use-package ef-themes)
+(use-package doom-themes)
+(use-package dwim-shell-command)
+
+(use-package toc-org
+  :commands toc-org-enable
+  :init (add-hook 'org-mode-hook 'toc-org-enable))
+
+(use-package org-bullets
+  :config
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
+(use-package org-rainbow-tags
+  :hook
+  (org-mode . org-rainbow-tags-mode)
+  :config
+  (setq org-rainbow-tags-mode 1))
+
+(use-package rainbow-mode
+  :hook (prog-mode . rainbow-mode))
+
+(use-package visual-fill-column
+  :config
+  (setq-default visual-fill-column-center-text t))
+
+(use-package ox-hugo
+  :config
+  (setq org-hugo-front-matter-format "yaml"))
+
+(use-package embark
+  :bind
+  ("C-c ," . embark-act))
+
+(use-package deadgrep
+  :custom
+  (deadgrep-max-buffers 1))
+
+(use-package dired-rainbow
+  :config
+  (dired-rainbow-define-chmod directory "#6aa3dc" "d.*")
+  (dired-rainbow-define html "#eb5286"
+    ("css" "less" "sass" "scss" "htm" "html" "jhtm" "mht"
+      "eml" "mustache" "xhtml"))
+  (dired-rainbow-define xml "#ad8b00"
+    ("xml" "xsd" "xsl" "xslt" "wsdl" "bib" "json" "msg"
+      "pgn" "rss" "yaml" "yml" "rdata" "sln" "csproj"
+      "meta" "unity" "tres" "tscn" "import" "godot"))
+  (dired-rainbow-define document "#8180f0"
+    ("docm" "doc" "docx" "odb" "odt" "pdb" "pdf" "ps"
+      "rtf" "djvu" "epub" "odp" "ppt" "pptx" "xls" "xlsx"
+      "vsd" "vsdx" "plantuml"))
+  (dired-rainbow-define markdown "#9a9aba"
+    ("org" "org_archive" "etx" "info" "markdown" "md"
+      "mkd" "nfo" "pod" "rst" "tex" "texi" "textfile" "txt"))
+  (dired-rainbow-define media "#b0681f"
+    ("mp3" "mp4" "MP3" "MP4" "avi" "mpeg" "mpg" "flv"
+      "ogg" "mov" "mid" "midi" "wav" "aiff" "flac" "mkv"))
+  (dired-rainbow-define image "#b6688f"
+    ("tiff" "tif" "cdr" "gif" "ico" "jpeg" "jpg" "png"
+      "psd" "eps" "svg"))
+  (dired-rainbow-define compiled "#6cb2eb"
+    ("asm" "cl" "lisp" "el" "c" "h" "c++" "h++" "hpp"
+      "hxx" "m" "cc" "cs" "cp" "cpp" "go" "f" "for" "ftn"
+      "f90" "f95" "f03" "f08" "s" "rs" "active" "hs"
+      "pyc" "java"))
+  (dired-rainbow-define compressed "#b4342f"
+    ("7z" "zip" "bz2" "tgz" "txz" "gz" "xz" "z" "Z" "jar"
+      "war" "ear" "rar" "sar" "xpi" "apk" "xz" "tar" "rar"))
+  (dired-rainbow-define vc "#6cb2eb"
+    ("git" "gitignore" "gitattributes" "gitmodules"))
+  (dired-rainbow-define config "#7260e2"
+    ("cfg" "conf"))
+  (dired-rainbow-define-chmod executable-unix "#38c172" "-.*x.*")
+  (dolist (b (buffer-list))
+    (with-current-buffer b
+      (when (equal major-mode 'dired-mode)
+        (font-lock-refresh-defaults)))))
+```
+
+
+<a id="org6f5ad48"></a>
+
+# completion
+
+
+## bespoke
+
+```elisp
+;;
+;; -> bespoke
+;;
+(defun find-file-vanilla ()
+  "Simple find file from current directory using the linux find command."
+  (interactive)
+  ;; (setq find-command "find -type f -printf \"$PWD/%p\\0\"")
+  ;; (setq find-command "rg --files --null")
+
+  (setq find-command "fd --absolute-path --type f -0")
+  (setq file-list
+    (mapcar
+      (lambda (path)
+        (file-relative-name path default-directory))
+      (split-string
+        (shell-command-to-string find-command)
+        "\0" t)))
+  (setq file
+    (completing-read
+      (format "Find file in %s: " (default-directory))
+      file-list))
+  (when file (find-file (expand-file-name file default-directory))))
+```
+
+
+## vanilla
+
+```elisp
+;;
+;; -> completion
+;;
+(defun fido-style ()
+  (interactive)
+  (setq completion-auto-wrap t
+    completion-auto-help nil
+    completions-max-height 15
+    completion-styles '(initials flex)
+    icomplete-in-buffer t
+    max-mini-window-height 10)
+  (fido-mode 1)
+  (fido-vertical-mode 1))
+(fido-style)
+```
+
+
+## advanced
+
+```elisp
+;;
+;; -> completion
+;;
+(use-package vertico
+  :custom
+  (vertico-cycle t)
+  (read-file-name-completion-ignore-case t)
+  (read-buffer-completion-ignore-case t)
+  (completion-ignore-case t)
+  (vertico-resize nil)
+  (vertico-count 10)
+  :init
+  (vertico-mode))
+
+(use-package orderless
+  :custom
+  (completion-styles '(substring orderless basic))
+  :init
+  (setq completion-styles '(orderless basic)
+    completion-category-defaults nil
+    completion-category-overrides '((file (styles partial-completion)))))
+
+(use-package marginalia
+  :after vertico
+  :custom
+  (marginalia-annotators
+    '(marginalia-annotators-heavy marginalia-annotators-light nil))
+  :init
+  (marginalia-mode))
+```
+
+
+<a id="org2af304e"></a>
+
+# navigation
+
+```elisp
+;;
+;; -> navigation
+;;
+(defvar my-jump-keymap (make-sparse-keymap))
+(define-key my-jump-keymap(kbd "a") 'emms-browse-by-album)
+(define-key my-jump-keymap (kbd "p") 'emms)
+(define-key my-jump-keymap (kbd "n") (lambda () (interactive) (find-file "~/nas")))
+(define-key my-jump-keymap (kbd "d") (lambda () (interactive) (find-file "~/DCIM/content")))
+(define-key my-jump-keymap (kbd "f") (lambda () (interactive) (find-file "~/.config")))
+(define-key my-jump-keymap (kbd "t") (lambda () (interactive) (find-file "~/DCIM/content/aaa--todo.org")))
+(define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/content/aaa--source_code.org")))
+(define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~")))
+(define-key my-jump-keymap (kbd "b") (lambda () (interactive) (find-file "~/bin")))
+(define-key my-jump-keymap (kbd "e") (lambda () (interactive) (find-file "~/.config/emacs/init.el")))
+(define-key my-jump-keymap (kbd "o") (lambda () (interactive) (find-file "~/.config/emacs/emacs--init.org")))
+(define-key my-jump-keymap (kbd "m") (lambda () (interactive) (find-file "~/DCIM")))
+(define-key my-jump-keymap (kbd "c") (lambda () (interactive) (find-file "~/DCIM/Camera")))
+(define-key my-jump-keymap (kbd "r") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
+(define-key my-jump-keymap (kbd "C-q") 'quoted-insert)
+(global-set-key (kbd "C-q") my-jump-keymap)
+```
+
+
+<a id="org2e5deba"></a>
+
+# unbinding
+
+Defines keys that I have had to unbind in various modes to facilitate a smooth windows splitting using my M-<digit> setup.
+
+```elisp
+;;
+;; -> unbinding
+;;
+(use-package diff-mode
+  :hook
+  (diff-mode . (lambda ()
+                 (define-key diff-mode-map (kbd "M-0") nil)
+                 (define-key diff-mode-map (kbd "M-1") nil)
+                 (define-key diff-mode-map (kbd "M-2") nil)
+                 (define-key diff-mode-map (kbd "M-3") nil)
+                 (define-key diff-mode-map (kbd "M-4") nil))))
+
+(use-package magit
+  :config
+  (unbind-key "M-0" magit-mode-map)
+  (unbind-key "M-1" magit-mode-map)
+  (unbind-key "M-2" magit-mode-map)
+  (unbind-key "M-3" magit-mode-map)
+  (unbind-key "M-4" magit-mode-map))
+```
+
+
+<a id="org0773595"></a>
+
+# magit
+
+```elisp
+;;
+;; -> magit
+;;
+(use-package magit
+  :config
+  (magit-add-section-hook
+    'magit-status-sections-hook 'magit-insert-tracked-files nil 'append)
+  :custom
+  (magit-section-initial-visibility-alist (quote ((untracked . hide))))
+  (magit-repolist-column-flag-alist
+    '((magit-untracked-files . "N")
+       (magit-unstaged-files . "U")
+       (magit-staged-files . "S")))
+  (magit-repolist-columns
+    '(("Name" 25 magit-repolist-column-ident nil)
+       ("" 3 magit-repolist-column-flag)
+       ("Version" 25 magit-repolist-column-version
+         ((:sort magit-repolist-version<)))
+       ("B<U" 3 magit-repolist-column-unpulled-from-upstream
+         ((:right-align t)
+           (:sort <)))
+       ("B>U" 3 magit-repolist-column-unpushed-to-upstream
+         ((:right-align t)
+           (:sort <)))
+       ("Path" 99 magit-repolist-column-path nil)))
+  (magit-repository-directories
+    '(("/home/jdyer/.config" . 0)
+       ("/home/jdyer/repos" . 2)
+       ("/home/jdyer/DCIM/Art/Content" . 2)
+       ("/home/jdyer/DCIM/themes" . 2))))
+```
+
+
+<a id="org02ecce1"></a>
+
+# emms
+
+```elisp
+;;
+;; -> emms
+;;
+(use-package emms
+  :init (emms-all)
+  :hook
+  (emms-browser-mode . turn-on-follow-mode)
+  (emms-browser-mode . hl-line-mode)
+  :bind
+  ("S-<return>" . emms-next)
+  ("C-M-<return>" . emms-random)
+  :custom
+  (emms-player-list '(emms-player-vlc))
+  (emms-browser-covers 'emms-browser-cache-thumbnail-async)
+  (emms-source-file-default-directory "/home/jdyer/MyMusicLibrary")
+  (emms-volume-amixer-card 1)
+  (emms-volume-change-function 'emms-volume-pulse-change))
+```
+
+
+<a id="orgcf576c4"></a>
+
+# elfeed
+
+```elisp
+;;
+;; -> elfeed
+;;
+(use-package elfeed
+  :bind
+  ("C-x w" . elfeed)
+  (:map elfeed-search-mode-map
+    ("n" . (lambda () (interactive)
+             (next-line) (call-interactively 'elfeed-search-show-entry)))
+    ("p" . (lambda () (interactive)
+             (previous-line) (call-interactively 'elfeed-search-show-entry)))
+    ("m" . (lambda () (interactive)
+             (apply 'elfeed-search-toggle-all '(star)))))
+  :custom
+  (elfeed-search-remain-on-entry t)
+  (elfeed-search-title-min-width 60)
+  (elfeed-search-title-max-width 60)
+  (elfeed-search-filter "@2-months-ago")
+  (elfeed-feeds
+    '("https://www.dyerdwelling.family/index.xml"
+       "https://www.emacs.dyerdwelling.family/index.xml"
+       "https://www.emacs.dyerdwelling.family/tags/emacs/index.xml"
+       "http://emacsninja.com/feed.atom"
+       "http://www.omgubuntu.co.uk/feed"
+       "http://feeds.feedburner.com/XahsEmacsBlog"
+       "https://emacsair.me/feed.xml"
+       "https://www.ghacks.net/feed/"
+       "https://linuxstoney.com/feed"
+       "http://emacsredux.com/atom.xml"
+       "https://www.creativebloq.com/feed"
+       "https://feeds.howtogeek.com/HowToGeek"
+       "http://planet.emacslife.com/atom.xml"
+       "http://irreal.org/blog/?feed=rss2"
+       "https://itsfoss.com/feed/"
+       "https://9to5linux.com/feed/atom"
+       "https://opensource.com/feed"
+       "http://www.masteringemacs.org/feed/"
+       "https://jao.io/blog/rss.xml")))
+
+(setq elfeed-show-mode-hook
+  (lambda ()
+    (set-face-attribute 'variable-pitch (selected-frame)
+      :font (font-spec :family "Source Code Pro" :size 18))
+    (setq elfeed-show-entry-switch #'my/show-elfeed)))
+```
+
+
+<a id="orgd216537"></a>
+
+# save-desktop
+
+```elisp
+;;
+;; -> save-desktop
+;;
+(setq desktop-save t
+  desktop-restore-eager t
+  desktop-lazy-idle-delay 1
+  desktop-lazy-verbose nil
+  desktop-files-not-to-save "^$"
+  desktop-auto-save-timeout 30)
+(push '(foreground-color . :never) frameset-filter-alist)
+(push '(background-color . :never) frameset-filter-alist)
+(push '(font . :never) frameset-filter-alist)
+(push '(cursor-color . :never) frameset-filter-alist)
+(push '(background-mode . :never) frameset-filter-alist)
+(push '(ns-appearance . :never) frameset-filter-alist)
+(push '(background-mode . :never) frameset-filter-alist)
+
+(desktop-save-mode -1)
+```
+
+
+<a id="org22a0612"></a>
+
+# expansion
+
+```elisp
+;;
+;; -> expansion
+;;
+(setq-default abbrev-mode t)
+
+(global-set-key (kbd "M-/") 'hippie-expand)
+
+(setq hippie-expand-try-functions-list
+  '(try-complete-file-name-partially try-complete-file-name
+     try-expand-all-abbrevs try-expand-dabbrev
+     try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill
+     try-complete-lisp-symbol-partially try-complete-lisp-symbol))
+```
+
+
+<a id="org431e554"></a>
+
+# keybinding
+
+```elisp
+;;
+;; -> keybinding
+;;
+;;  (global-set-key (kbd "C-x v =") 'vc-ediff)
+(global-set-key (kbd "M-H") 'mark-paragraph)
+(global-set-key (kbd "M-=") 'count-words)
+(define-key minibuffer-local-map (kbd "C-c e") 'embark-collect)
+(global-set-key (kbd "C-M-S") 'consult-outline)
+(bind-key* (kbd "M-g i") 'imenu)
+(global-set-key (kbd "M-\'") 'indent-region)
+(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c j") 'winner-undo)
+(global-set-key (kbd "C-c k") 'winner-redo)
+(bind-key* (kbd "M-j") (lambda()(interactive)(next-line (/ (window-height) 8))))
+(bind-key* (kbd "M-k") (lambda()(interactive)(previous-line (/ (window-height) 8))))
+;; (bind-key* (kbd "M-n") (lambda()(interactive)(next-line (/ (window-height) 6))))
+;; (bind-key* (kbd "M-p") (lambda()(interactive)(previous-line (/ (window-height) 6))))
+(bind-key* (kbd "M-l") (lambda()(interactive)(select-window (next-window (selected-window)))))
+(bind-key* (kbd "M-h") (lambda()(interactive)(select-window (previous-window (selected-window)))))
+(bind-key* (kbd "M-i") (lambda ()(interactive)(my/resize-window 4 t)))
+(bind-key* (kbd "M-u") (lambda ()(interactive)(my/resize-window -4 t)))
+(global-set-key (kbd "C-c b") (lambda ()(interactive)(async-shell-command "do_backup home" "*backup*")))
+(global-set-key (kbd "C-c c") 'org-capture)
+(global-set-key (kbd "C-c f") 'my/fold)
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+(global-set-key (kbd "C-x j") 'previous-buffer)
+(global-set-key (kbd "C-x k") 'next-buffer)
+(global-set-key (kbd "C-x l") 'scroll-lock-mode)
+(global-set-key (kbd "C-x t") 'customize-themes)
+(global-set-key (kbd "M-0") 'delete-window)
+(global-set-key (kbd "M-1") 'delete-other-windows)
+(global-set-key (kbd "M-2") 'split-window-vertically)
+(global-set-key (kbd "M-3") 'split-window-horizontally)
+(global-set-key (kbd "M-;") 'my/comment-or-uncomment)
+(global-set-key (kbd "S-<f1>") 'font-lock-mode)
+(global-set-key (kbd "<f1>") 'display-line-numbers-mode)
+(global-set-key (kbd "<f2>") 'whitespace-mode)
+(global-set-key (kbd "<f3>") 'variable-pitch-mode)
+(global-set-key (kbd "<f6>") 'find-file-rg)
+(global-set-key (kbd "<f7>") 'display-fill-column-indicator-mode)
+(global-set-key (kbd "M-?") 'my/grep)
+(define-key dired-mode-map (kbd "C") 'my/rsync)
+(define-key dired-mode-map (kbd "C-t d") 'my/image-dired-sort)
+(define-key dired-mode-map (kbd "C-c d") 'my/dired-duplicate-file)
+(global-unset-key (kbd "C-z"))
+```
+
+
+<a id="org25c22cc"></a>
+
+# inserts
+
+```elisp
+;;
+;; -> inserts
+;;
+(global-set-key (kbd "C-c i d") (lambda ()
+                                  (interactive)
+                                  (insert (format-time-string "<%Y-%m-%d>"))))
+(global-set-key (kbd "C-c i t") (lambda ()
+                                  (interactive)
+                                  (insert (format-time-string "%Y%m%d%H%M%S"))))
+
+(define-key prog-mode-map (kbd "C-c i b") 'my/insert-uniq-log-word)
+```
+
+
+<a id="orgc0aabbc"></a>
+
+# modes
+
+```elisp
+;;
+;; -> modes
+;;
+(global-font-lock-mode 1)
+(savehist-mode 1)
+(global-ede-mode t)
+(global-prettify-symbols-mode t)
+(auto-fill-mode -1)
+(blink-cursor-mode -1)
+(column-number-mode 1)
+(global-auto-revert-mode 1)
+(put 'narrow-to-page 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
+(put 'downcase-region 'disabled -1)
+(show-paren-mode 1)
+(setq tooltip-mode nil)
+(transient-mark-mode 1)
+(winner-mode 1)
+(pixel-scroll-precision-mode 1)
+(repeat-mode 1)
+```
+
+
+<a id="org10665e3"></a>
+
+# bell
+
+```elisp
+;;
+;; -> bell
+;;
+(setq visible-bell t)
+(setq ring-bell-function 'ignore)
+```
+
+
+<a id="org8f1194d"></a>
+
+# setqs
+
+```elisp
+;;
+;; -> setqs
+;;
+(setq dired-guess-shell-alist-user
+  '(("\\.\\(jpg\\|jpeg\\|png\\|gif\\|bmp\\)$" "gthumb")
+     ("\\.\\(mp4\\|mkv\\|avi\\|mov\\|wmv\\|flv\\|mpg\\)$" "mpv")
+     ("\\.\\(mp3\\|wav\\|ogg\\|\\)$" "mpv")
+     ("\\.\\(kra\\)$" "org.kde.krita")
+     ("\\.\\(odt\\|ods\\)$" "libreoffice")
+     ("\\.\\(html\\|htm\\)$" "firefox")
+     ("\\.\\(pdf\\|epub\\)$" "okular")))
+(setq dired-dwim-target t)
+(setq dired-listing-switches "-alGgh")
+(setq fit-window-to-buffer-horizontally t)
+(setq case-fold-search t)
+(setq custom-safe-themes t)
+(setq dired-auto-revert-buffer t)
+(setq eshell-scroll-to-bottom-on-input 'this)
+(setq tramp-default-method "ssh")
+(setq enable-local-variables :all)
+(setq proced-auto-update-interval 1)
+(setq isearch-lazy-count t)
+(setq shr-max-image-proportion 0.5)
+(setq shr-max-width 80)
+(setq shr-width 70)
+(setq truncate-partial-width-windows t)
+(setq tooltip-hide-delay 0)
+(when (fboundp 'imagemagick-register-types)
+  (imagemagick-register-types))
+(setq kill-buffer-query-functions nil)
+(setq use-dialog-box nil)
+(setq switch-to-buffer-obey-display-actions t)
+(setq ediff-split-window-function 'split-window-horizontally)
+(setq disabled-command-function nil)
+(setq auto-revert-use-notify nil)
+(setq auto-revert-verbose nil)
+(setq create-lockfiles nil)
+(setq use-short-answers t)
+(setq delete-by-moving-to-trash t)
+(setq european-calendar-style t)
+(setq esup-depth 0)
+(setq frame-inhibit-implied-resize t)
+(setq global-auto-revert-non-file-buffers t)
+(setq grep-command "grep -ni ")
+(setq kill-whole-line t)
+(setq large-file-warning-threshold nil)
+(setq reb-re-syntax 'string)
+(setq truncate-lines t)
+(setq suggest-key-bindings nil)
+(setq diary-file "~/DCIM/content/diary.org")
+```
+
+
+<a id="org7ca8a02"></a>
+
+# confirm
+
+```elisp
+;;
+;; -> confirm
+;;
+(setq dired-clean-confirm-killing-deleted-buffers nil)
+(setq dired-confirm-shell-command nil)
+(setq dired-no-confirm t)
+(setq dired-recursive-deletes (quote always))
+(setq dired-deletion-confirmer '(lambda (x) t))
+(setq dired-recursive-deletes 'always)
+(defalias 'yes-or-no-p 'y-or-n-p)
+(setq confirm-kill-emacs 'y-or-n-p)
+(setq confirm-kill-processes nil)
+(setq confirm-nonexistent-file-or-buffer nil)
+(set-buffer-modified-p nil)
+```
+
+
+<a id="org77585e0"></a>
+
+# backups
+
+```elisp
+;;
+;; -> backups
+;;
+(setq make-backup-files 1)
+(setq backup-directory-alist '(("." . "~/backup"))
+  backup-by-copying t    ; Don't delink hardlinks
+  version-control t          ; Use version numbers on backups
+  delete-old-versions t  ; Automatically delete excess backups
+  kept-new-versions 10   ; how many of the newest versions to keep
+  kept-old-versions 5)    ; and how many of the old
+```
+
+
+<a id="orgca1dfa3"></a>
+
+# hooks
+
+```elisp
+;;
+;; -> hooks
+;;
+(add-hook 'before-save-hook 'time-stamp)
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(add-hook 'calendar-mode-hook 'diary-mark-entries)
+(add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
+(add-hook 'diary-mark-entries-hook 'diary-mark-included-diary-files)
+(add-hook 'proced-mode-hook 'proced-settings)
+```
+
+
+<a id="org8960323"></a>
+
+# custom-settings
+
+```elisp
+;;
+;; -> custom-settings
+;;
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+  '(custom-enabled-themes '(doom-outrun-electric))
+  '(warning-suppress-log-types '((frameset)))
+  '(warning-suppress-types '((frameset))))
+```
+
+
+<a id="org1cbc96c"></a>
+
+# defuns
+
+```elisp
+;;
+;; -> defuns
+;;
+(defun proced-settings()
+  (proced-toggle-auto-update 1))
+
+(defun my/show-elfeed (buffer)
+  (display-buffer buffer))
+
+(defun my/resize-window (delta &optional horizontal)
+  "Resize window back and forth."
+  (interactive)
+  (let ((edge (if horizontal
+                (car (window-edges))
+                (car (cdr (window-edges))))))
+    (if (= edge 0)
+      (enlarge-window delta horizontal)
+      (shrink-window delta horizontal))))
+
+(defun save-macro (name)
+  "Save a macro."
+  (interactive "SName of the macro: ")
+  (kmacro-name-last-macro name)
+  (find-file user-init-file)
+  (goto-char (point-max))
+  (newline)
+  (insert-kbd-macro name)
+  (newline))
+
+(defun my/rsync (dest)
+  "Rsync copy."
+  (interactive
+    (list
+      (expand-file-name (read-file-name "rsync to:"
+                          (dired-dwim-target-directory)))))
+  (let ((files (dired-get-marked-files nil current-prefix-arg))
+         (command "rsync -arvz --progress --no-g "))
+    (dolist (file files)
+      (setq command (concat command (shell-quote-argument file) " ")))
+    (setq command (concat command (shell-quote-argument dest)))
+    (async-shell-command command "*rsync*")
+    (other-window 1)))
+
+(defun my/comment-or-uncomment ()
+  "Comments or uncomments the current line or region."
+  (interactive)
+  (if (region-active-p)
+    (comment-or-uncomment-region
+      (region-beginning)(region-end))
+    (comment-or-uncomment-region
+      (line-beginning-position)(line-end-position))))
+
+(defun my/fold ()
+  "Fold text indented same of more than the cursor."
+  (interactive)
+  (if (eq selective-display (1+ (current-column)))
+    (set-selective-display 0)
+    (set-selective-display (1+ (current-column)))))
+
+(defun my/grep (arg)
+  "Wrapper to grep."
+  (interactive "p")
+  (print arg)
+  (let ((search-term
+          (if (equal major-mode 'dired-mode)
+            (read-from-minibuffer "Search : ")
+            (read-from-minibuffer "Search : " (thing-at-point 'symbol)))))
+    (if (= arg 1)
+      (deadgrep search-term default-directory)
+      (progn
+        (setq current-prefix-arg nil)
+        (deadgrep search-term "~")))))
+
+(defun my/dired-duplicate-file (arg)
+  "Duplicate a file from dired with an incremented number.
+  If ARG is provided, it sets the counter."
+  (interactive "p")
+  (let* ((file (dired-get-file-for-visit))
+          (dir (file-name-directory file))
+          (name (file-name-nondirectory file))
+          (base-name (file-name-sans-extension name))
+          (extension (file-name-extension name t))
+          (counter (if arg (prefix-numeric-value arg) 1))
+          (new-file))
+    (while (and (setq new-file
+                  (format "%s%s_%03d%s" dir base-name counter extension))
+             (file-exists-p new-file))
+      (setq counter (1+ counter)))
+    (if (file-directory-p file)
+      (copy-directory file new-file)
+      (copy-file file new-file))
+    (dired-revert)))
+```
+
+
+<a id="org26ad030"></a>
+
+# window-positioning
+
+```elisp
+;;
+;; -> window-positioning
+;;
+(add-to-list 'display-buffer-alist
+  `(,(rx(or "elfeed-entry"))
+     display-buffer-in-direction
+     (direction . right)
+     (window . root)
+     (window-width . 0.45)))
+
+(add-to-list 'display-buffer-alist
+  `(,(rx(or "image-dired"))
+     display-buffer-in-direction
+     (direction . right)
+     (window . root)
+     (window-width . 0.75)))
+
+(add-to-list 'display-buffer-alist
+  `(,(rx(or "image-dired-display-image"))
+     display-buffer-in-direction
+     (direction . right)
+     (window . root)
+     (window-width . 0.4)))
+
+(defvar right-repl-regexp
+  (rx bos "*" (or "Occur"
+                "deadgrep"
+                "dictionary"
+                "compilation"
+                "Org"
+                "Proced")
+    (zero-or-more nonl))
+  "Regexp for matching the buffer name of terminal or related tools.")
+
+(defvar go-away-repl-regexp
+  (rx bos "*" (or "Async" "xref")
+    (zero-or-more nonl))
+  "Regexp for matching windows to disappear")
+
+(add-to-list 'display-buffer-alist
+  `(,go-away-repl-regexp
+     display-buffer-no-window
+     (inhibit-same-window . t)))
+
+(add-to-list 'display-buffer-alist
+  `(,right-repl-regexp
+     display-buffer-in-direction
+     (direction . right)
+     (window-width . 0.4)
+     (preserve-size (t . nil))
+     (body-function . select-window)))
+
+(add-to-list 'display-buffer-alist
+  `(,right-repl-regexp
+     display-buffer-reuse-window))
+```
+
+
+<a id="orgcb3ac3f"></a>
+
+# skeletons
+
+```elisp
+;;
+;; -> skeletons
+;;
+(define-skeleton jd-skel-hugo-image-size
+  "Org properties skeleton."
+  "\n"
+  "#+attr_org: :width 300px\n"
+  "#+attr_html: :width 100%")
+
+(define-skeleton jd-skel-hugo-image-emacs-banner
+  "Org properties skeleton."
+  "\n"
+  "#+attr_org: :width 300px\n"
+  "#+attr_html: :class emacs-img")
+
+(define-skeleton jd-skel-hugo-video
+  "Video hugo link."
+  "\n"
+  "\n#+begin_export md\n"
+  "{{\< video src=\"\/art--videos\/\" \>}}"
+  "\n#+end_export\n")
+
+(define-skeleton jd-skel-make-always
+  "Always make targets in a Makefile."
+  "\n"
+  "MAKEFLAGS += --always-make")
+
+(define-skeleton jd-skel-make-source
+  "Always make targets in a Makefile."
+  "\n"
+  "%.adb %.ads:\n"
+  "\tgprbuild -c $@ -P default.gpr")
+
+(define-abbrev-table 'global-abbrev-table
+  '(("jdimg" "" jd-skel-hugo-image-size)
+     ("jdvid" "" jd-skel-hugo-video)
+     ("jdemb" "" jd-skel-hugo-image-emacs-banner)
+     ("jdmka" "" jd-skel-make-always)
+     ("jdmks" "" jd-skel-make-source)
+     ("btw" "by the way" nil)))
+```
+
+
+<a id="org257d3ae"></a>
+
+# org-capture
+
+```elisp
+;;
+;; -> org-capture
+;;
+(setq bookmark-fringe-mark nil)
+
+(setq org-capture-templates
+  '(
+     ("p" "Post" plain
+       (file+headline
+         "~/DCIM/content/posts--all.org"
+         "Posts")
+       "** TODO %^{title} :2023:
+      :PROPERTIES:
+      :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>-posts--%\\1
+      :EXPORT_HUGO_SECTION: posts
+      :EXPORT_HUGO_LASTMOD: <%<%Y-%m-%d %H:%M>>
+      :EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :thumbnail /posts/%<%Y%m%d%H%M%S>-posts--%\\1.jpg
+      :END:
+      #+begin_export md
+      %?
+      " :prepend t :jump-to-captured t)
+
+     ("e" "Emacs" plain
+       (file+headline
+         "~/DCIM/content/emacs--all.org"
+         "Emacs")
+       "** TODO %^{title} :emacs:2023:
+      :PROPERTIES:
+      :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>-emacs--%\\1
+      :EXPORT_HUGO_SECTION: emacs
+      :EXPORT_HUGO_LASTMOD: <%<%Y-%m-%d %H:%M>>
+      :EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :thumbnail /emacs/%<%Y%m%d%H%M%S>-emacs--%\\1.jpg
+      :END:
+      %?
+      " :prepend t :jump-to-captured t)
+
+     ("l" "Linux" plain
+       (file+headline
+         "~/DCIM/content/linux--all.org"
+         "Linux")
+       "** TODO %^{title} :2023:
+      :PROPERTIES:
+      :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>-linux--%\\1
+      :EXPORT_HUGO_SECTION: linux
+      :EXPORT_HUGO_LASTMOD: <%<%Y-%m-%d %H:%M>>
+      :EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :thumbnail /linux/%<%Y%m%d%H%M%S>-emacs--%\\1.jpg
+      :END:
+      %?
+      " :prepend t :jump-to-captured t)
+
+     ("a" "Art")
+
+     ("av" "Art Videos" plain
+       (file+headline
+         "~/DCIM/content/art--2018-now.org"
+         "Art")
+       "** TODO %^{title} Video :videos:painter:krita:artrage:2023:
+      :PROPERTIES:
+      :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>--%\\1-%\\2
+      :EXPORT_HUGO_SECTION: art--videos
+      :EXPORT_HUGO_LASTMOD: <%<%Y-%m-%d %H:%M>>
+      :EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :thumbnail /art--videos/%<%Y%m%d%H%M%S>--%\\1-%\\2.jpg
+      :VIDEO:
+      :END:
+      #+begin_export md
+      {{< youtube %^{youtube} >}}
+      #+end_export
+      %?
+      " :prepend t :jump-to-captured t)
+
+     ("aa" "Art" plain
+       (file+headline
+         "~/DCIM/content/art--2018-now.org"
+         "Art")
+       "** TODO %^{title} :painter:krita:artrage:2023:
+      :PROPERTIES:
+      :EXPORT_FILE_NAME: %\\1
+      :EXPORT_HUGO_SECTION: art--all
+      :EXPORT_HUGO_LASTMOD: <%<%Y-%m-%d %H:%M>>
+      :EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :thumbnail /art--all/%\\1.jpg
+      :VIDEO:
+      :END:
+      #+attr_org: :width 300px
+      #+attr_html: :width 100%
+      #+begin_export md
+      #+end_export
+      %?
+      " :prepend t :jump-to-captured t)))
+```
+
+
+<a id="org0ce1c64"></a>
+
+# org
+
+```elisp
+;;
+;; -> org
+;;
+(use-package org
+  :config
+  (setq org-src-tab-acts-natively t ;; commenting better in org src blocks
+    org-src-preserve-indentation nil
+    org-hide-leading-stars t
+    org-tags-sort-function 'org-string-collate-greaterp
+    org-export-with-sub-superscripts nil
+    org-hugo-base-dir "~/DCIM"
+    org-image-actual-width (list 50)
+    org-startup-indented t
+    org-todo-keywords
+    '((sequence "TODO" "DOIN" "WAIT" "ORDR" "SENT" "|" "CANCELLED" "DONE"))
+    org-todo-keyword-faces
+    '(("TODO" . "#ee5566")
+       ("DOIN" . "#5577aa")
+       ("WAIT" . "#bb7744")
+       ("ORDR" . "#bb44ee")
+       ("SENT" . "#bb44ee")
+       ("CANCELLED" . "#426b3e")
+       ("DONE" . "#77aa66"))
+    org-cycle-separator-lines 2)
+  :bind
+  (:map org-mode-map
+    ("M-n" . org-metadown)
+    ("M-p" . org-metaup)))
+```
+
+Disables the parenthesis matching to < and > only in org mode as it is causing matching problems when using org literate files.
+
+```elisp
+(defun org-syntax-table-modify ()
+  "Modify `org-mode-syntax-table' for the current org buffer."
+  (modify-syntax-entry ?< "." org-mode-syntax-table)
+  (modify-syntax-entry ?> "." org-mode-syntax-table))
+
+(add-hook 'org-mode-hook #'org-syntax-table-modify)
+```
+
+
+<a id="org1ba63a8"></a>
+
+# dwim
+
+```elisp
+;;
+;; -> dwim
+;;
+(defvar my/dwim-convert-commands
+  '(
+     "ConvertNoSpace" "AudioConvert" "AudioInfo" "AudioNormalise"
+     "AudioTrimSilence" "PictureAutoColour" "PictureConvert" "PictureCrush"
+     "PictureInfo" "PictureMontage" "PictureOrganise" "PictureCrop" "PictureRotateFlip"
+     "PictureRotateLeft" "PictureRotateRight" "PictureScale" "PictureUpscale"
+     "PictureGetText" "PictureOrientation" "VideoConcat" "VideoConvert"
+     "VideoCut" "VideoDouble" "VideoExtractAudio" "VideoExtractFrames"
+     "VideoFilter" "VideoFromFrames" "VideoInfo" "VideoRemoveAudio"
+     "VideoReplaceVideoAudio" "VideoRescale" "VideoReverse" "VideoRotate"
+     "VideoRotateLeft" "VideoRotateRight" "VideoShrink" "VideoSlowDown"
+     "VideoSpeedUp" "VideoZoom" "WhatsAppConvert" "PictureCorrect" "Picture2pdf"
+     "OtherTagDate"
+     )
+  "List of commands for dwim-convert.")
+
+(defun my/dwim-convert-generic (command)
+  "Execute a dwim-shell-command-on-marked-files with the given COMMAND."
+  (interactive "MCommand: ")
+  (dwim-shell-command-on-marked-files
+    command
+    (format "%s '<<*>>'" command) :silent-success t))
+
+(defun my/dwim-convert-with-selection ()
+  "Prompt user to choose command and execute dwim-shell-command-on-marked-files."
+  (interactive)
+  (let ((chosen-command (completing-read "Choose command: "
+                          my/dwim-convert-commands)))
+    (my/dwim-convert-generic chosen-command)))
+
+(global-set-key (kbd "C-c v") 'my/dwim-convert-with-selection)
+```
+
+
+<a id="org3accc39"></a>
+
+# scroll
+
+```elisp
+;;
+;; -> scroll
+;;
+(setq scroll-margin 20)
+(setq scroll-preserve-screen-position t)
+```
+
+
+<a id="org8ea768e"></a>
+
+# font
+
+```elisp
+;;
+;; -> font
+;;
+;; (setq font-general "Noto Sans Mono 14")
+(setq font-general "MesloLGS Nerd Font Mono 12")
+;; (setq font-general "Source Code Pro 14")
+;; (setq font-general "Nimbus Mono PS 14")
+;; (setq font-general "MesloLGS Nerd Font Mono 14")
+;; (setq font-general "Droid Sans Mono 14")
+;; (setq font-general "Hack Nerd Font Mono 14")
+
+(set-frame-font font-general nil t)
+
+;; the set-frame-font doesn't seem to work in server / client mode
+(add-to-list 'default-frame-alist `(font . ,font-general))
+```
+
+
+<a id="org18c3932"></a>
+
+# custom-set-faces
+
+```elisp
+;;
+;; -> custom-set-faces
+;;
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+  '(cursor ((t (:background "#ffffff" :inverse-video t))))
+  '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
+  '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
+  '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
+  '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
+  '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2"))))
+  '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
+  '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.2 :family "Source Code Pro"))))
+  '(fixed-pitch ((t (:family "Source Code Pro" :height 130))))
+  '(org-block ((t (:inherit fixed-pitch))))
+  '(org-code ((t (:inherit (shadow fixed-pitch)))))
+  '(org-date ((t (:inherit fixed-pitch))))
+  '(org-document-info ((t (:foreground "dark orange"))))
+  '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+  '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
+  '(org-link ((t (:foreground "royal blue" :underline t))))
+  '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+  '(org-property-value ((t (:inherit fixed-pitch))) t)
+  '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+  '(org-table ((t (:inherit fixed-pitch :foreground "#83a598"))))
+  '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
+  '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
+  '(variable-pitch ((t (:family "Source Sans Pro" :height 140))))
+  '(vertical-border ((t (:foreground "#444444" :inverse-video t)))))
+```
+
+
+<a id="orgc9fd151"></a>
+
+# image-dired
+
+```elisp
+;;
+;; -> image-dired
+;;
+(defun my/image-dired-sort (arg)
+  "Sort images in various ways."
+  (interactive "p")
+  (cond
+    ((equal current-prefix-arg nil)   ; no C-u
+      (setq dired-actual-switches "-lGghat"))
+    ((equal current-prefix-arg '(4))  ; C-u
+      (setq dired-actual-switches "-lGgha"))
+    ((equal current-prefix-arg 1)     ; C-u 1
+      (setq dired-actual-switches "-lGgha")))
+  (setq w (selected-window))
+  (delete-other-windows)
+  (revert-buffer)
+  (image-dired ".")
+  (setq idw (selected-window))
+  (select-window w)
+  (dired-unmark-all-marks)
+  (select-window idw)
+  (image-dir
+    ed-display-thumbnail-original-image)
+  (image-dired-line-up-dynamic))
+
+(setq image-use-external-converter t)
+(setq image-dired-external-viewer "/usr/bin/gthumb")
+(setq image-dired-show-all-from-dir-max-files 999)
+(setq image-dired-thumbs-per-row 999)
+(setq image-dired-thumb-margin 5)
+(setq image-dired-thumb-size 10)
+(setq image-dired-thumb-height 100)
+(setq image-dired-thumb-width 100)
+(setq image-dired-thumb-size 100)
+```
+
+
+<a id="org10943f5"></a>
+
+# visuals
+
+```elisp
+;;
+;; -> visuals
+;;
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
+
+(setq frame-title-format "%f")
+(setq inhibit-startup-screen t)
+
+(add-hook 'text-mode-hook #'visual-line-mode)
+(add-hook 'org-mode-hook '(lambda () (visual-line-mode)))
+(setq truncate-partial-width-windows 140)
+(set-frame-parameter nil 'alpha-background 85)
+(add-to-list 'default-frame-alist '(alpha-background . 85))
+(set-fringe-mode '(10 . 10))
+(set-display-table-slot standard-display-table 0 ?\ )
+
+(setq window-divider-default-bottom-width 6)
+(setq window-divider-default-right-width 6)
+(setq window-divider-default-places t)
+
+(window-divider-mode -1)
+
+(setq-default left-margin-width 1 right-margin-width 1)
+```
+
+
+<a id="orgfda56d3"></a>
+
+# imenu
+
+```elisp
+;;
+;; -> imenu
+;;
+(defun my-imenu-create-index ()
+  "Create an index using definitions starting with ';; ->'."
+  (let ((index-alist '())
+         (regex "^;;[[:space:]]->\\(.+\\)$"))
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward regex nil t)
+        (let ((name (s-trim (match-string 1)))
+               (pos (match-beginning 0)))
+          (push (cons name (set-marker (make-marker) pos)) index-alist))))
+    (setq imenu--index-alist (sort
+                               index-alist
+                               (lambda (a b)
+                                 (string< (car a) (car b)))))))
+
+;; (setq imenu-create-index-function #'my-imenu-create-index)
+
+(add-hook 'emacs-lisp-mode-hook
+  (lambda ()
+    (setq imenu-sort-function 'imenu--sort-by-name)
+    (setq imenu-generic-expression
+      '((nil "^;;[[:space:]]+-> \\(.*\\)$" 1)
+         ("defun" "^.*([[:space:]]*defun[[:space:]]+\\([[:word:]-/]+\\)" 1)
+         ("use-package" "^.*([[:space:]]*use-package[[:space:]]+\\([[:word:]-]+\\)" 1)))
+    (imenu-add-menubar-index)))
+
+(add-hook 'conf-space-mode-hook
+  (lambda ()
+    (setq imenu-sort-function 'imenu--sort-by-name)
+    (setq imenu-generic-expression
+      '((nil "^#[[:space:]]+-> \\(.*\\)$" 1)))
+    (imenu-add-menubar-index)))
+```
+
+
+<a id="org9bc5d00"></a>
+
+# recentf
+
+```elisp
+;;
+;; -> recentf
+;;
+(recentf-mode 1)
+
+(setq recentf-max-menu-items 200)
+(setq recentf-max-saved-items 200)
+(global-set-key (kbd "C-x m") 'consult-recent-file)
+```
+
+
+<a id="org280d205"></a>
+
+# modeline
+
+
+## simple
+
+```elisp
+;;
+;; -> modeline
+;;
+(setq-default mode-line-modified
+  '(:eval (if (and (buffer-file-name) (buffer-modified-p))
+            (propertize " * Modified " 'face
+              '(:background "#000000" :foreground "#ffffff")) "")))
+
+(set-face-attribute 'mode-line-active nil :height 130 :underline nil :overline nil :box nil
+  :background "#afb4bc" :foreground "#000000")
+(set-face-attribute 'mode-line-inactive nil :height 130 :underline nil :overline nil
+  :background "#3c4a5d" :foreground "#323232")
+
+(setq-default mode-line-format
+  '("%e"
+     mode-line-modified
+     (:eval
+       (propertize (format "%s" (abbreviate-file-name default-directory))
+         'face '(:inherit bold))
+       )
+     (:eval
+       (if (not (equal major-mode 'dired-mode))
+         (propertize (format "%s " (buffer-name))
+           'face '(:inherit bold))
+         " "))
+     mode-line-position
+     mode-line-modes
+     "-%-"))
+```
+
+
+## project
+
+```elisp
+;;
+;; -> modeline
+;;
+(setq-default mode-line-modified
+  '(:eval (if (and (buffer-file-name) (buffer-modified-p))
+            (propertize " * Modified " 'face
+              '(:background "#c60017" :foreground "#ffffff")) "")))
+
+(set-face-attribute 'mode-line-active nil :height 130 :underline nil :overline nil
+  :background "#41807d" :foreground "#ffffff")
+(set-face-attribute 'mode-line-inactive nil :height 130
+  :background "#343434" :foreground "#ffffff")
+
+(defun string-to-hex-colour (str)
+  (format "#%02x%02x%02x"
+    (mod (sxhash (substring str -2 nil)) 256)
+    (mod (sxhash (substring str -4 -2)) 256)
+    (mod (sxhash (substring str -6 -4)) 256)))
+
+(setq-default mode-line-format
+  '("%e"
+     mode-line-modified
+     (:eval
+       (when (project-current)
+         (setq prj-background
+           (color-desaturate-name
+             (color-darken-name
+               (string-to-hex-colour (project-root (project-current))) 0) 0))
+
+         (if (string-greaterp prj-background "#888888888888")
+           (setq prj-foreground "#000000")
+           (setq prj-foreground "#ffffff"))
+
+         (propertize (format "%s" (abbreviate-file-name (project-root (project-current))))
+           'face `(:background ,prj-background :foreground ,prj-foreground))))
+     (:eval
+       (if (project-current)
+         (when (buffer-file-name)
+           (if (mode-line-window-selected-p)
+             (propertize (format "%s"
+                           (string-trim-left
+                             (expand-file-name (file-name-directory (buffer-file-name)))
+                             (expand-file-name (project-root (project-current)))))
+               'face '(:background "#7cc1e4" :foreground "#000000"))
+             (propertize (format "%s"
+                           (string-trim-left
+                             (expand-file-name (file-name-directory (buffer-file-name)))
+                             (expand-file-name (project-root (project-current))))))
+             ))))
+     (:eval
+       (if (mode-line-window-selected-p)
+         (propertize (format "%s " (buffer-name))
+           'face '(:background "#7cc1e4" :foreground "#000000"))
+         (format "%s " (buffer-name))))
+     (:eval
+       (when (or (eq major-mode 'image-mode)
+               (eq major-mode 'image-dired-image-mode))
+         (process-lines  "identify"  "-format"  "[%m %wx%h %b]" (buffer-file-name))))
+     mode-line-position
+     ;; (vc-mode vc-mode)
+     mode-line-modes
+     mode-line-misc-info))
+
+(setq mode-line-compact t)
+```
+
+
+<a id="orga12e85a"></a>
+
+# markdown
+
+```elisp
+;;
+;; -> markdown
+;;
+(defun my-org-export-to-markdown ()
+  (when (string= (buffer-file-name) (expand-file-name "emacs--init.org"))
+    (org-gfm-export-to-markdown)))
+
+(add-hook 'after-save-hook 'my-org-export-to-markdown)
+```
+
+
+<a id="org4481619"></a>
+
+# find
+
+```elisp
+;;
+;; -> find
+;;
+(setq find-dired-refine-function 'find-dired-sort-by-filename)
+(setq find-dired-refine-function 'nil)
+(setq find-ls-option (cons "-exec ls -lSh {} +" "-lSh"))
+```
+
+
+<a id="org0c8a2d1"></a>
+
+# grep
+
+My aim here is to make deadgrep as similar to rgrep as possible for easier switching back and forth between a more vanilla like emacs experience.
+
+Note initially the grep-find-ignored additions which are generally synced to the ripgrep/deadgrep top level .ignore file for consistency.
+
+Note that the deadgrep search override case is because I prefer by default a non sensitive search so I just set this globally.
+
+I also don't want ripgrep/deadgrep to respect version control files (including .gitignore) and the only way currently with deadgrep is to override the argument function on emacs startup and set the &#x2013;no-ignore-vcs
+
+```elisp
+;;
+;; -> grep
+;;
+(require 'grep)
+
+(eval-after-load 'grep
+  '(progn
+     (dolist (dir '("nas" ".cache" "cache" "elpa" "chromium"
+                     ".local/share" "syncthing" ".mozilla" ".local/lib" "Games"
+                     ".wine" ".thunderbird" ".gnupg"))
+       (push dir grep-find-ignored-directories))
+     (dolist (file '(".cache" "*cache*" "*.iso" "*.xmp" "*.jpg" "*.mp4" "*.dll" "*.mp3"))
+       (push file grep-find-ignored-files))))
+
+(setq-default deadgrep--search-case 'ignore)
+
+(defun deadgrep--arguments (search-term search-type case context)
+  "Return a list of command line arguments that we can execute in a shell
+      to obtain ripgrep results."
+  (let (args)
+    (push "--color=ansi" args)
+    (push "--line-number" args)
+    (push "--no-heading" args)
+    (push "--no-column" args)
+    (push "--with-filename" args)
+    (push "--no-config" args)
+    ;; (push "--no-ignore" args)
+    (push "--no-ignore-vcs" args)
+
+    (cond
+      ((eq search-type 'string)
+        (push "--fixed-strings" args))
+      ((eq search-type 'words)
+        (push "--fixed-strings" args)
+        (push "--word-regexp" args))
+      ((eq search-type 'regexp))
+      (t
+        (error "Unknown search type: %s" search-type)))
+
+    (cond
+      ((eq case 'smart)
+        (push "--smart-case" args))
+      ((eq case 'sensitive)
+        (push "--case-sensitive" args))
+      ((eq case 'ignore)
+        (push "--ignore-case" args))
+      (t
+        (error "Unknown case: %s" case)))
+
+    (cond
+      ((eq deadgrep--file-type 'all))
+      ((eq (car-safe deadgrep--file-type) 'type)
+        (push (format "--type=%s" (cdr deadgrep--file-type)) args))
+      ((eq (car-safe deadgrep--file-type) 'glob)
+        (push (format "--type-add=custom:%s" (cdr deadgrep--file-type)) args)
+        (push "--type=custom" args))
+      (t
+        (error "Unknown file-type: %S" deadgrep--file-type)))
+
+    (when context
+      (push (format "--before-context=%s" (car context)) args)
+      (push (format "--after-context=%s" (cdr context)) args))
+
+    (push "--" args)
+    (push search-term args)
+    (push "." args)
+
+    (nreverse args)))
+```
+
+
+<a id="orgbab3b00"></a>
+
+# spelling
+
+```elisp
+;;
+;; -> spelling
+;;
+(use-package jinx
+  :config
+  (dolist (hook '(text-mode-hook org-mode-hook))
+    (add-hook hook #'jinx-mode)))
+
+(use-package powerthesaurus)
+
+(global-set-key (kbd "M-.")
+  (lambda () (interactive)
+    (backward-word)
+    (jinx-correct)
+    (forward-word)))
+
+(global-set-key (kbd "M-,") 'dictionary-lookup-definition)
+(global-set-key (kbd "M-*") 'powerthesaurus-lookup-synonyms-dwim)
+
+(setq ispell-local-dictionary "en_GB")
+(setq ispell-program-name "hunspell")
+(setq dictionary-default-dictionary "*")
+(setq dictionary-server "dict.org")
+(setq dictionary-use-single-buffer t)
+```
+
+
+<a id="org16eb698"></a>
+
+# hugo
+
+```elisp
+;;
+;; -> hugo
+;;
+(defun my/hugo-org-export-subtree ()
+  "Hugo export processing."
+  (interactive)
+  (org-hugo-export-wim-to-md)
+  (shell-command "web rsync emacs"))
+
+(global-set-key (kbd "C-c x") #'my/hugo-org-export-subtree)
+```
+
+
+<a id="orgfbfbd4b"></a>
+
+# gdb
+
+```elisp
+;;
+;; -> gdb
+;;
+(setq gdb-display-io-nopopup 1)
+(setq gdb-many-windows t)
+
+(global-set-key (kbd "<f9>") 'gud-break)
+(global-set-key (kbd "<f10>") 'gud-next)
+(global-set-key (kbd "<f11>") 'gud-step)
+```
+
+
+<a id="org624e9cc"></a>
+
+# compilation
+
+```elisp
+;;
+;; -> compilation
+;;
+(setq compilation-always-kill t)
+(setq compilation-context-lines 3)
+(setq compilation-scroll-output nil)
+;; ignore warnings
+(setq compilation-skip-threshold 2)
+
+(global-set-key (kbd "<f5>") 'my/project-compile)
+```
+
+Dynamically populate the compilation-search-path whenever a compilation takes place, might have problems with large directory structures but haven't fully tested yet!
+
+```elisp
+(add-hook 'compilation-mode-hook #'my/project-create-compilation-search-path)
+```
+
+
+<a id="org5145d72"></a>
+
+# auto-mode-alist
+
+```elisp
+;;
+;; -> auto-mode-alist
+;;
+(add-to-list 'auto-mode-alist '("\\.org_archive\\'" . org-mode))
+(add-to-list 'auto-mode-alist '("config.rasi\\'" . js-json-mode))
+(add-to-list 'auto-mode-alist '("theme.rasi\\'" . css-mode))
+(add-to-list 'auto-mode-alist '("waybar/config\\'" . js-json-mode))
+(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
+(add-to-list 'auto-mode-alist '("\\.gpr\\'" . gpr-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.toml\\'" . toml-ts-mode))
+(add-to-list 'auto-mode-alist '("CMakeLists.txt\\'" . cmake-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.org_archive\\'" . org-mode))
+(cl-loop for ext in '("\\.gpr$" "\\.ada$" "\\.ads$" "\\.adb$")
+  do (add-to-list 'auto-mode-alist (cons ext 'ada-mode)))
+```
+
+
+<a id="org79431d9"></a>
+
+# programming
+
+```elisp
+;;
+;; -> programming
+;;
+(use-package eglot
+  :hook
+  (ada-mode . eglot-ensure)
+  (c++-mode . eglot-ensure))
+
+(use-package company
+  :config
+  (setq company-minimum-prefix-length 1)
+  (setq company-idle-delay 0.05)
+  :hook (prog-mode . company-mode))
+
+(use-package yaml-mode)
+(use-package qml-mode)
+
+(add-hook 'yaml-mode-hook
+  '(lambda ()
+     (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+
+(setq eldoc-echo-area-use-multiline-p nil)
+
+(defvar my/uniq-log-word "poop")
+
+(defun my/insert-uniq-log-word (prefix)
+  "Inserts my/uniq-log-word' incrementing counter."
+  (interactive "P")
+  (let* ((word
+           (cond
+             (prefix
+               (setq my/uniq-log-word (read-string "Log word: ")))
+             ((region-active-p)
+               (setq my/uniq-log-word
+                 (buffer-substring (region-beginning)
+                   (region-end))))
+             (my/uniq-log-word my/uniq-log-word)
+             (t "Reached")))
+          (config
+            (cond
+              ((equal major-mode 'sh-mode)
+                (cons
+                  (format "echo \"%s: \\([0-9]+\\)\"" word)
+                  (format "echo \"%s: %%s\"" word)))
+              ((equal major-mode 'emacs-lisp-mode)
+                (cons
+                  (format "(message \"%s: \\([0-9]+\\)\")" word)
+                  (format "(message \"%s: %%s\")" word)))
+              ((equal major-mode 'swift-mode)
+                (cons
+                  (format "print(\"%s: \\([0-9]+\\)\")" word)
+                  (format "print(\"%s: %%s\")" word)))
+              ((equal major-mode 'ada-mode)
+                (cons
+                  (format "Ada.Text_Io.Put_Line (\"%s: \\([0-9]+\\)\");" word)
+                  (format "Ada.Text_Io.Put_Line (\"%s: %%s\");" word)))
+              ((equal major-mode 'c++-mode)
+                (cons
+                  (format "std::cout << \"%s: \\([0-9]+\\)\" << std::endl;" word)
+                  (format "std::cout << \"%s: %%s\" << std::endl;" word)))
+              ((equal major-mode 'c-mode)
+                (cons
+                  (format "fprintf(stderr, \"%s: \\([0-9]+\\)\");" word)
+                  (format "fprintf(stderr, \"%s: %%s\");" word)))
+              (t
+                (error "%s not supported" major-mode))))
+          (match-regexp (car config))
+          (format-string (cdr config))
+          (max-num 0)
+          (case-fold-search nil))
+
+    (when my/uniq-log-word
+      (save-excursion
+        (goto-char (point-min))
+        (while (re-search-forward match-regexp nil t)
+          (when (> (string-to-number (match-string 1)) max-num)
+            (setq max-num (string-to-number (match-string 1)))))))
+
+    (unless (looking-at-p "^ *$")(end-of-line))
+
+    (insert (concat
+              (if (looking-at-p "^ *$") "" "\n")
+              (format format-string
+                (if my/uniq-log-word
+                  (number-to-string (1+ max-num))
+                  (string-trim
+                    (shell-command-to-string
+                      "grep -E '^[a-z]{6}$' /usr/share/dict/words | shuf -n 1")
+                    )))))
+
+    (call-interactively 'indent-for-tab-command)))
+
+(global-set-key (kbd "C-c C-j") 'my/insert-uniq-log-word)
+```
+
+
+<a id="org9f1d572"></a>
+
+# diff
+
+```elisp
+;;
+;; -> diff
+;;
+(use-package ztree)
+
+(setq-default ztree-diff-filter-list
+  '(
+     "build" "\.dll" "\.iso" "\.xmp" "\.cache" "\.gnupg" "\.local"
+     "\.mozilla" "\.thunderbird" "\.wine" "\.mp3" "\.mp4" "\.arpack"
+     "\.git" "^Volume$" "^Games$" "^cache$" "^chromium$" "^elpa$" "^nas$"
+     "^syncthing$" "bin"
+     ))
+
+;; (setq-default ztree-diff-additional-options '("-w" "-i"))
+(setq-default ztree-diff-consider-file-size t)
+(setq-default ztree-diff-consider-file-permissions nil)
+(setq-default ztree-diff-show-equal-files nil)
+
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+(setq ediff-prepare-buffer-hook #'org-show-all)
+(setq-default ediff-highlight-all-diffs t)
+```
+
+
+<a id="org6c9dc59"></a>
+
+# ada
+
+```elisp
+;;
+;; -> ada
+;;
+(use-package ada-mode
+  :load-path "~/repos/old-ada-mode")
+
+(defun my/eglot-dir-locals ()
+  "Create .dir-locals.el file for eglot ada-mode using the selected dired path."
+  (interactive)
+  (add-dir-local-variable
+    'ada-mode
+    'eglot-workspace-configuration
+    `((ada . (:projectFile ,(dired-get-filename))))))
+
+(setq xref-auto-jump-to-first-definition t)
+(setq xref-auto-jump-to-first-xref t)
+
+(defun my/xref--read-identifier (prompt)
+  "Custom function to find definitions in Ada mode."
+  (let ((def (xref-backend-identifier-at-point 'etags))
+         (variations '("/t" "/k" "/f" "/p" "/b" "/s"))
+         (ada-refs 'nil))
+    (when def
+      (dolist (variation variations)
+        (if (xref-backend-definitions 'etags (concat def variation))
+          (setq ada-refs (cons (concat identifier variation) ada-refs)))))
+    (cond
+      ((eq (length ada-refs) 0)
+        (setq id def))
+      ((eq (length ada-refs) 1)
+        (setq id (nth 0 ada-refs)))
+      (t
+        (setq id (completing-read prompt ada-refs))))))
+
+(defun my/xref-find-definitions (identifier)
+  (interactive "p")
+  (setq identifier (my/xref--read-identifier "Find definitions of: "))
+  (xref-find-definitions identifier))
+
+(defun buffer-in-eglot-mode-p ()
+  (if (fboundp 'eglot-managed-p)
+    (eglot-managed-p)
+    nil))
+
+(defun buffer-in-old-ada-mode-p ()
+  (if (boundp 'ada-prj-default-project-file)
+    t
+    nil))
+
+(defun buffer-in-tags-mode-p ()
+  (if tags-table-list
+    t
+    nil))
+
+(defun my/ada-find-definitions ()
+  "Custom function to find definitions in Ada mode."
+  (interactive)
+  (cond
+    ((buffer-in-eglot-mode-p)
+      (message "xref: eglot")
+      (xref-find-definitions (xref-backend-identifier-at-point 'eglot)))
+    ((buffer-in-old-ada-mode-p)
+      (message "xref: old-ada-mode")
+      (setq ada-xref-other-buffer nil)
+      (ada-goto-declaration (point)))
+    ((buffer-in-tags-mode-p)
+      (message "xref: etags")
+      (my/xref-find-definitions (xref-backend-identifier-at-point 'etags)))
+    (t
+      (message "xref: fallback")
+      (my/etags-load)
+      (my/xref-find-definitions (xref-backend-identifier-at-point 'etags)))))
+
+(defun my/xref-quit-xref-marker-stack ()
+  "Quit *xref* buffer"
+  (interactive)
+  (save-excursion
+    (let ((target-window (get-buffer-window "*xref*")))
+      (when target-window
+        (select-window target-window)
+        (quit-window t)))))
+
+(defun my/ada-find-definition-pop ()
+  "Custom function to pop definitions in Ada mode."
+  (interactive)
+  (cond
+    ((buffer-in-eglot-mode-p)
+      (message "xref pop: eglot")
+      (my/xref-quit-xref-marker-stack)
+      (xref-quit-and-pop-marker-stack))
+    ((buffer-in-old-ada-mode-p)
+      (message "xref pop: old-ada-mode")
+      (ada-xref-goto-previous-reference))
+    ((buffer-in-tags-mode-p)
+      (message "xref pop: etags")
+      (my/xref-quit-xref-marker-stack)
+      (xref-go-back))
+    (t
+      (message "xref pop: fallback")
+      (my/xref-quit-xref-marker-stack)
+      (xref-go-back))))
+
+(define-key ada-mode-map (kbd "M-.") 'my/ada-find-definitions)
+(define-key ada-mode-map (kbd "M-,") 'my/ada-find-definition-pop)
+```
+
+
+<a id="orge668c5a"></a>
+
+# treesitter
+
+```elisp
+;;
+;; -> treesitter
+;;
+(setq treesit-language-source-alist
+  '((ada "https://github.com/briot/tree-sitter-ada")
+     (bash "https://github.com/tree-sitter/tree-sitter-bash")
+     (cmake "https://github.com/uyha/tree-sitter-cmake")
+     (css "https://github.com/tree-sitter/tree-sitter-css")
+     (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+     (go "https://github.com/tree-sitter/tree-sitter-go")
+     (html "https://github.com/tree-sitter/tree-sitter-html")
+     (javascript "https://github.com/tree-sitter/tree-sitter-javascript"
+       "master" "src")
+     (json "https://github.com/tree-sitter/tree-sitter-json")
+     (make "https://github.com/alemuller/tree-sitter-make")
+     (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+     (python "https://github.com/tree-sitter/tree-sitter-python")
+     (toml "https://github.com/tree-sitter/tree-sitter-toml")
+     (tsx "https://github.com/tree-sitter/tree-sitter-typescript"
+       "master" "tsx/src")
+     (typescript "https://github.com/tree-sitter/tree-sitter-typescript"
+       "master" "typescript/src")
+     (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
+
+;;    (mapc #'treesit-install-language-grammar
+;;      (mapcar #'car treesit-language-source-alist))
+
+;;  (use-package ada-ts-mode)
+(use-package gpr-ts-mode)
+
+(setq major-mode-remap-alist
+  '( ;;      (ada-mode . ada-ts-mode)
+     ;;      (yaml-mode . yaml-ts-mode)
+     (toml-mode . toml-ts-mode)
+     ;;      (bash-mode . bash-ts-mode)
+     ;;      (sh-mode . bash-ts-mode)
+     ;;      (js2-mode . js-ts-mode)
+     ;;      (typescript-mode . typescript-ts-mode)
+     ;;      (conf-colon-mode . json-ts-mode)
+     ;;      (json-mode . json-ts-mode)
+     ;;      (css-mode . css-ts-mode)
+     ;;      (python-mode . python-ts-mode)
+     ))
+```
+
+
+<a id="orga3e0586"></a>
+
+# whitespace
+
+```elisp
+;;
+;; -> whitespace
+;;
+;; Define the whitespace style.
+(setq-default whitespace-style
+  '(face spaces empty tabs newline trailing space-mark tab-mark
+     newline-mark tab-width indentation::space))
+
+;; Whitespace color corrections.
+(require 'color)
+(let* ((ws-lighten 20) ;; Amount in percentage to lighten up black.
+        (ws-color (color-lighten-name "#555555" ws-lighten)))
+  (custom-set-faces
+    `(whitespace-newline                ((t (:foreground ,ws-color))))
+    `(whitespace-missing-newline-at-eof ((t (:foreground ,ws-color))))
+    `(whitespace-space                  ((t (:foreground ,ws-color))))
+    `(whitespace-space-after-tab        ((t (:foreground ,ws-color))))
+    `(whitespace-space-before-tab       ((t (:foreground ,ws-color))))
+    `(whitespace-tab                    ((t (:foreground ,ws-color))))
+    `(whitespace-trailing               ((t (:foreground ,ws-color))))))
+
+;; Make these characters represent whitespace.
+(setq-default whitespace-display-mappings
+  '(
+     ;; space -> · else .
+     (space-mark 32 [183] [46])
+     ;; new line -> ¬ else $
+     (newline-mark ?\n [172 ?\n] [36 ?\n])
+     ;; carriage return (Windows) -> ¶ else #
+     (newline-mark ?\r [182] [35])
+     ;; tabs -> » else >
+     (tab-mark ?\t [187 ?\t] [62 ?\t])))
+
+;; Don't enable whitespace for.
+(setq-default whitespace-global-modes
+  '(not shell-mode
+     help-mode
+     magit-mode
+     magit-diff-mode
+     ibuffer-mode
+     dired-mode
+     occur-mode))
+
+;; Set whitespace actions.
+(setq-default whitespace-action
+  '(cleanup auto-cleanup))
+```
+
+
+<a id="org081dda2"></a>
+
+# dashboard
+
+```elisp
+;;
+;; -> dashboard
+;;
+(setq dashboard-projects-backend 'project-el)
+(setq dashboard-projects-switch-function (lambda (dir) (dired dir)))
+
+(use-package dashboard
+  :ensure t
+  :hook
+  (dashboard-after-initialize . (lambda ()
+                                  (dashboard-jump-to-recents)))
+  :config
+  (setq dashboard-banner-logo-title "Welcome James!")
+  (setq dashboard-startup-banner 'logo)
+  (setq dashboard-items '((recents . 20)
+                           (projects . 10)
+                           (bookmarks . 5)
+                           (agenda . 5)
+                           (registers . 5)))
+  (setq dashboard-set-init-info t)
+  (setq dashboard-set-footer nil)
+  (setq dashboard-center-content t)
+  (dashboard-insert-startupify-lists)
+  (dashboard-setup-startup-hook))
+```
+
+
+<a id="org52af628"></a>
+
+# project
+
+```elisp
+;;
+;; -> project
+;;
+(defun my/project-root ()
+  "Return project root defined by user."
+  (interactive)
+  "Guess the project root of the given FILE-PATH."
+  (let ((root default-directory)
+         (project (project-current)))
+    (when project
+      (cond ((fboundp 'project-root)
+              (setq root (project-root project)))))))
+
+(add-to-list 'project-switch-commands '(project-dired "Dired") t)
+
+(defun my/project-create-compilation-search-path ()
+  "Populate the compilation-search-path variable with directories under project root using find"
+  (interactive)
+  (let ((find-command
+          (concat "find " (project-root (project-current t))
+            " \\( -path \\*/.local -o -path \\*/.config -o -path \\*/.svn -o -path \\*/.git -o -path \\*/nas \\) -prune -o -type d -print")))
+    (setq compilation-search-path
+      (split-string
+        (shell-command-to-string find-command)
+        "\n" t))))
+
+(defun my/project-compile (arg)
+  (interactive "p")
+  (let ((default-directory (project-root (project-current t))))
+    (cond ((= arg 1)
+            (setq compile-command
+              (concat "make " buffer-file-name)))
+      (t
+        (setq compile-command "make")))
+    (compile compile-command)))
+
+
+;; (defun my/project (dir)
+;;   (let ((override (locate-dominating-file dir ".project")))
+;;     (if override (cons 'vc override) nil)))
+
+;; (push #'my/project project-find-functions)
+
+;; any directory containing such a file pretty much
+;; always defined a compile and an eglot gpr if ada
+(setq project-vc-extra-root-markers '(".project"))
+
+(global-set-key (kbd "C-x p c") 'my/project-compile)
+(global-set-key (kbd "C-x p u") 'my/project-create-compilation-search-path)
+```
+
+
+<a id="org911fc7f"></a>
+
+# indentation
+
+```elisp
+;;
+;; -> indentation
+;;
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 3)
+(setq-default lisp-indent-offset 2)
+(add-hook 'sh-mode-hook
+  (lambda () (setq sh-basic-offset 3)))
+```
+
+
+<a id="orgd1564db"></a>
+
+# etags
+
+Generation of etags to have an offline alternative to LSP, uses the following bash script:
+
+```bash
+#!/bin/bash
+
+TAGF=$PWD/TAGS
+
+rm -f "$TAGF"
+
+for src in `find $PWD \( -path \*/.cache -o \
+               -path \*/.gnupg -o \
+               -path \*/.local -o \
+               -path \*/.mozilla -o \
+               -path \*/.thunderbird -o \
+               -path \*/.wine -o \
+               -path \*/Games -o \
+               -path \*/cache -o \
+               -path \*/chromium -o \
+               -path \*/elpa -o \
+               -path \*/nas -o \
+               -path \*/syncthing -o \
+               -path \*/Image-Line -o \
+               -path \*/.cargo -o \
+               -path \*/.git -o \
+               -path \*/.svn -o \
+               -path \*/.themes -o \
+               -path \*/themes -o \
+               -path \*/objs -o \
+               -path \*/ArtRage \) \
+               -prune -o -type f -print`;
+do
+   case "${src}" in
+      *.ad[absm]|*.[CFHMSacfhlmpsty]|*.def|*.in[cs]|*.s[as]|*.src|*.cc|\
+         *.hh|*.[chy]++|*.[ch]pp|*.[chy]xx|*.pdb|*.[ch]s|*.[Cc][Oo][Bb]|\
+         *.[eh]rl|*.f90|*.for|*.java|*.[cem]l|*.clisp|*.lisp|*.[Ll][Ss][Pp]|\
+         [Mm]akefile*|*.pas|*.[Pp][LlMm]|*.psw|*.lm|*.pc|*.prolog|*.oak|\
+         *.p[sy]|*.sch|*.scheme|*.[Ss][Cc][Mm]|*.[Ss][Mm]|*.bib|*.cl[os]|\
+         *.ltx|*.sty|*.TeX|*.tex|*.texi|*.texinfo|*.txi|*.x[bp]m|*.yy|\
+         *.[Ss][Qq][Ll])
+         etags --append "${src}" -o "$TAGF";
+         echo ${src}
+         ;;
+      *)
+         FTYPE=`file ${src}`;
+         case "${FTYPE}" in
+            *script*text*)
+               etags --append "${src}" -o "$TAGF";
+               echo ${src}
+               ;;
+            *text*)
+               if head -n1 "${src}" | grep '^#!' >/dev/null 2>&1;
+               then
+                  etags --append "${src}" -o "$TAGF";
+                  echo ${src}
+               fi;
+               ;;
+         esac;
+         ;;
+   esac;
+done
+
+echo
+echo "Finished!"
+echo
+```
+
+```elisp
+;;
+;; -> etags
+;;
+(defun my/etags-load ()
+  "Load the TAGS file from the first it can find up the directory stack."
+  (interactive)
+  (let ((my-tags-file (locate-dominating-file default-directory "TAGS")))
+    (when my-tags-file
+      (message "Loading tags file: %s" my-tags-file)
+      (visit-tags-table my-tags-file))))
+
+(defun my/etags-update ()
+  "Call external bash script to generate new etags for all languages it can find"
+  (interactive)
+  (async-shell-command "my-generate-etags.sh" "*etags*"))
+
+;; (global-set-key (kbd "C-x p l") 'my/etags-load)
+;; (global-set-key (kbd "C-x p u") 'my/etags-update)
+```
+
+
+<a id="org04c9700"></a>
+
+# colour-shift
+
+```elisp
+;;
+;; -> colour-shift
+;;
+(defun colour-shift (delta type)
+  "Shift the hex text value colour by the desired delta for the defined type"
+  (save-excursion
+    ;; find the colour in the form #ff4400
+    (forward-word)
+    (search-backward-regexp "#\\([[:xdigit:]]\\{6\\}\\)" nil t)
+    (setq str (match-string-no-properties 1))
+    (setq hsl (color-rgb-to-hsl
+                (/ (float
+                     (string-to-number
+                       (substring-no-properties str 0 2) 16)) (float 255))
+                (/ (float
+                     (string-to-number
+                       (substring-no-properties str 2 4) 16)) (float 255))
+                (/ (float
+                     (string-to-number
+                       (substring-no-properties str 4 6) 16)) (float 255))))
+    (cond
+      ((= type 1) ;; value
+        (setq hslmod
+          (list (nth 0 hsl) (nth 1 hsl) (+ (nth 2 hsl) delta))))
+      ((= type 4) ;; hue C-u
+        (setq hslmod
+          (list (+ (nth 0 hsl) delta) (nth 1 hsl) (nth 2 hsl))))
+      ((= type 16) ;; saturation C-u C-u
+        (setq hslmod
+          (list (nth 0 hsl) (+ (nth 1 hsl) delta) (nth 2 hsl) delta)))
+      ((= type 64) ;; random C-u C-u C-u
+        (setq hslmod
+          (list (/ (random 256) 255.0) (/ (random 256) 255.0) (/ (random 256) 255.0))))
+      (t ;; value
+        (setq hslmod
+          (list (nth 0 hsl) (nth 1 hsl) (+ (nth 2 hsl) delta)))))
+
+    ;; normalise hsl values
+    (setq hslmod (mapcar (lambda (x) (if (> x 1.0) 1.0 (if (< x 0.0) 0.0 x))) hslmod))
+    ;; convert back to hex
+    (setq rgb
+      (color-hsl-to-rgb (nth 0 hslmod) (nth 1 hslmod) (nth 2 hslmod)))
+    (setq hex
+      (substring-no-properties(color-rgb-to-hex (nth 0 rgb) (nth 1 rgb) (nth 2 rgb) 2) 1))
+    (replace-match (format "%06x" (string-to-number hex 16)) nil nil nil 1)))
+
+(define-minor-mode colour-shift-mode
+  "Toggle colour-shift minor mode."
+  :init-value nil
+  :lighter " CS"
+  :keymap (let ((map (make-sparse-keymap)))
+            (define-key map (kbd "M-<home>") (lambda () (interactive) (colour-shift 0.005 64)))
+            (define-key map (kbd "M-<prior>") (lambda () (interactive) (colour-shift 0.005 16)))
+            (define-key map (kbd "M-<next>") (lambda () (interactive) (colour-shift -0.005 16)))
+            (define-key map (kbd "M-<up>") (lambda () (interactive) (colour-shift 0.005 1)))
+            (define-key map (kbd "M-<down>") (lambda () (interactive) (colour-shift -0.005 1)))
+            (define-key map (kbd "M-<left>") (lambda () (interactive) (colour-shift -0.005 4)))
+            (define-key map (kbd "M-<right>") (lambda () (interactive) (colour-shift 0.005 4)))
+            map))
+
+(defun activate-colour-shift-mode ()
+  "Activate colour-shift-mode if rainbow-mode is active."
+  (if rainbow-mode
+    (colour-shift-mode 1)
+    (colour-shift-mode -1)))
+
+(add-hook 'rainbow-mode-hook 'activate-colour-shift-mode)
+```
+
+
+<a id="org2cd0069"></a>
+
+# development
+
+```elisp
+;;
+;; -> development
+;;
+(defun display-year-agenda (&optional year)
+  "Display an agenda entry for a whole year."
+  (interactive (list (read-string "Enter the year: "
+                       (format-time-string "%Y" (current-time)))))
+  (setq year (string-to-number year))
+  (org-agenda-list)
+  (org-agenda-year-view year)
+  (setq this-year (string-to-number (format-time-string "%Y" (current-time))))
+  (when (= year this-year)
+    (org-agenda-goto-today)
+    (recenter-top-bottom 10)))
+
+;; Bind a key for easy access
+(global-set-key (kbd "C-c y") 'display-year-agenda)
+
+(setq org-agenda-files
+  '("~/DCIM/content/aaa--todo.org"
+     "/home/jdyer/DCIM/content/kate--health.org"))
+
+(defun my/copy-background-to-faves ()
+  "Copy the current background in sway to faves folder"
+  (interactive)
+  (let* ((source-folder "/home/jdyer/")
+          (faves-folder "/home/jdyer/wallpaper/wallpaper-faves/")
+          (image-files
+            (directory-files source-folder nil
+              "^wallpaper-faves.*\\.\\(jpg\\|jpeg\\|png\\|gif\\)$" nil nil)))
+    (dolist (image-file image-files)
+      (rename-file
+        (concat source-folder image-file) (concat faves-folder image-file) t)
+      (message (concat "Wallpaper " (concat faves-folder image-file))))))
+
+(defun convert-weight (weight)
+  (let* ((parts (split-string weight ":"))
+          (stone (string-to-number (car parts)))
+          (pounds (string-to-number (cadr parts))))
+    (+ (* stone 14) pounds)))
+
+(setq ediff-split-window-function 'split-window-horizontally)
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+(defvar my-ediff-last-windows nil)
+
+(defun my-store-pre-ediff-winconfig ()
+  "Store `current-window-configuration' in variable `my-ediff-last-windows'."
+  (setq my-ediff-last-windows (current-window-configuration)))
+
+(defun my-restore-pre-ediff-winconfig ()
+  "Restore window configuration to stored value in `my-ediff-last-windows'."
+  (set-window-configuration my-ediff-last-windows))
+
+(add-hook 'ediff-before-setup-hook #'my-store-pre-ediff-winconfig)
+(add-hook 'ediff-quit-hook #'my-restore-pre-ediff-winconfig)
+
+(defun my/copy-file-name-to-clipboard ()
+  "Copy the current buffer file name to the clipboard."
+  (interactive)
+  (let ((filename (if (equal major-mode 'dired-mode)
+                    default-directory
+                    (buffer-file-name))))
+    (when filename
+      (kill-new filename)
+      (message "Copied buffer file name '%s' to the clipboard." filename))))
+
+(use-package org
+  :hook (org-mode . org-indent-mode)
+  :config
+  (setq org-indent-indentation-per-level 2)
+  (setq org-edit-src-content-indentation 0)
+  (setq org-src-preserve-indentation t))
+
+(defun my/org-insert-clipboard ()
+  "Convert clipboard contents from HTML to Org and then paste (yank)."
+  (interactive)
+  (insert (shell-command-to-string "xclip -o -selection clipboard -t text/html | pandoc -f html -t json | pandoc -f json -t org")))
+
+(use-package eshell
+  :after xterm-color
+  :config
+  (setq eshell-scroll-to-bottom-on-input t)
+  (define-key eshell-mode-map (kbd "<tab>") #'company-complete)
+  (define-key eshell-hist-mode-map (kbd "M-r") #'consult-history)
+  (add-hook 'eshell-mode-hook
+    (lambda ()
+      (setenv "TERM" "xterm-256color")))
+  (add-hook 'eshell-before-prompt-hook (setq xterm-color-preserve-properties t))
+  (add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
+  (setq eshell-output-filter-functions
+    (remove 'eshell-handle-ansi-color eshell-output-filter-functions)))
+```
