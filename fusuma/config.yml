@@ -1,0 +1,27 @@
+swipe:
+  4:
+    left:
+      # command: 'ydotool key ctrl+alt+l'
+      command: ydotool key 29:1 56:1 38:1 key 29:0 56:0 38:0
+      threshold: 0.5
+    right:
+      # command: 'ydotool key ctrl+alt+h'
+      command: ydotool key 29:1 56:1 35:1 key 29:0 56:0 35:0
+      threshold: 0.5
+  3:
+    left:
+      # command: 'ydotool key alt+Right'
+      command: ydotool key 56:1 106:1 56:0 106:0
+      threshold: 0.5
+    right:
+      # command: 'ydotool key alt+Left'
+      command: ydotool key 56:1 105:1 56:0 105:0
+      threshold: 0.5
+
+  threshold:
+    swipe: 0.5
+    pinch: 0.5
+
+  interval:
+    swipe: 0.75
+    pinch: 0.5
