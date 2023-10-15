@@ -1,0 +1,32 @@
+{
+    "layer": "bottom",
+    "position": "top",
+    "height": 50,
+    "width": 1910,
+    "spacing": 0,
+    "margin-top": 0,
+    "margin-bottom": 2,
+    "include": ["~/.config/waybar/modules.json"],
+    "modules-left": [
+        // "custom/exit",
+        "pulseaudio",
+        "backlight",
+        "custom/browser",
+        "custom/files",
+        "custom/terminal",
+        "sway/workspaces"
+    ],
+    "modules-center": [
+        "sway/window"
+    ],
+    "modules-right": [
+        "cpu",
+        "memory",
+        "temperature",
+        "network",
+        "custom/keyboard",
+        "battery",
+        "clock",
+        "tray"
+    ],
+}
