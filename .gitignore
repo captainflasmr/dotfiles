@@ -81,14 +81,11 @@ emacs/.emacs.desktop.lock
 emacs/abbrev_defs
 emacs/auto-save-list/
 emacs/bookmarks
-emacs/early-init.el
 emacs/ede-projects.el
-emacs/elisp/kbd-mode.el
 emacs/elpa/
 emacs/emacs--init_*
 emacs/emacs--init_*
 emacs/emms/
-emacs/eshell/alias
 emacs/eshell/history
 emacs/eshell/lastdir
 emacs/history
