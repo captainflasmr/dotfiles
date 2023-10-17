@@ -1,61 +1,61 @@
-1.  [early-init](#org0e97341)
-2.  [requires](#org1f22206)
-3.  [package-archives](#org9def425)
-4.  [package-extra](#orged5c5ac)
-5.  [use-package](#orge0aadf5)
-6.  [completion](#org6f5ad48)
-7.  [navigation](#org2af304e)
-8.  [unbinding](#org2e5deba)
-9.  [magit](#org0773595)
-10. [emms](#org02ecce1)
-11. [elfeed](#orgcf576c4)
-12. [save-desktop](#orgd216537)
-13. [expansion](#org22a0612)
-14. [keybinding](#org431e554)
-15. [inserts](#org25c22cc)
-16. [modes](#orgc0aabbc)
-17. [bell](#org10665e3)
-18. [setqs](#org8f1194d)
-19. [confirm](#org7ca8a02)
-20. [backups](#org77585e0)
-21. [hooks](#orgca1dfa3)
-22. [custom-settings](#org8960323)
-23. [defuns](#org1cbc96c)
-24. [window-positioning](#org26ad030)
-25. [skeletons](#orgcb3ac3f)
-26. [org-capture](#org257d3ae)
-27. [org](#org0ce1c64)
-28. [dwim](#org1ba63a8)
-29. [scroll](#org3accc39)
-30. [font](#org8ea768e)
-31. [custom-set-faces](#org18c3932)
-32. [image-dired](#orgc9fd151)
-33. [visuals](#org10943f5)
-34. [imenu](#orgfda56d3)
-35. [recentf](#org9bc5d00)
-36. [modeline](#org280d205)
-37. [markdown](#orga12e85a)
-38. [find](#org4481619)
-39. [grep](#org0c8a2d1)
-40. [spelling](#orgbab3b00)
-41. [hugo](#org16eb698)
-42. [gdb](#orgfbfbd4b)
-43. [compilation](#org624e9cc)
-44. [auto-mode-alist](#org5145d72)
-45. [programming](#org79431d9)
-46. [diff](#org9f1d572)
-47. [ada](#org6c9dc59)
-48. [treesitter](#orge668c5a)
-49. [whitespace](#orga3e0586)
-50. [dashboard](#org081dda2)
-51. [project](#org52af628)
-52. [indentation](#org911fc7f)
-53. [etags](#orgd1564db)
-54. [colour-shift](#org04c9700)
-55. [development](#org2cd0069)
+1.  [early-init](#org29470f9)
+2.  [requires](#org89a65af)
+3.  [package-archives](#org446de75)
+4.  [package-extra](#orge68459f)
+5.  [use-package](#org5a940a4)
+6.  [completion](#org78e1388)
+7.  [navigation](#orgde532ca)
+8.  [unbinding](#org4294948)
+9.  [magit](#orgdfe239e)
+10. [emms](#orgdc1bec0)
+11. [elfeed](#org65d777c)
+12. [save-desktop](#orgcbbb57e)
+13. [expansion](#org57dc906)
+14. [keybinding](#org3d4ef67)
+15. [inserts](#orgb33b2c6)
+16. [modes](#orgbfd2e58)
+17. [bell](#org76f09c7)
+18. [setqs](#org47ee2aa)
+19. [confirm](#orgf4d7d0c)
+20. [backups](#orgc437357)
+21. [hooks](#org3c58f19)
+22. [custom-settings](#orgdf91c5f)
+23. [defuns](#org883bd18)
+24. [window-positioning](#orgd087d28)
+25. [skeletons](#org069231d)
+26. [org-capture](#org28f13f9)
+27. [org](#orgd965967)
+28. [dwim](#orga343dd2)
+29. [scroll](#org8e6613f)
+30. [font](#org01c4e22)
+31. [custom-set-faces](#org64ddcbb)
+32. [image-dired](#org0f094a7)
+33. [visuals](#org5fc770d)
+34. [imenu](#orgccb14e1)
+35. [recentf](#orgd6f1470)
+36. [modeline](#orgaff3c9b)
+37. [markdown](#org8dadb14)
+38. [find](#org641300f)
+39. [grep](#orgd12a4dc)
+40. [spelling](#orgcbad3f6)
+41. [hugo](#org3b14893)
+42. [gdb](#orga1d3704)
+43. [compilation](#org51d0c61)
+44. [auto-mode-alist](#orgdc831b3)
+45. [programming](#org45e4382)
+46. [diff](#orgb1a5b28)
+47. [ada](#org0bef936)
+48. [treesitter](#orgb74533f)
+49. [whitespace](#org5ed84ce)
+50. [dashboard](#org665705d)
+51. [project](#orgf0ffcd3)
+52. [indentation](#org6e83c81)
+53. [etags](#org55e0f63)
+54. [colour-shift](#org5360562)
+55. [development](#orgb562fe6)
 
 
-<a id="org0e97341"></a>
+<a id="org29470f9"></a>
 
 # early-init
 
@@ -67,7 +67,7 @@
 ```
 
 
-<a id="org1f22206"></a>
+<a id="org89a65af"></a>
 
 # requires
 
@@ -81,7 +81,7 @@
 ```
 
 
-<a id="org9def425"></a>
+<a id="org446de75"></a>
 
 # package-archives
 
@@ -104,20 +104,10 @@
 (setq use-package-always-ensure t)
 (require 'use-package)
 (setq load-prefer-newer t)
-
-;; (package-initialize)
-
-;; (unless package-archive-contents
-;;   (package-refresh-contents))
-
-;; ;
-                                        ;   (setq use-package-compute-statistics t) ;; and run use-package-report after init.
-;; ;
-                                        ; (setq warning-minimum-level :emergency)
 ```
 
 
-<a id="orged5c5ac"></a>
+<a id="orge68459f"></a>
 
 # package-extra
 
@@ -130,7 +120,7 @@
 ```
 
 
-<a id="orge0aadf5"></a>
+<a id="org5a940a4"></a>
 
 # use-package
 
@@ -228,7 +218,7 @@
 ```
 
 
-<a id="org6f5ad48"></a>
+<a id="org78e1388"></a>
 
 # completion
 
@@ -316,7 +306,7 @@
 ```
 
 
-<a id="org2af304e"></a>
+<a id="orgde532ca"></a>
 
 # navigation
 
@@ -344,7 +334,7 @@
 ```
 
 
-<a id="org2e5deba"></a>
+<a id="org4294948"></a>
 
 # unbinding
 
@@ -373,7 +363,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org0773595"></a>
+<a id="orgdfe239e"></a>
 
 # magit
 
@@ -411,7 +401,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org02ecce1"></a>
+<a id="orgdc1bec0"></a>
 
 # emms
 
@@ -436,7 +426,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="orgcf576c4"></a>
+<a id="org65d777c"></a>
 
 # elfeed
 
@@ -488,7 +478,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="orgd216537"></a>
+<a id="orgcbbb57e"></a>
 
 # save-desktop
 
@@ -514,7 +504,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org22a0612"></a>
+<a id="org57dc906"></a>
 
 # expansion
 
@@ -534,7 +524,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org431e554"></a>
+<a id="org3d4ef67"></a>
 
 # keybinding
 
@@ -587,7 +577,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org25c22cc"></a>
+<a id="orgb33b2c6"></a>
 
 # inserts
 
@@ -606,7 +596,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="orgc0aabbc"></a>
+<a id="orgbfd2e58"></a>
 
 # modes
 
@@ -630,11 +620,11 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 (transient-mark-mode 1)
 (winner-mode 1)
 (pixel-scroll-precision-mode 1)
-(repeat-mode 1)
+(repeat-mode -1)
 ```
 
 
-<a id="org10665e3"></a>
+<a id="org76f09c7"></a>
 
 # bell
 
@@ -647,7 +637,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org8f1194d"></a>
+<a id="org47ee2aa"></a>
 
 # setqs
 
@@ -705,7 +695,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org7ca8a02"></a>
+<a id="orgf4d7d0c"></a>
 
 # confirm
 
@@ -727,7 +717,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org77585e0"></a>
+<a id="orgc437357"></a>
 
 # backups
 
@@ -745,7 +735,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="orgca1dfa3"></a>
+<a id="org3c58f19"></a>
 
 # hooks
 
@@ -762,7 +752,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org8960323"></a>
+<a id="orgdf91c5f"></a>
 
 # custom-settings
 
@@ -781,7 +771,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org1cbc96c"></a>
+<a id="org883bd18"></a>
 
 # defuns
 
@@ -881,7 +871,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org26ad030"></a>
+<a id="orgd087d28"></a>
 
 # window-positioning
 
@@ -944,7 +934,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="orgcb3ac3f"></a>
+<a id="org069231d"></a>
 
 # skeletons
 
@@ -992,7 +982,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org257d3ae"></a>
+<a id="org28f13f9"></a>
 
 # org-capture
 
@@ -1088,7 +1078,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org0ce1c64"></a>
+<a id="orgd965967"></a>
 
 # org
 
@@ -1135,7 +1125,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="org1ba63a8"></a>
+<a id="orga343dd2"></a>
 
 # dwim
 
@@ -1177,7 +1167,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="org3accc39"></a>
+<a id="org8e6613f"></a>
 
 # scroll
 
@@ -1190,7 +1180,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="org8ea768e"></a>
+<a id="org01c4e22"></a>
 
 # font
 
@@ -1213,7 +1203,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="org18c3932"></a>
+<a id="org64ddcbb"></a>
 
 # custom-set-faces
 
@@ -1253,7 +1243,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="orgc9fd151"></a>
+<a id="org0f094a7"></a>
 
 # image-dired
 
@@ -1279,8 +1269,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
   (select-window w)
   (dired-unmark-all-marks)
   (select-window idw)
-  (image-dir
-    ed-display-thumbnail-original-image)
+  (image-dired-display-thumbnail-original-image)
   (image-dired-line-up-dynamic))
 
 (setq image-use-external-converter t)
@@ -1295,7 +1284,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="org10943f5"></a>
+<a id="org5fc770d"></a>
 
 # visuals
 
@@ -1328,7 +1317,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="orgfda56d3"></a>
+<a id="orgccb14e1"></a>
 
 # imenu
 
@@ -1371,7 +1360,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="org9bc5d00"></a>
+<a id="orgd6f1470"></a>
 
 # recentf
 
@@ -1387,7 +1376,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="org280d205"></a>
+<a id="orgaff3c9b"></a>
 
 # modeline
 
@@ -1496,7 +1485,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="orga12e85a"></a>
+<a id="org8dadb14"></a>
 
 # markdown
 
@@ -1512,7 +1501,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="org4481619"></a>
+<a id="org641300f"></a>
 
 # find
 
@@ -1526,7 +1515,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="org0c8a2d1"></a>
+<a id="orgd12a4dc"></a>
 
 # grep
 
@@ -1610,7 +1599,7 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
 ```
 
 
-<a id="orgbab3b00"></a>
+<a id="orgcbad3f6"></a>
 
 # spelling
 
@@ -1625,13 +1614,13 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
 
 (use-package powerthesaurus)
 
-(global-set-key (kbd "M-.")
+(global-set-key (kbd "M-,")
   (lambda () (interactive)
-    (backward-word)
+    ;; (backward-word)
     (jinx-correct)
     (forward-word)))
 
-(global-set-key (kbd "M-,") 'dictionary-lookup-definition)
+(global-set-key (kbd "M-(") 'dictionary-lookup-definition)
 (global-set-key (kbd "M-*") 'powerthesaurus-lookup-synonyms-dwim)
 
 (setq ispell-local-dictionary "en_GB")
@@ -1642,7 +1631,7 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
 ```
 
 
-<a id="org16eb698"></a>
+<a id="org3b14893"></a>
 
 # hugo
 
@@ -1660,7 +1649,7 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
 ```
 
 
-<a id="orgfbfbd4b"></a>
+<a id="orga1d3704"></a>
 
 # gdb
 
@@ -1677,7 +1666,7 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
 ```
 
 
-<a id="org624e9cc"></a>
+<a id="org51d0c61"></a>
 
 # compilation
 
@@ -1701,7 +1690,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="org5145d72"></a>
+<a id="orgdc831b3"></a>
 
 # auto-mode-alist
 
@@ -1723,7 +1712,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="org79431d9"></a>
+<a id="org45e4382"></a>
 
 # programming
 
@@ -1824,7 +1813,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="org9f1d572"></a>
+<a id="orgb1a5b28"></a>
 
 # diff
 
@@ -1853,7 +1842,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="org6c9dc59"></a>
+<a id="org0bef936"></a>
 
 # ada
 
@@ -1965,7 +1954,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="orge668c5a"></a>
+<a id="orgb74533f"></a>
 
 # treesitter
 
@@ -2016,7 +2005,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="orga3e0586"></a>
+<a id="org5ed84ce"></a>
 
 # whitespace
 
@@ -2070,7 +2059,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="org081dda2"></a>
+<a id="org665705d"></a>
 
 # dashboard
 
@@ -2102,7 +2091,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="org52af628"></a>
+<a id="orgf0ffcd3"></a>
 
 # project
 
@@ -2159,7 +2148,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="org911fc7f"></a>
+<a id="org6e83c81"></a>
 
 # indentation
 
@@ -2175,7 +2164,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="orgd1564db"></a>
+<a id="org55e0f63"></a>
 
 # etags
 
@@ -2267,7 +2256,7 @@ echo
 ```
 
 
-<a id="org04c9700"></a>
+<a id="org5360562"></a>
 
 # colour-shift
 
@@ -2342,7 +2331,7 @@ echo
 ```
 
 
-<a id="org2cd0069"></a>
+<a id="orgb562fe6"></a>
 
 # development
 
@@ -2413,6 +2402,8 @@ echo
       (kill-new filename)
       (message "Copied buffer file name '%s' to the clipboard." filename))))
 
+(global-set-key (kbd "C-c w") 'my/copy-file-name-to-clipboard)
+
 (use-package org
   :hook (org-mode . org-indent-mode)
   :config
@@ -2438,4 +2429,77 @@ echo
   (add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
   (setq eshell-output-filter-functions
     (remove 'eshell-handle-ansi-color eshell-output-filter-functions)))
+
+
+(defun my/image-save-as ()
+  "Save the current image buffer as a new file."
+  (interactive)
+  (let* ((file (buffer-file-name))
+          (dir (file-name-directory file))
+          (name (file-name-nondirectory file))
+          (base-name (file-name-sans-extension name))
+          (extension (file-name-extension name t))
+          (initial_mode major-mode)
+          (counter 1)
+          (new-file))
+    (while (and (setq new-file
+                  (format "%s%s_%03d%s" dir base-name counter extension))
+             (file-exists-p new-file))
+      (setq counter (1+ counter)))
+    (write-region (point-min) (point-max) new-file nil 'no-message)
+    (revert-buffer nil t nil)
+    (delete-file file t)
+    (if (equal initial_mode 'image-dired-image-mode)
+      (progn
+        (image-dired ".")
+        (image-dired-display-this))
+      (find-file new-file t))))
+
+(defun delete-current-image-and-move-to-next ()
+  "Delete the current image file and move to the next image in the directory."
+  (interactive)
+  (let ((current-file (buffer-file-name)))
+    (when current-file
+      (image-next-file 1)
+      (delete-file current-file)
+      (message "Deleted %s and moved to the next image" current-file))))
+
+(defun my/delete-current-image-thumbnails ()
+  ""
+  (interactive)
+  (image-dired-flag-thumb-original-file)
+  (image-dired-do-flagged-delete)
+  )
+
+(require 'image-mode)
+(require 'image-dired)
+
+(eval-after-load 'image-mode
+  '(progn
+     (define-key image-mode-map (kbd "C-d") 'delete-current-image-and-move-to-next)
+     (define-key image-mode-map (kbd "C-x C-s") 'my/image-save-as)
+     )
+  )
+
+(eval-after-load 'image-dired
+  '(progn
+     (define-key image-dired-thumbnail-mode-map (kbd "C-d") 'my/delete-current-image-thumbnails)
+     (define-key image-dired-thumbnail-mode-map (kbd "C-f")
+       (lambda ()(interactive)(image-dired-forward-image)(image-dired-display-this)))
+     (define-key image-dired-thumbnail-mode-map (kbd "C-b")
+       (lambda ()(interactive)(image-dired-backward-image)(image-dired-display-this)))
+     (define-key image-dired-thumbnail-mode-map (kbd "C-n")
+       (lambda ()(interactive)(image-dired-next-line)(image-dired-display-this)))
+     (define-key image-dired-thumbnail-mode-map (kbd "C-p")
+       (lambda ()(interactive)(image-dired-previous-line)(image-dired-display-this)))
+     (define-key image-dired-thumbnail-mode-map (kbd "C-a")
+       (lambda ()(interactive)(image-dired-move-beginning-of-line)(image-dired-display-this)))
+     (define-key image-dired-thumbnail-mode-map (kbd "C-e")
+       (lambda ()(interactive)(image-dired-move-end-of-line)(image-dired-display-this)))
+     (define-key image-dired-thumbnail-mode-map (kbd "M-<")
+       (lambda ()(interactive)(image-dired-beginning-of-buffer)(image-dired-display-this)))
+     (define-key image-dired-thumbnail-mode-map (kbd "M->")
+       (lambda ()(interactive)(image-dired-end-of-buffer)(image-dired-display-this)))
+     )
+  )
 ```
