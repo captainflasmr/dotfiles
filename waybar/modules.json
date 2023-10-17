@@ -61,7 +61,7 @@
         "format": "{usage}%",
         "tooltip": false,
         "interval": 1,
-        "min-length": 4,
+        "min-length": 3,
         "max-length": 6,
         "align" : 1,
     },
@@ -86,11 +86,10 @@
     },
 
     "custom/keyboard": {
-	     "format": "{}",
-        "min-length": 1,
+	     "format": " ",
+        "min-length": 3,
         "max-length": 15,
 	     "interval": 10,
-	     "exec": "echo ''",
 	     "on-click": "toggle_wlr_keyboard.sh",
     },
 
