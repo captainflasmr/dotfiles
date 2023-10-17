@@ -1,18 +1,4 @@
 #
-# -> swayfx
-#
-corner_radius 10
-blur enable
-blur_passes 4
-blur_radius 5
-shadows enable
-shadow_blur_radius 10
-shadow_color #000000ff
-# default_dim_inactive 0
-layer_effects "waybar" blur enable; shadows disable;
-# titlebar_separator enable
-
-#
 # -> visuals
 #
 gaps inner 10px
@@ -170,9 +156,9 @@ bindgesture swipe:3:left exec ydotool key 56:1 106:1 56:0 106:0
 
 focus_wrapping force
 
-for_window [app_id="thunar"] opacity 0.90
+for_window [app_id="thunar"] opacity 0.95
 for_window [app_id="dolphin"] opacity 0.85
-for_window [app_id="gnome-terminal"] opacity 0.9
+for_window [app_id="gnome-terminal"] opacity 0.95
 
 #
 # -> input
@@ -202,3 +188,17 @@ input 11551:337:WCOM014A:00_2D1F:0151_Stylus {
    middle_emulation disabled
    # drag_lock enabled
 }
+
+#
+# -> swayfx
+#
+corner_radius 8
+blur enable
+blur_passes 4
+blur_radius 4
+shadows enable
+shadow_blur_radius 10
+shadow_color #000000ff
+# default_dim_inactive 0
+# layer_effects "waybar" blur enable; shadows disable;
+# titlebar_separator enable
