@@ -242,19 +242,20 @@
 ;;
 (defvar my-jump-keymap (make-sparse-keymap))
 (define-key my-jump-keymap(kbd "a") 'emms-browse-by-album)
-(define-key my-jump-keymap (kbd "p") 'emms)
-(define-key my-jump-keymap (kbd "n") (lambda () (interactive) (find-file "~/nas")))
-(define-key my-jump-keymap (kbd "d") (lambda () (interactive) (find-file "~/DCIM/content")))
-(define-key my-jump-keymap (kbd "f") (lambda () (interactive) (find-file "~/.config")))
-(define-key my-jump-keymap (kbd "t") (lambda () (interactive) (find-file "~/DCIM/content/aaa--todo.org")))
-(define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/content/aaa--source_code.org")))
-(define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~")))
 (define-key my-jump-keymap (kbd "b") (lambda () (interactive) (find-file "~/bin")))
-(define-key my-jump-keymap (kbd "e") (lambda () (interactive) (find-file "~/.config/emacs/init.el")))
-(define-key my-jump-keymap (kbd "o") (lambda () (interactive) (find-file "~/.config/emacs/emacs--init.org")))
-(define-key my-jump-keymap (kbd "m") (lambda () (interactive) (find-file "~/DCIM")))
 (define-key my-jump-keymap (kbd "c") (lambda () (interactive) (find-file "~/DCIM/Camera")))
+(define-key my-jump-keymap (kbd "d") (lambda () (interactive) (find-file "~/DCIM/content")))
+(define-key my-jump-keymap (kbd "e") (lambda () (interactive) (find-file "~/.config/emacs/init.el")))
+(define-key my-jump-keymap (kbd "f") (lambda () (interactive) (find-file "~/.config")))
+(define-key my-jump-keymap (kbd "i") (lambda () (interactive) (find-file "~/.config/emacs/image-dired")))
+(define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~")))
+(define-key my-jump-keymap (kbd "m") (lambda () (interactive) (find-file "~/DCIM")))
+(define-key my-jump-keymap (kbd "n") (lambda () (interactive) (find-file "~/nas")))
+(define-key my-jump-keymap (kbd "o") (lambda () (interactive) (find-file "~/.config/emacs/emacs--init.org")))
+(define-key my-jump-keymap (kbd "p") 'emms)
 (define-key my-jump-keymap (kbd "r") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
+(define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/content/aaa--source_code.org")))
+(define-key my-jump-keymap (kbd "t") (lambda () (interactive) (find-file "~/DCIM/content/aaa--todo.org")))
 (define-key my-jump-keymap (kbd "C-q") 'quoted-insert)
 (global-set-key (kbd "C-q") my-jump-keymap)
 #+end_src
@@ -755,57 +756,20 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ;; -> window-positioning
 ;;
 (add-to-list 'display-buffer-alist
-  `(,(rx(or "elfeed-entry"))
-     display-buffer-in-direction
-     (direction . right)
-     (window . root)
-     (window-width . 0.45)))
-
-(add-to-list 'display-buffer-alist
-  `(,(rx(or "image-dired"))
-     display-buffer-in-direction
-     (direction . right)
-     (window . root)
-     (window-width . 0.75)))
-
-(add-to-list 'display-buffer-alist
-  `(,(rx(or "image-dired-display-image"))
-     display-buffer-in-direction
-     (direction . right)
-     (window . root)
-     (window-width . 0.4)))
-
-(defvar right-repl-regexp
-  (rx bos "*" (or "Occur"
-                "deadgrep"
-                "dictionary"
-                "compilation"
-                "Org"
-                "Proced")
-    (zero-or-more nonl))
-  "Regexp for matching the buffer name of terminal or related tools.")
-
-(defvar go-away-repl-regexp
-  (rx bos "*" (or "Async" "xref")
-    (zero-or-more nonl))
-  "Regexp for matching windows to disappear")
-
-(add-to-list 'display-buffer-alist
-  `(,go-away-repl-regexp
+  '("\\*\\(?:Async\\|xref\\)"
      display-buffer-no-window
      (inhibit-same-window . t)))
 
 (add-to-list 'display-buffer-alist
-  `(,right-repl-regexp
+  '("\\*eshell\\*"
      display-buffer-in-direction
-     (direction . right)
-     (window-width . 0.4)
-     (preserve-size (t . nil))
-     (body-function . select-window)))
+     (direction . bottom)
+     (window . root)
+     (window-height . 0.4)))
 
-(add-to-list 'display-buffer-alist
-  `(,right-repl-regexp
-     display-buffer-reuse-window))
+;; (add-to-list 'display-buffer-alist
+;;   `(,right-repl-regexp
+;;      display-buffer-reuse-window))
 #+end_src
 
 * skeletons
@@ -1102,6 +1066,24 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ;;
 ;; -> image-dired
 ;;
+
+(require 'image-mode)
+(require 'image-dired)
+
+(add-to-list 'display-buffer-alist
+  '("\\*image-dired\\*"
+     display-buffer-in-direction
+     (direction . left)
+     (window . root)
+     (window-width . 0.5)))
+
+(add-to-list 'display-buffer-alist
+  '("\\*image-dired-display-image\\*"
+     display-buffer-in-direction
+     (direction . right)
+     (window . root)
+     (window-width . 0.5)))
+
 (defun my/image-dired-sort (arg)
   "Sort images in various ways."
   (interactive "p")
@@ -1127,11 +1109,74 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 (setq image-dired-external-viewer "/usr/bin/gthumb")
 (setq image-dired-show-all-from-dir-max-files 999)
 (setq image-dired-thumbs-per-row 999)
+(setq image-dired-thumb-relief 0)
 (setq image-dired-thumb-margin 5)
-(setq image-dired-thumb-size 10)
-(setq image-dired-thumb-height 100)
-(setq image-dired-thumb-width 100)
-(setq image-dired-thumb-size 100)
+(setq image-dired-thumb-size 120)
+
+(defun my/image-save-as ()
+  "Save the current image buffer as a new file."
+  (interactive)
+  (let* ((file (buffer-file-name))
+          (dir (file-name-directory file))
+          (name (file-name-nondirectory file))
+          (base-name (file-name-sans-extension name))
+          (extension (file-name-extension name t))
+          (initial_mode major-mode)
+          (counter 1)
+          (new-file))
+    (while (and (setq new-file
+                  (format "%s%s_%03d%s" dir base-name counter extension))
+             (file-exists-p new-file))
+      (setq counter (1+ counter)))
+    (write-region (point-min) (point-max) new-file nil 'no-message)
+    (revert-buffer nil t nil)
+    ;; (delete-file file t)
+    (if (equal initial_mode 'image-dired-image-mode)
+      (progn
+        (image-dired ".")
+        (image-dired-display-this))
+      (find-file new-file t))))
+
+(defun my/delete-current-image-and-move-to-next ()
+  "Delete the current image file and move to the next image in the directory."
+  (interactive)
+  (let ((current-file (buffer-file-name)))
+    (when current-file
+      (image-next-file 1)
+      (delete-file current-file)
+      (message "Deleted %s" current-file))))
+
+(defun my/delete-current-image-thumbnails ()
+  "Delete the current image file and move to the next image in the directory."
+  (interactive)
+  (image-dired-flag-thumb-original-file)
+  (image-dired-do-flagged-delete))
+
+(eval-after-load 'image-mode
+  '(progn
+     (define-key image-mode-map (kbd "C-d") 'my/delete-current-image-and-move-to-next)
+     (define-key image-mode-map (kbd "C-x C-s") 'my/image-save-as)))
+
+(eval-after-load 'image-dired
+  '(progn
+     (define-key image-dired-thumbnail-mode-map (kbd "C-d") 'my/delete-current-image-thumbnails)
+     ;; (define-key image-dired-thumbnail-mode-map (kbd "C-f")
+     ;;   (lambda ()(interactive)(image-dired-forward-image)(image-dired-display-this)))
+     ;; (define-key image-dired-thumbnail-mode-map (kbd "C-b")
+     ;;   (lambda ()(interactive)(image-dired-backward-image)(image-dired-display-this)))
+     ;; (define-key image-dired-thumbnail-mode-map (kbd "C-n")
+     ;;   (lambda ()(interactive)(image-dired-next-line)(image-dired-display-this)))
+     ;; (define-key image-dired-thumbnail-mode-map (kbd "C-p")
+     ;;   (lambda ()(interactive)(image-dired-previous-line)(image-dired-display-this)))
+     ;; (define-key image-dired-thumbnail-mode-map (kbd "C-a")
+     ;;   (lambda ()(interactive)(image-dired-move-beginning-of-line)(image-dired-display-this)))
+     ;; (define-key image-dired-thumbnail-mode-map (kbd "C-e")
+     ;;   (lambda ()(interactive)(image-dired-move-end-of-line)(image-dired-display-this)))
+     ;; (define-key image-dired-thumbnail-mode-map (kbd "M-<")
+     ;;   (lambda ()(interactive)(image-dired-beginning-of-buffer)(image-dired-display-this)))
+     ;; (define-key image-dired-thumbnail-mode-map (kbd "M->")
+     ;;   (lambda ()(interactive)(image-dired-end-of-buffer)(image-dired-display-this)))
+     ))
 #+end_src
 
 * visuals
@@ -2210,7 +2255,6 @@ echo
   (setq eshell-output-filter-functions
     (remove 'eshell-handle-ansi-color eshell-output-filter-functions)))
 
-
 (defun my/image-save-as ()
   "Save the current image buffer as a new file."
   (interactive)
@@ -2234,52 +2278,4 @@ echo
         (image-dired ".")
         (image-dired-display-this))
       (find-file new-file t))))
-
-(defun delete-current-image-and-move-to-next ()
-  "Delete the current image file and move to the next image in the directory."
-  (interactive)
-  (let ((current-file (buffer-file-name)))
-    (when current-file
-      (image-next-file 1)
-      (delete-file current-file)
-      (message "Deleted %s and moved to the next image" current-file))))
-
-(defun my/delete-current-image-thumbnails ()
-  ""
-  (interactive)
-  (image-dired-flag-thumb-original-file)
-  (image-dired-do-flagged-delete)
-  )
-
-(require 'image-mode)
-(require 'image-dired)
-
-(eval-after-load 'image-mode
-  '(progn
-     (define-key image-mode-map (kbd "C-d") 'delete-current-image-and-move-to-next)
-     (define-key image-mode-map (kbd "C-x C-s") 'my/image-save-as)
-     )
-  )
-
-(eval-after-load 'image-dired
-  '(progn
-     (define-key image-dired-thumbnail-mode-map (kbd "C-d") 'my/delete-current-image-thumbnails)
-     (define-key image-dired-thumbnail-mode-map (kbd "C-f")
-       (lambda ()(interactive)(image-dired-forward-image)(image-dired-display-this)))
-     (define-key image-dired-thumbnail-mode-map (kbd "C-b")
-       (lambda ()(interactive)(image-dired-backward-image)(image-dired-display-this)))
-     (define-key image-dired-thumbnail-mode-map (kbd "C-n")
-       (lambda ()(interactive)(image-dired-next-line)(image-dired-display-this)))
-     (define-key image-dired-thumbnail-mode-map (kbd "C-p")
-       (lambda ()(interactive)(image-dired-previous-line)(image-dired-display-this)))
-     (define-key image-dired-thumbnail-mode-map (kbd "C-a")
-       (lambda ()(interactive)(image-dired-move-beginning-of-line)(image-dired-display-this)))
-     (define-key image-dired-thumbnail-mode-map (kbd "C-e")
-       (lambda ()(interactive)(image-dired-move-end-of-line)(image-dired-display-this)))
-     (define-key image-dired-thumbnail-mode-map (kbd "M-<")
-       (lambda ()(interactive)(image-dired-beginning-of-buffer)(image-dired-display-this)))
-     (define-key image-dired-thumbnail-mode-map (kbd "M->")
-       (lambda ()(interactive)(image-dired-end-of-buffer)(image-dired-display-this)))
-     )
-  )
 #+end_src

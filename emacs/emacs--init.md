@@ -1,61 +1,61 @@
-1.  [early-init](#org29470f9)
-2.  [requires](#org89a65af)
-3.  [package-archives](#org446de75)
-4.  [package-extra](#orge68459f)
-5.  [use-package](#org5a940a4)
-6.  [completion](#org78e1388)
-7.  [navigation](#orgde532ca)
-8.  [unbinding](#org4294948)
-9.  [magit](#orgdfe239e)
-10. [emms](#orgdc1bec0)
-11. [elfeed](#org65d777c)
-12. [save-desktop](#orgcbbb57e)
-13. [expansion](#org57dc906)
-14. [keybinding](#org3d4ef67)
-15. [inserts](#orgb33b2c6)
-16. [modes](#orgbfd2e58)
-17. [bell](#org76f09c7)
-18. [setqs](#org47ee2aa)
-19. [confirm](#orgf4d7d0c)
-20. [backups](#orgc437357)
-21. [hooks](#org3c58f19)
-22. [custom-settings](#orgdf91c5f)
-23. [defuns](#org883bd18)
-24. [window-positioning](#orgd087d28)
-25. [skeletons](#org069231d)
-26. [org-capture](#org28f13f9)
-27. [org](#orgd965967)
-28. [dwim](#orga343dd2)
-29. [scroll](#org8e6613f)
-30. [font](#org01c4e22)
-31. [custom-set-faces](#org64ddcbb)
-32. [image-dired](#org0f094a7)
-33. [visuals](#org5fc770d)
-34. [imenu](#orgccb14e1)
-35. [recentf](#orgd6f1470)
-36. [modeline](#orgaff3c9b)
-37. [markdown](#org8dadb14)
-38. [find](#org641300f)
-39. [grep](#orgd12a4dc)
-40. [spelling](#orgcbad3f6)
-41. [hugo](#org3b14893)
-42. [gdb](#orga1d3704)
-43. [compilation](#org51d0c61)
-44. [auto-mode-alist](#orgdc831b3)
-45. [programming](#org45e4382)
-46. [diff](#orgb1a5b28)
-47. [ada](#org0bef936)
-48. [treesitter](#orgb74533f)
-49. [whitespace](#org5ed84ce)
-50. [dashboard](#org665705d)
-51. [project](#orgf0ffcd3)
-52. [indentation](#org6e83c81)
-53. [etags](#org55e0f63)
-54. [colour-shift](#org5360562)
-55. [development](#orgb562fe6)
+1.  [early-init](#org22783a5)
+2.  [requires](#org7047998)
+3.  [package-archives](#orga8099ec)
+4.  [package-extra](#org32b2b5a)
+5.  [use-package](#orgf299bce)
+6.  [completion](#orgdf141a4)
+7.  [navigation](#orgb4ef3ba)
+8.  [unbinding](#orge20b323)
+9.  [magit](#org527d637)
+10. [emms](#org9ac9338)
+11. [elfeed](#org3622d2d)
+12. [save-desktop](#org8792997)
+13. [expansion](#org110640a)
+14. [keybinding](#org221c73d)
+15. [inserts](#org519034a)
+16. [modes](#org50e8ac9)
+17. [bell](#org8d27ddc)
+18. [setqs](#orgeddc06d)
+19. [confirm](#org555a7e6)
+20. [backups](#orgfa0b66e)
+21. [hooks](#orgf37f317)
+22. [custom-settings](#orgdd75d12)
+23. [defuns](#orgfee62aa)
+24. [window-positioning](#org8e78e22)
+25. [skeletons](#orgcd79e82)
+26. [org-capture](#org47a0e43)
+27. [org](#org13c36e6)
+28. [dwim](#orge5605ab)
+29. [scroll](#orgc7e7a8c)
+30. [font](#org72b05b0)
+31. [custom-set-faces](#org2f84d14)
+32. [image-dired](#org413acdb)
+33. [visuals](#org02641eb)
+34. [imenu](#orgdb52c99)
+35. [recentf](#orgafc3222)
+36. [modeline](#orgffb01d3)
+37. [markdown](#orgf855bb1)
+38. [find](#org10325c6)
+39. [grep](#orga7f621e)
+40. [spelling](#org56a4e0c)
+41. [hugo](#org93afa03)
+42. [gdb](#org2427817)
+43. [compilation](#orgfcfde72)
+44. [auto-mode-alist](#orga31f3f8)
+45. [programming](#org41efe22)
+46. [diff](#org9ea9650)
+47. [ada](#orgfa57265)
+48. [treesitter](#org14559c2)
+49. [whitespace](#orge53e7da)
+50. [dashboard](#orgffca955)
+51. [project](#orgd5a3055)
+52. [indentation](#org65ca9b1)
+53. [etags](#orgddde341)
+54. [colour-shift](#org9bee5cd)
+55. [development](#org0635036)
 
 
-<a id="org29470f9"></a>
+<a id="org22783a5"></a>
 
 # early-init
 
@@ -67,7 +67,7 @@
 ```
 
 
-<a id="org89a65af"></a>
+<a id="org7047998"></a>
 
 # requires
 
@@ -81,7 +81,7 @@
 ```
 
 
-<a id="org446de75"></a>
+<a id="orga8099ec"></a>
 
 # package-archives
 
@@ -107,7 +107,7 @@
 ```
 
 
-<a id="orge68459f"></a>
+<a id="org32b2b5a"></a>
 
 # package-extra
 
@@ -120,7 +120,7 @@
 ```
 
 
-<a id="org5a940a4"></a>
+<a id="orgf299bce"></a>
 
 # use-package
 
@@ -218,7 +218,7 @@
 ```
 
 
-<a id="org78e1388"></a>
+<a id="orgdf141a4"></a>
 
 # completion
 
@@ -306,7 +306,7 @@
 ```
 
 
-<a id="orgde532ca"></a>
+<a id="orgb4ef3ba"></a>
 
 # navigation
 
@@ -316,25 +316,26 @@
 ;;
 (defvar my-jump-keymap (make-sparse-keymap))
 (define-key my-jump-keymap(kbd "a") 'emms-browse-by-album)
-(define-key my-jump-keymap (kbd "p") 'emms)
-(define-key my-jump-keymap (kbd "n") (lambda () (interactive) (find-file "~/nas")))
-(define-key my-jump-keymap (kbd "d") (lambda () (interactive) (find-file "~/DCIM/content")))
-(define-key my-jump-keymap (kbd "f") (lambda () (interactive) (find-file "~/.config")))
-(define-key my-jump-keymap (kbd "t") (lambda () (interactive) (find-file "~/DCIM/content/aaa--todo.org")))
-(define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/content/aaa--source_code.org")))
-(define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~")))
 (define-key my-jump-keymap (kbd "b") (lambda () (interactive) (find-file "~/bin")))
-(define-key my-jump-keymap (kbd "e") (lambda () (interactive) (find-file "~/.config/emacs/init.el")))
-(define-key my-jump-keymap (kbd "o") (lambda () (interactive) (find-file "~/.config/emacs/emacs--init.org")))
-(define-key my-jump-keymap (kbd "m") (lambda () (interactive) (find-file "~/DCIM")))
 (define-key my-jump-keymap (kbd "c") (lambda () (interactive) (find-file "~/DCIM/Camera")))
+(define-key my-jump-keymap (kbd "d") (lambda () (interactive) (find-file "~/DCIM/content")))
+(define-key my-jump-keymap (kbd "e") (lambda () (interactive) (find-file "~/.config/emacs/init.el")))
+(define-key my-jump-keymap (kbd "f") (lambda () (interactive) (find-file "~/.config")))
+(define-key my-jump-keymap (kbd "i") (lambda () (interactive) (find-file "~/.config/emacs/image-dired")))
+(define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~")))
+(define-key my-jump-keymap (kbd "m") (lambda () (interactive) (find-file "~/DCIM")))
+(define-key my-jump-keymap (kbd "n") (lambda () (interactive) (find-file "~/nas")))
+(define-key my-jump-keymap (kbd "o") (lambda () (interactive) (find-file "~/.config/emacs/emacs--init.org")))
+(define-key my-jump-keymap (kbd "p") 'emms)
 (define-key my-jump-keymap (kbd "r") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
+(define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/content/aaa--source_code.org")))
+(define-key my-jump-keymap (kbd "t") (lambda () (interactive) (find-file "~/DCIM/content/aaa--todo.org")))
 (define-key my-jump-keymap (kbd "C-q") 'quoted-insert)
 (global-set-key (kbd "C-q") my-jump-keymap)
 ```
 
 
-<a id="org4294948"></a>
+<a id="orge20b323"></a>
 
 # unbinding
 
@@ -363,7 +364,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="orgdfe239e"></a>
+<a id="org527d637"></a>
 
 # magit
 
@@ -401,7 +402,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="orgdc1bec0"></a>
+<a id="org9ac9338"></a>
 
 # emms
 
@@ -426,7 +427,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org65d777c"></a>
+<a id="org3622d2d"></a>
 
 # elfeed
 
@@ -478,7 +479,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="orgcbbb57e"></a>
+<a id="org8792997"></a>
 
 # save-desktop
 
@@ -504,7 +505,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org57dc906"></a>
+<a id="org110640a"></a>
 
 # expansion
 
@@ -524,7 +525,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org3d4ef67"></a>
+<a id="org221c73d"></a>
 
 # keybinding
 
@@ -577,7 +578,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="orgb33b2c6"></a>
+<a id="org519034a"></a>
 
 # inserts
 
@@ -596,7 +597,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="orgbfd2e58"></a>
+<a id="org50e8ac9"></a>
 
 # modes
 
@@ -624,7 +625,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org76f09c7"></a>
+<a id="org8d27ddc"></a>
 
 # bell
 
@@ -637,7 +638,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org47ee2aa"></a>
+<a id="orgeddc06d"></a>
 
 # setqs
 
@@ -695,7 +696,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="orgf4d7d0c"></a>
+<a id="org555a7e6"></a>
 
 # confirm
 
@@ -717,7 +718,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="orgc437357"></a>
+<a id="orgfa0b66e"></a>
 
 # backups
 
@@ -735,7 +736,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org3c58f19"></a>
+<a id="orgf37f317"></a>
 
 # hooks
 
@@ -752,7 +753,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="orgdf91c5f"></a>
+<a id="orgdd75d12"></a>
 
 # custom-settings
 
@@ -771,7 +772,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org883bd18"></a>
+<a id="orgfee62aa"></a>
 
 # defuns
 
@@ -871,7 +872,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="orgd087d28"></a>
+<a id="org8e78e22"></a>
 
 # window-positioning
 
@@ -880,61 +881,24 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ;; -> window-positioning
 ;;
 (add-to-list 'display-buffer-alist
-  `(,(rx(or "elfeed-entry"))
-     display-buffer-in-direction
-     (direction . right)
-     (window . root)
-     (window-width . 0.45)))
-
-(add-to-list 'display-buffer-alist
-  `(,(rx(or "image-dired"))
-     display-buffer-in-direction
-     (direction . right)
-     (window . root)
-     (window-width . 0.75)))
-
-(add-to-list 'display-buffer-alist
-  `(,(rx(or "image-dired-display-image"))
-     display-buffer-in-direction
-     (direction . right)
-     (window . root)
-     (window-width . 0.4)))
-
-(defvar right-repl-regexp
-  (rx bos "*" (or "Occur"
-                "deadgrep"
-                "dictionary"
-                "compilation"
-                "Org"
-                "Proced")
-    (zero-or-more nonl))
-  "Regexp for matching the buffer name of terminal or related tools.")
-
-(defvar go-away-repl-regexp
-  (rx bos "*" (or "Async" "xref")
-    (zero-or-more nonl))
-  "Regexp for matching windows to disappear")
-
-(add-to-list 'display-buffer-alist
-  `(,go-away-repl-regexp
+  '("\\*\\(?:Async\\|xref\\)"
      display-buffer-no-window
      (inhibit-same-window . t)))
 
 (add-to-list 'display-buffer-alist
-  `(,right-repl-regexp
+  '("\\*eshell\\*"
      display-buffer-in-direction
-     (direction . right)
-     (window-width . 0.4)
-     (preserve-size (t . nil))
-     (body-function . select-window)))
+     (direction . bottom)
+     (window . root)
+     (window-height . 0.4)))
 
-(add-to-list 'display-buffer-alist
-  `(,right-repl-regexp
-     display-buffer-reuse-window))
+;; (add-to-list 'display-buffer-alist
+;;   `(,right-repl-regexp
+;;      display-buffer-reuse-window))
 ```
 
 
-<a id="org069231d"></a>
+<a id="orgcd79e82"></a>
 
 # skeletons
 
@@ -982,7 +946,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org28f13f9"></a>
+<a id="org47a0e43"></a>
 
 # org-capture
 
@@ -1078,7 +1042,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="orgd965967"></a>
+<a id="org13c36e6"></a>
 
 # org
 
@@ -1125,7 +1089,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="orga343dd2"></a>
+<a id="orge5605ab"></a>
 
 # dwim
 
@@ -1167,7 +1131,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="org8e6613f"></a>
+<a id="orgc7e7a8c"></a>
 
 # scroll
 
@@ -1180,7 +1144,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="org01c4e22"></a>
+<a id="org72b05b0"></a>
 
 # font
 
@@ -1203,7 +1167,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="org64ddcbb"></a>
+<a id="org2f84d14"></a>
 
 # custom-set-faces
 
@@ -1243,7 +1207,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="org0f094a7"></a>
+<a id="org413acdb"></a>
 
 # image-dired
 
@@ -1251,6 +1215,24 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ;;
 ;; -> image-dired
 ;;
+
+(require 'image-mode)
+(require 'image-dired)
+
+(add-to-list 'display-buffer-alist
+  '("\\*image-dired\\*"
+     display-buffer-in-direction
+     (direction . left)
+     (window . root)
+     (window-width . 0.5)))
+
+(add-to-list 'display-buffer-alist
+  '("\\*image-dired-display-image\\*"
+     display-buffer-in-direction
+     (direction . right)
+     (window . root)
+     (window-width . 0.5)))
+
 (defun my/image-dired-sort (arg)
   "Sort images in various ways."
   (interactive "p")
@@ -1276,15 +1258,78 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 (setq image-dired-external-viewer "/usr/bin/gthumb")
 (setq image-dired-show-all-from-dir-max-files 999)
 (setq image-dired-thumbs-per-row 999)
+(setq image-dired-thumb-relief 0)
 (setq image-dired-thumb-margin 5)
-(setq image-dired-thumb-size 10)
-(setq image-dired-thumb-height 100)
-(setq image-dired-thumb-width 100)
-(setq image-dired-thumb-size 100)
+(setq image-dired-thumb-size 120)
+
+(defun my/image-save-as ()
+  "Save the current image buffer as a new file."
+  (interactive)
+  (let* ((file (buffer-file-name))
+          (dir (file-name-directory file))
+          (name (file-name-nondirectory file))
+          (base-name (file-name-sans-extension name))
+          (extension (file-name-extension name t))
+          (initial_mode major-mode)
+          (counter 1)
+          (new-file))
+    (while (and (setq new-file
+                  (format "%s%s_%03d%s" dir base-name counter extension))
+             (file-exists-p new-file))
+      (setq counter (1+ counter)))
+    (write-region (point-min) (point-max) new-file nil 'no-message)
+    (revert-buffer nil t nil)
+    ;; (delete-file file t)
+    (if (equal initial_mode 'image-dired-image-mode)
+      (progn
+        (image-dired ".")
+        (image-dired-display-this))
+      (find-file new-file t))))
+
+(defun my/delete-current-image-and-move-to-next ()
+  "Delete the current image file and move to the next image in the directory."
+  (interactive)
+  (let ((current-file (buffer-file-name)))
+    (when current-file
+      (image-next-file 1)
+      (delete-file current-file)
+      (message "Deleted %s" current-file))))
+
+(defun my/delete-current-image-thumbnails ()
+  "Delete the current image file and move to the next image in the directory."
+  (interactive)
+  (image-dired-flag-thumb-original-file)
+  (image-dired-do-flagged-delete))
+
+(eval-after-load 'image-mode
+  '(progn
+     (define-key image-mode-map (kbd "C-d") 'my/delete-current-image-and-move-to-next)
+     (define-key image-mode-map (kbd "C-x C-s") 'my/image-save-as)))
+
+(eval-after-load 'image-dired
+  '(progn
+     (define-key image-dired-thumbnail-mode-map (kbd "C-d") 'my/delete-current-image-thumbnails)
+     ;; (define-key image-dired-thumbnail-mode-map (kbd "C-f")
+     ;;   (lambda ()(interactive)(image-dired-forward-image)(image-dired-display-this)))
+     ;; (define-key image-dired-thumbnail-mode-map (kbd "C-b")
+     ;;   (lambda ()(interactive)(image-dired-backward-image)(image-dired-display-this)))
+     ;; (define-key image-dired-thumbnail-mode-map (kbd "C-n")
+     ;;   (lambda ()(interactive)(image-dired-next-line)(image-dired-display-this)))
+     ;; (define-key image-dired-thumbnail-mode-map (kbd "C-p")
+     ;;   (lambda ()(interactive)(image-dired-previous-line)(image-dired-display-this)))
+     ;; (define-key image-dired-thumbnail-mode-map (kbd "C-a")
+     ;;   (lambda ()(interactive)(image-dired-move-beginning-of-line)(image-dired-display-this)))
+     ;; (define-key image-dired-thumbnail-mode-map (kbd "C-e")
+     ;;   (lambda ()(interactive)(image-dired-move-end-of-line)(image-dired-display-this)))
+     ;; (define-key image-dired-thumbnail-mode-map (kbd "M-<")
+     ;;   (lambda ()(interactive)(image-dired-beginning-of-buffer)(image-dired-display-this)))
+     ;; (define-key image-dired-thumbnail-mode-map (kbd "M->")
+     ;;   (lambda ()(interactive)(image-dired-end-of-buffer)(image-dired-display-this)))
+     ))
 ```
 
 
-<a id="org5fc770d"></a>
+<a id="org02641eb"></a>
 
 # visuals
 
@@ -1317,7 +1362,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="orgccb14e1"></a>
+<a id="orgdb52c99"></a>
 
 # imenu
 
@@ -1360,7 +1405,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="orgd6f1470"></a>
+<a id="orgafc3222"></a>
 
 # recentf
 
@@ -1376,7 +1421,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="orgaff3c9b"></a>
+<a id="orgffb01d3"></a>
 
 # modeline
 
@@ -1485,7 +1530,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="org8dadb14"></a>
+<a id="orgf855bb1"></a>
 
 # markdown
 
@@ -1501,7 +1546,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="org641300f"></a>
+<a id="org10325c6"></a>
 
 # find
 
@@ -1515,7 +1560,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="orgd12a4dc"></a>
+<a id="orga7f621e"></a>
 
 # grep
 
@@ -1599,7 +1644,7 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
 ```
 
 
-<a id="orgcbad3f6"></a>
+<a id="org56a4e0c"></a>
 
 # spelling
 
@@ -1631,7 +1676,7 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
 ```
 
 
-<a id="org3b14893"></a>
+<a id="org93afa03"></a>
 
 # hugo
 
@@ -1649,7 +1694,7 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
 ```
 
 
-<a id="orga1d3704"></a>
+<a id="org2427817"></a>
 
 # gdb
 
@@ -1666,7 +1711,7 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
 ```
 
 
-<a id="org51d0c61"></a>
+<a id="orgfcfde72"></a>
 
 # compilation
 
@@ -1690,7 +1735,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="orgdc831b3"></a>
+<a id="orga31f3f8"></a>
 
 # auto-mode-alist
 
@@ -1712,7 +1757,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="org45e4382"></a>
+<a id="org41efe22"></a>
 
 # programming
 
@@ -1813,7 +1858,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="orgb1a5b28"></a>
+<a id="org9ea9650"></a>
 
 # diff
 
@@ -1842,7 +1887,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="org0bef936"></a>
+<a id="orgfa57265"></a>
 
 # ada
 
@@ -1954,7 +1999,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="orgb74533f"></a>
+<a id="org14559c2"></a>
 
 # treesitter
 
@@ -2005,7 +2050,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="org5ed84ce"></a>
+<a id="orge53e7da"></a>
 
 # whitespace
 
@@ -2059,7 +2104,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="org665705d"></a>
+<a id="orgffca955"></a>
 
 # dashboard
 
@@ -2091,7 +2136,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="orgf0ffcd3"></a>
+<a id="orgd5a3055"></a>
 
 # project
 
@@ -2148,7 +2193,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="org6e83c81"></a>
+<a id="org65ca9b1"></a>
 
 # indentation
 
@@ -2164,7 +2209,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="org55e0f63"></a>
+<a id="orgddde341"></a>
 
 # etags
 
@@ -2256,7 +2301,7 @@ echo
 ```
 
 
-<a id="org5360562"></a>
+<a id="org9bee5cd"></a>
 
 # colour-shift
 
@@ -2331,7 +2376,7 @@ echo
 ```
 
 
-<a id="orgb562fe6"></a>
+<a id="org0635036"></a>
 
 # development
 
@@ -2430,7 +2475,6 @@ echo
   (setq eshell-output-filter-functions
     (remove 'eshell-handle-ansi-color eshell-output-filter-functions)))
 
-
 (defun my/image-save-as ()
   "Save the current image buffer as a new file."
   (interactive)
@@ -2454,52 +2498,4 @@ echo
         (image-dired ".")
         (image-dired-display-this))
       (find-file new-file t))))
-
-(defun delete-current-image-and-move-to-next ()
-  "Delete the current image file and move to the next image in the directory."
-  (interactive)
-  (let ((current-file (buffer-file-name)))
-    (when current-file
-      (image-next-file 1)
-      (delete-file current-file)
-      (message "Deleted %s and moved to the next image" current-file))))
-
-(defun my/delete-current-image-thumbnails ()
-  ""
-  (interactive)
-  (image-dired-flag-thumb-original-file)
-  (image-dired-do-flagged-delete)
-  )
-
-(require 'image-mode)
-(require 'image-dired)
-
-(eval-after-load 'image-mode
-  '(progn
-     (define-key image-mode-map (kbd "C-d") 'delete-current-image-and-move-to-next)
-     (define-key image-mode-map (kbd "C-x C-s") 'my/image-save-as)
-     )
-  )
-
-(eval-after-load 'image-dired
-  '(progn
-     (define-key image-dired-thumbnail-mode-map (kbd "C-d") 'my/delete-current-image-thumbnails)
-     (define-key image-dired-thumbnail-mode-map (kbd "C-f")
-       (lambda ()(interactive)(image-dired-forward-image)(image-dired-display-this)))
-     (define-key image-dired-thumbnail-mode-map (kbd "C-b")
-       (lambda ()(interactive)(image-dired-backward-image)(image-dired-display-this)))
-     (define-key image-dired-thumbnail-mode-map (kbd "C-n")
-       (lambda ()(interactive)(image-dired-next-line)(image-dired-display-this)))
-     (define-key image-dired-thumbnail-mode-map (kbd "C-p")
-       (lambda ()(interactive)(image-dired-previous-line)(image-dired-display-this)))
-     (define-key image-dired-thumbnail-mode-map (kbd "C-a")
-       (lambda ()(interactive)(image-dired-move-beginning-of-line)(image-dired-display-this)))
-     (define-key image-dired-thumbnail-mode-map (kbd "C-e")
-       (lambda ()(interactive)(image-dired-move-end-of-line)(image-dired-display-this)))
-     (define-key image-dired-thumbnail-mode-map (kbd "M-<")
-       (lambda ()(interactive)(image-dired-beginning-of-buffer)(image-dired-display-this)))
-     (define-key image-dired-thumbnail-mode-map (kbd "M->")
-       (lambda ()(interactive)(image-dired-end-of-buffer)(image-dired-display-this)))
-     )
-  )
 ```
