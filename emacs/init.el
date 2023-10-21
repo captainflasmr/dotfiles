@@ -361,7 +361,7 @@
 (global-set-key (kbd "<f7>") 'display-fill-column-indicator-mode)
 (global-set-key (kbd "M-?") 'my/grep)
 (define-key dired-mode-map (kbd "C") 'my/rsync)
-(define-key dired-mode-map (kbd "C-t d") 'my/image-dired-sort)
+(define-key dired-mode-map (kbd "C-c r") 'my/image-dired-sort)
 (define-key dired-mode-map (kbd "C-c d") 'my/dired-duplicate-file)
 (global-unset-key (kbd "C-z"))
 
@@ -826,11 +826,11 @@
 ;; -> font
 ;;
 ;; (setq font-general "Noto Sans Mono 14")
-(setq font-general "MesloLGS Nerd Font Mono 12")
+;; (setq font-general "MesloLGS Nerd Font Mono 11")
 ;; (setq font-general "Source Code Pro 14")
 ;; (setq font-general "Nimbus Mono PS 14")
 ;; (setq font-general "MesloLGS Nerd Font Mono 14")
-;; (setq font-general "Droid Sans Mono 14")
+(setq font-general "Droid Sans Mono 12")
 ;; (setq font-general "Hack Nerd Font Mono 14")
 
 (set-frame-font font-general nil t)
@@ -999,8 +999,8 @@
 (add-hook 'text-mode-hook #'visual-line-mode)
 (add-hook 'org-mode-hook '(lambda () (visual-line-mode)))
 (setq truncate-partial-width-windows 140)
-(set-frame-parameter nil 'alpha-background 85)
-(add-to-list 'default-frame-alist '(alpha-background . 85))
+(set-frame-parameter nil 'alpha-background 80)
+(add-to-list 'default-frame-alist '(alpha-background . 80))
 (set-fringe-mode '(10 . 10))
 (set-display-table-slot standard-display-table 0 ?\ )
 
