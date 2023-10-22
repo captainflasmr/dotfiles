@@ -33,6 +33,7 @@
 ;;
 ;; -> use-package
 ;;
+(use-package i3wm-config-mode)
 (use-package git-timemachine)
 (use-package ox-gfm)
 (use-package gnuplot)
@@ -1278,6 +1279,8 @@
 (add-to-list 'auto-mode-alist '("\\.toml\\'" . toml-ts-mode))
 (add-to-list 'auto-mode-alist '("CMakeLists.txt\\'" . cmake-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.org_archive\\'" . org-mode))
+(add-to-list 'auto-mode-alist '("/sway/.*config.*/" . i3wm-config-mode))
+(add-to-list 'auto-mode-alist '("/sway/config\\'" . i3wm-config-mode))
 (cl-loop for ext in '("\\.gpr$" "\\.ada$" "\\.ads$" "\\.adb$")
   do (add-to-list 'auto-mode-alist (cons ext 'ada-mode)))
 
