@@ -65,9 +65,9 @@
 (use-package rainbow-mode
   :hook (prog-mode . rainbow-mode))
 
-(use-package visual-fill-column
-  :config
-  (setq-default visual-fill-column-center-text t))
+;; (use-package visual-fill-column
+;;   :config
+;;   (setq-default visual-fill-column-center-text t))
 
 (use-package ox-hugo
   :config
@@ -95,7 +95,7 @@
     ("docm" "doc" "docx" "odb" "odt" "pdb" "pdf" "ps"
       "rtf" "djvu" "epub" "odp" "ppt" "pptx" "xls" "xlsx"
       "vsd" "vsdx" "plantuml"))
-  (dired-rainbow-define markdown "#9a9aba"
+  (dired-rainbow-define markdown "#d4306f"
     ("org" "org_archive" "etx" "info" "markdown" "md"
       "mkd" "nfo" "pod" "rst" "tex" "texi" "textfile" "txt"))
   (dired-rainbow-define media "#b0681f"
@@ -138,11 +138,8 @@
 
 (use-package orderless
   :custom
-  (completion-styles '(substring orderless basic))
-  :init
-  (setq completion-styles '(orderless basic)
-    completion-category-defaults nil
-    completion-category-overrides '((file (styles partial-completion)))))
+  (completion-styles '(basic orderless))
+  (completion-category-overrides '((file (styles basic partial-completion)))))
 
 (use-package marginalia
   :after vertico
@@ -1218,13 +1215,13 @@
 
 (use-package powerthesaurus)
 
-(global-set-key (kbd "M-,")
+(global-set-key (kbd "M-(")
   (lambda () (interactive)
     ;; (backward-word)
     (jinx-correct)
     (forward-word)))
 
-(global-set-key (kbd "M-(") 'dictionary-lookup-definition)
+(global-set-key (kbd "M-)") 'dictionary-lookup-definition)
 (global-set-key (kbd "M-*") 'powerthesaurus-lookup-synonyms-dwim)
 
 (setq ispell-local-dictionary "en_GB")
@@ -1292,7 +1289,12 @@
   (ada-mode . eglot-ensure)
   (c++-mode . eglot-ensure))
 
+;; (define-key company-active-map (kbd "<tab>") 'company-complete-selection)
+
 (use-package company
+  :bind
+  (:map company-active-map
+    ("<tab>" . company-complete-selection))
   :config
   (setq company-minimum-prefix-length 1)
   (setq company-idle-delay 0.05)
@@ -1786,6 +1788,21 @@
 (global-set-key (kbd "C-c y") 'display-year-agenda)
 
 (setq org-agenda-files
+  '("~/DCIM/content/presents.org"
+     "/home/jdyer/DCIM/content/posts--all.org"
+     "/home/jdyer/DCIM/content/linux--all.org"
+     "/home/jdyer/DCIM/content/kate--health.org"
+     "/home/jdyer/DCIM/content/kate--blog-2012-2013.org"
+     "/home/jdyer/DCIM/content/kate--blog-2011.org"
+     "/home/jdyer/DCIM/content/kate--blog-2010.org"
+     "/home/jdyer/DCIM/content/emacs--all.org"
+     "/home/jdyer/DCIM/content/downloads--all.org"
+     "/home/jdyer/DCIM/content/art--2018-now.org"
+     "/home/jdyer/DCIM/content/art--2014-2017.org"
+     "/home/jdyer/DCIM/content/aaa--todo.org"
+     "/home/jdyer/DCIM/content/aaa--notes.org"))
+
+(setq org-agenda-files
   '("~/DCIM/content/aaa--todo.org"
      "/home/jdyer/DCIM/content/kate--health.org"))
 
@@ -1847,19 +1864,17 @@
   (interactive)
   (insert (shell-command-to-string "xclip -o -selection clipboard -t text/html | pandoc -f html -t json | pandoc -f json -t org")))
 
+(defun my/eshell-hook ()
+  ""
+  (interactive)
+  (company-mode)
+  (define-key eshell-mode-map (kbd "<tab>") #'company-complete)
+  (define-key eshell-hist-mode-map (kbd "M-r") #'consult-history))
+
 (use-package eshell
-  :after xterm-color
   :config
   (setq eshell-scroll-to-bottom-on-input t)
-  (define-key eshell-mode-map (kbd "<tab>") #'company-complete)
-  (define-key eshell-hist-mode-map (kbd "M-r") #'consult-history)
-  (add-hook 'eshell-mode-hook
-    (lambda ()
-      (setenv "TERM" "xterm-256color")))
-  (add-hook 'eshell-before-prompt-hook (setq xterm-color-preserve-properties t))
-  (add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
-  (setq eshell-output-filter-functions
-    (remove 'eshell-handle-ansi-color eshell-output-filter-functions)))
+  (add-hook 'eshell-mode-hook 'my/eshell-hook))
 
 (defun my/image-save-as ()
   "Save the current image buffer as a new file."
