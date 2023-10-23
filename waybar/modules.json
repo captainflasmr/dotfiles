@@ -43,17 +43,35 @@
         "tooltip": false
     },
 
+    "custom/power": {
+        "format":"⏻ ",
+        "on-click": "nwg-bar",
+        "tooltip": false,
+        "min-length": 1,
+        "max-length": 2,
+    },
+
+    "custom/launcher": {
+    	  "format":" ",
+    	  "on-click": "exec nwg-drawer -c 7 -is 70 -spacing 23",
+    	  "tooltip": false,
+        "min-length": 4,
+        "max-length": 4
+    },
+
     "tray": {
         "icon-size": 20,
-        "spacing": 10
+        "spacing": 10,
+        "min-length": 1,
+        "max-length": 5
     },
 
     "clock": {
         // "timezone": "America/New_York",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-        "format": "{:%Y-%m-%d %H:%M}",
-        "format-alt": "{:%Y-%m-%d}",
-        "min-length": 10,
+        "format-alt": "{:%Y-%m-%d %H:%M}",
+        "format": "{:%H:%M}",
+        "min-length": 1,
         "max-length": 18,
     },
 
@@ -61,15 +79,14 @@
         "format": "{usage}%",
         "tooltip": false,
         "interval": 1,
-        "min-length": 3,
+        "min-length": 4,
         "max-length": 6,
-        "align" : 1,
     },
 
     "memory": {
-        "format": "{used:0.1f} GiB",
+        "format": "{used:0.1f}G",
         "interval": 2,
-        "min-length": 8,
+        "min-length": 1,
         "max-length": 8,
     },
 
@@ -78,7 +95,8 @@
         //"hwmon-path": "/sys/class/hwmon/hwmon6/temp1_input",
         "critical-threshold": 90,
         // "format-critical": "{temperatureC}°C {icon}",
-        "format": "{temperatureC}°C {icon}",
+        // "format": "{temperatureC}°C {icon}",
+        "format": "{temperatureC} {icon}",
         "format-icons": ["❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "⛅", "⛅", "⛅", "🌞", "🌞", "🌞", "🔥"],
         "min-length": 1,
         "max-length": 10,
@@ -87,7 +105,7 @@
 
     "custom/keyboard": {
 	     "format": " ",
-        "min-length": 3,
+        "min-length": 1,
         "max-length": 15,
 	     "interval": 10,
 	     "on-click": "toggle_wlr_keyboard.sh",
@@ -101,22 +119,22 @@
             "critical": 6
         },
         "format-icons": {
-            "charging": ["   ", "   ", "   ", "   ", "   "],
+            "charging": ["  ", "  ", "  ", "  ", "  "],
             "default": ["", "", "", "", ""],
         },
-        "format": "{capacity}% {icon}",
-        "Format-charging": "{capacity}% ",
-        "format-plugged": "{capacity}% ",
+        "format": "{capacity} {icon}",
+        "format-charging": "{capacity} ",
+        "format-plugged": "{capacity} ",
         "format-alt": "{time} {icon}",
-        // "format-good": "", // An empty format will hide the module
         "format-full": "",
-        "min-length": 7,
-        "max-length": 11,
+        "min-length": 5,
+        "max-length": 20,
+        "align": 0
     },
 
     "pulseaudio": {
-        // "scroll-step": 1, // %, can be a float
-        "format": " {volume}% {icon}",
+        "scroll-step": 0.1,
+        "format": "{volume} {icon}",
         "format-bluetooth": "{volume}% {icon} {format_source}",
         "format-bluetooth-muted": " {icon} {format_source}",
         "format-muted": " {format_source}",
@@ -143,8 +161,8 @@
     },
 
     "backlight": {
-        // "device": "acpi_video1",
-        "format": "{percent}% 🔅",
+        "scroll-step": 10,
+        "format": "{percent} 🔅",
         "min-length": 1,
         "max-length": 8,
         "format-icons": ["", "", "", "", "", "", "", "", ""]
@@ -157,7 +175,7 @@
 
     "hyprland/window": {
         "min-length": 1,
-        "max-length": 60,
+        "max-length": 50,
     },
 
     "network": {
