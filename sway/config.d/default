@@ -1,12 +1,12 @@
 #
 # -> visuals
 #
-gaps inner 10px
-gaps outer 0px
-gaps top -8px
-gaps bottom -4px
+gaps inner 9px
+gaps outer -5px
+gaps top -5px
+gaps bottom 0px
 
-default_border pixel 6px
+default_border pixel 5px
 
 # -> class              border  backgr. text    indicator child_border
 client.focused          #000000 #0b4b55 #cccccc #ffffff44   #ffffff44
@@ -44,8 +44,8 @@ bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
 bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +2%
 bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -2%
 
-bindsym XF86MonBrightnessUp exec brightnessctl set +1%
-bindsym XF86MonBrightnessDown exec brightnessctl set 1%-
+bindsym XF86MonBrightnessUp exec brightnessctl set +2%
+bindsym XF86MonBrightnessDown exec brightnessctl set 2%-
 
 #
 # -> Key bindings
@@ -54,6 +54,7 @@ bindsym $mod+shift+p exec wl-color-picker
 bindsym $mod+shift+w exec updatewal-swww.sh
 
 # programs
+bindsym $mod+space exec nwg-drawer -c 7 -is 70 -spacing 23
 bindsym $mod+shift+s exec screenshot_wayland.sh
 bindsym $mod+e exec thunar ~/DCIM/Camera
 bindsym $mod+i exec nwg-look
@@ -143,6 +144,20 @@ bindsym control+Mod1+i resize shrink width 25px
 #
 smart_borders off
 
+#
+# -> floating
+#
+# Drag floating windows by holding down $mod and left mouse button.
+# Resize them with right mouse button + $mod.
+# Despite the name, also works for non-floating windows.
+# Change normal to inverse to use left mouse button for resizing and right
+# mouse button for dragging.
+floating_modifier $mod normal
+
+# Toggle the current focus between tiling and floating mode
+bindsym $mod+Shift+space floating toggle
+
+
 # ------------------------------------------------------------
 # -> sway specific
 # ------------------------------------------------------------
@@ -189,6 +204,11 @@ input 11551:337:WCOM014A:00_2D1F:0151_Stylus {
    # drag_lock enabled
 }
 
+exec swayidle -w\
+   timeout 120 'swaymsg "output * dpms off"' \
+   resume 'swaymsg "output * dpms on"' \
+   before-sleep 'swaymsg "output * dpms off"'
+
 #
 # -> swayfx
 #
@@ -200,7 +220,7 @@ shadows enable
 shadow_blur_radius 10
 shadow_color #000000ff
 # default_dim_inactive 0
-# layer_effects "waybar" blur enable; shadows disable;
-# titlebar_separator enable
+layer_effects "waybar" blur enable; shadows enable;
+titlebar_separator enable
 
 include /etc/sway/config.d/*
