@@ -1,12 +1,12 @@
 #
 # -> visuals
 #
-gaps inner 8px
-gaps outer 0px
-gaps top -8px
-gaps bottom -10px
+gaps inner 9px
+gaps outer -5px
+gaps top -5px
+gaps bottom 0px
 
-default_border pixel 6px
+default_border pixel 5px
 
 # -> class              border  backgr. text    indicator child_border
 client.focused          #000000 #0b4b55 #cccccc #ffffff44   #ffffff44
@@ -54,6 +54,7 @@ bindsym $mod+shift+p exec kcolorchooser
 bindsym $mod+shift+w exec updatewal-styli.sh
 
 # programs
+#bindsym $mod+space exec nwg-drawer -c 7 -is 70 -spacing 23
 bindsym $mod+shift+s exec screenshot_x11.sh
 bindsym $mod+e exec thunar ~/DCIM/Camera
 bindsym $mod+i exec plasma-open-settings
@@ -141,4 +142,17 @@ bindsym control+Mod1+i resize shrink width 25px
 #
 # -> other
 #
-smart_borders on
+smart_borders off
+
+#
+# -> floating
+#
+# Drag floating windows by holding down $mod and left mouse button.
+# Resize them with right mouse button + $mod.
+# Despite the name, also works for non-floating windows.
+# Change normal to inverse to use left mouse button for resizing and right
+# mouse button for dragging.
+floating_modifier $mod normal
+
+# Toggle the current focus between tiling and floating mode
+bindsym $mod+Shift+space floating toggle
