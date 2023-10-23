@@ -8,13 +8,13 @@ input type:touchpad {
       dwt enabled
       tap enabled
       natural_scroll enabled
+      pointer_accel 0.7
 }
 
 # Read `man 5 sway-input` for more information about this section.
 #
 # Change or switch the next setting
-input type:keyboard xkb_layout "us"
-#input type:keyboard xkb_layout "be"
+input type:keyboard xkb_layout "gb"
 
 exec_always {
    'swaymsg input type:keyboard xkb_layout "$(localectl status | grep "X11 Layout" | sed -e "s/^.*X11 Layout://")"'
@@ -26,4 +26,3 @@ input type:keyboard {
    xkb_layout gb
    xkb_options ctrl:nocaps
 }
-
