@@ -694,7 +694,11 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
       (setq command (concat command (shell-quote-argument file) " ")))
     (setq command (concat command (shell-quote-argument dest)))
     (async-shell-command command "*rsync*")
-    (other-window 1)))
+    (dired-unmark-all-marks)
+    (other-window 1)
+    (sleep-for 1)
+    (dired-revert)
+    (revert-buffer nil t nil)))
 
 (defun my/comment-or-uncomment ()
   "Comments or uncomments the current line or region."
@@ -754,20 +758,13 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ;; -> window-positioning
 ;;
 (add-to-list 'display-buffer-alist
-  '("\\*\\(?:Async\\|xref\\)"
-     display-buffer-no-window
-     (inhibit-same-window . t)))
+     '("\\*rsync\\*" display-buffer-no-window
+        (allow-no-window . t)))
 
 (add-to-list 'display-buffer-alist
-  '("\\*eshell\\*"
-     display-buffer-in-direction
-     (direction . bottom)
-     (window . root)
-     (window-height . 0.4)))
-
-;; (add-to-list 'display-buffer-alist
-;;   `(,right-repl-regexp
-;;      display-buffer-reuse-window))
+ '("\\*Help\\*"
+   (display-buffer-reuse-window display-buffer-pop-up-window)
+   (inhibit-same-window . t)))
 #+end_src
 
 * skeletons
@@ -2198,10 +2195,6 @@ echo
      "/home/jdyer/DCIM/content/art--2014-2017.org"
      "/home/jdyer/DCIM/content/aaa--todo.org"
      "/home/jdyer/DCIM/content/aaa--notes.org"))
-
-(setq org-agenda-files
-  '("~/DCIM/content/aaa--todo.org"
-     "/home/jdyer/DCIM/content/kate--health.org"))
 
 (defun my/copy-background-to-faves ()
   "Copy the current background in sway to faves folder"

@@ -493,13 +493,15 @@
 ;; -> custom-settings
 ;;
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
-  '(custom-enabled-themes '(doom-outrun-electric))
-  '(warning-suppress-log-types '((frameset)))
-  '(warning-suppress-types '((frameset))))
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-enabled-themes '(doom-outrun-electric))
+ '(package-selected-packages
+    '(ztree yaml-mode visual-fill-column vertico toc-org sway-lang-mode rainbow-mode qml-mode powerthesaurus ox-hugo ox-gfm org-side-tree org-rainbow-tags org-bullets orderless mini-modeline marginalia magit lorem-ipsum jinx i3wm-config-mode gruvbox-theme gpr-ts-mode gnuplot git-timemachine find-file-rg emms embark-consult elfeed ef-themes dwim-shell-command doom-themes dired-rainbow deadgrep dashboard company ahk-mode))
+ '(warning-suppress-log-types '((frameset)))
+ '(warning-suppress-types '((frameset))))
 
 ;;
 ;; -> defuns
@@ -542,7 +544,11 @@
       (setq command (concat command (shell-quote-argument file) " ")))
     (setq command (concat command (shell-quote-argument dest)))
     (async-shell-command command "*rsync*")
-    (other-window 1)))
+    (dired-unmark-all-marks)
+    (other-window 1)
+    (sleep-for 1)
+    (dired-revert)
+    (revert-buffer nil t nil)))
 
 (defun my/comment-or-uncomment ()
   "Comments or uncomments the current line or region."
@@ -598,20 +604,13 @@
 ;; -> window-positioning
 ;;
 (add-to-list 'display-buffer-alist
-  '("\\*\\(?:Async\\|xref\\)"
-     display-buffer-no-window
-     (inhibit-same-window . t)))
+     '("\\*rsync\\*" display-buffer-no-window
+        (allow-no-window . t)))
 
 (add-to-list 'display-buffer-alist
-  '("\\*eshell\\*"
-     display-buffer-in-direction
-     (direction . bottom)
-     (window . root)
-     (window-height . 0.4)))
-
-;; (add-to-list 'display-buffer-alist
-;;   `(,right-repl-regexp
-;;      display-buffer-reuse-window))
+ '("\\*Help\\*"
+   (display-buffer-reuse-window display-buffer-pop-up-window)
+   (inhibit-same-window . t)))
 
 ;;
 ;; -> skeletons
@@ -840,34 +839,41 @@
 ;; -> custom-set-faces
 ;;
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
-  '(cursor ((t (:background "#ffffff" :inverse-video t))))
-  '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
-  '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
-  '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
-  '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
-  '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2"))))
-  '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
-  '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.2 :family "Source Code Pro"))))
-  '(fixed-pitch ((t (:family "Source Code Pro" :height 130))))
-  '(org-block ((t (:inherit fixed-pitch))))
-  '(org-code ((t (:inherit (shadow fixed-pitch)))))
-  '(org-date ((t (:inherit fixed-pitch))))
-  '(org-document-info ((t (:foreground "dark orange"))))
-  '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
-  '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
-  '(org-link ((t (:foreground "royal blue" :underline t))))
-  '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
-  '(org-property-value ((t (:inherit fixed-pitch))) t)
-  '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
-  '(org-table ((t (:inherit fixed-pitch :foreground "#83a598"))))
-  '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
-  '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
-  '(variable-pitch ((t (:family "Source Sans Pro" :height 140))))
-  '(vertical-border ((t (:foreground "#444444" :inverse-video t)))))
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(cursor ((t (:background "#ffffff" :inverse-video t))))
+ '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
+ '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
+ '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
+ '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
+ '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.2 :family "Source Code Pro"))))
+ '(fixed-pitch ((t (:family "Source Code Pro" :height 130))))
+ '(org-block ((t (:inherit fixed-pitch))))
+ '(org-code ((t (:inherit (shadow fixed-pitch)))))
+ '(org-date ((t (:inherit fixed-pitch))))
+ '(org-document-info ((t (:foreground "dark orange"))))
+ '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+ '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
+ '(org-link ((t (:foreground "royal blue" :underline t))))
+ '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+ '(org-property-value ((t (:inherit fixed-pitch))) t)
+ '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+ '(org-table ((t (:inherit fixed-pitch :foreground "#83a598"))))
+ '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
+ '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
+ '(variable-pitch ((t (:family "Source Sans Pro" :height 140))))
+ '(vertical-border ((t (:foreground "#444444" :inverse-video t))))
+ '(whitespace-missing-newline-at-eof ((t (:foreground "#666566656665"))))
+ '(whitespace-newline ((t (:foreground "#666566656665"))))
+ '(whitespace-space ((t (:foreground "#666566656665"))))
+ '(whitespace-space-after-tab ((t (:foreground "#666566656665"))))
+ '(whitespace-space-before-tab ((t (:foreground "#666566656665"))))
+ '(whitespace-tab ((t (:foreground "#666566656665"))))
+ '(whitespace-trailing ((t (:foreground "#666566656665"))))
+ '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
+ '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2")))))
 
 ;;
 ;; -> image-dired
@@ -1801,10 +1807,6 @@
      "/home/jdyer/DCIM/content/art--2014-2017.org"
      "/home/jdyer/DCIM/content/aaa--todo.org"
      "/home/jdyer/DCIM/content/aaa--notes.org"))
-
-(setq org-agenda-files
-  '("~/DCIM/content/aaa--todo.org"
-     "/home/jdyer/DCIM/content/kate--health.org"))
 
 (defun my/copy-background-to-faves ()
   "Copy the current background in sway to faves folder"
