@@ -4,8 +4,8 @@
 @import 'colors-waybar.css';
 
 @define-color foreground rgba(255, 255, 255, 0.8);
-@define-color background rgba(57, 57, 77, 0.9);
-@define-color background-modules rgba(67, 67, 77, 0);
+@define-color background rgba(57, 57, 85, 0.9);
+@define-color background-modules rgba(77, 77, 77, 0);
 @define-color theme-alt rgba(40, 40, 40, 0.8);
 @define-color border-theme rgba(236, 236, 236, 0.2);
 @define-color border-modules rgba(36, 36, 36, 0);
@@ -86,8 +86,8 @@ button:hover {
 #tray,
 #window,
 #mpd {
-    padding: 0em 0.4em 0em 0.4em;
-    margin: 0.4em 0.1em 0.4em 0.1em;
+    padding: 0em 0.2em 0em 0.2em;
+    margin: 0.2em 0.1em 0.2em 0.1em;
 }
 
 #custom-browser,
@@ -97,19 +97,25 @@ button:hover {
 #custom-launcher,
 #custom-appmenu
 {
-    padding: 0em 0.4em 0em 0.4em;
-    margin: 0.4em 0.2em 0.4em 0.2em;
+    padding: 0em 0.2em 0em 0.2em;
+    margin: 0.2em 0.8em 0.2em 0.2em;
 }
 
-#custom-exit
- {
-    padding-right: 0em;
-    padding-left: 1em;
-    margin: 0.4em;
+#custom-spacer {
+    padding: 0em;
+    margin: 0em;
+}
+
+.modules-left {
+    margin-left: 0.5em;
+}
+
+.modules-right {
+    margin-right: 0.5em;
 }
 
 .modules-left > widget:first-child > #workspaces {
-    margin-left: 0;
+    margin-left: 0em;
 }
 
 .modules-right > widget:last-child > #workspaces {

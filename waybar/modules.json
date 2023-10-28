@@ -13,22 +13,47 @@
         }
     },
 
+    "custom/spacer": {
+        "format": " ",
+        "min-length": 1,
+        "max-length": 1
+    },
+
     "custom/browser": {
-        "format": "🌐",
+        // "format": "🌐",
+        "format": "",
         "on-click": "flatpak run com.microsoft.Edge",
         "tooltip": false
     },
 
     "custom/files": {
-        "format": "🗂️",
+        // "format": "🗂️",
+        "format": "",
         "on-click": "thunar ~/DCIM/Camera",
         "tooltip": false
     },
 
     "custom/terminal": {
-        "format": "🖥️",
+        // "format": "🖥️",
+        "format": "",
         "on-click": "gnome-terminal",
         "tooltip": false
+    },
+
+    "custom/toolbar/undo": {
+        "format": "",
+        "on-click": "exec ydotool key 29:1 44:1 29:0 44:0",
+        "tooltip": false,
+        "min-length": 2,
+        "max-length": 2
+    },
+
+    "custom/toolbar/redo": {
+        "format": "",
+        "on-click": "exec ydotool key 29:1 21:1 29:0 21:0",
+        "tooltip": false,
+        "min-length": 2,
+        "max-length": 2
     },
 
     "custom/appmenu": {
@@ -44,18 +69,18 @@
     },
 
     "custom/power": {
-        "format":"⏻ ",
+        "format":"⏻",
         "on-click": "nwg-bar",
         "tooltip": false,
         "min-length": 1,
-        "max-length": 2,
+        "max-length": 1,
     },
 
     "custom/launcher": {
-    	  "format":" ",
+    	  "format":"",
     	  "on-click": "exec nwg-drawer -c 7 -is 70 -spacing 23",
     	  "tooltip": false,
-        "min-length": 4,
+        "min-length": 1,
         "max-length": 4
     },
 
@@ -63,7 +88,7 @@
         "icon-size": 20,
         "spacing": 10,
         "min-length": 1,
-        "max-length": 5
+        "max-length": 6
     },
 
     "clock": {
@@ -79,7 +104,7 @@
         "format": "{usage}%",
         "tooltip": false,
         "interval": 1,
-        "min-length": 4,
+        "min-length": 1,
         "max-length": 6,
     },
 
@@ -112,7 +137,7 @@
     },
 
     "battery": {
-        "interval": 10,
+        "interval": 2,
         "states": {
             "good": 95,
             "warning": 30,
@@ -123,13 +148,12 @@
             "default": ["", "", "", "", ""],
         },
         "format": "{capacity} {icon}",
-        "format-charging": "{capacity} ",
-        "format-plugged": "{capacity} ",
+        "format-charging": "{capacity}  ",
+        "format-plugged": "{capacity}  ",
         "format-alt": "{time} {icon}",
         "format-full": "",
-        "min-length": 5,
+        "min-length": 6,
         "max-length": 20,
-        "align": 0
     },
 
     "pulseaudio": {

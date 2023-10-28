@@ -1,9 +1,10 @@
 {
     "layer": "bottom",
     "position": "top",
-    // "height": 55,
-    // "width": 1910,
-    "spacing": 2,
+    "mode": "dock",
+    "height": 45,
+    "width": 1910,
+    "spacing": 10,
     "margin-top": 0,
     // "margin-right": 10,
     // "margin-left": 10,
@@ -11,6 +12,9 @@
     "include": ["~/.config/waybar/modules.json"],
     "modules-left": [
         "custom/launcher",
+        "pulseaudio",
+        "backlight",
+        // "custom/spacer",
         "custom/browser",
         "custom/files",
         "custom/terminal",
@@ -20,18 +24,17 @@
         "sway/window"
     ],
     "modules-right": [
+        "custom/toolbar/undo",
+        "custom/toolbar/redo",
         "cpu",
         "memory",
         "temperature",
         // "network",
-        "pulseaudio",
-        "backlight",
+        "tray",
+        "battery",
         "custom/keyboard",
         "clock",
-        "battery",
-        "tray",
         "custom/power"
-
         // "custom/exit",
     ],
 }
