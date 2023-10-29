@@ -1743,6 +1743,7 @@
   ""
   (interactive)
   (company-mode)
+  (setq-local company-backends '(company-files))
   (define-key eshell-mode-map (kbd "<tab>") #'company-complete)
   (define-key eshell-hist-mode-map (kbd "M-r") #'consult-history))
 
@@ -1750,10 +1751,6 @@
   :config
   (setq eshell-scroll-to-bottom-on-input t)
   (add-hook 'eshell-mode-hook 'my/eshell-hook))
-
-(add-hook 'eshell-mode-hook
-  (lambda () (setq-local company-backends
-          '(company-files))))
 
 ;;
 ;; -> development
