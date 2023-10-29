@@ -125,10 +125,10 @@
     ("docm" "doc" "docx" "odb" "odt" "pdb" "pdf" "ps"
       "rtf" "djvu" "epub" "odp" "ppt" "pptx" "xls" "xlsx"
       "vsd" "vsdx" "plantuml"))
-  (dired-rainbow-define markdown "#d4306f"
+  (dired-rainbow-define markdown "#5dc0aa"
     ("org" "org_archive" "etx" "info" "markdown" "md"
       "mkd" "nfo" "pod" "rst" "tex" "texi" "textfile" "txt"))
-  (dired-rainbow-define media "#b0681f"
+  (dired-rainbow-define media "#91b01f"
     ("mp3" "mp4" "MP3" "MP4" "avi" "mpeg" "mpg" "flv"
       "ogg" "mov" "mid" "midi" "wav" "aiff" "flac" "mkv"))
   (dired-rainbow-define image "#b6688f"
@@ -1009,7 +1009,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ;; (setq font-general "Source Code Pro 14")
 ;; (setq font-general "Nimbus Mono PS 14")
 ;; (setq font-general "MesloLGS Nerd Font Mono 14")
-(setq font-general "Droid Sans Mono 12")
+(setq font-general "Droid Sans Mono 14")
 ;; (setq font-general "Hack Nerd Font Mono 14")
 
 (set-frame-font font-general nil t)
@@ -1144,8 +1144,10 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 (defun my/delete-current-image-thumbnails ()
   "Delete the current image file and move to the next image in the directory."
   (interactive)
-  (image-dired-flag-thumb-original-file)
-  (image-dired-do-flagged-delete))
+  (let ((file-name (image-dired-original-file-name)))
+    (delete-file file-name)
+    (image-dired-delete-char)
+    (image-dired-display-this)))
 
 (eval-after-load 'image-mode
   '(progn
@@ -1190,8 +1192,8 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 (add-hook 'text-mode-hook #'visual-line-mode)
 (add-hook 'org-mode-hook '(lambda () (visual-line-mode)))
 (setq truncate-partial-width-windows 140)
-(set-frame-parameter nil 'alpha-background 80)
-(add-to-list 'default-frame-alist '(alpha-background . 80))
+(set-frame-parameter nil 'alpha-background 75)
+(add-to-list 'default-frame-alist '(alpha-background . 75))
 (set-fringe-mode '(10 . 10))
 (set-display-table-slot standard-display-table 0 ?\ )
 
@@ -1261,19 +1263,19 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 
 ** simple
 
-#+begin_src elisp :tangle no
+#+begin_src elisp
 ;;
 ;; -> modeline
 ;;
 (setq-default mode-line-modified
   '(:eval (if (and (buffer-file-name) (buffer-modified-p))
-            (propertize " * Modified " 'face
-              '(:background "#000000" :foreground "#ffffff")) "")))
+            (propertize " *MODIFIED " 'face
+              '(:background "#ff0000" :foreground "#000000")) "")))
 
-(set-face-attribute 'mode-line-active nil :height 130 :underline nil :overline nil :box nil
+(set-face-attribute 'mode-line-active nil :height 150 :underline nil :overline nil :box nil
   :background "#afb4bc" :foreground "#000000")
-(set-face-attribute 'mode-line-inactive nil :height 130 :underline nil :overline nil
-  :background "#3c4a5d" :foreground "#323232")
+(set-face-attribute 'mode-line-inactive nil :height 150 :underline nil :overline nil
+  :background "#3c4a5d" :foreground "#cacaca")
 
 (setq-default mode-line-format
   '("%e"
@@ -1289,20 +1291,23 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
          " "))
      mode-line-position
      mode-line-modes
-     "-%-"))
+     mode-line-misc-info))
+     ;; "-%-"))
+
+(setq mode-line-compact t)
 #+end_src
 
 
 ** project
 
-#+begin_src elisp
+#+begin_src elisp :tangle no
 ;;
 ;; -> modeline
 ;;
 (setq-default mode-line-modified
   '(:eval (if (and (buffer-file-name) (buffer-modified-p))
-            (propertize " * Modified " 'face
-              '(:background "#c60017" :foreground "#ffffff")) "")))
+            (propertize " *MODIFIED " 'face
+              '(:background "#ff0000" :foreground "#000000")) "")))
 
 (set-face-attribute 'mode-line-active nil :height 130 :underline nil :overline nil
   :background "#41807d" :foreground "#ffffff")

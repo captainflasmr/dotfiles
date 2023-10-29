@@ -95,10 +95,10 @@
     ("docm" "doc" "docx" "odb" "odt" "pdb" "pdf" "ps"
       "rtf" "djvu" "epub" "odp" "ppt" "pptx" "xls" "xlsx"
       "vsd" "vsdx" "plantuml"))
-  (dired-rainbow-define markdown "#d4306f"
+  (dired-rainbow-define markdown "#5dc0aa"
     ("org" "org_archive" "etx" "info" "markdown" "md"
       "mkd" "nfo" "pod" "rst" "tex" "texi" "textfile" "txt"))
-  (dired-rainbow-define media "#b0681f"
+  (dired-rainbow-define media "#91b01f"
     ("mp3" "mp4" "MP3" "MP4" "avi" "mpeg" "mpg" "flv"
       "ogg" "mov" "mid" "midi" "wav" "aiff" "flac" "mkv"))
   (dired-rainbow-define image "#b6688f"
@@ -493,15 +493,13 @@
 ;; -> custom-settings
 ;;
 (custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-enabled-themes '(doom-outrun-electric))
- '(package-selected-packages
-    '(ztree yaml-mode visual-fill-column vertico toc-org sway-lang-mode rainbow-mode qml-mode powerthesaurus ox-hugo ox-gfm org-side-tree org-rainbow-tags org-bullets orderless mini-modeline marginalia magit lorem-ipsum jinx i3wm-config-mode gruvbox-theme gpr-ts-mode gnuplot git-timemachine find-file-rg emms embark-consult elfeed ef-themes dwim-shell-command doom-themes dired-rainbow deadgrep dashboard company ahk-mode))
- '(warning-suppress-log-types '((frameset)))
- '(warning-suppress-types '((frameset))))
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+  '(custom-enabled-themes '(doom-outrun-electric))
+  '(warning-suppress-log-types '((frameset)))
+  '(warning-suppress-types '((frameset))))
 
 ;;
 ;; -> defuns
@@ -827,7 +825,7 @@
 ;; (setq font-general "Source Code Pro 14")
 ;; (setq font-general "Nimbus Mono PS 14")
 ;; (setq font-general "MesloLGS Nerd Font Mono 14")
-(setq font-general "Droid Sans Mono 12")
+(setq font-general "Droid Sans Mono 14")
 ;; (setq font-general "Hack Nerd Font Mono 14")
 
 (set-frame-font font-general nil t)
@@ -839,41 +837,34 @@
 ;; -> custom-set-faces
 ;;
 (custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(cursor ((t (:background "#ffffff" :inverse-video t))))
- '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
- '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
- '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
- '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
- '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.2 :family "Source Code Pro"))))
- '(fixed-pitch ((t (:family "Source Code Pro" :height 130))))
- '(org-block ((t (:inherit fixed-pitch))))
- '(org-code ((t (:inherit (shadow fixed-pitch)))))
- '(org-date ((t (:inherit fixed-pitch))))
- '(org-document-info ((t (:foreground "dark orange"))))
- '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
- '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
- '(org-link ((t (:foreground "royal blue" :underline t))))
- '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
- '(org-property-value ((t (:inherit fixed-pitch))) t)
- '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
- '(org-table ((t (:inherit fixed-pitch :foreground "#83a598"))))
- '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
- '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
- '(variable-pitch ((t (:family "Source Sans Pro" :height 140))))
- '(vertical-border ((t (:foreground "#444444" :inverse-video t))))
- '(whitespace-missing-newline-at-eof ((t (:foreground "#666566656665"))))
- '(whitespace-newline ((t (:foreground "#666566656665"))))
- '(whitespace-space ((t (:foreground "#666566656665"))))
- '(whitespace-space-after-tab ((t (:foreground "#666566656665"))))
- '(whitespace-space-before-tab ((t (:foreground "#666566656665"))))
- '(whitespace-tab ((t (:foreground "#666566656665"))))
- '(whitespace-trailing ((t (:foreground "#666566656665"))))
- '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
- '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2")))))
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+  '(cursor ((t (:background "#ffffff" :inverse-video t))))
+  '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
+  '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
+  '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
+  '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
+  '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2"))))
+  '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
+  '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.2 :family "Source Code Pro"))))
+  '(fixed-pitch ((t (:family "Source Code Pro" :height 130))))
+  '(org-block ((t (:inherit fixed-pitch))))
+  '(org-code ((t (:inherit (shadow fixed-pitch)))))
+  '(org-date ((t (:inherit fixed-pitch))))
+  '(org-document-info ((t (:foreground "dark orange"))))
+  '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+  '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
+  '(org-link ((t (:foreground "royal blue" :underline t))))
+  '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+  '(org-property-value ((t (:inherit fixed-pitch))) t)
+  '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+  '(org-table ((t (:inherit fixed-pitch :foreground "#83a598"))))
+  '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
+  '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
+  '(variable-pitch ((t (:family "Source Sans Pro" :height 140))))
+  '(vertical-border ((t (:foreground "#444444" :inverse-video t)))))
 
 ;;
 ;; -> image-dired
@@ -961,8 +952,10 @@
 (defun my/delete-current-image-thumbnails ()
   "Delete the current image file and move to the next image in the directory."
   (interactive)
-  (image-dired-flag-thumb-original-file)
-  (image-dired-do-flagged-delete))
+  (let ((file-name (image-dired-original-file-name)))
+    (delete-file file-name)
+    (image-dired-delete-char)
+    (image-dired-display-this)))
 
 (eval-after-load 'image-mode
   '(progn
@@ -1003,8 +996,8 @@
 (add-hook 'text-mode-hook #'visual-line-mode)
 (add-hook 'org-mode-hook '(lambda () (visual-line-mode)))
 (setq truncate-partial-width-windows 140)
-(set-frame-parameter nil 'alpha-background 80)
-(add-to-list 'default-frame-alist '(alpha-background . 80))
+(set-frame-parameter nil 'alpha-background 75)
+(add-to-list 'default-frame-alist '(alpha-background . 75))
 (set-fringe-mode '(10 . 10))
 (set-display-table-slot standard-display-table 0 ?\ )
 
@@ -1066,63 +1059,30 @@
 ;;
 (setq-default mode-line-modified
   '(:eval (if (and (buffer-file-name) (buffer-modified-p))
-            (propertize " * Modified " 'face
-              '(:background "#c60017" :foreground "#ffffff")) "")))
+            (propertize " *MODIFIED " 'face
+              '(:background "#ff0000" :foreground "#000000")) "")))
 
-(set-face-attribute 'mode-line-active nil :height 130 :underline nil :overline nil
-  :background "#41807d" :foreground "#ffffff")
-(set-face-attribute 'mode-line-inactive nil :height 130
-  :background "#343434" :foreground "#ffffff")
-
-(defun string-to-hex-colour (str)
-  (format "#%02x%02x%02x"
-    (mod (sxhash (substring str -2 nil)) 256)
-    (mod (sxhash (substring str -4 -2)) 256)
-    (mod (sxhash (substring str -6 -4)) 256)))
+(set-face-attribute 'mode-line-active nil :height 150 :underline nil :overline nil :box nil
+  :background "#afb4bc" :foreground "#000000")
+(set-face-attribute 'mode-line-inactive nil :height 150 :underline nil :overline nil
+  :background "#3c4a5d" :foreground "#cacaca")
 
 (setq-default mode-line-format
   '("%e"
      mode-line-modified
      (:eval
-       (when (project-current)
-         (setq prj-background
-           (color-desaturate-name
-             (color-darken-name
-               (string-to-hex-colour (project-root (project-current))) 0) 0))
-
-         (if (string-greaterp prj-background "#888888888888")
-           (setq prj-foreground "#000000")
-           (setq prj-foreground "#ffffff"))
-
-         (propertize (format "%s" (abbreviate-file-name (project-root (project-current))))
-           'face `(:background ,prj-background :foreground ,prj-foreground))))
+       (propertize (format "%s" (abbreviate-file-name default-directory))
+         'face '(:inherit bold))
+       )
      (:eval
-       (if (project-current)
-         (when (buffer-file-name)
-           (if (mode-line-window-selected-p)
-             (propertize (format "%s"
-                           (string-trim-left
-                             (expand-file-name (file-name-directory (buffer-file-name)))
-                             (expand-file-name (project-root (project-current)))))
-               'face '(:background "#7cc1e4" :foreground "#000000"))
-             (propertize (format "%s"
-                           (string-trim-left
-                             (expand-file-name (file-name-directory (buffer-file-name)))
-                             (expand-file-name (project-root (project-current))))))
-             ))))
-     (:eval
-       (if (mode-line-window-selected-p)
+       (if (not (equal major-mode 'dired-mode))
          (propertize (format "%s " (buffer-name))
-           'face '(:background "#7cc1e4" :foreground "#000000"))
-         (format "%s " (buffer-name))))
-     (:eval
-       (when (or (eq major-mode 'image-mode)
-               (eq major-mode 'image-dired-image-mode))
-         (process-lines  "identify"  "-format"  "[%m %wx%h %b]" (buffer-file-name))))
+           'face '(:inherit bold))
+         " "))
      mode-line-position
-     ;; (vc-mode vc-mode)
      mode-line-modes
      mode-line-misc-info))
+     ;; "-%-"))
 
 (setq mode-line-compact t)
 
