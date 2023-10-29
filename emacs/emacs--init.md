@@ -1,61 +1,62 @@
-1.  [early-init](#org04134aa)
-2.  [requires](#org704d128)
-3.  [package-archives](#org7bf77bf)
-4.  [package-extra](#orgeb0a55f)
-5.  [use-package](#org9a9eeed)
-6.  [completion](#orga030218)
-7.  [navigation](#org0628dee)
-8.  [unbinding](#orge0e3058)
-9.  [magit](#org5aa6331)
-10. [emms](#orgf85ab39)
-11. [elfeed](#org8ff70d3)
-12. [save-desktop](#org4a75282)
-13. [expansion](#orga98fb8d)
-14. [keybinding](#org4f71922)
-15. [inserts](#orge444e78)
-16. [modes](#org25d9f52)
-17. [bell](#org036485e)
-18. [setqs](#org34f9352)
-19. [confirm](#org18d5408)
-20. [backups](#orgf9d19fc)
-21. [hooks](#orgdc54f7d)
-22. [custom-settings](#org1c96362)
-23. [defuns](#org093433b)
-24. [window-positioning](#orge67dc3d)
-25. [skeletons](#org7489fc3)
-26. [org-capture](#orgdb8d234)
-27. [org](#org1c1e337)
-28. [dwim](#orga68f629)
-29. [scroll](#orgb13dfa8)
-30. [font](#orgb54f12b)
-31. [custom-set-faces](#orgb2e429a)
-32. [image-dired](#org65d0b31)
-33. [visuals](#orgf756492)
-34. [imenu](#org1df8063)
-35. [recentf](#orge3c8a01)
-36. [modeline](#orgea4bb92)
-37. [markdown](#org4cd9512)
-38. [find](#org941fb9f)
-39. [grep](#orga3d581e)
-40. [spelling](#org11f6e2e)
-41. [hugo](#org0006a62)
-42. [gdb](#org823465d)
-43. [compilation](#org449f811)
-44. [auto-mode-alist](#org9175d59)
-45. [programming](#org9421f45)
-46. [diff](#org413c946)
-47. [ada](#org9dcdda9)
-48. [treesitter](#org1a8766c)
-49. [whitespace](#orgd27c0ae)
-50. [dashboard](#orgc92c04c)
-51. [project](#org9bad71e)
-52. [indentation](#orga688567)
-53. [etags](#org912d485)
-54. [colour-shift](#org7703c34)
-55. [development](#org1cd0077)
+1.  [early-init](#org49f4064)
+2.  [requires](#org2328b69)
+3.  [package-archives](#org98df2fc)
+4.  [package-extra](#orgb1511ed)
+5.  [use-package](#org2f633ac)
+6.  [completion](#org15ede48)
+7.  [navigation](#org21c6176)
+8.  [unbinding](#orgf1ce84e)
+9.  [magit](#org75defe4)
+10. [emms](#org562ce42)
+11. [elfeed](#org105b45d)
+12. [save-desktop](#org11876d4)
+13. [expansion](#orgc0c4f49)
+14. [keybinding](#org37f9e03)
+15. [inserts](#org6c23359)
+16. [modes](#org7996fb2)
+17. [bell](#org19e847f)
+18. [setqs](#orgbf48dea)
+19. [confirm](#orgdd09bef)
+20. [backups](#orge17669b)
+21. [hooks](#org6fc912c)
+22. [custom-settings](#org0df79cd)
+23. [defuns](#org9b88e24)
+24. [window-positioning](#orge912d94)
+25. [skeletons](#org384c56f)
+26. [org-capture](#org1794b7c)
+27. [org](#org35e49df)
+28. [dwim](#org712547e)
+29. [scroll](#orga6cf4c1)
+30. [font](#org0c7be77)
+31. [custom-set-faces](#org2af34d7)
+32. [image-dired](#org4b2dab8)
+33. [visuals](#orgdc7eb8f)
+34. [imenu](#orgb64d483)
+35. [recentf](#orgbf3d0ab)
+36. [modeline](#org0d214d9)
+37. [markdown](#orga0b3e11)
+38. [find](#orgbe37660)
+39. [grep](#orge714aaa)
+40. [spelling](#orge20538b)
+41. [hugo](#org3aecd48)
+42. [gdb](#org02b49d2)
+43. [compilation](#orgb4aadf1)
+44. [auto-mode-alist](#org164ff1b)
+45. [programming](#org197648a)
+46. [diff](#orgd6d773d)
+47. [ada](#org3f5cc56)
+48. [treesitter](#org5415f05)
+49. [whitespace](#orgaef9333)
+50. [dashboard](#org50aac1b)
+51. [project](#orgd848eb3)
+52. [indentation](#org5e48337)
+53. [etags](#org62f0567)
+54. [colour-shift](#org106d3d3)
+55. [eshell](#orgcb340ca)
+56. [development](#orgc4c5548)
 
 
-<a id="org04134aa"></a>
+<a id="org49f4064"></a>
 
 # early-init
 
@@ -67,7 +68,7 @@
 ```
 
 
-<a id="org704d128"></a>
+<a id="org2328b69"></a>
 
 # requires
 
@@ -81,7 +82,7 @@
 ```
 
 
-<a id="org7bf77bf"></a>
+<a id="org98df2fc"></a>
 
 # package-archives
 
@@ -107,7 +108,7 @@
 ```
 
 
-<a id="orgeb0a55f"></a>
+<a id="orgb1511ed"></a>
 
 # package-extra
 
@@ -120,7 +121,7 @@
 ```
 
 
-<a id="org9a9eeed"></a>
+<a id="org2f633ac"></a>
 
 # use-package
 
@@ -219,7 +220,7 @@
 ```
 
 
-<a id="orga030218"></a>
+<a id="org15ede48"></a>
 
 # completion
 
@@ -304,7 +305,7 @@
 ```
 
 
-<a id="org0628dee"></a>
+<a id="org21c6176"></a>
 
 # navigation
 
@@ -333,7 +334,7 @@
 ```
 
 
-<a id="orge0e3058"></a>
+<a id="orgf1ce84e"></a>
 
 # unbinding
 
@@ -362,7 +363,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org5aa6331"></a>
+<a id="org75defe4"></a>
 
 # magit
 
@@ -400,7 +401,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="orgf85ab39"></a>
+<a id="org562ce42"></a>
 
 # emms
 
@@ -425,7 +426,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org8ff70d3"></a>
+<a id="org105b45d"></a>
 
 # elfeed
 
@@ -477,7 +478,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org4a75282"></a>
+<a id="org11876d4"></a>
 
 # save-desktop
 
@@ -503,7 +504,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="orga98fb8d"></a>
+<a id="orgc0c4f49"></a>
 
 # expansion
 
@@ -523,7 +524,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org4f71922"></a>
+<a id="org37f9e03"></a>
 
 # keybinding
 
@@ -576,7 +577,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="orge444e78"></a>
+<a id="org6c23359"></a>
 
 # inserts
 
@@ -595,7 +596,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org25d9f52"></a>
+<a id="org7996fb2"></a>
 
 # modes
 
@@ -623,7 +624,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org036485e"></a>
+<a id="org19e847f"></a>
 
 # bell
 
@@ -636,7 +637,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org34f9352"></a>
+<a id="orgbf48dea"></a>
 
 # setqs
 
@@ -658,7 +659,6 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 (setq case-fold-search t)
 (setq custom-safe-themes t)
 (setq dired-auto-revert-buffer t)
-(setq eshell-scroll-to-bottom-on-input 'this)
 (setq tramp-default-method "ssh")
 (setq enable-local-variables :all)
 (setq proced-auto-update-interval 1)
@@ -694,7 +694,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org18d5408"></a>
+<a id="orgdd09bef"></a>
 
 # confirm
 
@@ -716,7 +716,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="orgf9d19fc"></a>
+<a id="orge17669b"></a>
 
 # backups
 
@@ -734,7 +734,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="orgdc54f7d"></a>
+<a id="org6fc912c"></a>
 
 # hooks
 
@@ -751,7 +751,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org1c96362"></a>
+<a id="org0df79cd"></a>
 
 # custom-settings
 
@@ -770,7 +770,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org093433b"></a>
+<a id="org9b88e24"></a>
 
 # defuns
 
@@ -874,7 +874,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="orge67dc3d"></a>
+<a id="orge912d94"></a>
 
 # window-positioning
 
@@ -893,7 +893,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org7489fc3"></a>
+<a id="org384c56f"></a>
 
 # skeletons
 
@@ -941,7 +941,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="orgdb8d234"></a>
+<a id="org1794b7c"></a>
 
 # org-capture
 
@@ -1037,7 +1037,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org1c1e337"></a>
+<a id="org35e49df"></a>
 
 # org
 
@@ -1084,7 +1084,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="orga68f629"></a>
+<a id="org712547e"></a>
 
 # dwim
 
@@ -1126,7 +1126,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="orgb13dfa8"></a>
+<a id="orga6cf4c1"></a>
 
 # scroll
 
@@ -1139,7 +1139,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="orgb54f12b"></a>
+<a id="org0c7be77"></a>
 
 # font
 
@@ -1162,7 +1162,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="orgb2e429a"></a>
+<a id="org2af34d7"></a>
 
 # custom-set-faces
 
@@ -1202,7 +1202,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="org65d0b31"></a>
+<a id="org4b2dab8"></a>
 
 # image-dired
 
@@ -1326,7 +1326,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="orgf756492"></a>
+<a id="orgdc7eb8f"></a>
 
 # visuals
 
@@ -1359,7 +1359,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="org1df8063"></a>
+<a id="orgb64d483"></a>
 
 # imenu
 
@@ -1402,7 +1402,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="orge3c8a01"></a>
+<a id="orgbf3d0ab"></a>
 
 # recentf
 
@@ -1418,7 +1418,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="orgea4bb92"></a>
+<a id="org0d214d9"></a>
 
 # modeline
 
@@ -1530,7 +1530,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="org4cd9512"></a>
+<a id="orga0b3e11"></a>
 
 # markdown
 
@@ -1546,7 +1546,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="org941fb9f"></a>
+<a id="orgbe37660"></a>
 
 # find
 
@@ -1560,7 +1560,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="orga3d581e"></a>
+<a id="orge714aaa"></a>
 
 # grep
 
@@ -1644,7 +1644,7 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
 ```
 
 
-<a id="org11f6e2e"></a>
+<a id="orge20538b"></a>
 
 # spelling
 
@@ -1676,7 +1676,7 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
 ```
 
 
-<a id="org0006a62"></a>
+<a id="org3aecd48"></a>
 
 # hugo
 
@@ -1688,13 +1688,15 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
   "Hugo export processing."
   (interactive)
   (org-hugo-export-wim-to-md)
-  (shell-command "web rsync emacs"))
+  (shell-command "web rsync emacs")
+  (shell-command "web rsync art")
+  (shell-command "web rsync dyerdwelling"))
 
 (global-set-key (kbd "C-c x") #'my/hugo-org-export-subtree)
 ```
 
 
-<a id="org823465d"></a>
+<a id="org02b49d2"></a>
 
 # gdb
 
@@ -1711,7 +1713,7 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
 ```
 
 
-<a id="org449f811"></a>
+<a id="orgb4aadf1"></a>
 
 # compilation
 
@@ -1735,7 +1737,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="org9175d59"></a>
+<a id="org164ff1b"></a>
 
 # auto-mode-alist
 
@@ -1759,7 +1761,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="org9421f45"></a>
+<a id="org197648a"></a>
 
 # programming
 
@@ -1865,7 +1867,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="org413c946"></a>
+<a id="orgd6d773d"></a>
 
 # diff
 
@@ -1894,7 +1896,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="org9dcdda9"></a>
+<a id="org3f5cc56"></a>
 
 # ada
 
@@ -2006,7 +2008,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="org1a8766c"></a>
+<a id="org5415f05"></a>
 
 # treesitter
 
@@ -2057,7 +2059,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="orgd27c0ae"></a>
+<a id="orgaef9333"></a>
 
 # whitespace
 
@@ -2111,7 +2113,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="orgc92c04c"></a>
+<a id="org50aac1b"></a>
 
 # dashboard
 
@@ -2143,7 +2145,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="org9bad71e"></a>
+<a id="orgd848eb3"></a>
 
 # project
 
@@ -2200,7 +2202,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="orga688567"></a>
+<a id="org5e48337"></a>
 
 # indentation
 
@@ -2216,7 +2218,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="org912d485"></a>
+<a id="org62f0567"></a>
 
 # etags
 
@@ -2308,7 +2310,7 @@ echo
 ```
 
 
-<a id="org7703c34"></a>
+<a id="org106d3d3"></a>
 
 # colour-shift
 
@@ -2383,7 +2385,33 @@ echo
 ```
 
 
-<a id="org1cd0077"></a>
+<a id="orgcb340ca"></a>
+
+# eshell
+
+```elisp
+;;
+;; -> eshell
+;;
+(defun my/eshell-hook ()
+  ""
+  (interactive)
+  (company-mode)
+  (define-key eshell-mode-map (kbd "<tab>") #'company-complete)
+  (define-key eshell-hist-mode-map (kbd "M-r") #'consult-history))
+
+(use-package eshell
+  :config
+  (setq eshell-scroll-to-bottom-on-input t)
+  (add-hook 'eshell-mode-hook 'my/eshell-hook))
+
+(add-hook 'eshell-mode-hook
+  (lambda () (setq-local company-backends
+          '(company-files))))
+```
+
+
+<a id="orgc4c5548"></a>
 
 # development
 
@@ -2478,18 +2506,6 @@ echo
   "Convert clipboard contents from HTML to Org and then paste (yank)."
   (interactive)
   (insert (shell-command-to-string "xclip -o -selection clipboard -t text/html | pandoc -f html -t json | pandoc -f json -t org")))
-
-(defun my/eshell-hook ()
-  ""
-  (interactive)
-  (company-mode)
-  (define-key eshell-mode-map (kbd "<tab>") #'company-complete)
-  (define-key eshell-hist-mode-map (kbd "M-r") #'consult-history))
-
-(use-package eshell
-  :config
-  (setq eshell-scroll-to-bottom-on-input t)
-  (add-hook 'eshell-mode-hook 'my/eshell-hook))
 
 (defun my/image-save-as ()
   "Save the current image buffer as a new file."

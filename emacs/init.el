@@ -419,7 +419,6 @@
 (setq case-fold-search t)
 (setq custom-safe-themes t)
 (setq dired-auto-revert-buffer t)
-(setq eshell-scroll-to-bottom-on-input 'this)
 (setq tramp-default-method "ssh")
 (setq enable-local-variables :all)
 (setq proced-auto-update-interval 1)
@@ -1203,7 +1202,9 @@
   "Hugo export processing."
   (interactive)
   (org-hugo-export-wim-to-md)
-  (shell-command "web rsync emacs"))
+  (shell-command "web rsync emacs")
+  (shell-command "web rsync art")
+  (shell-command "web rsync dyerdwelling"))
 
 (global-set-key (kbd "C-c x") #'my/hugo-org-export-subtree)
 
@@ -1736,6 +1737,25 @@
 (add-hook 'rainbow-mode-hook 'activate-colour-shift-mode)
 
 ;;
+;; -> eshell
+;;
+(defun my/eshell-hook ()
+  ""
+  (interactive)
+  (company-mode)
+  (define-key eshell-mode-map (kbd "<tab>") #'company-complete)
+  (define-key eshell-hist-mode-map (kbd "M-r") #'consult-history))
+
+(use-package eshell
+  :config
+  (setq eshell-scroll-to-bottom-on-input t)
+  (add-hook 'eshell-mode-hook 'my/eshell-hook))
+
+(add-hook 'eshell-mode-hook
+  (lambda () (setq-local company-backends
+          '(company-files))))
+
+;;
 ;; -> development
 ;;
 (defun display-year-agenda (&optional year)
@@ -1825,18 +1845,6 @@
   "Convert clipboard contents from HTML to Org and then paste (yank)."
   (interactive)
   (insert (shell-command-to-string "xclip -o -selection clipboard -t text/html | pandoc -f html -t json | pandoc -f json -t org")))
-
-(defun my/eshell-hook ()
-  ""
-  (interactive)
-  (company-mode)
-  (define-key eshell-mode-map (kbd "<tab>") #'company-complete)
-  (define-key eshell-hist-mode-map (kbd "M-r") #'consult-history))
-
-(use-package eshell
-  :config
-  (setq eshell-scroll-to-bottom-on-input t)
-  (add-hook 'eshell-mode-hook 'my/eshell-hook))
 
 (defun my/image-save-as ()
   "Save the current image buffer as a new file."
