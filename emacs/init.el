@@ -1740,7 +1740,7 @@
 ;; -> eshell
 ;;
 (defun my/eshell-hook ()
-  ""
+  "set up company completions to be a little more fish like"
   (interactive)
   (company-mode)
   (setq-local company-backends '(company-files))
