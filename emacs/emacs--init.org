@@ -1304,9 +1304,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
   '("%e"
      mode-line-modified
      (:eval
-       (propertize (format "%s" (abbreviate-file-name default-directory))
-         'face '(:inherit regular))
-       )
+       (propertize (format "%s" (abbreviate-file-name default-directory))))
      (:eval
        (if (not (equal major-mode 'dired-mode))
          (propertize (format "%s " (buffer-name))
