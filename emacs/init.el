@@ -116,7 +116,7 @@
     ("git" "gitignore" "gitattributes" "gitmodules"))
   (dired-rainbow-define config "#7260e2"
     ("cfg" "conf"))
-  (dired-rainbow-define-chmod executable-unix "#38c172" "-.*x.*")
+  ;; (dired-rainbow-define-chmod executable-unix "#38c172" "-.*x.*")
   (dolist (b (buffer-list))
     (with-current-buffer b
       (when (equal major-mode 'dired-mode)
@@ -321,10 +321,13 @@
 ;; -> keybinding
 ;;
 ;;  (global-set-key (kbd "C-x v =") 'vc-ediff)
+(global-set-key (kbd "C-M-n") 'next-error)
+(global-set-key (kbd "C-M-p") 'previous-error)
 (global-set-key (kbd "M-H") 'mark-paragraph)
 (global-set-key (kbd "M-=") 'count-words)
 (define-key minibuffer-local-map (kbd "C-c e") 'embark-collect)
-(global-set-key (kbd "C-M-S") 'consult-outline)
+(global-set-key (kbd "C-o") 'consult-outline)
+(global-set-key (kbd "M-o") 'consult-imenu)
 (bind-key* (kbd "M-g i") 'imenu)
 (global-set-key (kbd "M-\'") 'indent-region)
 (global-set-key (kbd "C-c a") 'org-agenda)
@@ -426,7 +429,7 @@
 (setq shr-max-image-proportion 0.5)
 (setq shr-max-width 80)
 (setq shr-width 70)
-(setq truncate-partial-width-windows t)
+;; (setq truncate-partial-width-windows t)
 (setq tooltip-hide-delay 0)
 (when (fboundp 'imagemagick-register-types)
   (imagemagick-register-types))
@@ -487,6 +490,7 @@
 (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
 (add-hook 'diary-mark-entries-hook 'diary-mark-included-diary-files)
 (add-hook 'proced-mode-hook 'proced-settings)
+(add-hook 'next-error-hook #'org-show-all)
 
 ;;
 ;; -> custom-settings
@@ -512,12 +516,12 @@
 (defun my/resize-window (delta &optional horizontal)
   "Resize window back and forth."
   (interactive)
-  (let ((edge (if horizontal
-                (car (window-edges))
-                (car (cdr (window-edges))))))
-    (if (= edge 0)
+  (cond
+    ((= (nth 0 (window-edges)) 0)
+      (enlarge-window delta horizontal))
+    (t (select-window (windmove-left (selected-window)))
       (enlarge-window delta horizontal)
-      (shrink-window delta horizontal))))
+      (select-window (windmove-right (selected-window))))))
 
 (defun save-macro (name)
   "Save a macro."
@@ -601,13 +605,29 @@
 ;; -> window-positioning
 ;;
 (add-to-list 'display-buffer-alist
-     '("\\*rsync\\*" display-buffer-no-window
-        (allow-no-window . t)))
+  '("\\*rsync\\*" display-buffer-no-window
+     (allow-no-window . t)))
 
 (add-to-list 'display-buffer-alist
- '("\\*Help\\*"
-   (display-buffer-reuse-window display-buffer-pop-up-window)
-   (inhibit-same-window . t)))
+  '("\\*deadgrep"
+     (display-buffer-reuse-window display-buffer-in-direction)
+     (direction . leftmost)
+     (dedicated . t)
+     (window-width . 0.3)
+     (inhibit-same-window . t)))
+
+(add-to-list 'display-buffer-alist
+  '("\\*compilation"
+     (display-buffer-reuse-window display-buffer-in-direction)
+     (direction . leftmost)
+     (dedicated . t)
+     (window-width . 0.3)
+     (inhibit-same-window . t)))
+
+(add-to-list 'display-buffer-alist
+  '("\\*Help\\*"
+     (display-buffer-reuse-window)
+     (inhibit-same-window . t)))
 
 ;;
 ;; -> skeletons
@@ -821,10 +841,11 @@
 ;;
 ;; (setq font-general "Noto Sans Mono 14")
 ;; (setq font-general "MesloLGS Nerd Font Mono 11")
-;; (setq font-general "Source Code Pro 14")
+(setq font-general "Source Code Pro 14")
+(setq font-general "Source Code Pro Light 14")
 ;; (setq font-general "Nimbus Mono PS 14")
 ;; (setq font-general "MesloLGS Nerd Font Mono 14")
-(setq font-general "Droid Sans Mono 14")
+;; (setq font-general "Droid Sans Mono 14")
 ;; (setq font-general "Hack Nerd Font Mono 14")
 
 (set-frame-font font-general nil t)
@@ -852,17 +873,20 @@
   '(org-block ((t (:inherit fixed-pitch))))
   '(org-code ((t (:inherit (shadow fixed-pitch)))))
   '(org-date ((t (:inherit fixed-pitch))))
-  '(org-document-info ((t (:foreground "dark orange"))))
+  '(org-document-info ((t (:foreground "#8f4800"))))
   '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
   '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
-  '(org-link ((t (:foreground "royal blue" :underline t))))
+  '(org-link ((t (:foreground "#5555ff" :underline t))))
   '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
   '(org-property-value ((t (:inherit fixed-pitch))) t)
   '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
   '(org-table ((t (:inherit fixed-pitch :foreground "#83a598"))))
-  '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
+  '(org-tag ((t (:inherit (shadow fixed-pitch) :weight regular :height 0.8))))
   '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
   '(variable-pitch ((t (:family "Source Sans Pro" :height 140))))
+  '(outline-1 ((t (:weight regular))))
+  '(outline-2 ((t (:weight regular))))
+  '(widget-button ((t (:inherit fixed-pitch :weight regular))))
   '(vertical-border ((t (:foreground "#444444" :inverse-video t)))))
 
 ;;
@@ -995,9 +1019,9 @@
 (add-hook 'text-mode-hook #'visual-line-mode)
 (add-hook 'org-mode-hook '(lambda () (visual-line-mode)))
 (setq truncate-partial-width-windows 140)
-(set-frame-parameter nil 'alpha-background 75)
-(add-to-list 'default-frame-alist '(alpha-background . 75))
-(set-fringe-mode '(10 . 10))
+(set-frame-parameter nil 'alpha-background 85)
+(add-to-list 'default-frame-alist '(alpha-background . 85))
+(set-fringe-mode '(0 . 0))
 (set-display-table-slot standard-display-table 0 ?\ )
 
 (setq window-divider-default-bottom-width 6)
@@ -1058,20 +1082,20 @@
 ;;
 (setq-default mode-line-modified
   '(:eval (if (and (buffer-file-name) (buffer-modified-p))
-            (propertize " *MODIFIED " 'face
-              '(:background "#ff0000" :foreground "#000000")) "")))
+            (propertize " * " 'face
+              '(:background "#ff0000" :foreground "#ffffff" :inherit bold)) "")))
 
-(set-face-attribute 'mode-line-active nil :height 150 :underline nil :overline nil :box nil
-  :background "#afb4bc" :foreground "#000000")
-(set-face-attribute 'mode-line-inactive nil :height 150 :underline nil :overline nil
-  :background "#3c4a5d" :foreground "#cacaca")
+(set-face-attribute 'mode-line-active nil :height 130 :underline nil :overline nil :box nil
+  :background "#3b467f" :foreground "#ffffff")
+(set-face-attribute 'mode-line-inactive nil :height 130 :underline nil :overline nil
+  :background "#000000" :foreground "#cacaca")
 
 (setq-default mode-line-format
   '("%e"
      mode-line-modified
      (:eval
        (propertize (format "%s" (abbreviate-file-name default-directory))
-         'face '(:inherit bold))
+         'face '(:inherit regular))
        )
      (:eval
        (if (not (equal major-mode 'dired-mode))
@@ -1081,7 +1105,7 @@
      mode-line-position
      mode-line-modes
      mode-line-misc-info))
-     ;; "-%-"))
+;; "-%-"))
 
 (setq mode-line-compact t)
 
