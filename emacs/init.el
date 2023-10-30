@@ -1057,9 +1057,7 @@
     (setq truncate-lines t)
     (setq imenu-sort-function 'imenu--sort-by-name)
     (setq imenu-generic-expression
-      '((nil "^;;[[:space:]]+-> \\(.*\\)$" 1)
-         ("defun" "^.*([[:space:]]*defun[[:space:]]+\\([[:word:]-/]+\\)" 1)
-         ("use-package" "^.*([[:space:]]*use-package[[:space:]]+\\([[:word:]-]+\\)" 1)))
+      '((nil "^;;[[:space:]]+-> \\(.*\\)$" 1)))
     (imenu-add-menubar-index)))
 
 (add-hook 'conf-space-mode-hook
