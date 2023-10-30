@@ -1054,6 +1054,7 @@
 
 (add-hook 'emacs-lisp-mode-hook
   (lambda ()
+    (setq truncate-lines t)
     (setq imenu-sort-function 'imenu--sort-by-name)
     (setq imenu-generic-expression
       '((nil "^;;[[:space:]]+-> \\(.*\\)$" 1)
@@ -1094,9 +1095,7 @@
   '("%e"
      mode-line-modified
      (:eval
-       (propertize (format "%s" (abbreviate-file-name default-directory))
-         'face '(:inherit regular))
-       )
+       (propertize (format "%s" (abbreviate-file-name default-directory))))
      (:eval
        (if (not (equal major-mode 'dired-mode))
          (propertize (format "%s " (buffer-name))

@@ -1254,6 +1254,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 
 (add-hook 'emacs-lisp-mode-hook
   (lambda ()
+    (setq truncate-lines t)
     (setq imenu-sort-function 'imenu--sort-by-name)
     (setq imenu-generic-expression
       '((nil "^;;[[:space:]]+-> \\(.*\\)$" 1)
