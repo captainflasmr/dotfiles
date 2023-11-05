@@ -3,7 +3,7 @@
 #
 gaps inner 9px
 gaps outer -5px
-gaps top -5px
+gaps top -7px
 gaps bottom 0px
 
 default_border pixel 5px
@@ -51,7 +51,7 @@ bindsym XF86MonBrightnessDown exec brightnessctl set 2%-
 # -> Key bindings
 #
 bindsym $mod+shift+p exec kcolorchooser
-bindsym $mod+shift+w exec updatewal-styli.sh
+bindsym $mod+shift+w exec wallpaper_updatewal-styli.sh
 
 # programs
 #bindsym $mod+space exec nwg-drawer -c 7 -is 70 -spacing 23
@@ -142,7 +142,7 @@ bindsym control+Mod1+i resize shrink width 25px
 #
 # -> other
 #
-smart_borders off
+# smart_borders off
 
 #
 # -> floating
@@ -152,7 +152,7 @@ smart_borders off
 # Despite the name, also works for non-floating windows.
 # Change normal to inverse to use left mouse button for resizing and right
 # mouse button for dragging.
-floating_modifier $mod normal
+floating_modifier $mod
 
 # Toggle the current focus between tiling and floating mode
 bindsym $mod+Shift+space floating toggle
