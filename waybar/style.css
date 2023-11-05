@@ -4,10 +4,10 @@
 @import 'colors-waybar.css';
 
 @define-color foreground rgba(255, 255, 255, 0.8);
-@define-color background rgba(57, 57, 85, 0.9);
+@define-color background rgba(50, 50, 60, 0.4);
 @define-color background-modules rgba(77, 77, 77, 0);
 @define-color theme-alt rgba(40, 40, 40, 0.8);
-@define-color border-theme rgba(236, 236, 236, 0.2);
+@define-color border-theme rgba(128, 128, 128, 0);
 @define-color border-modules rgba(36, 36, 36, 0);
 
 * {
@@ -20,7 +20,7 @@
 
 window#waybar {
     background-color: @background;
-    border: 2px solid @border-theme;
+    border: 0px solid @border-theme;
 }
 
 window#waybar.hidden {
@@ -255,12 +255,12 @@ label {
 }
 
 #idle_inhibitor {
-    background-color: #2d3436;
+    background-color: @background-modules;
 }
 
 #idle_inhibitor.activated {
-    background-color: #ecf0f1;
-    color: #2d3436;
+    background-color: #4e1a00;
+    color: @foreground;
 }
 
 #mpd {

@@ -12,6 +12,7 @@
     "include": ["~/.config/waybar/modules.json"],
     "modules-left": [
         "custom/launcher",
+        "idle_inhibitor",
         "pulseaudio",
         "backlight",
         // "custom/spacer",

@@ -104,7 +104,7 @@
         "format": "{usage}%",
         "tooltip": false,
         "interval": 1,
-        "min-length": 1,
+        "min-length": 3,
         "max-length": 6,
     },
 
@@ -209,5 +209,16 @@
         "interval": 5,
         "min-length": 1,
         "max-length": 6
+    },
+
+    "idle_inhibitor": {
+	     "format": "{icon} ",
+	     "format-icons": {
+		      "activated": "",
+		      "deactivated": ""
+	     },
+        "min-length": 2,
+        "max-length": 6,
+	     "timeout": 30.5,
     }
 }
