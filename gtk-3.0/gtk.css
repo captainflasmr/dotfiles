@@ -1,6 +1,10 @@
 @import 'colors.css';
 
+tooltip {
+    opacity: 0;
+}
+
 VteTerminal, TerminalScreen, vte-terminal {
-  padding: 10px 10px 10px 10px;
-  -VteTerminal-inner-border: 10px 10px 10px 10px;
+  padding: 8px 8px 8px 8px;
+  -VteTerminal-inner-border: 8px 8px 8px 8px;
 }
