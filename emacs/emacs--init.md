@@ -1,62 +1,63 @@
-1.  [early-init](#org54fb6d3)
-2.  [requires](#org7889393)
-3.  [package-archives](#orgeed0dbf)
-4.  [package-extra](#orge96dd79)
-5.  [use-package](#org1305ce9)
-6.  [completion](#orgf00bb4a)
-7.  [navigation](#org870ba71)
-8.  [unbinding](#org9c1b5af)
-9.  [magit](#orgb55ab91)
-10. [emms](#org5da10b4)
-11. [elfeed](#org47fed1e)
-12. [save-desktop](#orgfb52844)
-13. [expansion](#org1b88b28)
-14. [keybinding](#org4f9fd57)
-15. [inserts](#org775a2a7)
-16. [modes](#orgd1eae2b)
-17. [bell](#orgddfdd91)
-18. [setqs](#org6b551c0)
-19. [confirm](#orgff00e7c)
-20. [backups](#org2c1df24)
-21. [hooks](#orgef36f0d)
-22. [custom-settings](#org0917590)
-23. [defuns](#org1b65891)
-24. [window-positioning](#orgf3163c7)
-25. [skeletons](#org55aa197)
-26. [org-capture](#org8220452)
-27. [org](#org5e5cd20)
-28. [dwim](#org46dbd0f)
-29. [scroll](#org3b5818a)
-30. [font](#orgf858a7a)
-31. [custom-set-faces](#orgd5f13c9)
-32. [image-dired](#orga4cd184)
-33. [visuals](#org3704a31)
-34. [imenu](#org9ed99a2)
-35. [recentf](#org6b8044b)
-36. [modeline](#org8c18a02)
-37. [markdown](#orgbead090)
-38. [find](#org62b4846)
-39. [grep](#org3670c99)
-40. [spelling](#orgab18a21)
-41. [hugo](#orgc73f932)
-42. [gdb](#org5c116b4)
-43. [compilation](#org01d8e0a)
-44. [auto-mode-alist](#org744ae9f)
-45. [programming](#org16094ad)
-46. [diff](#org5c03968)
-47. [ada](#org34431fa)
-48. [treesitter](#org2ffcea2)
-49. [whitespace](#orgdd43da0)
-50. [dashboard](#org3bfc5f9)
-51. [project](#org3e473cf)
-52. [indentation](#org0576930)
-53. [etags](#org681d66e)
-54. [colour-shift](#org47c8df9)
-55. [eshell](#orgd5c9ad2)
-56. [development](#org529346b)
+1.  [early-init](#org7fb91e5)
+2.  [requires](#org48319ce)
+3.  [package-archives](#orgbd414d3)
+4.  [package-extra](#org7da7a1c)
+5.  [use-package](#org93e9c1c)
+6.  [completion](#orgd20110e)
+7.  [navigation](#orge50d173)
+8.  [unbinding](#org80c1ab7)
+9.  [magit](#org98965e5)
+10. [emms](#org1491ace)
+11. [elfeed](#org9670250)
+12. [save-desktop](#org8e7cd67)
+13. [expansion](#org94236eb)
+14. [keybinding](#orgd1b021b)
+15. [inserts](#orgb66375a)
+16. [modes](#orgc24aa24)
+17. [bell](#orgd117fa1)
+18. [setqs](#org49d6b22)
+19. [confirm](#org2fb5bca)
+20. [backups](#orgdd67ddf)
+21. [hooks](#orgbe95fe2)
+22. [custom-settings](#org456cd24)
+23. [defuns](#orgbed33ea)
+24. [window-positioning](#org0fdc18b)
+25. [org-capture](#orge989032)
+26. [org](#orgca44bbc)
+27. [dwim](#org0c793ee)
+28. [scroll](#org9c44e66)
+29. [font](#org12a5908)
+30. [skeletons](#org66f9fd4)
+31. [custom-set-faces](#org066d8b0)
+32. [image-dired](#org7ab3068)
+33. [visuals](#org66ad1c3)
+34. [imenu](#org77d3627)
+35. [recentf](#orgecad8a8)
+36. [modeline](#org28980c6)
+37. [markdown](#orgf003089)
+38. [find](#org946f6c3)
+39. [grep](#org2293590)
+40. [spelling](#org7539e71)
+41. [hugo](#org9fd0c35)
+42. [gdb](#org679104f)
+43. [compilation](#org71e5a7a)
+44. [auto-mode-alist](#org0d01f91)
+45. [programming](#org4dc9530)
+46. [diff](#org189df50)
+47. [ada](#org995347c)
+48. [treesitter](#org2eb9bd3)
+49. [whitespace](#org06b97af)
+50. [dashboard](#orgdc561b1)
+51. [project](#orgfcb4ea3)
+52. [indentation](#orgfc30116)
+53. [etags](#org585ad49)
+54. [colour-shift](#org5a6bb34)
+55. [eshell](#orgd067a02)
+56. [proced](#orgd580afd)
+57. [development](#org9a3ad7b)
 
 
-<a id="org54fb6d3"></a>
+<a id="org7fb91e5"></a>
 
 # early-init
 
@@ -68,7 +69,7 @@
 ```
 
 
-<a id="org7889393"></a>
+<a id="org48319ce"></a>
 
 # requires
 
@@ -82,7 +83,7 @@
 ```
 
 
-<a id="orgeed0dbf"></a>
+<a id="orgbd414d3"></a>
 
 # package-archives
 
@@ -108,7 +109,7 @@
 ```
 
 
-<a id="orge96dd79"></a>
+<a id="org7da7a1c"></a>
 
 # package-extra
 
@@ -121,7 +122,7 @@
 ```
 
 
-<a id="org1305ce9"></a>
+<a id="org93e9c1c"></a>
 
 # use-package
 
@@ -129,6 +130,8 @@
 ;;
 ;; -> use-package
 ;;
+(use-package diredfl
+  :init (diredfl-global-mode 1))
 (use-package i3wm-config-mode)
 (use-package git-timemachine)
 (use-package ox-gfm)
@@ -191,7 +194,7 @@
     ("docm" "doc" "docx" "odb" "odt" "pdb" "pdf" "ps"
       "rtf" "djvu" "epub" "odp" "ppt" "pptx" "xls" "xlsx"
       "vsd" "vsdx" "plantuml"))
-  (dired-rainbow-define markdown "#5dc0aa"
+  (dired-rainbow-define markdown "#80ae41"
     ("org" "org_archive" "etx" "info" "markdown" "md"
       "mkd" "nfo" "pod" "rst" "tex" "texi" "textfile" "txt"))
   (dired-rainbow-define media "#91b01f"
@@ -220,7 +223,7 @@
 ```
 
 
-<a id="orgf00bb4a"></a>
+<a id="orgd20110e"></a>
 
 # completion
 
@@ -305,7 +308,7 @@
 ```
 
 
-<a id="org870ba71"></a>
+<a id="orge50d173"></a>
 
 # navigation
 
@@ -334,7 +337,7 @@
 ```
 
 
-<a id="org9c1b5af"></a>
+<a id="org80c1ab7"></a>
 
 # unbinding
 
@@ -363,7 +366,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="orgb55ab91"></a>
+<a id="org98965e5"></a>
 
 # magit
 
@@ -394,14 +397,14 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
            (:sort <)))
        ("Path" 99 magit-repolist-column-path nil)))
   (magit-repository-directories
-    '(("/home/jdyer/.config" . 0)
-       ("/home/jdyer/repos" . 2)
-       ("/home/jdyer/DCIM/Art/Content" . 2)
-       ("/home/jdyer/DCIM/themes" . 2))))
+    '(("~/.config" . 0)
+       ("~/repos" . 2)
+       ("~/DCIM/Art/Content" . 2)
+       ("~/DCIM/themes" . 2))))
 ```
 
 
-<a id="org5da10b4"></a>
+<a id="org1491ace"></a>
 
 # emms
 
@@ -420,13 +423,13 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
   :custom
   (emms-player-list '(emms-player-vlc))
   (emms-browser-covers 'emms-browser-cache-thumbnail-async)
-  (emms-source-file-default-directory "/home/jdyer/MyMusicLibrary")
+  (emms-source-file-default-directory "~/MyMusicLibrary")
   (emms-volume-amixer-card 1)
   (emms-volume-change-function 'emms-volume-pulse-change))
 ```
 
 
-<a id="org47fed1e"></a>
+<a id="org9670250"></a>
 
 # elfeed
 
@@ -478,7 +481,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="orgfb52844"></a>
+<a id="org8e7cd67"></a>
 
 # save-desktop
 
@@ -504,7 +507,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org1b88b28"></a>
+<a id="org94236eb"></a>
 
 # expansion
 
@@ -524,7 +527,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org4f9fd57"></a>
+<a id="orgd1b021b"></a>
 
 # keybinding
 
@@ -533,6 +536,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ;; -> keybinding
 ;;
 ;;  (global-set-key (kbd "C-x v =") 'vc-ediff)
+(global-set-key (kbd "C-x x f") 'find-file-rg)
 (global-set-key (kbd "C-M-n") 'next-error)
 (global-set-key (kbd "C-M-p") 'previous-error)
 (global-set-key (kbd "M-H") 'mark-paragraph)
@@ -542,6 +546,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 (global-set-key (kbd "M-o") 'consult-imenu)
 (bind-key* (kbd "M-g i") 'imenu)
 (global-set-key (kbd "M-\'") 'indent-region)
+(global-set-key (kbd "C-x TAB") 'indent-region)
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "C-c j") 'winner-undo)
 (global-set-key (kbd "C-c k") 'winner-redo)
@@ -570,7 +575,6 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 (global-set-key (kbd "<f1>") 'display-line-numbers-mode)
 (global-set-key (kbd "<f2>") 'whitespace-mode)
 (global-set-key (kbd "<f3>") 'variable-pitch-mode)
-(global-set-key (kbd "<f6>") 'find-file-rg)
 (global-set-key (kbd "<f7>") 'display-fill-column-indicator-mode)
 (global-set-key (kbd "M-?") 'my/grep)
 (define-key dired-mode-map (kbd "C") 'my/rsync)
@@ -580,7 +584,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org775a2a7"></a>
+<a id="orgb66375a"></a>
 
 # inserts
 
@@ -599,7 +603,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="orgd1eae2b"></a>
+<a id="orgc24aa24"></a>
 
 # modes
 
@@ -627,7 +631,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="orgddfdd91"></a>
+<a id="orgd117fa1"></a>
 
 # bell
 
@@ -640,7 +644,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org6b551c0"></a>
+<a id="org49d6b22"></a>
 
 # setqs
 
@@ -697,7 +701,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="orgff00e7c"></a>
+<a id="org2fb5bca"></a>
 
 # confirm
 
@@ -719,7 +723,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org2c1df24"></a>
+<a id="orgdd67ddf"></a>
 
 # backups
 
@@ -737,7 +741,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="orgef36f0d"></a>
+<a id="orgbe95fe2"></a>
 
 # hooks
 
@@ -755,7 +759,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org0917590"></a>
+<a id="org456cd24"></a>
 
 # custom-settings
 
@@ -774,7 +778,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org1b65891"></a>
+<a id="orgbed33ea"></a>
 
 # defuns
 
@@ -878,7 +882,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="orgf3163c7"></a>
+<a id="org0fdc18b"></a>
 
 # window-positioning
 
@@ -886,9 +890,20 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ;;
 ;; -> window-positioning
 ;;
+;; (add-to-list 'display-buffer-alist
+;;   '("\\*tex-shell" display-buffer-no-window
+;;      (allow-no-window . t)))
+
 (add-to-list 'display-buffer-alist
-  '("\\*rsync\\*" display-buffer-no-window
+  '("\\*rsync" display-buffer-no-window
      (allow-no-window . t)))
+
+(add-to-list 'display-buffer-alist
+  '("\\*Async" display-buffer-no-window
+     (allow-no-window . t)))
+
+(add-to-list 'display-buffer-alist
+  '("\\*Proced" display-buffer-same-window))
 
 (add-to-list 'display-buffer-alist
   '("\\*deadgrep"
@@ -913,55 +928,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org55aa197"></a>
-
-# skeletons
-
-```elisp
-;;
-;; -> skeletons
-;;
-(define-skeleton jd-skel-hugo-image-size
-  "Org properties skeleton."
-  "\n"
-  "#+attr_org: :width 300px\n"
-  "#+attr_html: :width 100%")
-
-(define-skeleton jd-skel-hugo-image-emacs-banner
-  "Org properties skeleton."
-  "\n"
-  "#+attr_org: :width 300px\n"
-  "#+attr_html: :class emacs-img")
-
-(define-skeleton jd-skel-hugo-video
-  "Video hugo link."
-  "\n"
-  "\n#+begin_export md\n"
-  "{{\< video src=\"\/art--videos\/\" \>}}"
-  "\n#+end_export\n")
-
-(define-skeleton jd-skel-make-always
-  "Always make targets in a Makefile."
-  "\n"
-  "MAKEFLAGS += --always-make")
-
-(define-skeleton jd-skel-make-source
-  "Always make targets in a Makefile."
-  "\n"
-  "%.adb %.ads:\n"
-  "\tgprbuild -c $@ -P default.gpr")
-
-(define-abbrev-table 'global-abbrev-table
-  '(("jdimg" "" jd-skel-hugo-image-size)
-     ("jdvid" "" jd-skel-hugo-video)
-     ("jdemb" "" jd-skel-hugo-image-emacs-banner)
-     ("jdmka" "" jd-skel-make-always)
-     ("jdmks" "" jd-skel-make-source)
-     ("btw" "by the way" nil)))
-```
-
-
-<a id="org8220452"></a>
+<a id="orge989032"></a>
 
 # org-capture
 
@@ -1057,7 +1024,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ```
 
 
-<a id="org5e5cd20"></a>
+<a id="orgca44bbc"></a>
 
 # org
 
@@ -1089,7 +1056,10 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
   :bind
   (:map org-mode-map
     ("M-n" . org-metadown)
-    ("M-p" . org-metaup)))
+    ("M-p" . org-metaup)
+    ("M-[" . org-metaleft)
+    ("M-]" . org-metaright)
+    ))
 ```
 
 Disables the parenthesis matching to < and > only in org mode as it is causing matching problems when using org literate files.
@@ -1104,7 +1074,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="org46dbd0f"></a>
+<a id="org0c793ee"></a>
 
 # dwim
 
@@ -1113,9 +1083,8 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ;; -> dwim
 ;;
 (defvar my/dwim-convert-commands
-  '(
-     "ConvertNoSpace" "AudioConvert" "AudioInfo" "AudioNormalise"
-     "AudioTrimSilence" "PictureAutoColour" "PictureConvert" "PictureCrush"
+  '("ConvertNoSpace" "AudioConvert" "AudioInfo" "AudioNormalise"
+     "AudioTrimSilence" "PictureAutoColour" "PictureConvert" "PictureCrush" "PictureFrompdf"
      "PictureInfo" "PictureMontage" "PictureOrganise" "PictureCrop" "PictureRotateFlip"
      "PictureRotateLeft" "PictureRotateRight" "PictureScale" "PictureUpscale"
      "PictureGetText" "PictureOrientation" "VideoConcat" "VideoConvert"
@@ -1124,8 +1093,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
      "VideoReplaceVideoAudio" "VideoRescale" "VideoReverse" "VideoRotate"
      "VideoRotateLeft" "VideoRotateRight" "VideoShrink" "VideoSlowDown"
      "VideoSpeedUp" "VideoZoom" "WhatsAppConvert" "PictureCorrect" "Picture2pdf"
-     "OtherTagDate"
-     )
+     "OtherTagDate")
   "List of commands for dwim-convert.")
 
 (defun my/dwim-convert-generic (command)
@@ -1146,7 +1114,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="org3b5818a"></a>
+<a id="org9c44e66"></a>
 
 # scroll
 
@@ -1159,7 +1127,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="orgf858a7a"></a>
+<a id="org12a5908"></a>
 
 # font
 
@@ -1169,8 +1137,8 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ;;
 ;; (setq font-general "Noto Sans Mono 14")
 ;; (setq font-general "MesloLGS Nerd Font Mono 11")
-(setq font-general "Source Code Pro 14")
-(setq font-general "Source Code Pro Light 14")
+(setq font-general "Source Code Pro 13")
+;; (setq font-general "Source Code Pro Light 14")
 ;; (setq font-general "Nimbus Mono PS 14")
 ;; (setq font-general "MesloLGS Nerd Font Mono 14")
 ;; (setq font-general "Droid Sans Mono 14")
@@ -1183,7 +1151,70 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="orgd5f13c9"></a>
+<a id="org66f9fd4"></a>
+
+# skeletons
+
+```elisp
+;;
+;; -> skeletons
+;;
+(define-skeleton jd-skel-hugo-image-size
+  "Org properties skeleton."
+  "\n"
+  "#+attr_org: :width 300px\n"
+  "#+attr_html: :width 100%")
+
+(define-skeleton jd-skel-hugo-image-emacs-banner
+  "Org properties skeleton."
+  "\n"
+  "#+attr_org: :width 300px\n"
+  "#+attr_html: :class emacs-img")
+
+(define-skeleton jd-skel-hugo-video
+  "Video hugo link."
+  "\n"
+  "\n#+begin_export md\n"
+  "{{\< video src=\"\/art--videos\/\" \>}}"
+  "\n#+end_export\n")
+
+(define-skeleton jd-skel-make-always
+  "Always make targets in a Makefile."
+  "\n"
+  "MAKEFLAGS += --always-make")
+
+(define-skeleton jd-skel-make-source
+  "Always make targets in a Makefile."
+  "\n"
+  "%.adb %.ads:\n"
+  "\tgprbuild -c $@ -P default.gpr")
+
+(define-skeleton jd-skel-org-toc
+  "Insert TOC into an org file."
+  "\n"
+  "--- TOC\n"
+  "#+TOC: headlines 1 local\n"
+  "---\n")
+
+(define-skeleton jd-skel-latex-page-break
+  "Insert TOC into an org file."
+  "\n"
+  "\\newpage\n"
+  "\\clearpage")
+
+(define-abbrev-table 'global-abbrev-table
+  '(("jdimg" "" jd-skel-hugo-image-size)
+     ("jdvid" "" jd-skel-hugo-video)
+     ("jdemb" "" jd-skel-hugo-image-emacs-banner)
+     ("jdmka" "" jd-skel-make-always)
+     ("jdmks" "" jd-skel-make-source)
+     ("jdtoc" "" jd-skel-org-toc)
+     ("jdlbr" "" jd-skel-latex-page-break)
+     ("btw" "by the way" nil)))
+```
+
+
+<a id="org066d8b0"></a>
 
 # custom-set-faces
 
@@ -1197,6 +1228,9 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
   '(cursor ((t (:background "#ffffff" :inverse-video t))))
+  '(diredfl-date-time ((t (:foreground "#8d909b"))))
+  '(diredfl-dir-heading ((t (:foreground "#aa5555" :weight bold))))
+  '(diredfl-number ((t (:foreground "#999999"))))
   '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
   '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
   '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
@@ -1226,7 +1260,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="orga4cd184"></a>
+<a id="org7ab3068"></a>
 
 # image-dired
 
@@ -1350,7 +1384,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="org3704a31"></a>
+<a id="org66ad1c3"></a>
 
 # visuals
 
@@ -1368,8 +1402,8 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 (add-hook 'text-mode-hook #'visual-line-mode)
 (add-hook 'org-mode-hook '(lambda () (visual-line-mode)))
 (setq truncate-partial-width-windows 140)
-(set-frame-parameter nil 'alpha-background 85)
-(add-to-list 'default-frame-alist '(alpha-background . 85))
+(set-frame-parameter nil 'alpha-background 75)
+(add-to-list 'default-frame-alist '(alpha-background . 75))
 (set-fringe-mode '(0 . 0))
 (set-display-table-slot standard-display-table 0 ?\ )
 
@@ -1383,7 +1417,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="org9ed99a2"></a>
+<a id="org77d3627"></a>
 
 # imenu
 
@@ -1425,7 +1459,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="org6b8044b"></a>
+<a id="orgecad8a8"></a>
 
 # recentf
 
@@ -1441,47 +1475,12 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="org8c18a02"></a>
+<a id="org28980c6"></a>
 
 # modeline
 
 
-## simple
-
-```elisp
-;;
-;; -> modeline
-;;
-(setq-default mode-line-modified
-  '(:eval (if (and (buffer-file-name) (buffer-modified-p))
-            (propertize " * " 'face
-              '(:background "#ff0000" :foreground "#ffffff" :inherit bold)) "")))
-
-(set-face-attribute 'mode-line-active nil :height 130 :underline nil :overline nil :box nil
-  :background "#3b467f" :foreground "#ffffff")
-(set-face-attribute 'mode-line-inactive nil :height 130 :underline nil :overline nil
-  :background "#000000" :foreground "#cacaca")
-
-(setq-default mode-line-format
-  '("%e"
-     mode-line-modified
-     (:eval
-       (propertize (format "%s" (abbreviate-file-name default-directory))))
-     (:eval
-       (if (not (equal major-mode 'dired-mode))
-         (propertize (format "%s " (buffer-name))
-           'face '(:inherit bold))
-         " "))
-     mode-line-position
-     mode-line-modes
-     mode-line-misc-info))
-;; "-%-"))
-
-(setq mode-line-compact t)
-```
-
-
-## project
+## modeline-project
 
 ```elisp
 ;;
@@ -1551,7 +1550,42 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="orgbead090"></a>
+## modeline-simple
+
+```elisp
+;;
+;; -> modeline
+;;
+(setq-default mode-line-modified
+  '(:eval (if (and (buffer-file-name) (buffer-modified-p))
+            (propertize " * " 'face
+              '(:background "#ff0000" :foreground "#ffffff" :inherit bold)) "")))
+
+(set-face-attribute 'mode-line-active nil :height 130 :underline nil :overline nil :box nil
+  :background "#3b467f" :foreground "#ffffff")
+(set-face-attribute 'mode-line-inactive nil :height 130 :underline nil :overline nil
+  :background "#000000" :foreground "#cacaca")
+
+(setq-default mode-line-format
+  '("%e"
+     mode-line-modified
+     (:eval
+       (propertize (format "%s" (abbreviate-file-name default-directory))))
+     (:eval
+       (if (not (equal major-mode 'dired-mode))
+         (propertize (format "%s " (buffer-name))
+           'face '(:inherit bold))
+         " "))
+     mode-line-position
+     mode-line-modes
+     mode-line-misc-info))
+;; "-%-"))
+
+(setq mode-line-compact t)
+```
+
+
+<a id="orgf003089"></a>
 
 # markdown
 
@@ -1567,7 +1601,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="org62b4846"></a>
+<a id="org946f6c3"></a>
 
 # find
 
@@ -1581,7 +1615,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ```
 
 
-<a id="org3670c99"></a>
+<a id="org2293590"></a>
 
 # grep
 
@@ -1665,7 +1699,7 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
 ```
 
 
-<a id="orgab18a21"></a>
+<a id="org7539e71"></a>
 
 # spelling
 
@@ -1697,7 +1731,7 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
 ```
 
 
-<a id="orgc73f932"></a>
+<a id="org9fd0c35"></a>
 
 # hugo
 
@@ -1717,7 +1751,7 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
 ```
 
 
-<a id="org5c116b4"></a>
+<a id="org679104f"></a>
 
 # gdb
 
@@ -1734,7 +1768,7 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
 ```
 
 
-<a id="org01d8e0a"></a>
+<a id="org71e5a7a"></a>
 
 # compilation
 
@@ -1754,11 +1788,11 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
 Dynamically populate the compilation-search-path whenever a compilation takes place, might have problems with large directory structures but haven't fully tested yet!
 
 ```elisp
-(add-hook 'compilation-mode-hook #'my/project-create-compilation-search-path)
+;; (add-hook 'compilation-mode-hook #'my/project-create-compilation-search-path)
 ```
 
 
-<a id="org744ae9f"></a>
+<a id="org0d01f91"></a>
 
 # auto-mode-alist
 
@@ -1782,7 +1816,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="org16094ad"></a>
+<a id="org4dc9530"></a>
 
 # programming
 
@@ -1888,7 +1922,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="org5c03968"></a>
+<a id="org189df50"></a>
 
 # diff
 
@@ -1917,7 +1951,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="org34431fa"></a>
+<a id="org995347c"></a>
 
 # ada
 
@@ -2029,7 +2063,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="org2ffcea2"></a>
+<a id="org2eb9bd3"></a>
 
 # treesitter
 
@@ -2080,7 +2114,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="orgdd43da0"></a>
+<a id="org06b97af"></a>
 
 # whitespace
 
@@ -2134,7 +2168,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="org3bfc5f9"></a>
+<a id="orgdc561b1"></a>
 
 # dashboard
 
@@ -2166,7 +2200,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="org3e473cf"></a>
+<a id="orgfcb4ea3"></a>
 
 # project
 
@@ -2223,7 +2257,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="org0576930"></a>
+<a id="orgfc30116"></a>
 
 # indentation
 
@@ -2239,7 +2273,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ```
 
 
-<a id="org681d66e"></a>
+<a id="org585ad49"></a>
 
 # etags
 
@@ -2331,7 +2365,7 @@ echo
 ```
 
 
-<a id="org47c8df9"></a>
+<a id="org5a6bb34"></a>
 
 # colour-shift
 
@@ -2406,7 +2440,7 @@ echo
 ```
 
 
-<a id="orgd5c9ad2"></a>
+<a id="orgd067a02"></a>
 
 # eshell
 
@@ -2429,7 +2463,40 @@ echo
 ```
 
 
-<a id="org529346b"></a>
+<a id="orgd580afd"></a>
+
+# proced
+
+```elisp
+;;
+;; —> proced
+;;
+(use-package proced
+  :bind ("C-x x p" . 'proced)
+  :init (setq proced-auto-update-interval 1
+          proced-enable-color-flag 1
+          proced-format 'medium
+          proced-sort 'rss)
+  :hook (proced-mode . (lambda ()
+                         (interactive)
+                         (proced-toggle-auto-update 1))))
+
+(defun my/proced-toggle-update()
+  "Proced turn auto update on and off"
+  (interactive)
+  (if proced-auto-update-flag
+    (proced-toggle-auto-update -1)
+    (proced-toggle-auto-update 1)))
+
+(use-package proced-narrow
+  :after proced
+  :bind (:map proced-mode-map
+          ("f" . proced-narrow)
+          ("G" . my/proced-toggle-update)))
+```
+
+
+<a id="org9a3ad7b"></a>
 
 # development
 
@@ -2438,7 +2505,7 @@ echo
 ;; -> development
 ;;
 (defun display-year-agenda (&optional year)
-  "Display an agenda entry for a whole year."
+  "Display an agenda entryf for a whole year."
   (interactive (list (read-string "Enter the year: "
                        (format-time-string "%Y" (current-time)))))
   (setq year (string-to-number year))
@@ -2453,25 +2520,25 @@ echo
 (global-set-key (kbd "C-c y") 'display-year-agenda)
 
 (setq org-agenda-files
-  '("~/DCIM/content/presents.org"
-     "/home/jdyer/DCIM/content/posts--all.org"
-     "/home/jdyer/DCIM/content/linux--all.org"
-     "/home/jdyer/DCIM/content/kate--health.org"
-     "/home/jdyer/DCIM/content/kate--blog-2012-2013.org"
-     "/home/jdyer/DCIM/content/kate--blog-2011.org"
-     "/home/jdyer/DCIM/content/kate--blog-2010.org"
-     "/home/jdyer/DCIM/content/emacs--all.org"
-     "/home/jdyer/DCIM/content/downloads--all.org"
-     "/home/jdyer/DCIM/content/art--2018-now.org"
-     "/home/jdyer/DCIM/content/art--2014-2017.org"
-     "/home/jdyer/DCIM/content/aaa--todo.org"
-     "/home/jdyer/DCIM/content/aaa--notes.org"))
+  '(
+     "~/DCIM/content/aaa--notes.org"
+     "~/DCIM/content/aaa--todo.org"
+     "~/DCIM/content/art--all.org"
+     "~/DCIM/content/dad--betting.org"
+     "~/DCIM/content/downloads--all.org"
+     "~/DCIM/content/emacs--all.org"
+     "~/DCIM/content/kate--all.org"
+     "~/DCIM/content/kate--health.org"
+     "~/DCIM/content/linux--all.org"
+     "~/DCIM/content/posts--all.org"
+     "~/DCIM/content/presents.org"
+     ))
 
 (defun my/copy-background-to-faves ()
   "Copy the current background in sway to faves folder"
   (interactive)
-  (let* ((source-folder "/home/jdyer/")
-          (faves-folder "/home/jdyer/wallpaper/wallpaper-faves/")
+  (let* ((source-folder "~/")
+          (faves-folder "~/wallpaper/wallpaper-faves/")
           (image-files
             (directory-files source-folder nil
               "^wallpaper-faves.*\\.\\(jpg\\|jpeg\\|png\\|gif\\)$" nil nil)))
@@ -2548,4 +2615,7 @@ echo
         (image-dired ".")
         (image-dired-display-this))
       (find-file new-file t))))
+
+(use-package eat
+  :load-path "~/repos/emacs-eat")
 ```

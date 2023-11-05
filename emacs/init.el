@@ -33,6 +33,8 @@
 ;;
 ;; -> use-package
 ;;
+(use-package diredfl
+  :init (diredfl-global-mode 1))
 (use-package i3wm-config-mode)
 (use-package git-timemachine)
 (use-package ox-gfm)
@@ -95,7 +97,7 @@
     ("docm" "doc" "docx" "odb" "odt" "pdb" "pdf" "ps"
       "rtf" "djvu" "epub" "odp" "ppt" "pptx" "xls" "xlsx"
       "vsd" "vsdx" "plantuml"))
-  (dired-rainbow-define markdown "#5dc0aa"
+  (dired-rainbow-define markdown "#80ae41"
     ("org" "org_archive" "etx" "info" "markdown" "md"
       "mkd" "nfo" "pod" "rst" "tex" "texi" "textfile" "txt"))
   (dired-rainbow-define media "#91b01f"
@@ -217,10 +219,10 @@
            (:sort <)))
        ("Path" 99 magit-repolist-column-path nil)))
   (magit-repository-directories
-    '(("/home/jdyer/.config" . 0)
-       ("/home/jdyer/repos" . 2)
-       ("/home/jdyer/DCIM/Art/Content" . 2)
-       ("/home/jdyer/DCIM/themes" . 2))))
+    '(("~/.config" . 0)
+       ("~/repos" . 2)
+       ("~/DCIM/Art/Content" . 2)
+       ("~/DCIM/themes" . 2))))
 
 ;;
 ;; -> emms
@@ -236,7 +238,7 @@
   :custom
   (emms-player-list '(emms-player-vlc))
   (emms-browser-covers 'emms-browser-cache-thumbnail-async)
-  (emms-source-file-default-directory "/home/jdyer/MyMusicLibrary")
+  (emms-source-file-default-directory "~/MyMusicLibrary")
   (emms-volume-amixer-card 1)
   (emms-volume-change-function 'emms-volume-pulse-change))
 
@@ -321,6 +323,7 @@
 ;; -> keybinding
 ;;
 ;;  (global-set-key (kbd "C-x v =") 'vc-ediff)
+(global-set-key (kbd "C-x x f") 'find-file-rg)
 (global-set-key (kbd "C-M-n") 'next-error)
 (global-set-key (kbd "C-M-p") 'previous-error)
 (global-set-key (kbd "M-H") 'mark-paragraph)
@@ -330,6 +333,7 @@
 (global-set-key (kbd "M-o") 'consult-imenu)
 (bind-key* (kbd "M-g i") 'imenu)
 (global-set-key (kbd "M-\'") 'indent-region)
+(global-set-key (kbd "C-x TAB") 'indent-region)
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "C-c j") 'winner-undo)
 (global-set-key (kbd "C-c k") 'winner-redo)
@@ -358,7 +362,6 @@
 (global-set-key (kbd "<f1>") 'display-line-numbers-mode)
 (global-set-key (kbd "<f2>") 'whitespace-mode)
 (global-set-key (kbd "<f3>") 'variable-pitch-mode)
-(global-set-key (kbd "<f6>") 'find-file-rg)
 (global-set-key (kbd "<f7>") 'display-fill-column-indicator-mode)
 (global-set-key (kbd "M-?") 'my/grep)
 (define-key dired-mode-map (kbd "C") 'my/rsync)
@@ -604,9 +607,20 @@
 ;;
 ;; -> window-positioning
 ;;
+;; (add-to-list 'display-buffer-alist
+;;   '("\\*tex-shell" display-buffer-no-window
+;;      (allow-no-window . t)))
+
 (add-to-list 'display-buffer-alist
-  '("\\*rsync\\*" display-buffer-no-window
+  '("\\*rsync" display-buffer-no-window
      (allow-no-window . t)))
+
+(add-to-list 'display-buffer-alist
+  '("\\*Async" display-buffer-no-window
+     (allow-no-window . t)))
+
+(add-to-list 'display-buffer-alist
+  '("\\*Proced" display-buffer-same-window))
 
 (add-to-list 'display-buffer-alist
   '("\\*deadgrep"
@@ -628,47 +642,6 @@
   '("\\*Help\\*"
      (display-buffer-reuse-window)
      (inhibit-same-window . t)))
-
-;;
-;; -> skeletons
-;;
-(define-skeleton jd-skel-hugo-image-size
-  "Org properties skeleton."
-  "\n"
-  "#+attr_org: :width 300px\n"
-  "#+attr_html: :width 100%")
-
-(define-skeleton jd-skel-hugo-image-emacs-banner
-  "Org properties skeleton."
-  "\n"
-  "#+attr_org: :width 300px\n"
-  "#+attr_html: :class emacs-img")
-
-(define-skeleton jd-skel-hugo-video
-  "Video hugo link."
-  "\n"
-  "\n#+begin_export md\n"
-  "{{\< video src=\"\/art--videos\/\" \>}}"
-  "\n#+end_export\n")
-
-(define-skeleton jd-skel-make-always
-  "Always make targets in a Makefile."
-  "\n"
-  "MAKEFLAGS += --always-make")
-
-(define-skeleton jd-skel-make-source
-  "Always make targets in a Makefile."
-  "\n"
-  "%.adb %.ads:\n"
-  "\tgprbuild -c $@ -P default.gpr")
-
-(define-abbrev-table 'global-abbrev-table
-  '(("jdimg" "" jd-skel-hugo-image-size)
-     ("jdvid" "" jd-skel-hugo-video)
-     ("jdemb" "" jd-skel-hugo-image-emacs-banner)
-     ("jdmka" "" jd-skel-make-always)
-     ("jdmks" "" jd-skel-make-source)
-     ("btw" "by the way" nil)))
 
 ;;
 ;; -> org-capture
@@ -786,7 +759,10 @@
   :bind
   (:map org-mode-map
     ("M-n" . org-metadown)
-    ("M-p" . org-metaup)))
+    ("M-p" . org-metaup)
+    ("M-[" . org-metaleft)
+    ("M-]" . org-metaright)
+    ))
 
 (defun org-syntax-table-modify ()
   "Modify `org-mode-syntax-table' for the current org buffer."
@@ -799,9 +775,8 @@
 ;; -> dwim
 ;;
 (defvar my/dwim-convert-commands
-  '(
-     "ConvertNoSpace" "AudioConvert" "AudioInfo" "AudioNormalise"
-     "AudioTrimSilence" "PictureAutoColour" "PictureConvert" "PictureCrush"
+  '("ConvertNoSpace" "AudioConvert" "AudioInfo" "AudioNormalise"
+     "AudioTrimSilence" "PictureAutoColour" "PictureConvert" "PictureCrush" "PictureFrompdf"
      "PictureInfo" "PictureMontage" "PictureOrganise" "PictureCrop" "PictureRotateFlip"
      "PictureRotateLeft" "PictureRotateRight" "PictureScale" "PictureUpscale"
      "PictureGetText" "PictureOrientation" "VideoConcat" "VideoConvert"
@@ -810,8 +785,7 @@
      "VideoReplaceVideoAudio" "VideoRescale" "VideoReverse" "VideoRotate"
      "VideoRotateLeft" "VideoRotateRight" "VideoShrink" "VideoSlowDown"
      "VideoSpeedUp" "VideoZoom" "WhatsAppConvert" "PictureCorrect" "Picture2pdf"
-     "OtherTagDate"
-     )
+     "OtherTagDate")
   "List of commands for dwim-convert.")
 
 (defun my/dwim-convert-generic (command)
@@ -841,8 +815,8 @@
 ;;
 ;; (setq font-general "Noto Sans Mono 14")
 ;; (setq font-general "MesloLGS Nerd Font Mono 11")
-(setq font-general "Source Code Pro 14")
-(setq font-general "Source Code Pro Light 14")
+(setq font-general "Source Code Pro 13")
+;; (setq font-general "Source Code Pro Light 14")
 ;; (setq font-general "Nimbus Mono PS 14")
 ;; (setq font-general "MesloLGS Nerd Font Mono 14")
 ;; (setq font-general "Droid Sans Mono 14")
@@ -854,6 +828,62 @@
 (add-to-list 'default-frame-alist `(font . ,font-general))
 
 ;;
+;; -> skeletons
+;;
+(define-skeleton jd-skel-hugo-image-size
+  "Org properties skeleton."
+  "\n"
+  "#+attr_org: :width 300px\n"
+  "#+attr_html: :width 100%")
+
+(define-skeleton jd-skel-hugo-image-emacs-banner
+  "Org properties skeleton."
+  "\n"
+  "#+attr_org: :width 300px\n"
+  "#+attr_html: :class emacs-img")
+
+(define-skeleton jd-skel-hugo-video
+  "Video hugo link."
+  "\n"
+  "\n#+begin_export md\n"
+  "{{\< video src=\"\/art--videos\/\" \>}}"
+  "\n#+end_export\n")
+
+(define-skeleton jd-skel-make-always
+  "Always make targets in a Makefile."
+  "\n"
+  "MAKEFLAGS += --always-make")
+
+(define-skeleton jd-skel-make-source
+  "Always make targets in a Makefile."
+  "\n"
+  "%.adb %.ads:\n"
+  "\tgprbuild -c $@ -P default.gpr")
+
+(define-skeleton jd-skel-org-toc
+  "Insert TOC into an org file."
+  "\n"
+  "--- TOC\n"
+  "#+TOC: headlines 1 local\n"
+  "---\n")
+
+(define-skeleton jd-skel-latex-page-break
+  "Insert TOC into an org file."
+  "\n"
+  "\\newpage\n"
+  "\\clearpage")
+
+(define-abbrev-table 'global-abbrev-table
+  '(("jdimg" "" jd-skel-hugo-image-size)
+     ("jdvid" "" jd-skel-hugo-video)
+     ("jdemb" "" jd-skel-hugo-image-emacs-banner)
+     ("jdmka" "" jd-skel-make-always)
+     ("jdmks" "" jd-skel-make-source)
+     ("jdtoc" "" jd-skel-org-toc)
+     ("jdlbr" "" jd-skel-latex-page-break)
+     ("btw" "by the way" nil)))
+
+;;
 ;; -> custom-set-faces
 ;;
 (custom-set-faces
@@ -862,6 +892,9 @@
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
   '(cursor ((t (:background "#ffffff" :inverse-video t))))
+  '(diredfl-date-time ((t (:foreground "#8d909b"))))
+  '(diredfl-dir-heading ((t (:foreground "#aa5555" :weight bold))))
+  '(diredfl-number ((t (:foreground "#999999"))))
   '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
   '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
   '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
@@ -1019,8 +1052,8 @@
 (add-hook 'text-mode-hook #'visual-line-mode)
 (add-hook 'org-mode-hook '(lambda () (visual-line-mode)))
 (setq truncate-partial-width-windows 140)
-(set-frame-parameter nil 'alpha-background 85)
-(add-to-list 'default-frame-alist '(alpha-background . 85))
+(set-frame-parameter nil 'alpha-background 75)
+(add-to-list 'default-frame-alist '(alpha-background . 75))
 (set-fringe-mode '(0 . 0))
 (set-display-table-slot standard-display-table 0 ?\ )
 
@@ -1250,7 +1283,7 @@
 
 (global-set-key (kbd "<f5>") 'my/project-compile)
 
-(add-hook 'compilation-mode-hook #'my/project-create-compilation-search-path)
+;; (add-hook 'compilation-mode-hook #'my/project-create-compilation-search-path)
 
 ;;
 ;; -> auto-mode-alist
@@ -1774,10 +1807,36 @@
   (add-hook 'eshell-mode-hook 'my/eshell-hook))
 
 ;;
+;; —> proced
+;;
+(use-package proced
+  :bind ("C-x x p" . 'proced)
+  :init (setq proced-auto-update-interval 1
+          proced-enable-color-flag 1
+          proced-format 'medium
+          proced-sort 'rss)
+  :hook (proced-mode . (lambda ()
+                         (interactive)
+                         (proced-toggle-auto-update 1))))
+
+(defun my/proced-toggle-update()
+  "Proced turn auto update on and off"
+  (interactive)
+  (if proced-auto-update-flag
+    (proced-toggle-auto-update -1)
+    (proced-toggle-auto-update 1)))
+
+(use-package proced-narrow
+  :after proced
+  :bind (:map proced-mode-map
+          ("f" . proced-narrow)
+          ("G" . my/proced-toggle-update)))
+
+;;
 ;; -> development
 ;;
 (defun display-year-agenda (&optional year)
-  "Display an agenda entry for a whole year."
+  "Display an agenda entryf for a whole year."
   (interactive (list (read-string "Enter the year: "
                        (format-time-string "%Y" (current-time)))))
   (setq year (string-to-number year))
@@ -1792,25 +1851,25 @@
 (global-set-key (kbd "C-c y") 'display-year-agenda)
 
 (setq org-agenda-files
-  '("~/DCIM/content/presents.org"
-     "/home/jdyer/DCIM/content/posts--all.org"
-     "/home/jdyer/DCIM/content/linux--all.org"
-     "/home/jdyer/DCIM/content/kate--health.org"
-     "/home/jdyer/DCIM/content/kate--blog-2012-2013.org"
-     "/home/jdyer/DCIM/content/kate--blog-2011.org"
-     "/home/jdyer/DCIM/content/kate--blog-2010.org"
-     "/home/jdyer/DCIM/content/emacs--all.org"
-     "/home/jdyer/DCIM/content/downloads--all.org"
-     "/home/jdyer/DCIM/content/art--2018-now.org"
-     "/home/jdyer/DCIM/content/art--2014-2017.org"
-     "/home/jdyer/DCIM/content/aaa--todo.org"
-     "/home/jdyer/DCIM/content/aaa--notes.org"))
+  '(
+     "~/DCIM/content/aaa--notes.org"
+     "~/DCIM/content/aaa--todo.org"
+     "~/DCIM/content/art--all.org"
+     "~/DCIM/content/dad--betting.org"
+     "~/DCIM/content/downloads--all.org"
+     "~/DCIM/content/emacs--all.org"
+     "~/DCIM/content/kate--all.org"
+     "~/DCIM/content/kate--health.org"
+     "~/DCIM/content/linux--all.org"
+     "~/DCIM/content/posts--all.org"
+     "~/DCIM/content/presents.org"
+     ))
 
 (defun my/copy-background-to-faves ()
   "Copy the current background in sway to faves folder"
   (interactive)
-  (let* ((source-folder "/home/jdyer/")
-          (faves-folder "/home/jdyer/wallpaper/wallpaper-faves/")
+  (let* ((source-folder "~/")
+          (faves-folder "~/wallpaper/wallpaper-faves/")
           (image-files
             (directory-files source-folder nil
               "^wallpaper-faves.*\\.\\(jpg\\|jpeg\\|png\\|gif\\)$" nil nil)))
@@ -1887,3 +1946,6 @@
         (image-dired ".")
         (image-dired-display-this))
       (find-file new-file t))))
+
+(use-package eat
+  :load-path "~/repos/emacs-eat")
