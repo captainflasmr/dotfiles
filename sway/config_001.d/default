@@ -51,7 +51,7 @@ bindsym XF86MonBrightnessDown exec brightnessctl set 1%-
 # -> Key bindings
 #
 bindsym $mod+shift+p exec wl-color-picker
-bindsym $mod+shift+w exec updatewal-swww.sh
+bindsym $mod+shift+w exec wallpaper_updatewal-swww.sh
 
 # programs
 bindsym $mod+shift+s exec screenshot_wayland.sh

@@ -3,8 +3,8 @@
 #
 gaps inner 9px
 gaps outer -5px
-gaps top -5px
-gaps bottom 0px
+gaps top -2px
+gaps bottom -5px
 
 default_border pixel 5px
 
@@ -51,7 +51,7 @@ bindsym XF86MonBrightnessDown exec brightnessctl set 2%-
 # -> Key bindings
 #
 bindsym $mod+shift+p exec wl-color-picker
-bindsym $mod+shift+w exec updatewal-swww.sh
+bindsym $mod+shift+w exec wallpaper_updatewal-swww.sh
 
 # programs
 bindsym $mod+space exec nwg-drawer -c 7 -is 70 -spacing 23
@@ -142,7 +142,7 @@ bindsym control+Mod1+i resize shrink width 25px
 #
 # -> other
 #
-smart_borders off
+smart_borders on
 
 #
 # -> floating
@@ -152,7 +152,7 @@ smart_borders off
 # Despite the name, also works for non-floating windows.
 # Change normal to inverse to use left mouse button for resizing and right
 # mouse button for dragging.
-floating_modifier $mod normal
+floating_modifier $mod
 
 # Toggle the current focus between tiling and floating mode
 bindsym $mod+Shift+space floating toggle
@@ -171,9 +171,10 @@ bindgesture swipe:3:left exec ydotool key 56:1 106:1 56:0 106:0
 
 focus_wrapping force
 
-for_window [app_id="thunar"] opacity 0.95
-for_window [app_id="dolphin"] opacity 0.85
-for_window [app_id="gnome-terminal"] opacity 0.95
+for_window [app_id="thunar"] opacity 0.8
+for_window [app_id="dolphin"] opacity 0.8
+for_window [app_id="gnome-terminal"] opacity 0.8
+for_window [app_id="thunderbird"] opacity 0.8
 
 #
 # -> input
@@ -215,7 +216,7 @@ exec swayidle -w\
 corner_radius 8
 blur enable
 blur_passes 4
-blur_radius 4
+blur_radius 10
 shadows enable
 shadow_blur_radius 10
 shadow_color #000000ff
