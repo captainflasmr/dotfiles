@@ -33,7 +33,7 @@ keys = [
     Key([mod], "d", lazy.spawn("dmenu_run -fn 'Mono:pixelsize=22'")),
     Key(["mod1"], "space", lazy.spawn("rofi -show drun")),
 
-    Key([mod, "shift"], "w", lazy.spawn("updatewal-styli.sh")),
+    Key([mod, "shift"], "w", lazy.spawn("wallpaper_updatewal-styli.sh")),
     Key([mod, "shift"], "s", lazy.spawn("screenshot_x11.sh")),
 
     # -> Moving around
