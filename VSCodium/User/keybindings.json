@@ -1,0 +1,9 @@
+// Place your key bindings in this file to override the defaults
+[
+    { "key": "alt+h", "command": "workbench.action.previousEditor" },
+    { "key": "alt+l", "command": "workbench.action.nextEditor" },
+    { "key": "alt+2", "command": "workbench.action.splitEditorDown" },
+    { "key": "alt+3", "command": "workbench.action.splitEditorRight" },
+    { "key": "alt+0", "command": "workbench.action.closeActiveEditor" },
+    { "key": "alt+1", "command": "workbench.action.closeEditorsInOtherGroups" },
+]

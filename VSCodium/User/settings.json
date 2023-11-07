@@ -1,0 +1,19 @@
+{
+    "ada.projectFile": "/home/jdyer/examples/gnat-examples/menace/menace.gpr",
+    "editor.cursorBlinking": "solid",
+    "editor.cursorStyle": "block",
+    "editor.fontFamily": "Source Code Pro Light",
+    "workbench.colorCustomizations": {
+        "[Default Dark+]":
+        {
+            "editor.background": "#111118",
+            "editor.foreground": "#ffffff"
+        }
+    },
+    "ada.trace.server": "verbose",
+    "editor.minimap.enabled": false,
+    "breadcrumbs.enabled": false,
+    "editor.fontSize": 15,
+    "workbench.colorTheme": "Tomorrow Night Blue",
+    "gpr.trace.server": "verbose"
+}
