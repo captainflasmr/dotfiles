@@ -43,7 +43,6 @@
 (use-package kbd-mode
   :load-path "~/.config/emacs/elisp/")
 (use-package embark-consult)
-(use-package lorem-ipsum)
 (use-package find-file-rg)
 (use-package gruvbox-theme)
 (use-package ef-themes)
@@ -51,8 +50,10 @@
 (use-package dwim-shell-command)
 
 (use-package toc-org
-  :commands toc-org-enable
-  :init (add-hook 'org-mode-hook 'toc-org-enable))
+  :commands
+  toc-org-enable
+  :init
+  (add-hook 'org-mode-hook 'toc-org-enable))
 
 (use-package org-bullets
   :config
@@ -60,16 +61,17 @@
 
 (use-package org-rainbow-tags
   :hook
-  (org-mode . org-rainbow-tags-mode)
-  :config
-  (setq org-rainbow-tags-mode 1))
+  (org-mode . org-rainbow-tags-mode))
 
 (use-package rainbow-mode
-  :hook (prog-mode . rainbow-mode))
+  :hook
+  (prog-mode . rainbow-mode)
+  (conf-space-mode . rainbow-mode)
+  (org-mode . rainbow-mode))
 
-;; (use-package visual-fill-column
-;;   :config
-;;   (setq-default visual-fill-column-center-text t))
+(use-package visual-fill-column
+  :config
+  (setq-default visual-fill-column-center-text t))
 
 (use-package ox-hugo
   :config
@@ -82,47 +84,6 @@
 (use-package deadgrep
   :custom
   (deadgrep-max-buffers 1))
-
-(use-package dired-rainbow
-  :config
-  (dired-rainbow-define-chmod directory "#6aa3dc" "d.*")
-  (dired-rainbow-define html "#eb5286"
-    ("css" "less" "sass" "scss" "htm" "html" "jhtm" "mht"
-      "eml" "mustache" "xhtml"))
-  (dired-rainbow-define xml "#ad8b00"
-    ("xml" "xsd" "xsl" "xslt" "wsdl" "bib" "json" "msg"
-      "pgn" "rss" "yaml" "yml" "rdata" "sln" "csproj"
-      "meta" "unity" "tres" "tscn" "import" "godot"))
-  (dired-rainbow-define document "#8180f0"
-    ("docm" "doc" "docx" "odb" "odt" "pdb" "pdf" "ps"
-      "rtf" "djvu" "epub" "odp" "ppt" "pptx" "xls" "xlsx"
-      "vsd" "vsdx" "plantuml"))
-  (dired-rainbow-define markdown "#80ae41"
-    ("org" "org_archive" "etx" "info" "markdown" "md"
-      "mkd" "nfo" "pod" "rst" "tex" "texi" "textfile" "txt"))
-  (dired-rainbow-define media "#91b01f"
-    ("mp3" "mp4" "MP3" "MP4" "avi" "mpeg" "mpg" "flv"
-      "ogg" "mov" "mid" "midi" "wav" "aiff" "flac" "mkv"))
-  (dired-rainbow-define image "#b6688f"
-    ("tiff" "tif" "cdr" "gif" "ico" "jpeg" "jpg" "png"
-      "psd" "eps" "svg"))
-  (dired-rainbow-define compiled "#6cb2eb"
-    ("asm" "cl" "lisp" "el" "c" "h" "c++" "h++" "hpp"
-      "hxx" "m" "cc" "cs" "cp" "cpp" "go" "f" "for" "ftn"
-      "f90" "f95" "f03" "f08" "s" "rs" "active" "hs"
-      "pyc" "java"))
-  (dired-rainbow-define compressed "#b4342f"
-    ("7z" "zip" "bz2" "tgz" "txz" "gz" "xz" "z" "Z" "jar"
-      "war" "ear" "rar" "sar" "xpi" "apk" "xz" "tar" "rar"))
-  (dired-rainbow-define vc "#6cb2eb"
-    ("git" "gitignore" "gitattributes" "gitmodules"))
-  (dired-rainbow-define config "#7260e2"
-    ("cfg" "conf"))
-  ;; (dired-rainbow-define-chmod executable-unix "#38c172" "-.*x.*")
-  (dolist (b (buffer-list))
-    (with-current-buffer b
-      (when (equal major-mode 'dired-mode)
-        (font-lock-refresh-defaults)))))
 
 ;;
 ;; -> completion
@@ -284,7 +245,7 @@
 (setq elfeed-show-mode-hook
   (lambda ()
     (set-face-attribute 'variable-pitch (selected-frame)
-      :font (font-spec :family "Source Code Pro" :size 18))
+      :font (font-spec :family "Source Code Pro" :size 16))
     (setq elfeed-show-entry-switch #'my/show-elfeed)))
 
 ;;
@@ -322,7 +283,6 @@
 ;;
 ;; -> keybinding
 ;;
-;;  (global-set-key (kbd "C-x v =") 'vc-ediff)
 (global-set-key (kbd "C-x x f") 'find-file-rg)
 (global-set-key (kbd "C-M-n") 'next-error)
 (global-set-key (kbd "C-M-p") 'previous-error)
@@ -339,8 +299,6 @@
 (global-set-key (kbd "C-c k") 'winner-redo)
 (bind-key* (kbd "M-j") (lambda()(interactive)(next-line (/ (window-height) 8))))
 (bind-key* (kbd "M-k") (lambda()(interactive)(previous-line (/ (window-height) 8))))
-;; (bind-key* (kbd "M-n") (lambda()(interactive)(next-line (/ (window-height) 6))))
-;; (bind-key* (kbd "M-p") (lambda()(interactive)(previous-line (/ (window-height) 6))))
 (bind-key* (kbd "M-l") (lambda()(interactive)(select-window (next-window (selected-window)))))
 (bind-key* (kbd "M-h") (lambda()(interactive)(select-window (previous-window (selected-window)))))
 (bind-key* (kbd "M-i") (lambda ()(interactive)(my/resize-window 4 t)))
@@ -372,12 +330,15 @@
 ;;
 ;; -> inserts
 ;;
-(global-set-key (kbd "C-c i d") (lambda ()
-                                  (interactive)
-                                  (insert (format-time-string "<%Y-%m-%d>"))))
-(global-set-key (kbd "C-c i t") (lambda ()
-                                  (interactive)
-                                  (insert (format-time-string "%Y%m%d%H%M%S"))))
+(global-set-key (kbd "C-c i d")
+  (lambda ()
+    (interactive)
+    (insert (format-time-string "<%Y-%m-%d>"))))
+
+(global-set-key (kbd "C-c i t")
+  (lambda ()
+    (interactive)
+    (insert (format-time-string "%Y%m%d%H%M%S"))))
 
 (define-key prog-mode-map (kbd "C-c i b") 'my/insert-uniq-log-word)
 
@@ -503,7 +464,7 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
-  '(custom-enabled-themes '(doom-outrun-electric))
+  '(custom-enabled-themes '(wombat))
   '(warning-suppress-log-types '((frameset)))
   '(warning-suppress-types '((frameset))))
 
@@ -607,10 +568,6 @@
 ;;
 ;; -> window-positioning
 ;;
-;; (add-to-list 'display-buffer-alist
-;;   '("\\*tex-shell" display-buffer-no-window
-;;      (allow-no-window . t)))
-
 (add-to-list 'display-buffer-alist
   '("\\*rsync" display-buffer-no-window
      (allow-no-window . t)))
@@ -661,7 +618,6 @@
       :EXPORT_HUGO_LASTMOD: <%<%Y-%m-%d %H:%M>>
       :EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :thumbnail /posts/%<%Y%m%d%H%M%S>-posts--%\\1.jpg
       :END:
-      #+begin_export md
       %?
       " :prepend t :jump-to-captured t)
 
@@ -697,7 +653,7 @@
 
      ("av" "Art Videos" plain
        (file+headline
-         "~/DCIM/content/art--2018-now.org"
+         "~/DCIM/content/art--all.org"
          "Art")
        "** TODO %^{title} Video :videos:painter:krita:artrage:2023:
       :PROPERTIES:
@@ -715,7 +671,7 @@
 
      ("aa" "Art" plain
        (file+headline
-         "~/DCIM/content/art--2018-now.org"
+         "~/DCIM/content/art--all.org"
          "Art")
        "** TODO %^{title} :painter:krita:artrage:2023:
       :PROPERTIES:
@@ -736,9 +692,12 @@
 ;; -> org
 ;;
 (use-package org
+  :hook (org-mode . org-indent-mode)
   :config
   (setq org-src-tab-acts-natively t ;; commenting better in org src blocks
-    org-src-preserve-indentation nil
+    org-indent-indentation-per-level 2
+    org-edit-src-content-indentation 0
+    org-src-preserve-indentation t
     org-hide-leading-stars t
     org-tags-sort-function 'org-string-collate-greaterp
     org-export-with-sub-superscripts nil
@@ -761,8 +720,7 @@
     ("M-n" . org-metadown)
     ("M-p" . org-metaup)
     ("M-[" . org-metaleft)
-    ("M-]" . org-metaright)
-    ))
+    ("M-]" . org-metaright)))
 
 (defun org-syntax-table-modify ()
   "Modify `org-mode-syntax-table' for the current org buffer."
@@ -802,7 +760,7 @@
                           my/dwim-convert-commands)))
     (my/dwim-convert-generic chosen-command)))
 
-(global-set-key (kbd "C-c v") 'my/dwim-convert-with-selection)
+(global-set-key (kbd "C-x x v") 'my/dwim-convert-with-selection)
 
 ;;
 ;; -> scroll
@@ -815,7 +773,7 @@
 ;;
 ;; (setq font-general "Noto Sans Mono 14")
 ;; (setq font-general "MesloLGS Nerd Font Mono 11")
-(setq font-general "Source Code Pro 13")
+(setq font-general "Source Code Pro 12")
 ;; (setq font-general "Source Code Pro Light 14")
 ;; (setq font-general "Nimbus Mono PS 14")
 ;; (setq font-general "MesloLGS Nerd Font Mono 14")
@@ -894,14 +852,21 @@
   '(cursor ((t (:background "#ffffff" :inverse-video t))))
   '(diredfl-date-time ((t (:foreground "#8d909b"))))
   '(diredfl-dir-heading ((t (:foreground "#aa5555" :weight bold))))
+  ;; '(diredfl-dir-name ((t (:foreground "#b4b4b4"))))
+  '(diredfl-dir-priv ((t (:foreground "DarkRed"))))
+  '(diredfl-exec-priv ((t (:foreground "#999999"))))
+  '(diredfl-file-name ((t (:foreground "#818282"))))
+  '(diredfl-no-priv ((t nil)))
   '(diredfl-number ((t (:foreground "#999999"))))
+  '(diredfl-read-priv ((t nil)))
+  '(diredfl-write-priv ((t nil)))
   '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
   '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
   '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
   '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
   '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2"))))
   '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
-  '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.2 :family "Source Code Pro"))))
+  '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.1 :family "Source Code Pro"))))
   '(fixed-pitch ((t (:family "Source Code Pro" :height 130))))
   '(org-block ((t (:inherit fixed-pitch))))
   '(org-code ((t (:inherit (shadow fixed-pitch)))))
@@ -1422,6 +1387,19 @@
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 (setq ediff-prepare-buffer-hook #'org-show-all)
 (setq-default ediff-highlight-all-diffs t)
+(setq ediff-split-window-function 'split-window-horizontally)
+(defvar my-ediff-last-windows nil)
+
+(defun my-store-pre-ediff-winconfig ()
+  "Store `current-window-configuration' in variable `my-ediff-last-windows'."
+  (setq my-ediff-last-windows (current-window-configuration)))
+
+(defun my-restore-pre-ediff-winconfig ()
+  "Restore window configuration to stored value in `my-ediff-last-windows'."
+  (set-window-configuration my-ediff-last-windows))
+
+(add-hook 'ediff-before-setup-hook #'my-store-pre-ediff-winconfig)
+(add-hook 'ediff-quit-hook #'my-restore-pre-ediff-winconfig)
 
 ;;
 ;; -> ada
@@ -1633,10 +1611,10 @@
   :config
   (setq dashboard-banner-logo-title "Welcome James!")
   (setq dashboard-startup-banner 'logo)
-  (setq dashboard-items '((recents . 20)
+  (setq dashboard-items '((recents . 10)
                            (projects . 10)
-                           (bookmarks . 5)
-                           (agenda . 5)
+                           (bookmarks . 2)
+                           (agenda . 2)
                            (registers . 5)))
   (setq dashboard-set-init-info t)
   (setq dashboard-set-footer nil)
@@ -1680,19 +1658,9 @@
         (setq compile-command "make")))
     (compile compile-command)))
 
-
-;; (defun my/project (dir)
-;;   (let ((override (locate-dominating-file dir ".project")))
-;;     (if override (cons 'vc override) nil)))
-
-;; (push #'my/project project-find-functions)
-
-;; any directory containing such a file pretty much
-;; always defined a compile and an eglot gpr if ada
 (setq project-vc-extra-root-markers '(".project"))
 
 (global-set-key (kbd "C-x p c") 'my/project-compile)
-(global-set-key (kbd "C-x p u") 'my/project-create-compilation-search-path)
 
 ;;
 ;; -> indentation
@@ -1851,8 +1819,7 @@
 (global-set-key (kbd "C-c y") 'display-year-agenda)
 
 (setq org-agenda-files
-  '(
-     "~/DCIM/content/aaa--notes.org"
+  '("~/DCIM/content/aaa--notes.org"
      "~/DCIM/content/aaa--todo.org"
      "~/DCIM/content/art--all.org"
      "~/DCIM/content/dad--betting.org"
@@ -1862,42 +1829,13 @@
      "~/DCIM/content/kate--health.org"
      "~/DCIM/content/linux--all.org"
      "~/DCIM/content/posts--all.org"
-     "~/DCIM/content/presents.org"
-     ))
-
-(defun my/copy-background-to-faves ()
-  "Copy the current background in sway to faves folder"
-  (interactive)
-  (let* ((source-folder "~/")
-          (faves-folder "~/wallpaper/wallpaper-faves/")
-          (image-files
-            (directory-files source-folder nil
-              "^wallpaper-faves.*\\.\\(jpg\\|jpeg\\|png\\|gif\\)$" nil nil)))
-    (dolist (image-file image-files)
-      (rename-file
-        (concat source-folder image-file) (concat faves-folder image-file) t)
-      (message (concat "Wallpaper " (concat faves-folder image-file))))))
+     "~/DCIM/content/presents.org"))
 
 (defun convert-weight (weight)
   (let* ((parts (split-string weight ":"))
           (stone (string-to-number (car parts)))
           (pounds (string-to-number (cadr parts))))
     (+ (* stone 14) pounds)))
-
-(setq ediff-split-window-function 'split-window-horizontally)
-(setq ediff-window-setup-function 'ediff-setup-windows-plain)
-(defvar my-ediff-last-windows nil)
-
-(defun my-store-pre-ediff-winconfig ()
-  "Store `current-window-configuration' in variable `my-ediff-last-windows'."
-  (setq my-ediff-last-windows (current-window-configuration)))
-
-(defun my-restore-pre-ediff-winconfig ()
-  "Restore window configuration to stored value in `my-ediff-last-windows'."
-  (set-window-configuration my-ediff-last-windows))
-
-(add-hook 'ediff-before-setup-hook #'my-store-pre-ediff-winconfig)
-(add-hook 'ediff-quit-hook #'my-restore-pre-ediff-winconfig)
 
 (defun my/copy-file-name-to-clipboard ()
   "Copy the current buffer file name to the clipboard."
@@ -1911,41 +1849,7 @@
 
 (global-set-key (kbd "C-c w") 'my/copy-file-name-to-clipboard)
 
-(use-package org
-  :hook (org-mode . org-indent-mode)
-  :config
-  (setq org-indent-indentation-per-level 2)
-  (setq org-edit-src-content-indentation 0)
-  (setq org-src-preserve-indentation t))
-
 (defun my/org-insert-clipboard ()
   "Convert clipboard contents from HTML to Org and then paste (yank)."
   (interactive)
   (insert (shell-command-to-string "xclip -o -selection clipboard -t text/html | pandoc -f html -t json | pandoc -f json -t org")))
-
-(defun my/image-save-as ()
-  "Save the current image buffer as a new file."
-  (interactive)
-  (let* ((file (buffer-file-name))
-          (dir (file-name-directory file))
-          (name (file-name-nondirectory file))
-          (base-name (file-name-sans-extension name))
-          (extension (file-name-extension name t))
-          (initial_mode major-mode)
-          (counter 1)
-          (new-file))
-    (while (and (setq new-file
-                  (format "%s%s_%03d%s" dir base-name counter extension))
-             (file-exists-p new-file))
-      (setq counter (1+ counter)))
-    (write-region (point-min) (point-max) new-file nil 'no-message)
-    (revert-buffer nil t nil)
-    (delete-file file t)
-    (if (equal initial_mode 'image-dired-image-mode)
-      (progn
-        (image-dired ".")
-        (image-dired-display-this))
-      (find-file new-file t))))
-
-(use-package eat
-  :load-path "~/repos/emacs-eat")
