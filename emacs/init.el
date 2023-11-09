@@ -1017,8 +1017,8 @@
 (add-hook 'text-mode-hook #'visual-line-mode)
 (add-hook 'org-mode-hook '(lambda () (visual-line-mode)))
 (setq truncate-partial-width-windows 140)
-(set-frame-parameter nil 'alpha-background 75)
-(add-to-list 'default-frame-alist '(alpha-background . 75))
+(set-frame-parameter nil 'alpha-background 90)
+(add-to-list 'default-frame-alist '(alpha-background . 90))
 (set-fringe-mode '(0 . 0))
 (set-display-table-slot standard-display-table 0 ?\ )
 
@@ -1083,9 +1083,9 @@
               '(:background "#ff0000" :foreground "#ffffff" :inherit bold)) "")))
 
 (set-face-attribute 'mode-line-active nil :height 130 :underline nil :overline nil :box nil
-  :background "#3b467f" :foreground "#ffffff")
+  :background "#3b667f" :foreground "#ffffff")
 (set-face-attribute 'mode-line-inactive nil :height 130 :underline nil :overline nil
-  :background "#000000" :foreground "#cacaca")
+  :background "#151515" :foreground "#cacaca")
 
 (setq-default mode-line-format
   '("%e"
