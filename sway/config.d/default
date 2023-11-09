@@ -1,16 +1,16 @@
 #
 # -> visuals
 #
-gaps inner 9px
-gaps outer -5px
-gaps top -2px
-gaps bottom -5px
+gaps inner 8px
+gaps outer -6px
+gaps top -6px
+gaps bottom -8px
 
-default_border pixel 5px
+default_border pixel 4px
 
 # -> class              border  backgr. text    indicator child_border
 client.focused          #000000 #0b4b55 #cccccc #ffffff44   #ffffff44
-client.focused_inactive #333333 #333333 #cccccc #484e50   #444444
+client.focused_inactive #333333 #333333 #cccccc #505658   #4c4c4c
 client.unfocused        #333333 #222222 #cccccc #292d2e   #222222
 client.urgent           #2f343a #900000 #cccccc #900000   #900000
 client.placeholder      #000000 #0c0c0c #cccccc #000000   #0c0c0c
@@ -142,7 +142,7 @@ bindsym control+Mod1+i resize shrink width 25px
 #
 # -> other
 #
-smart_borders on
+smart_borders off
 
 #
 # -> floating
@@ -171,10 +171,10 @@ bindgesture swipe:3:left exec ydotool key 56:1 106:1 56:0 106:0
 
 focus_wrapping force
 
-for_window [app_id="thunar"] opacity 0.8
-for_window [app_id="dolphin"] opacity 0.8
+for_window [app_id="thunar"] opacity 0.9
+for_window [app_id="dolphin"] opacity 0.9
 for_window [app_id="gnome-terminal"] opacity 0.8
-for_window [app_id="thunderbird"] opacity 0.8
+for_window [app_id="thunderbird"] opacity 0.9
 
 #
 # -> input
@@ -213,15 +213,15 @@ exec swayidle -w\
 #
 # -> swayfx
 #
-corner_radius 8
+corner_radius 15
 blur enable
-blur_passes 4
+blur_passes 10
 blur_radius 10
 shadows enable
 shadow_blur_radius 10
 shadow_color #000000ff
 # default_dim_inactive 0
-layer_effects "waybar" blur enable; shadows enable;
+layer_effects "waybar" blur enable; shadows disable;
 titlebar_separator enable
 
 include /etc/sway/config.d/*

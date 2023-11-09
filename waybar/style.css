@@ -4,7 +4,7 @@
 @import 'colors-waybar.css';
 
 @define-color foreground rgba(255, 255, 255, 0.8);
-@define-color background rgba(50, 50, 60, 0.4);
+@define-color background rgba(30, 30, 30, 0.9);
 @define-color background-modules rgba(77, 77, 77, 0);
 @define-color theme-alt rgba(40, 40, 40, 0.8);
 @define-color border-theme rgba(128, 128, 128, 0);
@@ -14,13 +14,13 @@
     /* `otf-font-awesome` is required to be installed for icons */
     font-family: SourceCodePro;
     color: @foreground;
-    border-radius: 10px;
+    border-radius: 12px;
     font-size: 16px;
 }
 
 window#waybar {
     background-color: @background;
-    border: 0px solid @border-theme;
+    border: 2px solid @border-theme;
 }
 
 window#waybar.hidden {
