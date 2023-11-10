@@ -2187,6 +2187,16 @@ echo
 (add-hook 'rainbow-mode-hook 'activate-colour-shift-mode)
 #+end_src
 
+* shell
+
+#+begin_src elisp
+;;
+;; -> shell
+;;
+(setq explicit-shell-file-name "/usr/bin/bash")
+(setq shell-file-name "/bin/bash")
+#+end_src
+
 * eshell
 #+begin_src elisp
 ;;
