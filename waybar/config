@@ -11,7 +11,7 @@
     "margin-bottom": 0,
     "include": ["~/.config/waybar/modules.json"],
     "modules-left": [
-        "custom/launcher",
+        // "custom/launcher",
         "idle_inhibitor",
         "pulseaudio",
         "backlight",
@@ -34,8 +34,8 @@
         "tray",
         "battery",
         "custom/keyboard",
-        "clock",
-        "custom/power"
+        "clock"
+        // "custom/power"
         // "custom/exit",
     ],
 }
