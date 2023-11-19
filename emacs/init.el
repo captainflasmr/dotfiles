@@ -47,7 +47,6 @@
 (use-package gruvbox-theme)
 (use-package ef-themes)
 (use-package doom-themes)
-(use-package dwim-shell-command)
 
 (use-package toc-org
   :commands
@@ -59,9 +58,9 @@
   :config
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
-(use-package org-rainbow-tags
-  :hook
-  (org-mode . org-rainbow-tags-mode))
+(use-package org-rainbow-tags)
+  ;; :hook
+  ;; (org-mode . org-rainbow-tags-mode))
 
 (use-package rainbow-mode
   :hook
@@ -133,6 +132,16 @@
 (define-key my-jump-keymap (kbd "t") (lambda () (interactive) (find-file "~/DCIM/content/aaa--todo.org")))
 (define-key my-jump-keymap (kbd "C-q") 'quoted-insert)
 (global-set-key (kbd "C-q") my-jump-keymap)
+
+;; (defvar my-winmove-keymap (make-sparse-keymap))
+;; (define-key my-winmove-keymap(kbd "h") 'windmove-left)
+;; (define-key my-winmove-keymap(kbd "j") 'windmove-down)
+;; (define-key my-winmove-keymap(kbd "k") 'windmove-up)
+;; (define-key my-winmove-keymap(kbd "l") 'windmove-right)
+;; (define-key my-winmove-keymap(kbd "q") 'delete-window)
+;; (define-key my-winmove-keymap(kbd "s") 'split-window-vertically)
+;; (define-key my-winmove-keymap(kbd "v") 'split-window-horizontally)
+;; (global-set-key (kbd "C-w") my-winmove-keymap)
 
 ;;
 ;; -> unbinding
@@ -320,6 +329,7 @@
 (global-set-key (kbd "<f1>") 'display-line-numbers-mode)
 (global-set-key (kbd "<f2>") 'whitespace-mode)
 (global-set-key (kbd "<f3>") 'variable-pitch-mode)
+(global-set-key (kbd "<f4>") 'visual-fill-column-mode)
 (global-set-key (kbd "<f7>") 'display-fill-column-indicator-mode)
 (global-set-key (kbd "M-?") 'my/grep)
 (define-key dired-mode-map (kbd "C") 'my/rsync)
@@ -460,15 +470,13 @@
 ;; -> custom-settings
 ;;
 (custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-enabled-themes '(wombat))
- '(package-selected-packages
-    '(proced-narrow dashboard gpr-ts-mode ztree qml-mode yaml-mode company powerthesaurus jinx elfeed emms magit marginalia orderless vertico deadgrep ox-hugo visual-fill-column rainbow-mode org-rainbow-tags org-bullets toc-org dwim-shell-command doom-themes ef-themes gruvbox-theme find-file-rg embark-consult ahk-mode gnuplot ox-gfm git-timemachine i3wm-config-mode diredfl))
- '(warning-suppress-log-types '((frameset)))
- '(warning-suppress-types '((frameset))))
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+  '(custom-enabled-themes '(wombat))
+  '(warning-suppress-log-types '((frameset)))
+  '(warning-suppress-types '((frameset))))
 
 ;;
 ;; -> defuns
@@ -570,9 +578,9 @@
 ;;
 ;; -> window-positioning
 ;;
-(add-to-list 'display-buffer-alist
-  '("\\*rsync" display-buffer-no-window
-     (allow-no-window . t)))
+;; (add-to-list 'display-buffer-alist
+;;   '("\\*rsync" display-buffer-no-window
+;;      (allow-no-window . t)))
 
 (add-to-list 'display-buffer-alist
   '("\\*Async" display-buffer-no-window
@@ -739,7 +747,8 @@
      "AudioTrimSilence" "PictureAutoColour" "PictureConvert" "PictureCrush" "PictureFrompdf"
      "PictureInfo" "PictureMontage" "PictureOrganise" "PictureCrop" "PictureRotateFlip"
      "PictureRotateLeft" "PictureRotateRight" "PictureScale" "PictureUpscale"
-     "PictureGetText" "PictureOrientation" "VideoConcat" "VideoConvert"
+     "PictureGetText" "PictureOrientation" "PictureUpdateToCreateDate"
+     "VideoConcat" "VideoConvert"
      "VideoCut" "VideoDouble" "VideoExtractAudio" "VideoExtractFrames"
      "VideoFilter" "VideoFromFrames" "VideoInfo" "VideoRemoveAudio"
      "VideoReplaceVideoAudio" "VideoRescale" "VideoReverse" "VideoRotate"
@@ -750,10 +759,8 @@
 
 (defun my/dwim-convert-generic (command)
   "Execute a dwim-shell-command-on-marked-files with the given COMMAND."
-  (interactive "MCommand: ")
-  (dwim-shell-command-on-marked-files
-    command
-    (format "%s '<<*>>'" command) :silent-success t))
+  (let ((files (dired-get-marked-files nil current-prefix-arg)))
+    (async-shell-command (concat command " " (mapconcat 'identity files " ")) "*convert*")))
 
 (defun my/dwim-convert-with-selection ()
   "Prompt user to choose command and execute dwim-shell-command-on-marked-files."
@@ -763,6 +770,7 @@
     (my/dwim-convert-generic chosen-command)))
 
 (global-set-key (kbd "C-x x v") 'my/dwim-convert-with-selection)
+(global-set-key (kbd "C-c v") 'my/dwim-convert-with-selection)
 
 ;;
 ;; -> scroll
@@ -847,53 +855,48 @@
 ;; -> custom-set-faces
 ;;
 (custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(cursor ((t (:background "#ffffff" :inverse-video t))))
- '(diredfl-date-time ((t (:foreground "#8d909b"))))
- '(diredfl-dir-heading ((t (:foreground "#aa5555" :weight bold))))
- '(diredfl-dir-priv ((t (:foreground "DarkRed"))))
- '(diredfl-exec-priv ((t (:foreground "#999999"))))
- '(diredfl-file-name ((t (:foreground "#818282"))))
- '(diredfl-no-priv ((t nil)))
- '(diredfl-number ((t (:foreground "#999999"))))
- '(diredfl-read-priv ((t nil)))
- '(diredfl-write-priv ((t nil)))
- '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
- '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
- '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
- '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
- '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.1 :family "Source Code Pro"))))
- '(fixed-pitch ((t (:family "Source Code Pro" :height 130))))
- '(org-block ((t (:inherit fixed-pitch))))
- '(org-code ((t (:inherit (shadow fixed-pitch)))))
- '(org-date ((t (:inherit fixed-pitch))))
- '(org-document-info ((t (:foreground "#8f4800"))))
- '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
- '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
- '(org-link ((t (:foreground "#5555ff" :underline t))))
- '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
- '(org-property-value ((t (:inherit fixed-pitch))) t)
- '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
- '(org-table ((t (:inherit fixed-pitch :foreground "#83a598"))))
- '(org-tag ((t (:inherit (shadow fixed-pitch) :weight regular :height 0.8))))
- '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
- '(outline-1 ((t (:weight regular))))
- '(outline-2 ((t (:weight regular))))
- '(variable-pitch ((t (:family "Source Sans Pro" :height 140))))
- '(vertical-border ((t (:foreground "#444444" :inverse-video t))))
- '(whitespace-missing-newline-at-eof ((t (:foreground "#666566656665"))))
- '(whitespace-newline ((t (:foreground "#666566656665"))))
- '(whitespace-space ((t (:foreground "#666566656665"))))
- '(whitespace-space-after-tab ((t (:foreground "#666566656665"))))
- '(whitespace-space-before-tab ((t (:foreground "#666566656665"))))
- '(whitespace-tab ((t (:foreground "#666566656665"))))
- '(whitespace-trailing ((t (:foreground "#666566656665"))))
- '(widget-button ((t (:inherit fixed-pitch :weight regular))))
- '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
- '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2")))))
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+  '(cursor ((t (:background "#ffffff" :inverse-video t))))
+  '(diredfl-date-time ((t (:foreground "#8d909b"))))
+  '(diredfl-dir-heading ((t (:foreground "#aa5555" :weight bold))))
+  ;; '(diredfl-dir-name ((t (:foreground "#b4b4b4"))))
+  '(diredfl-dir-priv ((t (:foreground "DarkRed"))))
+  '(diredfl-exec-priv ((t (:foreground "#999999"))))
+  '(diredfl-file-name ((t (:foreground "#818282"))))
+  '(diredfl-no-priv ((t nil)))
+  '(diredfl-number ((t (:foreground "#999999"))))
+  '(diredfl-read-priv ((t nil)))
+  '(diredfl-write-priv ((t nil)))
+  '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
+  '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
+  '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
+  '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
+  '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2"))))
+  '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
+  '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.1 :family "Source Code Pro"))))
+  '(fixed-pitch ((t (:family "Source Code Pro" :height 130))))
+  '(org-block ((t (:inherit fixed-pitch))))
+  '(org-code ((t (:inherit (shadow fixed-pitch)))))
+  '(org-date ((t (:inherit fixed-pitch))))
+  '(org-document-info ((t (:foreground "#8f4800"))))
+  '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+  '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
+  '(org-link ((t (:foreground "#5555ff" :underline t))))
+  '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+  '(org-property-value ((t (:inherit fixed-pitch))) t)
+  '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+  '(org-table ((t (:inherit fixed-pitch :foreground "#83a598"))))
+  '(org-tag ((t (:inherit (shadow fixed-pitch) :weight regular :height 0.7))))
+  '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
+  '(variable-pitch ((t (:family "Source Sans Pro" :height 140))))
+  '(outline-1 ((t (:weight regular))))
+  '(outline-2 ((t (:weight regular))))
+  '(widget-button ((t (:inherit fixed-pitch :weight regular))))
+  '(window-divider ((t (:foreground "black"))))
+  '(vertical-border ((t (:foreground "#000000")))))
 
 ;;
 ;; -> image-dired
@@ -1030,13 +1033,13 @@
 (set-fringe-mode '(0 . 0))
 (set-display-table-slot standard-display-table 0 ?\ )
 
-(setq window-divider-default-bottom-width 6)
-(setq window-divider-default-right-width 6)
+(setq window-divider-default-bottom-width 4)
+(setq window-divider-default-right-width 4)
 (setq window-divider-default-places t)
 
 (window-divider-mode -1)
 
-(setq-default left-margin-width 1 right-margin-width 1)
+(setq-default left-margin-width 0 right-margin-width 0)
 
 ;;
 ;; -> imenu
@@ -1090,9 +1093,9 @@
             (propertize " * " 'face
               '(:background "#ff0000" :foreground "#ffffff" :inherit bold)) "")))
 
-(set-face-attribute 'mode-line-active nil :height 130 :underline nil :overline nil :box nil
+(set-face-attribute 'mode-line-active nil :height 140 :underline nil :overline nil :box nil
   :background "#3b667f" :foreground "#ffffff")
-(set-face-attribute 'mode-line-inactive nil :height 130 :underline nil :overline nil
+(set-face-attribute 'mode-line-inactive nil :height 140 :underline nil :overline nil
   :background "#151515" :foreground "#cacaca")
 
 (setq-default mode-line-format
@@ -1105,6 +1108,10 @@
          (propertize (format "%s " (buffer-name))
            'face '(:inherit bold))
          " "))
+     (:eval
+       (when (or (eq major-mode 'image-mode)
+               (eq major-mode 'image-dired-image-mode))
+         (process-lines  "identify"  "-format"  "[%m %wx%h %b]" (buffer-file-name))))
      mode-line-position
      mode-line-modes
      mode-line-misc-info))
@@ -1231,7 +1238,8 @@
   (org-hugo-export-wim-to-md)
   (shell-command "web rsync emacs")
   (shell-command "web rsync art")
-  (shell-command "web rsync dyerdwelling"))
+  (shell-command "web rsync dyerdwelling")
+  (shell-command "web rsync sway"))
 
 (global-set-key (kbd "C-c x") #'my/hugo-org-export-subtree)
 
@@ -1538,7 +1546,7 @@
        "master" "typescript/src")
      (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
 
-;;    (mapc #'treesit-install-language-grammar
+   ;; (mapc #'treesit-install-language-grammar
 ;;      (mapcar #'car treesit-language-source-alist))
 
 ;;  (use-package ada-ts-mode)
@@ -1867,3 +1875,25 @@
   "Convert clipboard contents from HTML to Org and then paste (yank)."
   (interactive)
   (insert (shell-command-to-string "xclip -o -selection clipboard -t text/html | pandoc -f html -t json | pandoc -f json -t org")))
+
+(use-package spacious-padding
+  :init
+  (spacious-padding-mode 1)
+  :config
+  (setq spacious-padding-widths
+    '( :internal-border-width 10
+       :header-line-width 4
+       :mode-line-width 2
+       :tab-width 4
+       :right-divider-width 2
+       :scroll-bar-width 8)))
+
+(use-package eradio
+  :config
+  (setq eradio-channels
+    '(("deep space one - soma fm" . "https://somafm.com/deepspaceone.pls")
+       ("secret agent - soma fm" . "https://somafm.com/secretagent.pls")
+       ("the trip - soma fm" . "https://somafm.com/thetrip.pls")
+       ("suburbsofgoa - soma fm" . "https://somafm.com/suburbsofgoa.pls")
+       ("dubstep - soma fm" . "https://somafm.com/dubstep.pls")
+       ("synphaera - soma fm" . "https://somafm.com/synphaera.pls"))))
