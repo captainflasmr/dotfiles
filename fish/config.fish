@@ -6,5 +6,3 @@ end
 alias l='exa -al --color=always --group-directories-first --icons' # preferred listing
 
 alias upall='upall.sh'
-
-cat /home/jdyer/.cache/wal/sequences
