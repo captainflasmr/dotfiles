@@ -2,9 +2,20 @@
 # -> visuals
 #
 gaps inner 8px
-gaps outer -6px
+gaps outer -4px
 gaps top -6px
 gaps bottom -8px
+
+# workspace 1 gaps outer 10
+# workspace 1 gaps inner 8
+# workspace 2 gaps outer 10
+# workspace 2 gaps inner 8
+# workspace 3 gaps outer 10
+# workspace 3 gaps inner 8
+# workspace 4 gaps outer 10
+# workspace 4 gaps inner 8
+
+workspace number 1
 
 default_border pixel 4px
 
@@ -51,7 +62,7 @@ bindsym XF86MonBrightnessDown exec brightnessctl set 2%-
 # -> Key bindings
 #
 bindsym $mod+shift+p exec wl-color-picker
-bindsym $mod+shift+w exec wallpaper_updatewal-swww.sh
+bindsym $mod+shift+w exec wallpaper_change_sway.sh
 
 # programs
 bindsym $mod+space exec nwg-drawer -c 7 -is 70 -spacing 23
@@ -157,6 +168,43 @@ floating_modifier $mod
 # Toggle the current focus between tiling and floating mode
 bindsym $mod+Shift+space floating toggle
 
+# Press $mod+Shift+g to enter the gap mode. Choose o or i for modifying outer/inner gaps. Press one of + / - (in-/decrement for current workspace) or 0 (remove gaps for current workspace). If you also press Shift with these keys, the change will be global for all workspaces.
+set $mode_gaps Gaps: (o) outer, (i) inner
+set $mode_gaps_outer Outer Gaps: +|-|0 (local), Shift + +|-|0 (global)
+set $mode_gaps_inner Inner Gaps: +|-|0 (local), Shift + +|-|0 (global)
+bindsym $mod+Shift+g mode "$mode_gaps"
+
+mode "$mode_gaps" {
+        bindsym o      mode "$mode_gaps_outer"
+        bindsym i      mode "$mode_gaps_inner"
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+mode "$mode_gaps_inner" {
+        bindsym plus  gaps inner current plus 5
+        bindsym minus gaps inner current minus 5
+        bindsym 0     gaps inner current set 0
+
+        bindsym Shift+plus  gaps inner all plus 5
+        bindsym Shift+minus gaps inner all minus 5
+        bindsym Shift+0     gaps inner all set 0
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+mode "$mode_gaps_outer" {
+        bindsym plus  gaps outer current plus 5
+        bindsym minus gaps outer current minus 5
+        bindsym 0     gaps outer current set 0
+
+        bindsym Shift+plus  gaps outer all plus 5
+        bindsym Shift+minus gaps outer all minus 5
+        bindsym Shift+0     gaps outer all set 0
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
 
 # ------------------------------------------------------------
 # -> sway specific
@@ -171,8 +219,8 @@ bindgesture swipe:3:left exec ydotool key 56:1 106:1 56:0 106:0
 
 focus_wrapping force
 
-for_window [app_id="thunar"] opacity 0.9
-for_window [app_id="dolphin"] opacity 0.9
+for_window [app_id="thunar"] opacity 0.95
+for_window [app_id="dolphin"] opacity 0.95
 for_window [app_id="gnome-terminal"] opacity 0.8
 for_window [app_id="thunderbird"] opacity 0.9
 
@@ -215,8 +263,8 @@ exec swayidle -w\
 #
 corner_radius 15
 blur enable
-blur_passes 10
-blur_radius 10
+blur_passes 1
+blur_radius 1
 shadows enable
 shadow_blur_radius 10
 shadow_color #000000ff
