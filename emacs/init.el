@@ -139,8 +139,7 @@
 (define-key my-jump-keymap (kbd "n") (lambda () (interactive) (find-file "~/nas")))
 (define-key my-jump-keymap (kbd "o") (lambda () (interactive) (find-file "~/.config/emacs/emacs--init.org")))
 (define-key my-jump-keymap (kbd "p") 'emms)
-(define-key my-jump-keymap (kbd "r") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
-(define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/content/aaa--source_code.org")))
+(define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
 (define-key my-jump-keymap (kbd "t") (lambda () (interactive) (find-file "~/DCIM/content/aaa--todo.org")))
 (define-key my-jump-keymap (kbd "C-q") 'quoted-insert)
 (global-set-key (kbd "C-q") my-jump-keymap)
@@ -488,7 +487,7 @@
  ;; If there is more than one, they won't work right.
  '(custom-enabled-themes '(wombat))
  '(package-selected-packages
-    '(eradio spacious-padding proced-narrow dashboard gpr-ts-mode ztree qml-mode yaml-mode company powerthesaurus jinx org-ql vc-use-package))
+    '(spacious-padding proced-narrow dashboard gpr-ts-mode ztree qml-mode yaml-mode company powerthesaurus jinx elfeed emms magit marginalia orderless vertico deadgrep ox-hugo visual-fill-column rainbow-mode org-rainbow-tags org-bullets toc-org doom-themes ef-themes gruvbox-theme find-file-rg embark-consult ahk-mode gnuplot ox-gfm git-timemachine i3wm-config-mode diredfl org-ql vc-use-package))
  '(package-vc-selected-packages
     '((org-ql :vc-backend Git :url "https://github.com/alphapapa/org-ql")
        (vc-use-package :vc-backend Git :url "https://github.com/slotThe/vc-use-package")))
@@ -508,7 +507,7 @@
   "Resize window back and forth."
   (interactive)
   (cond
-    ((= (nth 0 (window-edges)) 0)
+    ((< (nth 0 (window-edges)) 2)
       (enlarge-window delta horizontal))
     (t (select-window (windmove-left (selected-window)))
       (enlarge-window delta horizontal)
@@ -800,7 +799,7 @@
 ;;
 ;; (setq font-general "Noto Sans Mono 14")
 ;; (setq font-general "MesloLGS Nerd Font Mono 11")
-(setq font-general "Source Code Pro 12")
+(setq font-general "Source Code Pro 13")
 ;; (setq font-general "Source Code Pro Light 14")
 ;; (setq font-general "Nimbus Mono PS 14")
 ;; (setq font-general "MesloLGS Nerd Font Mono 14")
@@ -892,7 +891,7 @@
  '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
  '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.1 :family "Source Code Pro"))))
  '(fixed-pitch ((t (:family "Source Code Pro" :height 130))))
- '(fringe ((t :background "#242424")))
+ '(fringe (nil))
  '(org-block ((t (:inherit fixed-pitch))))
  '(org-code ((t (:inherit (shadow fixed-pitch)))))
  '(org-date ((t (:inherit fixed-pitch))))
@@ -919,8 +918,8 @@
  '(whitespace-trailing ((t (:foreground "#666566656665"))))
  '(widget-button ((t (:inherit fixed-pitch :weight regular))))
  '(window-divider ((t (:foreground "black"))))
- '(window-divider-first-pixel ((t :background "#242424" :foreground "#242424")))
- '(window-divider-last-pixel ((t :background "#242424" :foreground "#242424")))
+ '(window-divider-first-pixel (nil))
+ '(window-divider-last-pixel (nil))
  '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
  '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2")))))
 
@@ -1065,7 +1064,7 @@
 
 (window-divider-mode -1)
 
-(setq-default left-margin-width 0 right-margin-width 0)
+(setq-default left-margin-width 1 right-margin-width 0)
 
 ;;
 ;; -> imenu
@@ -1119,9 +1118,9 @@
             (propertize " * " 'face
               '(:background "#ff0000" :foreground "#ffffff" :inherit bold)) "")))
 
-(set-face-attribute 'mode-line-active nil :height 140 :underline nil :overline nil :box nil
-  :background "#3b667f" :foreground "#ffffff")
-(set-face-attribute 'mode-line-inactive nil :height 140 :underline nil :overline nil
+(set-face-attribute 'mode-line-active nil :height 130 :underline nil :overline nil :box nil
+  :background "#68210b" :foreground "#ffffff")
+(set-face-attribute 'mode-line-inactive nil :height 130 :underline nil :overline nil
   :background "#151515" :foreground "#cacaca")
 
 (setq-default mode-line-format
@@ -1235,7 +1234,7 @@
 ;;
 (use-package jinx
   :config
-  (dolist (hook '(text-mode-hook org-mode-hook))
+  (dolist (hook '(org-mode-hook))
     (add-hook hook #'jinx-mode)))
 
 (use-package powerthesaurus)
@@ -1904,7 +1903,7 @@
 
 (use-package spacious-padding
   :init
-  (spacious-padding-mode 1)
+  (spacious-padding-mode -1)
   :config
   (setq spacious-padding-widths
     '( :internal-border-width 10
@@ -1914,12 +1913,11 @@
        :right-divider-width 2
        :scroll-bar-width 8)))
 
-(use-package eradio
-  :config
-  (setq eradio-channels
-    '(("deep space one - soma fm" . "https://somafm.com/deepspaceone.pls")
-       ("secret agent - soma fm" . "https://somafm.com/secretagent.pls")
-       ("the trip - soma fm" . "https://somafm.com/thetrip.pls")
-       ("suburbsofgoa - soma fm" . "https://somafm.com/suburbsofgoa.pls")
-       ("dubstep - soma fm" . "https://somafm.com/dubstep.pls")
-       ("synphaera - soma fm" . "https://somafm.com/synphaera.pls"))))
+(defun my/show-emacs-tasks ()
+  (interactive)
+  (org-ql-search (org-agenda-files)
+    '(and (todo)
+          (parent (and (tags "linux") (tags "emacs") (not (tags "noexport")))))
+    :title "Emacs-related project tasks"
+    :sort '(date priority todo)
+    :super-groups '((:auto-parent t))))

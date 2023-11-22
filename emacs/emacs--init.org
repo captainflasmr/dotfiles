@@ -229,8 +229,7 @@
 (define-key my-jump-keymap (kbd "n") (lambda () (interactive) (find-file "~/nas")))
 (define-key my-jump-keymap (kbd "o") (lambda () (interactive) (find-file "~/.config/emacs/emacs--init.org")))
 (define-key my-jump-keymap (kbd "p") 'emms)
-(define-key my-jump-keymap (kbd "r") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
-(define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/content/aaa--source_code.org")))
+(define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
 (define-key my-jump-keymap (kbd "t") (lambda () (interactive) (find-file "~/DCIM/content/aaa--todo.org")))
 (define-key my-jump-keymap (kbd "C-q") 'quoted-insert)
 (global-set-key (kbd "C-q") my-jump-keymap)
@@ -659,7 +658,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
   "Resize window back and forth."
   (interactive)
   (cond
-    ((= (nth 0 (window-edges)) 0)
+    ((< (nth 0 (window-edges)) 2)
       (enlarge-window delta horizontal))
     (t (select-window (windmove-left (selected-window)))
       (enlarge-window delta horizontal)
@@ -979,7 +978,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ;;
 ;; (setq font-general "Noto Sans Mono 14")
 ;; (setq font-general "MesloLGS Nerd Font Mono 11")
-(setq font-general "Source Code Pro 12")
+(setq font-general "Source Code Pro 13")
 ;; (setq font-general "Source Code Pro Light 14")
 ;; (setq font-general "Nimbus Mono PS 14")
 ;; (setq font-general "MesloLGS Nerd Font Mono 14")
@@ -1251,7 +1250,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 
 (window-divider-mode -1)
 
-(setq-default left-margin-width 0 right-margin-width 0)
+(setq-default left-margin-width 1 right-margin-width 0)
 #+end_src
 
 * imenu
@@ -1387,9 +1386,9 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
             (propertize " * " 'face
               '(:background "#ff0000" :foreground "#ffffff" :inherit bold)) "")))
 
-(set-face-attribute 'mode-line-active nil :height 140 :underline nil :overline nil :box nil
-  :background "#3b667f" :foreground "#ffffff")
-(set-face-attribute 'mode-line-inactive nil :height 140 :underline nil :overline nil
+(set-face-attribute 'mode-line-active nil :height 130 :underline nil :overline nil :box nil
+  :background "#68210b" :foreground "#ffffff")
+(set-face-attribute 'mode-line-inactive nil :height 130 :underline nil :overline nil
   :background "#151515" :foreground "#cacaca")
 
 (setq-default mode-line-format
@@ -1527,7 +1526,7 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
 ;;
 (use-package jinx
   :config
-  (dolist (hook '(text-mode-hook org-mode-hook))
+  (dolist (hook '(org-mode-hook))
     (add-hook hook #'jinx-mode)))
 
 (use-package powerthesaurus)
@@ -2336,7 +2335,7 @@ echo
 
 (use-package spacious-padding
   :init
-  (spacious-padding-mode 1)
+  (spacious-padding-mode -1)
   :config
   (setq spacious-padding-widths
     '( :internal-border-width 10
@@ -2346,14 +2345,12 @@ echo
        :right-divider-width 2
        :scroll-bar-width 8)))
 
-(use-package eradio
-  :config
-  (setq eradio-channels
-    '(("deep space one - soma fm" . "https://somafm.com/deepspaceone.pls")
-       ("secret agent - soma fm" . "https://somafm.com/secretagent.pls")
-       ("the trip - soma fm" . "https://somafm.com/thetrip.pls")
-       ("suburbsofgoa - soma fm" . "https://somafm.com/suburbsofgoa.pls")
-       ("dubstep - soma fm" . "https://somafm.com/dubstep.pls")
-       ("synphaera - soma fm" . "https://somafm.com/synphaera.pls"))))
-
+(defun my/show-emacs-tasks ()
+  (interactive)
+  (org-ql-search (org-agenda-files)
+    '(and (todo)
+          (parent (and (tags "linux") (tags "emacs") (not (tags "noexport")))))
+    :title "Emacs-related project tasks"
+    :sort '(date priority todo)
+    :super-groups '((:auto-parent t))))
 #+end_src
