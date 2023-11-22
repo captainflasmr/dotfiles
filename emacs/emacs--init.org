@@ -2353,4 +2353,11 @@ echo
     :title "Emacs-related project tasks"
     :sort '(date priority todo)
     :super-groups '((:auto-parent t))))
+
+;; (unless (package-installed-p 'indent-bars)
+  ;; (package-vc-install "https://github.com/jdtsmith/indent-bars"))
+
+(use-package indent-bars
+  :vc (:fetcher github :repo "jdtsmith/indent-bars")
+  :hook ((prog-mode ada-mode) . indent-bars-mode))
 #+end_src

@@ -487,9 +487,10 @@
  ;; If there is more than one, they won't work right.
  '(custom-enabled-themes '(wombat))
  '(package-selected-packages
-    '(spacious-padding proced-narrow dashboard gpr-ts-mode ztree qml-mode yaml-mode company powerthesaurus jinx elfeed emms magit marginalia orderless vertico deadgrep ox-hugo visual-fill-column rainbow-mode org-rainbow-tags org-bullets toc-org doom-themes ef-themes gruvbox-theme find-file-rg embark-consult ahk-mode gnuplot ox-gfm git-timemachine i3wm-config-mode diredfl org-ql vc-use-package))
+    '(indent-bars spacious-padding proced-narrow dashboard gpr-ts-mode ztree qml-mode yaml-mode company powerthesaurus jinx elfeed emms magit marginalia orderless vertico deadgrep ox-hugo visual-fill-column rainbow-mode org-rainbow-tags org-bullets toc-org doom-themes ef-themes gruvbox-theme find-file-rg embark-consult ahk-mode gnuplot ox-gfm git-timemachine i3wm-config-mode diredfl org-ql vc-use-package))
  '(package-vc-selected-packages
-    '((org-ql :vc-backend Git :url "https://github.com/alphapapa/org-ql")
+    '((indent-bars :vc-backend Git :url "https://github.com/jdtsmith/indent-bars")
+       (org-ql :vc-backend Git :url "https://github.com/alphapapa/org-ql")
        (vc-use-package :vc-backend Git :url "https://github.com/slotThe/vc-use-package")))
  '(warning-suppress-log-types '((frameset)))
  '(warning-suppress-types '((frameset))))
@@ -1921,3 +1922,10 @@
     :title "Emacs-related project tasks"
     :sort '(date priority todo)
     :super-groups '((:auto-parent t))))
+
+;; (unless (package-installed-p 'indent-bars)
+  ;; (package-vc-install "https://github.com/jdtsmith/indent-bars"))
+
+(use-package indent-bars
+  :vc (:fetcher github :repo "jdtsmith/indent-bars")
+  :hook ((prog-mode ada-mode) . indent-bars-mode))
