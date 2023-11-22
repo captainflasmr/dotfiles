@@ -25,10 +25,22 @@
 (setq load-prefer-newer t)
 
 ;;
-;; -> package-extra
+;; -> package-local
 ;;
 (use-package fd-find
   :load-path "~/repos/fd-find")
+
+;;
+;; -> package-remote
+;;
+;; will be able to remove the fillowing package-vc-install as of emacs 20
+;; as this will be built-in
+(unless (package-installed-p 'vc-use-package)
+  (package-vc-install "https://github.com/slotThe/vc-use-package"))
+
+;; now use-package has the :vc keyword!
+(use-package org-ql
+  :vc (:fetcher github :repo "alphapapa/org-ql"))
 
 ;;
 ;; -> use-package
@@ -470,13 +482,18 @@
 ;; -> custom-settings
 ;;
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
-  '(custom-enabled-themes '(wombat))
-  '(warning-suppress-log-types '((frameset)))
-  '(warning-suppress-types '((frameset))))
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-enabled-themes '(wombat))
+ '(package-selected-packages
+    '(eradio spacious-padding proced-narrow dashboard gpr-ts-mode ztree qml-mode yaml-mode company powerthesaurus jinx org-ql vc-use-package))
+ '(package-vc-selected-packages
+    '((org-ql :vc-backend Git :url "https://github.com/alphapapa/org-ql")
+       (vc-use-package :vc-backend Git :url "https://github.com/slotThe/vc-use-package")))
+ '(warning-suppress-log-types '((frameset)))
+ '(warning-suppress-types '((frameset))))
 
 ;;
 ;; -> defuns
@@ -855,48 +872,57 @@
 ;; -> custom-set-faces
 ;;
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
-  '(cursor ((t (:background "#ffffff" :inverse-video t))))
-  '(diredfl-date-time ((t (:foreground "#8d909b"))))
-  '(diredfl-dir-heading ((t (:foreground "#aa5555" :weight bold))))
-  ;; '(diredfl-dir-name ((t (:foreground "#b4b4b4"))))
-  '(diredfl-dir-priv ((t (:foreground "DarkRed"))))
-  '(diredfl-exec-priv ((t (:foreground "#999999"))))
-  '(diredfl-file-name ((t (:foreground "#818282"))))
-  '(diredfl-no-priv ((t nil)))
-  '(diredfl-number ((t (:foreground "#999999"))))
-  '(diredfl-read-priv ((t nil)))
-  '(diredfl-write-priv ((t nil)))
-  '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
-  '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
-  '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
-  '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
-  '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2"))))
-  '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
-  '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.1 :family "Source Code Pro"))))
-  '(fixed-pitch ((t (:family "Source Code Pro" :height 130))))
-  '(org-block ((t (:inherit fixed-pitch))))
-  '(org-code ((t (:inherit (shadow fixed-pitch)))))
-  '(org-date ((t (:inherit fixed-pitch))))
-  '(org-document-info ((t (:foreground "#8f4800"))))
-  '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
-  '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
-  '(org-link ((t (:foreground "#5555ff" :underline t))))
-  '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
-  '(org-property-value ((t (:inherit fixed-pitch))) t)
-  '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
-  '(org-table ((t (:inherit fixed-pitch :foreground "#83a598"))))
-  '(org-tag ((t (:inherit (shadow fixed-pitch) :weight regular :height 0.7))))
-  '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
-  '(variable-pitch ((t (:family "Source Sans Pro" :height 140))))
-  '(outline-1 ((t (:weight regular))))
-  '(outline-2 ((t (:weight regular))))
-  '(widget-button ((t (:inherit fixed-pitch :weight regular))))
-  '(window-divider ((t (:foreground "black"))))
-  '(vertical-border ((t (:foreground "#000000")))))
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(cursor ((t (:background "#ffffff" :inverse-video t))))
+ '(diredfl-date-time ((t (:foreground "#8d909b"))))
+ '(diredfl-dir-heading ((t (:foreground "#aa5555" :weight bold))))
+ '(diredfl-dir-priv ((t (:foreground "DarkRed"))))
+ '(diredfl-exec-priv ((t (:foreground "#999999"))))
+ '(diredfl-file-name ((t (:foreground "#818282"))))
+ '(diredfl-no-priv ((t nil)))
+ '(diredfl-number ((t (:foreground "#999999"))))
+ '(diredfl-read-priv ((t nil)))
+ '(diredfl-write-priv ((t nil)))
+ '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
+ '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
+ '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
+ '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
+ '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.1 :family "Source Code Pro"))))
+ '(fixed-pitch ((t (:family "Source Code Pro" :height 130))))
+ '(fringe ((t :background "#242424")))
+ '(org-block ((t (:inherit fixed-pitch))))
+ '(org-code ((t (:inherit (shadow fixed-pitch)))))
+ '(org-date ((t (:inherit fixed-pitch))))
+ '(org-document-info ((t (:foreground "#8f4800"))))
+ '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+ '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
+ '(org-link ((t (:foreground "#5555ff" :underline t))))
+ '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+ '(org-property-value ((t (:inherit fixed-pitch))) t)
+ '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+ '(org-table ((t (:inherit fixed-pitch :foreground "#83a598"))))
+ '(org-tag ((t (:inherit (shadow fixed-pitch) :weight regular :height 0.7))))
+ '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
+ '(outline-1 ((t (:weight regular))))
+ '(outline-2 ((t (:weight regular))))
+ '(variable-pitch ((t (:family "Source Sans Pro" :height 140))))
+ '(vertical-border ((t (:foreground "#000000"))))
+ '(whitespace-missing-newline-at-eof ((t (:foreground "#666566656665"))))
+ '(whitespace-newline ((t (:foreground "#666566656665"))))
+ '(whitespace-space ((t (:foreground "#666566656665"))))
+ '(whitespace-space-after-tab ((t (:foreground "#666566656665"))))
+ '(whitespace-space-before-tab ((t (:foreground "#666566656665"))))
+ '(whitespace-tab ((t (:foreground "#666566656665"))))
+ '(whitespace-trailing ((t (:foreground "#666566656665"))))
+ '(widget-button ((t (:inherit fixed-pitch :weight regular))))
+ '(window-divider ((t (:foreground "black"))))
+ '(window-divider-first-pixel ((t :background "#242424" :foreground "#242424")))
+ '(window-divider-last-pixel ((t :background "#242424" :foreground "#242424")))
+ '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
+ '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2")))))
 
 ;;
 ;; -> image-dired

@@ -47,14 +47,30 @@
 (setq load-prefer-newer t)
 #+end_src
 
-* package-extra
+* package-local
 
 #+begin_src elisp
 ;;
-;; -> package-extra
+;; -> package-local
 ;;
 (use-package fd-find
   :load-path "~/repos/fd-find")
+#+end_src
+
+* package-remote
+
+#+begin_src elisp
+;;
+;; -> package-remote
+;;
+;; will be able to remove the fillowing package-vc-install as of emacs 20
+;; as this will be built-in
+(unless (package-installed-p 'vc-use-package)
+  (package-vc-install "https://github.com/slotThe/vc-use-package"))
+
+;; now use-package has the :vc keyword!
+(use-package org-ql
+  :vc (:fetcher github :repo "alphapapa/org-ql"))
 #+end_src
 
 * use-package
