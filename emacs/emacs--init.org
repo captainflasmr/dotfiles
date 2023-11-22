@@ -87,7 +87,7 @@
 (use-package gnuplot)
 (use-package ahk-mode)
 (use-package kbd-mode
-  :load-path "~/.config/emacs/elisp/")
+  :vc (:fetcher github :repo "kmonad/kbd-mode"))
 (use-package embark-consult)
 (use-package find-file-rg)
 (use-package gruvbox-theme)
@@ -1769,7 +1769,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ;; -> ada
 ;;
 (use-package ada-mode
-  :load-path "~/repos/old-ada-mode")
+    :vc (:fetcher github :repo "tkurtbond/old-ada-mode"))
 
 (defun my/eglot-dir-locals ()
   "Create .dir-locals.el file for eglot ada-mode using the selected dired path."

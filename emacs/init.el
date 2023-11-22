@@ -53,7 +53,7 @@
 (use-package gnuplot)
 (use-package ahk-mode)
 (use-package kbd-mode
-  :load-path "~/.config/emacs/elisp/")
+  :vc (:fetcher github :repo "kmonad/kbd-mode"))
 (use-package embark-consult)
 (use-package find-file-rg)
 (use-package gruvbox-theme)
@@ -487,9 +487,11 @@
  ;; If there is more than one, they won't work right.
  '(custom-enabled-themes '(wombat))
  '(package-selected-packages
-    '(indent-bars spacious-padding proced-narrow dashboard gpr-ts-mode ztree qml-mode yaml-mode company powerthesaurus jinx elfeed emms magit marginalia orderless vertico deadgrep ox-hugo visual-fill-column rainbow-mode org-rainbow-tags org-bullets toc-org doom-themes ef-themes gruvbox-theme find-file-rg embark-consult ahk-mode gnuplot ox-gfm git-timemachine i3wm-config-mode diredfl org-ql vc-use-package))
+    '(indent-bars spacious-padding proced-narrow dashboard gpr-ts-mode ada-mode ztree qml-mode yaml-mode company powerthesaurus jinx elfeed emms magit marginalia orderless vertico deadgrep ox-hugo visual-fill-column rainbow-mode org-rainbow-tags org-bullets toc-org doom-themes ef-themes gruvbox-theme find-file-rg embark-consult kbd-mode ahk-mode gnuplot ox-gfm git-timemachine i3wm-config-mode diredfl org-ql vc-use-package))
  '(package-vc-selected-packages
     '((indent-bars :vc-backend Git :url "https://github.com/jdtsmith/indent-bars")
+       (ada-mode :vc-backend Git :url "https://github.com/tkurtbond/old-ada-mode")
+       (kbd-mode :vc-backend Git :url "https://github.com/kmonad/kbd-mode")
        (org-ql :vc-backend Git :url "https://github.com/alphapapa/org-ql")
        (vc-use-package :vc-backend Git :url "https://github.com/slotThe/vc-use-package")))
  '(warning-suppress-log-types '((frameset)))
@@ -1447,7 +1449,7 @@
 ;; -> ada
 ;;
 (use-package ada-mode
-  :load-path "~/repos/old-ada-mode")
+    :vc (:fetcher github :repo "tkurtbond/old-ada-mode"))
 
 (defun my/eglot-dir-locals ()
   "Create .dir-locals.el file for eglot ada-mode using the selected dired path."
