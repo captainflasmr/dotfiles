@@ -1,7 +1,7 @@
 /* -----------------------------------------------------
  * Import Pywal colors
  * ----------------------------------------------------- */
-@import 'colors-waybar.css';
+/* @import 'colors-waybar.css'; */
 
 @define-color foreground rgba(255, 255, 255, 0.8);
 @define-color background rgba(50, 50, 60, 0.9);
@@ -14,13 +14,13 @@
     /* `otf-font-awesome` is required to be installed for icons */
     font-family: SourceCodePro;
     color: @foreground;
-    border-radius: 0px;
+    border-radius: 10px;
     font-size: 16px;
 }
 
 window#waybar {
     background-color: @background;
-    border: 0px solid @border-theme;
+    border: 2px solid @border-theme;
 }
 
 window#waybar.hidden {
@@ -47,6 +47,7 @@ button:hover {
 }
 
 #workspaces button {
+    padding: 0.5em;
 }
 
 #workspaces button:hover {
@@ -54,7 +55,7 @@ button:hover {
 }
 
 #workspaces button.focused {
-    box-shadow: inset 0 -3px @foreground;
+    box-shadow: inset 0 -2px @foreground;
 }
 
 #workspaces button.urgent {
@@ -67,8 +68,6 @@ button:hover {
 }
 
 #clock,
-#battery,
-#cpu,
 #memory,
 #disk,
 #temperature,
@@ -78,27 +77,29 @@ button:hover {
 #wireplumber,
 #custom-media,
 #mode,
-#idle_inhibitor,
 #scratchpad,
-#button,
 #workspaces,
 #custom-keyboard,
-#tray,
 #window,
+#tray,
+#idle_inhibitor,
+#cpu,
+#battery,
+#custom-launcher,
 #mpd {
-    padding: 0em 0.2em 0em 0.2em;
-    margin: 0.2em 0.1em 0.2em 0.1em;
+    padding: 0em 0em 0em 0em;
+    margin: 0em 0em 0em 0em;
 }
 
 #custom-browser,
 #custom-files,
 #custom-terminal,
+#custom-appmenu,
 #custom-power,
-#custom-launcher,
-#custom-appmenu
+#custom-recorder
 {
-    padding: 0em 0.2em 0em 0.2em;
-    margin: 0.2em 0.8em 0.2em 0.2em;
+    padding: 0em 0em 0em 0em;
+    margin: 0.4em 0.4em 0.4em 0em;
 }
 
 #custom-spacer {
@@ -154,6 +155,7 @@ button:hover {
 }
 
 #battery.critical:not(.charging) {
+    padding: 0.5em;
     background-color: #f53c3c;
     color: #ffffff;
     animation-name: blink;
@@ -313,4 +315,13 @@ label {
 
 #custom-keyboard {
     background-color: @background-modules;
+}
+
+/* styles for recorder */
+#custom-recorder.recording {
+	color:#c9545d;
+}
+
+#custom-recorder.ready {
+	color:@foreground;
 }

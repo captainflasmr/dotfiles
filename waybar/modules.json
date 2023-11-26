@@ -2,7 +2,8 @@
     "sway/workspaces": {
         "disable-scroll": true,
         "all-outputs": true,
-        "format": "{name} {icon}",
+        // "format": "{name} {icon}",
+        "format": "{name}",
         "format-icons": {
             "1": "😃",
             "2": "🐱",
@@ -69,18 +70,18 @@
     },
 
     "custom/power": {
-        "format":"⏻",
+        "format":"⏻ ",
         "on-click": "nwg-bar",
         "tooltip": false,
         "min-length": 1,
-        "max-length": 1,
+        "max-length": 3,
     },
 
     "custom/launcher": {
     	  "format":"",
     	  "on-click": "exec nwg-drawer -c 7 -is 70 -spacing 23",
     	  "tooltip": false,
-        "min-length": 1,
+        "min-length": 2,
         "max-length": 4
     },
 
@@ -94,17 +95,17 @@
     "clock": {
         // "timezone": "America/New_York",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-        "format": "{:%Y-%m-%d %H:%M}",
-        "format-alt": "{:%H:%M}",
+        "format-alt": "{:%Y-%m-%d %H:%M}",
+        "format": "{:%H:%M}",
         "min-length": 1,
         "max-length": 18,
     },
 
     "cpu": {
-        "format": "{usage}%",
+        "format": " {usage}%",
         "tooltip": false,
         "interval": 1,
-        "min-length": 3,
+        "min-length": 4,
         "max-length": 6,
     },
 
@@ -121,7 +122,7 @@
         "critical-threshold": 90,
         // "format-critical": "{temperatureC}°C {icon}",
         // "format": "{temperatureC}°C {icon}",
-        "format": "{temperatureC} {icon}",
+        "format": "{temperatureC}{icon}",
         "format-icons": ["❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "⛅", "⛅", "⛅", "🌞", "🌞", "🌞", "🔥"],
         "min-length": 1,
         "max-length": 10,
@@ -147,21 +148,20 @@
             "charging": ["  ", "  ", "  ", "  ", "  "],
             "default": ["", "", "", "", ""],
         },
-        "format": "{capacity} {icon}",
-        "format-charging": "{capacity}  ",
-        "format-plugged": "{capacity}  ",
-        "format-alt": "{time} {icon}",
+        "format": "{capacity}% {icon} ",
+        "format-charging": "  {capacity} ",
+        "format-plugged": "  {capacity} ",
+        "format-alt": "{time} {icon} ",
         "format-full": "",
-        "min-length": 6,
-        "max-length": 20,
+        "min-length": 3,
+        "max-length": 30,
+        // "align": 2,
     },
 
     "pulseaudio": {
         "scroll-step": 0.1,
         "format": "{volume} {icon}",
-        "format-bluetooth": "{volume}% {icon} {format_source}",
-        "format-bluetooth-muted": " {icon} {format_source}",
-        "format-muted": " {format_source}",
+        "format-muted": "🔇 {format_source}",
         "format-source": "{volume}% ",
         "format-source-muted": "",
         "format-icons": {
@@ -171,7 +171,7 @@
             "phone": "",
             "portable": "",
             "car": "",
-            "default": ["", " ", " "]
+            "default": ["", "", ""]
         },
         "on-click": "pavucontrol"
     },
@@ -187,9 +187,6 @@
     "backlight": {
         "scroll-step": 10,
         "format": "{percent} 🔅",
-        "min-length": 1,
-        "max-length": 8,
-        "format-icons": ["", "", "", "", "", "", "", "", ""]
     },
 
     "sway/window": {
@@ -212,13 +209,23 @@
     },
 
     "idle_inhibitor": {
-	     "format": "{icon} ",
+	     "format": "{icon}",
 	     "format-icons": {
 		      "activated": "",
 		      "deactivated": ""
 	     },
         "min-length": 2,
         "max-length": 6,
-	     "timeout": 30.5,
+	     "timeout": 600.0,
+    },
+
+    // Custom waybar module
+    "custom/recorder": {
+        "format": "",
+        "on-click": "screen-record.sh",
+        "return-type": "json",
+        "interval": 1,
+        "exec": "if pgrep \"^wf-recorder$\" >/dev/null; then echo '{\"class\": \"recording\"}'; else echo '{\"class\": \"ready\"}'; fi",
+        // "exec-if": "pgrep wf-recorder"
     }
 }

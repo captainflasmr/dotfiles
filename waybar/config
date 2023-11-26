@@ -4,7 +4,7 @@
     "mode": "dock",
     "height": 45,
     "width": 1910,
-    "spacing": 10,
+    "spacing": 20,
     "margin-top": 3,
     // "margin-right": 10,
     // "margin-left": 10,
@@ -25,17 +25,18 @@
         "sway/window"
     ],
     "modules-right": [
+        "custom/recorder",
         "custom/toolbar/undo",
         "custom/toolbar/redo",
         "cpu",
         "memory",
         "temperature",
         // "network",
+        "custom/keyboard",
         "tray",
         "battery",
-        "custom/keyboard",
-        "clock"
-        // "custom/power"
+        "clock",
+        "custom/power"
         // "custom/exit",
     ],
 }
