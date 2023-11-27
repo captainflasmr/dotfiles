@@ -71,8 +71,8 @@
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
 (use-package org-rainbow-tags)
-  ;; :hook
-  ;; (org-mode . org-rainbow-tags-mode))
+;; :hook
+;; (org-mode . org-rainbow-tags-mode))
 
 (use-package rainbow-mode
   :hook
@@ -485,7 +485,7 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
-  '(custom-enabled-themes '(wombat))
+  '(custom-enabled-themes '(gruvbox))
   '(warning-suppress-log-types '((frameset)))
   '(warning-suppress-types '((frameset))))
 
@@ -633,42 +633,42 @@
          "~/DCIM/content/posts--all.org"
          "Posts")
        "** TODO %^{title} :2023:
-      :PROPERTIES:
-      :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>-posts--%\\1
-      :EXPORT_HUGO_SECTION: posts
-      :EXPORT_HUGO_LASTMOD: <%<%Y-%m-%d %H:%M>>
-      :EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :thumbnail /posts/%<%Y%m%d%H%M%S>-posts--%\\1.jpg
-      :END:
-      %?
-      " :prepend t :jump-to-captured t)
+:PROPERTIES:
+:EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>-posts--%\\1
+:EXPORT_HUGO_SECTION: posts
+:EXPORT_HUGO_LASTMOD: <%<%Y-%m-%d %H:%M>>
+:EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :thumbnail /posts/%<%Y%m%d%H%M%S>-posts--%\\1.jpg
+:END:
+%?
+" :prepend t :jump-to-captured t)
 
      ("e" "Emacs" plain
        (file+headline
          "~/DCIM/content/emacs--all.org"
          "Emacs")
        "** TODO %^{title} :emacs:2023:
-      :PROPERTIES:
-      :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>-emacs--%\\1
-      :EXPORT_HUGO_SECTION: emacs
-      :EXPORT_HUGO_LASTMOD: <%<%Y-%m-%d %H:%M>>
-      :EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :thumbnail /emacs/%<%Y%m%d%H%M%S>-emacs--%\\1.jpg
-      :END:
-      %?
-      " :prepend t :jump-to-captured t)
+:PROPERTIES:
+:EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>-emacs--%\\1
+:EXPORT_HUGO_SECTION: emacs
+:EXPORT_HUGO_LASTMOD: <%<%Y-%m-%d %H:%M>>
+:EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :thumbnail /emacs/%<%Y%m%d%H%M%S>-emacs--%\\1.jpg
+:END:
+%?
+" :prepend t :jump-to-captured t)
 
      ("l" "Linux" plain
        (file+headline
          "~/DCIM/content/linux--all.org"
          "Linux")
        "** TODO %^{title} :2023:
-      :PROPERTIES:
-      :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>-linux--%\\1
-      :EXPORT_HUGO_SECTION: linux
-      :EXPORT_HUGO_LASTMOD: <%<%Y-%m-%d %H:%M>>
-      :EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :thumbnail /linux/%<%Y%m%d%H%M%S>-emacs--%\\1.jpg
-      :END:
-      %?
-      " :prepend t :jump-to-captured t)
+:PROPERTIES:
+:EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>-linux--%\\1
+:EXPORT_HUGO_SECTION: linux
+:EXPORT_HUGO_LASTMOD: <%<%Y-%m-%d %H:%M>>
+:EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :thumbnail /linux/%<%Y%m%d%H%M%S>-emacs--%\\1.jpg
+:END:
+%?
+" :prepend t :jump-to-captured t)
 
      ("a" "Art")
 
@@ -677,37 +677,37 @@
          "~/DCIM/content/art--all.org"
          "Art")
        "** TODO %^{title} Video :videos:painter:krita:artrage:2023:
-      :PROPERTIES:
-      :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>--%\\1-%\\2
-      :EXPORT_HUGO_SECTION: art--videos
-      :EXPORT_HUGO_LASTMOD: <%<%Y-%m-%d %H:%M>>
-      :EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :thumbnail /art--videos/%<%Y%m%d%H%M%S>--%\\1-%\\2.jpg
-      :VIDEO:
-      :END:
-      #+begin_export md
-      {{< youtube %^{youtube} >}}
-      #+end_export
-      %?
-      " :prepend t :jump-to-captured t)
+:PROPERTIES:
+:EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>--%\\1-%\\2
+:EXPORT_HUGO_SECTION: art--videos
+:EXPORT_HUGO_LASTMOD: <%<%Y-%m-%d %H:%M>>
+:EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :thumbnail /art--videos/%<%Y%m%d%H%M%S>--%\\1-%\\2.jpg
+:VIDEO:
+:END:
+#+begin_export md
+{{< youtube %^{youtube} >}}
+#+end_export
+%?
+" :prepend t :jump-to-captured t)
 
      ("aa" "Art" plain
        (file+headline
          "~/DCIM/content/art--all.org"
          "Art")
        "** TODO %^{title} :painter:krita:artrage:2023:
-      :PROPERTIES:
-      :EXPORT_FILE_NAME: %\\1
-      :EXPORT_HUGO_SECTION: art--all
-      :EXPORT_HUGO_LASTMOD: <%<%Y-%m-%d %H:%M>>
-      :EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :thumbnail /art--all/%\\1.jpg
-      :VIDEO:
-      :END:
-      #+attr_org: :width 300px
-      #+attr_html: :width 100%
-      #+begin_export md
-      #+end_export
-      %?
-      " :prepend t :jump-to-captured t)))
+:PROPERTIES:
+:EXPORT_FILE_NAME: %\\1
+:EXPORT_HUGO_SECTION: art--all
+:EXPORT_HUGO_LASTMOD: <%<%Y-%m-%d %H:%M>>
+:EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :thumbnail /art--all/%\\1.jpg
+:VIDEO:
+:END:
+#+attr_org: :width 300px
+#+attr_html: :width 100%
+#+begin_export md
+#+end_export
+%?
+" :prepend t :jump-to-captured t)))
 
 ;;
 ;; -> org
@@ -888,7 +888,6 @@
   '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2"))))
   '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
   '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.1 :family "Source Code Pro"))))
-  '(fixed-pitch ((t (:family "Source Code Pro" :height 130))))
   '(org-block ((t (:inherit fixed-pitch))))
   '(org-code ((t (:inherit (shadow fixed-pitch)))))
   '(org-date ((t (:inherit fixed-pitch))))
@@ -902,12 +901,16 @@
   '(org-table ((t (:inherit fixed-pitch :foreground "#83a598"))))
   '(org-tag ((t (:inherit (shadow fixed-pitch) :weight regular :height 0.7))))
   '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
-  '(variable-pitch ((t (:family "Source Sans Pro" :height 140))))
   '(outline-1 ((t (:weight regular))))
   '(outline-2 ((t (:weight regular))))
   '(widget-button ((t (:inherit fixed-pitch :weight regular))))
   '(window-divider ((t (:foreground "black"))))
   '(vertical-border ((t (:foreground "#000000")))))
+
+  (custom-theme-set-faces
+   'user
+   '(variable-pitch ((t (:family "Sans Serif" :height 135 :weight normal))))
+   '(fixed-pitch ((t ( :family "Fira Code Retina" :height 130)))))
 
 ;;
 ;; -> image-dired
@@ -1432,7 +1435,7 @@
 ;; -> ada
 ;;
 (use-package ada-mode
-    :vc (:fetcher github :repo "captainflasmr/old-ada-mode"))
+  :vc (:fetcher github :repo "captainflasmr/old-ada-mode"))
 
 (defun my/eglot-dir-locals ()
   "Create .dir-locals.el file for eglot ada-mode using the selected dired path."
@@ -1557,7 +1560,7 @@
        "master" "typescript/src")
      (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
 
-   ;; (mapc #'treesit-install-language-grammar
+;; (mapc #'treesit-install-language-grammar
 ;;      (mapcar #'car treesit-language-source-alist))
 
 ;;  (use-package ada-ts-mode)
@@ -1868,8 +1871,8 @@
 
 (setq org-directory "~/DCIM/content/")
 (setq org-agenda-files
-      (cl-remove-if-not #'(lambda (file) (string-suffix-p ".org" file))
-                        (directory-files org-directory t "\\.org$")))
+  (cl-remove-if-not #'(lambda (file) (string-suffix-p ".org" file))
+    (directory-files org-directory t "\\.org$")))
 
 (defun convert-weight (weight)
   (let* ((parts (split-string weight ":"))
@@ -1910,13 +1913,13 @@
   (interactive)
   (org-ql-search (org-agenda-files)
     '(and (todo)
-          (parent (and (tags "linux") (tags "emacs") (not (tags "noexport")))))
+       (parent (and (tags "linux") (tags "emacs") (not (tags "noexport")))))
     :title "Emacs-related project tasks"
     :sort '(date priority todo)
     :super-groups '((:auto-parent t))))
 
 ;; (unless (package-installed-p 'indent-bars)
-  ;; (package-vc-install "https://github.com/jdtsmith/indent-bars"))
+;; (package-vc-install "https://github.com/jdtsmith/indent-bars"))
 
 (use-package indent-bars
   :vc (:fetcher github :repo "jdtsmith/indent-bars")
@@ -1926,8 +1929,8 @@
   :ensure t
   :custom
   ((chatgpt-shell-openai-key
-    (lambda ()
-      (auth-source-pass-get 'secret "openai-key")))))
+     (lambda ()
+       (auth-source-pass-get 'secret "openai-key")))))
 
 (use-package org-tidy
   :ensure t
