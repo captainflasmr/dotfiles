@@ -224,22 +224,27 @@
 (define-key my-jump-keymap (kbd "o") (lambda () (interactive) (find-file "~/.config/emacs/emacs--init.org")))
 (define-key my-jump-keymap (kbd "p") 'emms)
 (define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
+(define-key my-jump-keymap (kbd "t") 'customize-themes)
 (define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
 (global-set-key (kbd "M-m") my-jump-keymap)
 
 (defvar my-win-keymap (make-sparse-keymap))
 (define-key my-win-keymap (kbd "b") 'toggle-frame-tab-bar)
+(define-key my-win-keymap (kbd "c") 'toggle-truncate-lines)
 (define-key my-win-keymap (kbd "d") 'window-divider-mode)
-(define-key my-win-keymap (kbd "f") 'font-lock-mode)
+(define-key my-win-keymap (kbd "f") 'visual-fill-column-mode)
+(define-key my-win-keymap (kbd "g") 'revert-buffer-quick)
 (define-key my-win-keymap (kbd "i") 'indent-guide-mode)
-(define-key my-win-keymap (kbd "c") 'display-fill-column-indicator-mode)
+(define-key my-win-keymap (kbd "j") 'jinx-mode)
+(define-key my-win-keymap (kbd "k") 'font-lock-mode)
 (define-key my-win-keymap (kbd "l") 'display-line-numbers-mode)
 (define-key my-win-keymap (kbd "m") 'toggle-menu-bar-mode-from-frame)
 (define-key my-win-keymap (kbd "n") 'global-tab-line-mode)
 (define-key my-win-keymap (kbd "o") 'org-modern-mode)
 (define-key my-win-keymap (kbd "p") 'variable-pitch-mode)
+(define-key my-win-keymap (kbd "s") 'spacious-padding-mode)
 (define-key my-win-keymap (kbd "t") 'org-tidy-toggle)
-(define-key my-win-keymap (kbd "v") 'visual-fill-column-mode)
+(define-key my-win-keymap (kbd "v") 'visual-line-mode)
 (define-key my-win-keymap (kbd "w") 'whitespace-mode)
 (global-set-key (kbd "M-o") my-win-keymap)
 
@@ -493,7 +498,6 @@
 (setq kill-buffer-query-functions nil)
 (setq use-dialog-box nil)
 (setq switch-to-buffer-obey-display-actions t)
-(setq ediff-split-window-function 'split-window-horizontally)
 (setq disabled-command-function nil)
 (setq auto-revert-use-notify nil)
 (setq auto-revert-verbose nil)
@@ -559,7 +563,7 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
-  '(custom-enabled-themes '(doom-henna))
+  '(custom-enabled-themes '(doom-solarized-dark-high-contrast))
   '(warning-suppress-log-types '((frameset)))
   '(warning-suppress-types '((frameset))))
 
@@ -1147,7 +1151,7 @@
 
 (add-hook 'text-mode-hook #'visual-line-mode)
 (add-hook 'org-mode-hook '(lambda () (visual-line-mode)))
-(setq truncate-partial-width-windows 100)
+(setq-default truncate-partial-width-windows 120)
 (set-frame-parameter nil 'alpha-background 98)
 (add-to-list 'default-frame-alist '(alpha-background . 98))
 (set-fringe-mode '(0 . 0))
@@ -1159,7 +1163,7 @@
 
 (window-divider-mode -1)
 
-(setq-default left-margin-width 1 right-margin-width 0)
+(setq-default left-margin-width 0 right-margin-width 0)
 
 ;;
 ;; -> imenu
@@ -1213,9 +1217,9 @@
             (propertize " * Modified " 'face
               '(:background "#ff0000" :foreground "#ffffff" :inherit bold)) "")))
 
-(set-face-attribute 'mode-line-active nil :height 135 :underline nil :overline nil :box nil
-  :background "#0b5c68" :foreground "#ffffff")
-(set-face-attribute 'mode-line-inactive nil :height 135 :underline nil :overline nil
+(set-face-attribute 'mode-line-active nil :height 130 :underline nil :overline nil :box nil
+  :background "#a7a7a7" :foreground "#000000")
+(set-face-attribute 'mode-line-inactive nil :height 130 :underline nil :overline nil
   :background "#151515" :foreground "#cacaca")
 
 (setq-default mode-line-format
@@ -1770,7 +1774,7 @@
   (lambda () (setq sh-basic-offset 3)))
 
 (use-package indent-guide
-  :init (indent-guide-global-mode 1)
+  :init (indent-guide-global-mode -1)
   :custom
   (setq indent-guide-char ":")
   (setq indent-guide-recursive t)
@@ -1948,9 +1952,9 @@
   (spacious-padding-mode -1)
   :config
   (setq spacious-padding-widths
-    '( :internal-border-width 10
+    '(:internal-border-width 20
        :header-line-width 4
-       :mode-line-width 2
+       :mode-line-width 1
        :tab-width 4
        :right-divider-width 2
        :scroll-bar-width 8)))
