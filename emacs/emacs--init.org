@@ -45,6 +45,13 @@
 (setq use-package-always-ensure t)
 (require 'use-package)
 (setq load-prefer-newer t)
+
+;; (when init-file-debug
+  (setq use-package-verbose t
+        use-package-expand-minimally nil
+        use-package-compute-statistics t
+        debug-on-error t)
+;; )
 #+end_src
 
 * package-local
@@ -70,6 +77,7 @@
 
 ;; now use-package has the :vc keyword!
 (use-package org-ql
+  :defer t
   :vc (:fetcher github :repo "alphapapa/org-ql"))
 #+end_src
 
@@ -83,9 +91,10 @@
   :init (diredfl-global-mode 1))
 (use-package i3wm-config-mode)
 (use-package git-timemachine)
-(use-package ox-gfm)
+;; (use-package ox-gfm)
 (use-package gnuplot)
-(use-package ahk-mode)
+(use-package ahk-mode
+  :defer t)
 (use-package kbd-mode
   :vc (:fetcher github :repo "kmonad/kbd-mode"))
 (use-package embark-consult)
@@ -104,10 +113,6 @@
   :config
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
-(use-package org-rainbow-tags)
-;; :hook
-;; (org-mode . org-rainbow-tags-mode))
-
 (use-package rainbow-mode
   :hook
   (prog-mode . rainbow-mode)
@@ -119,12 +124,11 @@
   (setq-default visual-fill-column-center-text t))
 
 (use-package ox-hugo
+  :defer t
   :config
   (setq org-hugo-front-matter-format "yaml"))
 
-(use-package embark
-  :bind
-  ("C-c ," . embark-act))
+(use-package embark)
 
 (use-package deadgrep
   :custom
@@ -133,11 +137,88 @@
 
 * completion
 
+#+begin_src elisp
+;;
+;; -> completion
+;;
+(use-package corfu
+  ;; Optional customizations
+  :custom
+  (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+  (corfu-auto t)                 ;; Enable auto completion
+  (corfu-separator ?\s)          ;; Orderless field separator
+  (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
+  (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+  (corfu-preview-current nil)    ;; Disable current candidate preview
+  (corfu-preselect 'prompt)      ;; Preselect the prompt
+  (corfu-on-exact-match nil)     ;; Configure handling of exact matches
+  (corfu-scroll-margin 5)        ;; Use scroll margin
+
+  ;; Enable Corfu only for certain modes.
+  :hook ((shell-mode . corfu-mode)
+          (eshell-mode . corfu-mode))
+
+  ;; Recommended: Enable Corfu globally.  This is recommended since Dabbrev can
+  ;; be used globally (M-/).  See also the customization variable
+  ;; `global-corfu-modes' to exclude certain modes.
+  ;; :init
+  ;; (global-corfu-mode)
+  )
+
+;; A few more useful configurations...
+(use-package emacs
+  :init
+  ;; TAB cycle if there are only few candidates
+  (setq completion-cycle-threshold 3)
+
+  ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
+  ;; Corfu commands are hidden, since they are not supposed to be used via M-x.
+  ;; (setq read-extended-command-predicate
+  ;;       #'command-completion-default-include-p)
+
+  ;; Enable indentation+completion using the TAB key.
+  ;; `completion-at-point' is often bound to M-TAB.
+  (setq tab-always-indent 'complete))
+
+;; Configure Tempel
+(use-package tempel
+  ;; Require trigger prefix before template name when completing.
+  ;; :custom
+  ;; (tempel-trigger-prefix "<")
+
+  :bind (("M-+" . tempel-complete) ;; Alternative tempel-expand
+          ("M-*" . tempel-insert))
+
+  :init
+  ;; Setup completion at point
+  (defun tempel-setup-capf ()
+    ;; Add the Tempel Capf to `completion-at-point-functions'.
+    ;; `tempel-expand' only triggers on exact matches. Alternatively use
+    ;; `tempel-complete' if you want to see all matches, but then you
+    ;; should also configure `tempel-trigger-prefix', such that Tempel
+    ;; does not trigger too often when you don't expect it. NOTE: We add
+    ;; `tempel-expand' *before* the main programming mode Capf, such
+    ;; that it will be tried first.
+    (setq-local completion-at-point-functions
+      (cons #'tempel-expand
+        completion-at-point-functions)))
+
+  (add-hook 'conf-mode-hook 'tempel-setup-capf)
+  (add-hook 'prog-mode-hook 'tempel-setup-capf)
+  (add-hook 'text-mode-hook 'tempel-setup-capf)
+
+  ;; Optionally make the Tempel templates available to Abbrev,
+  ;; either locally or globally. `expand-abbrev' is bound to C-x '.
+  ;; (add-hook 'prog-mode-hook #'tempel-abbrev-mode)
+  (global-tempel-abbrev-mode))
+#+end_src
+
+* modeline-completion
 ** bespoke
 
 #+begin_src elisp :tangle no
 ;;
-;; -> bespoke
+;; -> modeline-completion-bespoke
 ;;
 (defun find-file-vanilla ()
   "Simple find file from current directory using the linux find command."
@@ -164,7 +245,7 @@
 
 #+begin_src elisp :tangle no
 ;;
-;; -> completion
+;; -> modeline-completion-vanilla
 ;;
 (defun fido-style ()
   (interactive)
@@ -183,7 +264,7 @@
 
 #+begin_src elisp
 ;;
-;; -> completion
+;; -> modeline-completion-advanced
 ;;
 (use-package vertico
   :custom
@@ -217,32 +298,43 @@
 ;; -> navigation
 ;;
 (defvar my-jump-keymap (make-sparse-keymap))
-(define-key my-jump-keymap(kbd "a") 'emms-browse-by-album)
+(define-key my-jump-keymap (kbd "1") (lambda () (interactive)(tab-bar-select-tab 1)))
+(define-key my-jump-keymap (kbd "2") (lambda () (interactive)(tab-bar-select-tab 2)))
+(define-key my-jump-keymap (kbd "3") (lambda () (interactive)(tab-bar-select-tab 3)))
+(define-key my-jump-keymap (kbd "4") (lambda () (interactive)(tab-bar-select-tab 4)))
+(define-key my-jump-keymap (kbd "5") (lambda () (interactive)(tab-bar-select-tab 5)))
+(define-key my-jump-keymap (kbd "a") 'emms-browse-by-album)
 (define-key my-jump-keymap (kbd "b") (lambda () (interactive) (find-file "~/bin")))
 (define-key my-jump-keymap (kbd "c") (lambda () (interactive) (find-file "~/DCIM/Camera")))
-(define-key my-jump-keymap (kbd "d") (lambda () (interactive) (find-file "~/DCIM/content")))
+(define-key my-jump-keymap (kbd "d") (lambda () (interactive) (find-file "~/DCIM/content/")))
 (define-key my-jump-keymap (kbd "e") (lambda () (interactive) (find-file "~/.config/emacs/init.el")))
-(define-key my-jump-keymap (kbd "f") (lambda () (interactive) (find-file "~/.config")))
-(define-key my-jump-keymap (kbd "i") (lambda () (interactive) (find-file "~/.config/emacs/image-dired")))
+(define-key my-jump-keymap (kbd "f") 'find-file-rg)
+(define-key my-jump-keymap (kbd "g") (lambda () (interactive) (find-file "~/.config")))
+(define-key my-jump-keymap (kbd "i") (lambda () (interactive) (find-file "~/DCIM/content/aaa--todo.org")))
 (define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~")))
-(define-key my-jump-keymap (kbd "m") (lambda () (interactive) (find-file "~/DCIM")))
+(define-key my-jump-keymap (kbd "m") 'consult-recent-file)
 (define-key my-jump-keymap (kbd "n") (lambda () (interactive) (find-file "~/nas")))
 (define-key my-jump-keymap (kbd "o") (lambda () (interactive) (find-file "~/.config/emacs/emacs--init.org")))
 (define-key my-jump-keymap (kbd "p") 'emms)
 (define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
-(define-key my-jump-keymap (kbd "t") (lambda () (interactive) (find-file "~/DCIM/content/aaa--todo.org")))
-(define-key my-jump-keymap (kbd "C-q") 'quoted-insert)
-(global-set-key (kbd "C-q") my-jump-keymap)
+(define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
+(global-set-key (kbd "M-m") my-jump-keymap)
 
-;; (defvar my-winmove-keymap (make-sparse-keymap))
-;; (define-key my-winmove-keymap(kbd "h") 'windmove-left)
-;; (define-key my-winmove-keymap(kbd "j") 'windmove-down)
-;; (define-key my-winmove-keymap(kbd "k") 'windmove-up)
-;; (define-key my-winmove-keymap(kbd "l") 'windmove-right)
-;; (define-key my-winmove-keymap(kbd "q") 'delete-window)
-;; (define-key my-winmove-keymap(kbd "s") 'split-window-vertically)
-;; (define-key my-winmove-keymap(kbd "v") 'split-window-horizontally)
-;; (global-set-key (kbd "C-w") my-winmove-keymap)
+(defvar my-win-keymap (make-sparse-keymap))
+(define-key my-win-keymap (kbd "b") 'toggle-frame-tab-bar)
+(define-key my-win-keymap (kbd "d") 'window-divider-mode)
+(define-key my-win-keymap (kbd "f") 'font-lock-mode)
+(define-key my-win-keymap (kbd "i") 'indent-guide-mode)
+(define-key my-win-keymap (kbd "c") 'display-fill-column-indicator-mode)
+(define-key my-win-keymap (kbd "l") 'display-line-numbers-mode)
+(define-key my-win-keymap (kbd "m") 'toggle-menu-bar-mode-from-frame)
+(define-key my-win-keymap (kbd "n") 'global-tab-line-mode)
+(define-key my-win-keymap (kbd "o") 'org-modern-mode)
+(define-key my-win-keymap (kbd "p") 'variable-pitch-mode)
+(define-key my-win-keymap (kbd "t") 'org-tidy-toggle)
+(define-key my-win-keymap (kbd "v") 'visual-fill-column-mode)
+(define-key my-win-keymap (kbd "w") 'whitespace-mode)
+(global-set-key (kbd "M-o") my-win-keymap)
 #+end_src
 
 * unbinding
@@ -253,6 +345,9 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ;;
 ;; -> unbinding
 ;;
+(global-unset-key (kbd "C-z"))
+(global-unset-key (kbd "C-h h"))
+
 (use-package diff-mode
   :hook
   (diff-mode . (lambda ()
@@ -423,15 +518,13 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ;;
 ;; -> keybinding
 ;;
-(global-set-key (kbd "C-x x f") 'find-file-rg)
-(global-set-key (kbd "C-M-n") 'next-error)
-(global-set-key (kbd "C-M-p") 'previous-error)
-(global-set-key (kbd "M-H") 'mark-paragraph)
 (global-set-key (kbd "M-=") 'count-words)
 (define-key minibuffer-local-map (kbd "C-c e") 'embark-collect)
+(global-set-key (kbd "M-L") 'tab-next)
+(global-set-key (kbd "M-H") 'tab-previous)
 (global-set-key (kbd "C-o") 'consult-outline)
-(global-set-key (kbd "M-o") 'consult-imenu)
-(bind-key* (kbd "M-g i") 'imenu)
+(bind-key* (kbd "M-g i") 'consult-imenu)
+(global-set-key (kbd "M-I") 'indent-region)
 (global-set-key (kbd "M-\'") 'indent-region)
 (global-set-key (kbd "C-x TAB") 'indent-region)
 (global-set-key (kbd "C-c a") 'org-agenda)
@@ -450,23 +543,16 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 (global-set-key (kbd "C-x j") 'previous-buffer)
 (global-set-key (kbd "C-x k") 'next-buffer)
 (global-set-key (kbd "C-x l") 'scroll-lock-mode)
-(global-set-key (kbd "C-x t") 'customize-themes)
 (global-set-key (kbd "M-0") 'delete-window)
 (global-set-key (kbd "M-1") 'delete-other-windows)
 (global-set-key (kbd "M-2") 'split-window-vertically)
 (global-set-key (kbd "M-3") 'split-window-horizontally)
 (global-set-key (kbd "M-;") 'my/comment-or-uncomment)
-(global-set-key (kbd "S-<f1>") 'font-lock-mode)
-(global-set-key (kbd "<f1>") 'display-line-numbers-mode)
-(global-set-key (kbd "<f2>") 'whitespace-mode)
-(global-set-key (kbd "<f3>") 'variable-pitch-mode)
-(global-set-key (kbd "<f4>") 'visual-fill-column-mode)
-(global-set-key (kbd "<f7>") 'display-fill-column-indicator-mode)
 (global-set-key (kbd "M-?") 'my/grep)
 (define-key dired-mode-map (kbd "C") 'my/rsync)
 (define-key dired-mode-map (kbd "C-c r") 'my/image-dired-sort)
 (define-key dired-mode-map (kbd "C-c d") 'my/dired-duplicate-file)
-(global-unset-key (kbd "C-z"))
+(bind-key* (kbd "C-c C-,") 'embark-act)
 #+end_src
 
 * inserts
@@ -475,16 +561,6 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ;;
 ;; -> inserts
 ;;
-(global-set-key (kbd "C-c i d")
-  (lambda ()
-    (interactive)
-    (insert (format-time-string "<%Y-%m-%d>"))))
-
-(global-set-key (kbd "C-c i t")
-  (lambda ()
-    (interactive)
-    (insert (format-time-string "%Y%m%d%H%M%S"))))
-
 (define-key prog-mode-map (kbd "C-c i b") 'my/insert-uniq-log-word)
 #+end_src
 
@@ -550,7 +626,6 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 (setq shr-max-image-proportion 0.5)
 (setq shr-max-width 80)
 (setq shr-width 70)
-;; (setq truncate-partial-width-windows t)
 (setq tooltip-hide-delay 0)
 (when (fboundp 'imagemagick-register-types)
   (imagemagick-register-types))
@@ -574,6 +649,8 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 (setq reb-re-syntax 'string)
 (setq truncate-lines t)
 (setq suggest-key-bindings nil)
+(setq tab-bar-new-button-show nil)
+(setq tab-bar-close-button-show nil)
 ;; (setq diary-file "~/DCIM/content/diary.org")
 #+end_src
 
@@ -637,16 +714,16 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
-  '(custom-enabled-themes '(gruvbox))
+  '(custom-enabled-themes '(doom-henna))
   '(warning-suppress-log-types '((frameset)))
   '(warning-suppress-types '((frameset))))
 #+end_src
 
-* defuns
+* defun
 
 #+begin_src elisp
 ;;
-;; -> defuns
+;; -> defun
 ;;
 (defun proced-settings()
   (proced-toggle-auto-update 1))
@@ -741,6 +818,45 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
       (copy-directory file new-file)
       (copy-file file new-file))
     (dired-revert)))
+
+(defun convert-weight (weight)
+  (let* ((parts (split-string weight ":"))
+          (stone (string-to-number (car parts)))
+          (pounds (string-to-number (cadr parts))))
+    (+ (* stone 14) pounds)))
+
+(defun my/copy-file-name-to-clipboard ()
+  "Copy the current buffer file name to the clipboard."
+  (interactive)
+  (let ((filename (if (equal major-mode 'dired-mode)
+                    default-directory
+                    (buffer-file-name))))
+    (when filename
+      (kill-new filename)
+      (message "Copied buffer file name '%s' to the clipboard." filename))))
+
+(global-set-key (kbd "C-c w") 'my/copy-file-name-to-clipboard)
+
+(defun my/mark-paragraph ()
+  "redefinition of mark-paragraph"
+  (interactive)
+  (forward-char)
+  (backward-paragraph)
+  (push-mark)
+  (forward-paragraph)
+  (setq mark-active t))
+
+(defun my/mark-word ()
+  "redefinition of mark-word"
+  (interactive)
+  (if (not (looking-at "\\<"))
+    (backward-word))
+  (push-mark)
+  (forward-word)
+  (setq mark-active t))
+
+(global-set-key (kbd "M-Y") 'my/mark-paragraph)
+(global-set-key (kbd "M-@") 'my/mark-word)
 #+end_src
 
 * window-positioning
@@ -906,10 +1022,60 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
     org-cycle-separator-lines 2)
   :bind
   (:map org-mode-map
-    ("M-n" . org-metadown)
-    ("M-p" . org-metaup)
+    ("M-N" . org-metadown)
+    ("M-P" . org-metaup)
     ("M-[" . org-metaleft)
     ("M-]" . org-metaright)))
+
+(defun display-year-agenda (&optional year)
+  "Display an agenda entryf for a whole year."
+  (interactive (list (read-string "Enter the year: "
+                       (format-time-string "%Y" (current-time)))))
+  (setq year (string-to-number year))
+  (org-agenda-list)
+  (org-agenda-year-view year)
+  (setq this-year (string-to-number (format-time-string "%Y" (current-time))))
+  (when (= year this-year)
+    (org-agenda-goto-today)
+    (recenter-top-bottom 10)))
+
+;; Bind a key for easy access
+(global-set-key (kbd "C-c y") 'display-year-agenda)
+
+(setq org-directory "~/DCIM/content/")
+(setq org-agenda-files
+  '(
+     "~/DCIM/content/aaa--todo.org"
+     "~/DCIM/content/art--all.org"
+     "~/DCIM/content/dad--betting.org"
+     "~/DCIM/content/downloads--all.org"
+     "~/DCIM/content/emacs--all.org"
+     "~/DCIM/content/kate--all.org"
+     "~/DCIM/content/kate--health.org"
+     "~/DCIM/content/linux--all.org"
+     "~/DCIM/content/posts--all.org"
+     "~/DCIM/content/presents.org"
+     "~/DCIM/content/subscriptions-all.org"
+     ))
+
+;; (setq org-agenda-files
+;;   (cl-remove-if-not #'(lambda (file) (string-suffix-p ".org" file))
+;;     (directory-files org-directory t "\\.org$")))
+
+(use-package org-tidy)
+;; :config
+;; (add-hook 'org-mode-hook #'org-tidy-mode))
+
+(use-package org-modern
+  :init (global-org-modern-mode -1))
+
+(defun my/org-ql-emacs ()
+  (interactive)
+  (org-ql-search (org-agenda-files)
+    '(and (done) (tags "2023") (tags "emacs"))
+    :title "Emacs-related project tasks"
+    :sort '(date priority todo)
+    :super-groups '((:auto-parent t))))
 #+end_src
 
 Disables the parenthesis matching to < and > only in org mode as it is causing matching problems when using org literate files.
@@ -978,77 +1144,17 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ;;
 ;; (setq font-general "Noto Sans Mono 14")
 ;; (setq font-general "MesloLGS Nerd Font Mono 11")
-(setq font-general "Source Code Pro 13")
+;; (setq font-general "Source Code Pro 13")
 ;; (setq font-general "Source Code Pro Light 14")
 ;; (setq font-general "Nimbus Mono PS 14")
 ;; (setq font-general "MesloLGS Nerd Font Mono 14")
-;; (setq font-general "Droid Sans Mono 14")
-;; (setq font-general "Hack Nerd Font Mono 14")
+(setq font-general "Droid Sans Mono 12")
+;; (setq font-general "Hack Nerd Font Mono 13")
 
 (set-frame-font font-general nil t)
 
 ;; the set-frame-font doesn't seem to work in server / client mode
 (add-to-list 'default-frame-alist `(font . ,font-general))
-#+end_src
-
-* skeletons
-
-#+begin_src elisp
-;;
-;; -> skeletons
-;;
-(define-skeleton jd-skel-hugo-image-size
-  "Org properties skeleton."
-  "\n"
-  "#+attr_org: :width 300px\n"
-  "#+attr_html: :width 100%")
-
-(define-skeleton jd-skel-hugo-image-emacs-banner
-  "Org properties skeleton."
-  "\n"
-  "#+attr_org: :width 300px\n"
-  "#+attr_html: :class emacs-img")
-
-(define-skeleton jd-skel-hugo-video
-  "Video hugo link."
-  "\n"
-  "\n#+begin_export md\n"
-  "{{\< video src=\"\/art--videos\/\" \>}}"
-  "\n#+end_export\n")
-
-(define-skeleton jd-skel-make-always
-  "Always make targets in a Makefile."
-  "\n"
-  "MAKEFLAGS += --always-make")
-
-(define-skeleton jd-skel-make-source
-  "Always make targets in a Makefile."
-  "\n"
-  "%.adb %.ads:\n"
-  "\tgprbuild -c $@ -P default.gpr")
-
-(define-skeleton jd-skel-org-toc
-  "Insert TOC into an org file."
-  "\n"
-  "--- TOC\n"
-  "#+TOC: headlines 1 local\n"
-  "---\n")
-
-(define-skeleton jd-skel-latex-page-break
-  "Insert TOC into an org file."
-  "\n"
-  "\\newpage\n"
-  "\\clearpage")
-
-(define-abbrev-table 'global-abbrev-table
-  '(("jdimg" "" jd-skel-hugo-image-size)
-     ("jdvid" "" jd-skel-hugo-video)
-     ("jdemb" "" jd-skel-hugo-image-emacs-banner)
-     ("jdmka" "" jd-skel-make-always)
-     ("jdmks" "" jd-skel-make-source)
-     ("jdtoc" "" jd-skel-org-toc)
-     ("jdlbr" "" jd-skel-latex-page-break)
-     ("btw" "by the way" nil)))
 #+end_src
 
 * custom-set-faces
@@ -1065,7 +1171,6 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
   '(cursor ((t (:background "#ffffff" :inverse-video t))))
   '(diredfl-date-time ((t (:foreground "#8d909b"))))
   '(diredfl-dir-heading ((t (:foreground "#aa5555" :weight bold))))
-  ;; '(diredfl-dir-name ((t (:foreground "#b4b4b4"))))
   '(diredfl-dir-priv ((t (:foreground "DarkRed"))))
   '(diredfl-exec-priv ((t (:foreground "#999999"))))
   '(diredfl-file-name ((t (:foreground "#818282"))))
@@ -1080,19 +1185,19 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
   '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2"))))
   '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
   '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.1 :family "Source Code Pro"))))
-  '(org-block ((t (:inherit fixed-pitch))))
   '(org-code ((t (:inherit (shadow fixed-pitch)))))
+  '(org-modern-date-active ((t (:inherit fixed-pitch))))
   '(org-date ((t (:inherit fixed-pitch))))
   '(org-document-info ((t (:foreground "#8f4800"))))
   '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
   '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
   '(org-link ((t (:foreground "#5555ff" :underline t))))
-  '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
   '(org-property-value ((t (:inherit fixed-pitch))) t)
   '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
-  '(org-table ((t (:inherit fixed-pitch :foreground "#83a598"))))
-  '(org-tag ((t (:inherit (shadow fixed-pitch) :weight regular :height 0.7))))
+  '(org-tag ((t (:inherit (shadow fixed-pitch) :weight regular :height 0.8))))
   '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
+  '(tab-bar ((t (:background "#282828" :foreground "#fdf4c1" :height 1.2))))
+  '(indent-guide-face ((t (:background "#282828" :foreground "#666666"))))
   '(outline-1 ((t (:weight regular))))
   '(outline-2 ((t (:weight regular))))
   '(widget-button ((t (:inherit fixed-pitch :weight regular))))
@@ -1101,7 +1206,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 
   (custom-theme-set-faces
    'user
-   '(variable-pitch ((t (:family "Sans Serif" :height 135 :weight normal))))
+   '(variable-pitch ((t (:family "Sans Serif" :height 150 :weight normal))))
    '(fixed-pitch ((t ( :family "Fira Code Retina" :height 130)))))
 #+end_src
 
@@ -1241,9 +1346,9 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 
 (add-hook 'text-mode-hook #'visual-line-mode)
 (add-hook 'org-mode-hook '(lambda () (visual-line-mode)))
-(setq truncate-partial-width-windows 140)
-(set-frame-parameter nil 'alpha-background 90)
-(add-to-list 'default-frame-alist '(alpha-background . 90))
+(setq truncate-partial-width-windows 100)
+(set-frame-parameter nil 'alpha-background 98)
+(add-to-list 'default-frame-alist '(alpha-background . 98))
 (set-fringe-mode '(0 . 0))
 (set-display-table-slot standard-display-table 0 ?\ )
 
@@ -1386,12 +1491,12 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ;;
 (setq-default mode-line-modified
   '(:eval (if (and (buffer-file-name) (buffer-modified-p))
-            (propertize " * " 'face
+            (propertize " * Modified " 'face
               '(:background "#ff0000" :foreground "#ffffff" :inherit bold)) "")))
 
-(set-face-attribute 'mode-line-active nil :height 130 :underline nil :overline nil :box nil
-  :background "#68210b" :foreground "#ffffff")
-(set-face-attribute 'mode-line-inactive nil :height 130 :underline nil :overline nil
+(set-face-attribute 'mode-line-active nil :height 135 :underline nil :overline nil :box nil
+  :background "#0b5c68" :foreground "#ffffff")
+(set-face-attribute 'mode-line-inactive nil :height 135 :underline nil :overline nil
   :background "#151515" :foreground "#cacaca")
 
 (setq-default mode-line-format
@@ -1418,7 +1523,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 
 * markdown
 
-#+begin_src elisp
+#+begin_src elisp :tangle no
 ;;
 ;; -> markdown
 ;;
@@ -1527,10 +1632,7 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
 ;;
 ;; -> spelling
 ;;
-(use-package jinx
-  :config
-  (dolist (hook '(org-mode-hook))
-    (add-hook hook #'jinx-mode)))
+(use-package jinx)
 
 (use-package powerthesaurus)
 
@@ -1642,11 +1744,10 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
     ("<tab>" . company-complete-selection))
   :config
   (setq company-minimum-prefix-length 1)
-  (setq company-idle-delay 0.05)
-  :hook (prog-mode . company-mode))
+  (setq company-idle-delay 0.05))
 
 (use-package yaml-mode)
-(use-package qml-mode)
+;; (use-package qml-mode)
 
 (add-hook 'yaml-mode-hook
   '(lambda ()
@@ -1975,7 +2076,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 
 * dashboard
 
-#+begin_src elisp
+#+begin_src elisp :tangle no
 ;;
 ;; -> dashboard
 ;;
@@ -2057,6 +2158,13 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 (setq-default lisp-indent-offset 2)
 (add-hook 'sh-mode-hook
   (lambda () (setq sh-basic-offset 3)))
+
+(use-package indent-guide
+  :init (indent-guide-global-mode 1)
+  :custom
+  (setq indent-guide-char ":")
+  (setq indent-guide-recursive t)
+  (set-face-background 'indent-guide-face "#666666"))
 #+end_src
 
 * etags
@@ -2238,8 +2346,8 @@ echo
 (defun my/eshell-hook ()
   "set up company completions to be a little more fish like"
   (interactive)
-  (company-mode)
-  (setq-local company-backends '(company-files))
+  ;; (company-mode)
+  ;; (setq-local company-backends '(company-files))
   (define-key eshell-mode-map (kbd "<tab>") #'company-complete)
   (define-key eshell-hist-mode-map (kbd "M-r") #'consult-history))
 
@@ -2247,6 +2355,20 @@ echo
   :config
   (setq eshell-scroll-to-bottom-on-input t)
   (add-hook 'eshell-mode-hook 'my/eshell-hook))
+#+end_src
+
+* chatGPT
+
+#+begin_src elisp
+;;
+;; -> chatGPT
+;;
+(use-package chatgpt-shell
+  :ensure t
+  :custom
+  ((chatgpt-shell-openai-key
+     (lambda ()
+       (auth-source-pass-get 'secret "openai-key")))))
 #+end_src
 
 * proced
@@ -2278,6 +2400,28 @@ echo
           ("f" . proced-narrow)
           ("G" . my/proced-toggle-update)))
 #+end_src
+* all-the-icons
+
+#+begin_src elisp
+;;
+;; -> all-the-icons
+;;
+(use-package all-the-icons-ibuffer
+  :ensure t
+  :hook
+  (ibuffer-mode . all-the-icons-ibuffer-mode))
+
+(use-package all-the-icons-completion
+  :ensure t
+  :init
+  (all-the-icons-completion-mode)
+  :hook
+  (marginalia-mode all-the-icons-completion-marginalia-setup))
+
+(use-package all-the-icons-dired
+  :hook
+  (dired-mode . all-the-icons-dired-mode))
+#+end_src
 
 * development
 
@@ -2285,64 +2429,6 @@ echo
 ;;
 ;; -> development
 ;;
-(defun display-year-agenda (&optional year)
-  "Display an agenda entryf for a whole year."
-  (interactive (list (read-string "Enter the year: "
-                       (format-time-string "%Y" (current-time)))))
-  (setq year (string-to-number year))
-  (org-agenda-list)
-  (org-agenda-year-view year)
-  (setq this-year (string-to-number (format-time-string "%Y" (current-time))))
-  (when (= year this-year)
-    (org-agenda-goto-today)
-    (recenter-top-bottom 10)))
-
-;; Bind a key for easy access
-(global-set-key (kbd "C-c y") 'display-year-agenda)
-
-;; (setq org-agenda-files
-;;   '("~/DCIM/content/aaa--notes.org"
-;;      "~/DCIM/content/aaa--todo.org"
-;;      "~/DCIM/content/art--all.org"
-;;      "~/DCIM/content/dad--betting.org"
-;;      "~/DCIM/content/downloads--all.org"
-;;      "~/DCIM/content/emacs--all.org"
-;;      "~/DCIM/content/kate--all.org"
-;;      "~/DCIM/content/kate--health.org"
-;;      "~/DCIM/content/linux--all.org"
-;;      "~/DCIM/content/posts--all.org"
-;;      "~/DCIM/content/presents.org"
-;;      "~/DCIM/content/subscriptions-all.org"
-;;      ))
-
-(setq org-directory "~/DCIM/content/")
-(setq org-agenda-files
-  (cl-remove-if-not #'(lambda (file) (string-suffix-p ".org" file))
-    (directory-files org-directory t "\\.org$")))
-
-(defun convert-weight (weight)
-  (let* ((parts (split-string weight ":"))
-          (stone (string-to-number (car parts)))
-          (pounds (string-to-number (cadr parts))))
-    (+ (* stone 14) pounds)))
-
-(defun my/copy-file-name-to-clipboard ()
-  "Copy the current buffer file name to the clipboard."
-  (interactive)
-  (let ((filename (if (equal major-mode 'dired-mode)
-                    default-directory
-                    (buffer-file-name))))
-    (when filename
-      (kill-new filename)
-      (message "Copied buffer file name '%s' to the clipboard." filename))))
-
-(global-set-key (kbd "C-c w") 'my/copy-file-name-to-clipboard)
-
-(defun my/org-insert-clipboard ()
-  "Convert clipboard contents from HTML to Org and then paste (yank)."
-  (interactive)
-  (insert (shell-command-to-string "xclip -o -selection clipboard -t text/html | pandoc -f html -t json | pandoc -f json -t org")))
-
 (use-package spacious-padding
   :init
   (spacious-padding-mode -1)
@@ -2355,31 +2441,5 @@ echo
        :right-divider-width 2
        :scroll-bar-width 8)))
 
-(defun my/show-emacs-tasks ()
-  (interactive)
-  (org-ql-search (org-agenda-files)
-    '(and (todo)
-       (parent (and (tags "linux") (tags "emacs") (not (tags "noexport")))))
-    :title "Emacs-related project tasks"
-    :sort '(date priority todo)
-    :super-groups '((:auto-parent t))))
-
-;; (unless (package-installed-p 'indent-bars)
-;; (package-vc-install "https://github.com/jdtsmith/indent-bars"))
-
-(use-package indent-bars
-  :vc (:fetcher github :repo "jdtsmith/indent-bars")
-  :hook ((prog-mode ada-mode) . indent-bars-mode))
-
-(use-package chatgpt-shell
-  :ensure t
-  :custom
-  ((chatgpt-shell-openai-key
-     (lambda ()
-       (auth-source-pass-get 'secret "openai-key")))))
-
-(use-package org-tidy
-  :ensure t
-  :config
-  (add-hook 'org-mode-hook #'org-tidy-mode))
-#+end_src
+(use-package lorem-ipsum)
+  #+end_src
