@@ -91,10 +91,8 @@
   :init (diredfl-global-mode 1))
 (use-package i3wm-config-mode)
 (use-package git-timemachine)
-;; (use-package ox-gfm)
 (use-package gnuplot)
-(use-package ahk-mode
-  :defer t)
+(use-package ahk-mode)
 (use-package kbd-mode
   :vc (:fetcher github :repo "kmonad/kbd-mode"))
 (use-package embark-consult)
@@ -187,7 +185,7 @@
   ;; (tempel-trigger-prefix "<")
 
   :bind (("M-+" . tempel-complete) ;; Alternative tempel-expand
-          ("M-*" . tempel-insert))
+          ("M-_" . tempel-insert))
 
   :init
   ;; Setup completion at point
@@ -214,6 +212,7 @@
 #+end_src
 
 * modeline-completion
+
 ** bespoke
 
 #+begin_src elisp :tangle no
@@ -316,16 +315,15 @@
 (define-key my-jump-keymap (kbd "n") (lambda () (interactive) (find-file "~/nas")))
 (define-key my-jump-keymap (kbd "o") (lambda () (interactive) (find-file "~/.config/emacs/emacs--init.org")))
 (define-key my-jump-keymap (kbd "p") 'emms)
+(define-key my-jump-keymap (kbd "r") 'proced)
 (define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
 (define-key my-jump-keymap (kbd "t") 'customize-themes)
-(define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
+(define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM")))
 (global-set-key (kbd "M-m") my-jump-keymap)
 
 (defvar my-win-keymap (make-sparse-keymap))
 (define-key my-win-keymap (kbd "b") 'toggle-frame-tab-bar)
-(define-key my-win-keymap (kbd "c") 'toggle-truncate-lines)
 (define-key my-win-keymap (kbd "d") 'window-divider-mode)
-(define-key my-win-keymap (kbd "f") 'visual-fill-column-mode)
 (define-key my-win-keymap (kbd "g") 'revert-buffer-quick)
 (define-key my-win-keymap (kbd "i") 'indent-guide-mode)
 (define-key my-win-keymap (kbd "j") 'jinx-mode)
@@ -333,10 +331,12 @@
 (define-key my-win-keymap (kbd "l") 'display-line-numbers-mode)
 (define-key my-win-keymap (kbd "m") 'toggle-menu-bar-mode-from-frame)
 (define-key my-win-keymap (kbd "n") 'global-tab-line-mode)
-(define-key my-win-keymap (kbd "o") 'org-modern-mode)
+(define-key my-win-keymap (kbd "o") 'visual-fill-column-mode)
 (define-key my-win-keymap (kbd "p") 'variable-pitch-mode)
+(define-key my-win-keymap (kbd "r") 'org-modern-mode)
 (define-key my-win-keymap (kbd "s") 'spacious-padding-mode)
 (define-key my-win-keymap (kbd "t") 'org-tidy-toggle)
+(define-key my-win-keymap (kbd "u") 'toggle-truncate-lines)
 (define-key my-win-keymap (kbd "v") 'visual-line-mode)
 (define-key my-win-keymap (kbd "w") 'whitespace-mode)
 (global-set-key (kbd "M-o") my-win-keymap)
@@ -558,15 +558,6 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 (define-key dired-mode-map (kbd "C-c r") 'my/image-dired-sort)
 (define-key dired-mode-map (kbd "C-c d") 'my/dired-duplicate-file)
 (bind-key* (kbd "C-c C-,") 'embark-act)
-#+end_src
-
-* inserts
-
-#+begin_src elisp
-;;
-;; -> inserts
-;;
-(define-key prog-mode-map (kbd "C-c i b") 'my/insert-uniq-log-word)
 #+end_src
 
 * modes
@@ -1067,8 +1058,6 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ;;     (directory-files org-directory t "\\.org$")))
 
 (use-package org-tidy)
-;; :config
-;; (add-hook 'org-mode-hook #'org-tidy-mode))
 
 (use-package org-modern
   :init (global-org-modern-mode -1))
@@ -1101,16 +1090,18 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ;;
 (defvar my/dwim-convert-commands
   '("ConvertNoSpace" "AudioConvert" "AudioInfo" "AudioNormalise"
-     "AudioTrimSilence" "PictureAutoColour" "PictureConvert" "PictureCrush" "PictureFrompdf"
-     "PictureInfo" "PictureMontage" "PictureOrganise" "PictureCrop" "PictureRotateFlip"
-     "PictureRotateLeft" "PictureRotateRight" "PictureScale" "PictureUpscale"
-     "PictureGetText" "PictureOrientation" "PictureUpdateToCreateDate"
-     "VideoConcat" "VideoConvert"
+     "AudioTrimSilence" "PictureAutoColour" "PictureConvert"
+     "PictureCrush" "PictureFrompdf" "PictureInfo" "PictureMontage"
+     "PictureOrganise" "PictureCrop" "PictureRotateFlip"
+     "PictureRotateLeft" "PictureRotateRight" "PictureScale"
+     "PictureUpscale" "PictureGetText" "PictureOrientation"
+     "PictureUpdateToCreateDate" "VideoConcat" "VideoConvert"
      "VideoCut" "VideoDouble" "VideoExtractAudio" "VideoExtractFrames"
      "VideoFilter" "VideoFromFrames" "VideoInfo" "VideoRemoveAudio"
-     "VideoReplaceVideoAudio" "VideoRescale" "VideoReverse" "VideoRotate"
-     "VideoRotateLeft" "VideoRotateRight" "VideoShrink" "VideoSlowDown"
-     "VideoSpeedUp" "VideoZoom" "WhatsAppConvert" "PictureCorrect" "Picture2pdf"
+     "VideoReplaceVideoAudio" "VideoRescale" "VideoReverse"
+     "VideoRotate" "VideoRotateLeft" "VideoRotateRight" "VideoShrink"
+     "VideoSlowDown" "VideoSpeedUp" "VideoZoom" "WhatsAppConvert"
+     "PictureCorrect" "Picture2pdf"
      "OtherTagDate")
   "List of commands for dwim-convert.")
 
@@ -1126,7 +1117,6 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
                           my/dwim-convert-commands)))
     (my/dwim-convert-generic chosen-command)))
 
-(global-set-key (kbd "C-x x v") 'my/dwim-convert-with-selection)
 (global-set-key (kbd "C-c v") 'my/dwim-convert-with-selection)
 #+end_src
 
@@ -1418,76 +1408,6 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 #+end_src
 
 * modeline
-** modeline-project
-
-#+begin_src elisp :tangle no
-;;
-;; -> modeline
-;;
-(setq-default mode-line-modified
-  '(:eval (if (and (buffer-file-name) (buffer-modified-p))
-            (propertize " *MODIFIED " 'face
-              '(:background "#ff0000" :foreground "#000000")) "")))
-
-(set-face-attribute 'mode-line-active nil :height 130 :underline nil :overline nil
-  :background "#41807d" :foreground "#ffffff")
-(set-face-attribute 'mode-line-inactive nil :height 130
-  :background "#343434" :foreground "#ffffff")
-
-(defun string-to-hex-colour (str)
-  (format "#%02x%02x%02x"
-    (mod (sxhash (substring str -2 nil)) 256)
-    (mod (sxhash (substring str -4 -2)) 256)
-    (mod (sxhash (substring str -6 -4)) 256)))
-
-(setq-default mode-line-format
-  '("%e"
-     mode-line-modified
-     (:eval
-       (when (project-current)
-         (setq prj-background
-           (color-desaturate-name
-             (color-darken-name
-               (string-to-hex-colour (project-root (project-current))) 0) 0))
-
-         (if (string-greaterp prj-background "#888888888888")
-           (setq prj-foreground "#000000")
-           (setq prj-foreground "#ffffff"))
-
-         (propertize (format "%s" (abbreviate-file-name (project-root (project-current))))
-           'face `(:background ,prj-background :foreground ,prj-foreground))))
-     (:eval
-       (if (project-current)
-         (when (buffer-file-name)
-           (if (mode-line-window-selected-p)
-             (propertize (format "%s"
-                           (string-trim-left
-                             (expand-file-name (file-name-directory (buffer-file-name)))
-                             (expand-file-name (project-root (project-current)))))
-               'face '(:background "#7cc1e4" :foreground "#000000"))
-             (propertize (format "%s"
-                           (string-trim-left
-                             (expand-file-name (file-name-directory (buffer-file-name)))
-                             (expand-file-name (project-root (project-current))))))
-             ))))
-     (:eval
-       (if (mode-line-window-selected-p)
-         (propertize (format "%s " (buffer-name))
-           'face '(:background "#7cc1e4" :foreground "#000000"))
-         (format "%s " (buffer-name))))
-     (:eval
-       (when (or (eq major-mode 'image-mode)
-               (eq major-mode 'image-dired-image-mode))
-         (process-lines  "identify"  "-format"  "[%m %wx%h %b]" (buffer-file-name))))
-     mode-line-position
-     ;; (vc-mode vc-mode)
-     mode-line-modes
-     mode-line-misc-info))
-
-(setq mode-line-compact t)
-#+end_src
-
-** modeline-simple
 
 #+begin_src elisp
 ;;
@@ -1523,19 +1443,6 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ;; "-%-"))
 
 (setq mode-line-compact t)
-#+end_src
-
-* markdown
-
-#+begin_src elisp :tangle no
-;;
-;; -> markdown
-;;
-(defun my-org-export-to-markdown ()
-  (when (string= (buffer-file-name) (expand-file-name "emacs--init.org"))
-    (org-gfm-export-to-markdown)))
-
-(add-hook 'after-save-hook 'my-org-export-to-markdown)
 #+end_src
 
 * find
@@ -1637,17 +1544,16 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
 ;; -> spelling
 ;;
 (use-package jinx)
-
 (use-package powerthesaurus)
 
-(global-set-key (kbd "M-(")
+(global-set-key (kbd "M-*")
   (lambda () (interactive)
     ;; (backward-word)
     (jinx-correct)
     (forward-word)))
 
 (global-set-key (kbd "M-)") 'dictionary-lookup-definition)
-(global-set-key (kbd "M-*") 'powerthesaurus-lookup-synonyms-dwim)
+(global-set-key (kbd "M-(") 'powerthesaurus-lookup-synonyms-dwim)
 
 (setq ispell-local-dictionary "en_GB")
 (setq ispell-program-name "hunspell")
@@ -1735,10 +1641,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ;;
 ;; -> programming
 ;;
-(use-package eglot
-  :hook
-  (ada-mode . eglot-ensure)
-  (c++-mode . eglot-ensure))
+(use-package eglot)
 
 ;; (define-key company-active-map (kbd "<tab>") 'company-complete-selection)
 
@@ -1751,84 +1654,12 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
   (setq company-idle-delay 0.05))
 
 (use-package yaml-mode)
-;; (use-package qml-mode)
 
 (add-hook 'yaml-mode-hook
   '(lambda ()
      (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
 
 (setq eldoc-echo-area-use-multiline-p nil)
-
-(defvar my/uniq-log-word "poop")
-
-(defun my/insert-uniq-log-word (prefix)
-  "Inserts my/uniq-log-word' incrementing counter."
-  (interactive "P")
-  (let* ((word
-           (cond
-             (prefix
-               (setq my/uniq-log-word (read-string "Log word: ")))
-             ((region-active-p)
-               (setq my/uniq-log-word
-                 (buffer-substring (region-beginning)
-                   (region-end))))
-             (my/uniq-log-word my/uniq-log-word)
-             (t "Reached")))
-          (config
-            (cond
-              ((equal major-mode 'sh-mode)
-                (cons
-                  (format "echo \"%s: \\([0-9]+\\)\"" word)
-                  (format "echo \"%s: %%s\"" word)))
-              ((equal major-mode 'emacs-lisp-mode)
-                (cons
-                  (format "(message \"%s: \\([0-9]+\\)\")" word)
-                  (format "(message \"%s: %%s\")" word)))
-              ((equal major-mode 'swift-mode)
-                (cons
-                  (format "print(\"%s: \\([0-9]+\\)\")" word)
-                  (format "print(\"%s: %%s\")" word)))
-              ((equal major-mode 'ada-mode)
-                (cons
-                  (format "Ada.Text_Io.Put_Line (\"%s: \\([0-9]+\\)\");" word)
-                  (format "Ada.Text_Io.Put_Line (\"%s: %%s\");" word)))
-              ((equal major-mode 'c++-mode)
-                (cons
-                  (format "std::cout << \"%s: \\([0-9]+\\)\" << std::endl;" word)
-                  (format "std::cout << \"%s: %%s\" << std::endl;" word)))
-              ((equal major-mode 'c-mode)
-                (cons
-                  (format "fprintf(stderr, \"%s: \\([0-9]+\\)\");" word)
-                  (format "fprintf(stderr, \"%s: %%s\");" word)))
-              (t
-                (error "%s not supported" major-mode))))
-          (match-regexp (car config))
-          (format-string (cdr config))
-          (max-num 0)
-          (case-fold-search nil))
-
-    (when my/uniq-log-word
-      (save-excursion
-        (goto-char (point-min))
-        (while (re-search-forward match-regexp nil t)
-          (when (> (string-to-number (match-string 1)) max-num)
-            (setq max-num (string-to-number (match-string 1)))))))
-
-    (unless (looking-at-p "^ *$")(end-of-line))
-
-    (insert (concat
-              (if (looking-at-p "^ *$") "" "\n")
-              (format format-string
-                (if my/uniq-log-word
-                  (number-to-string (1+ max-num))
-                  (string-trim
-                    (shell-command-to-string
-                      "grep -E '^[a-z]{6}$' /usr/share/dict/words | shuf -n 1")
-                    )))))
-
-    (call-interactively 'indent-for-tab-command)))
-
-(global-set-key (kbd "C-c C-j") 'my/insert-uniq-log-word)
 #+end_src
 
 * diff
