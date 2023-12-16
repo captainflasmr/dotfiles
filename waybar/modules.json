@@ -20,6 +20,12 @@
         "max-length": 1
     },
 
+    "custom/emacs": {
+        "format": "ε",
+        "on-click": "emacs",
+        "tooltip": false
+    },
+
     "custom/browser": {
         // "format": "🌐",
         "format": "",
@@ -105,7 +111,7 @@
         "format": " {usage}%",
         "tooltip": false,
         "interval": 1,
-        "min-length": 4,
+        "min-length": 1,
         "max-length": 6,
     },
 
@@ -173,7 +179,9 @@
             "car": "",
             "default": ["", "", ""]
         },
-        "on-click": "pavucontrol"
+        "on-click": "pavucontrol",
+        "min-length": 1,
+        "max-length": 6
     },
 
     "user": {
@@ -185,8 +193,10 @@
     },
 
     "backlight": {
-        "scroll-step": 10,
+        "scroll-step": 8,
         "format": "{percent} 🔅",
+        "min-length": 1,
+        "max-length": 6
     },
 
     "sway/window": {
