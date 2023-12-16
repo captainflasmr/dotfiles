@@ -1,0 +1,27 @@
+fundamental-mode ;; Available everywhere
+
+(jda (format-time-string "<%Y-%m-%d>"))
+(jdt (format-time-string "%Y%m%d%H%M%S"))
+(jdq "\"" \r "\"")
+
+org-mode
+
+(jds n "#+begin_src " q r "#+end_src" n)
+(jdi "#+attr_org: :width 300px" n "#+attr_html: :width 100%")
+(jde "#+attr_org: :width 300px" n "#+attr_html: :class emacs-img")
+(jdo "---" n "#+TOC: headlines 1 local" n "---")
+
+sh-mode
+(jdd n "echo \"poop: " q "\"" n)
+
+emacs-lisp-mode
+(jdd n "(message \"poop: " q "\"\)" n)
+
+ada-mode
+(jdd n> "Ada.Text_Io.Put_Line \( \"poop: " q "\"\);" n)
+
+c++-mode
+(jdd n> "std::cout << \"poop: " q "\" << std::endl;" n)
+
+c-mode
+(jdd n> "fprintf(stderr, \"poop: " q "\"\);" n)
