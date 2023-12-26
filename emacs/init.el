@@ -25,10 +25,10 @@
 (setq load-prefer-newer t)
 
 ;; (when init-file-debug
-  (setq use-package-verbose t
-        use-package-expand-minimally nil
-        use-package-compute-statistics t
-        debug-on-error t)
+(setq use-package-verbose t
+  use-package-expand-minimally nil
+  use-package-compute-statistics t
+  debug-on-error t)
 ;; )
 
 ;;
@@ -147,7 +147,7 @@
   ;; (tempel-trigger-prefix "<")
 
   :bind (("M-+" . tempel-complete) ;; Alternative tempel-expand
-          ("M-_" . tempel-insert))
+          ("M-*" . tempel-insert))
 
   :init
   ;; Setup completion at point
@@ -211,28 +211,25 @@
 (define-key my-jump-keymap (kbd "a") 'emms-browse-by-album)
 (define-key my-jump-keymap (kbd "b") (lambda () (interactive) (find-file "~/bin")))
 (define-key my-jump-keymap (kbd "c") (lambda () (interactive) (find-file "~/DCIM/Camera")))
-(define-key my-jump-keymap (kbd "d") (lambda () (interactive) (find-file "~/DCIM/content/")))
+(define-key my-jump-keymap (kbd "d") 'consult-recent-file)
 (define-key my-jump-keymap (kbd "e") (lambda () (interactive) (find-file "~/.config/emacs/init.el")))
 (define-key my-jump-keymap (kbd "f") 'find-file-rg)
 (define-key my-jump-keymap (kbd "g") (lambda () (interactive) (find-file "~/.config")))
 (define-key my-jump-keymap (kbd "i") (lambda () (interactive) (find-file "~/DCIM/content/aaa--todo.org")))
 (define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~")))
-(define-key my-jump-keymap (kbd "m") 'consult-recent-file)
 (define-key my-jump-keymap (kbd "n") (lambda () (interactive) (find-file "~/nas")))
 (define-key my-jump-keymap (kbd "o") (lambda () (interactive) (find-file "~/.config/emacs/emacs--init.org")))
 (define-key my-jump-keymap (kbd "p") 'emms)
-(define-key my-jump-keymap (kbd "r") 'proced)
-(define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
+(define-key my-jump-keymap (kbd "r") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
 (define-key my-jump-keymap (kbd "t") 'customize-themes)
-(define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM")))
+(define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
 (global-set-key (kbd "M-m") my-jump-keymap)
 
 (defvar my-win-keymap (make-sparse-keymap))
 (define-key my-win-keymap (kbd "b") 'toggle-frame-tab-bar)
 (define-key my-win-keymap (kbd "d") 'window-divider-mode)
 (define-key my-win-keymap (kbd "g") 'revert-buffer-quick)
-(define-key my-win-keymap (kbd "i") 'indent-guide-mode)
-(define-key my-win-keymap (kbd "j") 'jinx-mode)
+(define-key my-win-keymap (kbd "i") 'highlight-indent-guides-mode)
 (define-key my-win-keymap (kbd "k") 'font-lock-mode)
 (define-key my-win-keymap (kbd "l") 'display-line-numbers-mode)
 (define-key my-win-keymap (kbd "m") 'toggle-menu-bar-mode-from-frame)
@@ -405,9 +402,6 @@
 (global-set-key (kbd "M-H") 'tab-previous)
 (global-set-key (kbd "C-o") 'consult-outline)
 (bind-key* (kbd "M-g i") 'consult-imenu)
-(global-set-key (kbd "M-I") 'indent-region)
-(global-set-key (kbd "M-\'") 'indent-region)
-(global-set-key (kbd "C-x TAB") 'indent-region)
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "C-c j") 'winner-undo)
 (global-set-key (kbd "C-c k") 'winner-redo)
@@ -676,15 +670,6 @@
 
 (global-set-key (kbd "C-c w") 'my/copy-file-name-to-clipboard)
 
-(defun my/mark-paragraph ()
-  "redefinition of mark-paragraph"
-  (interactive)
-  (forward-char)
-  (backward-paragraph)
-  (push-mark)
-  (forward-paragraph)
-  (setq mark-active t))
-
 (defun my/mark-word ()
   "redefinition of mark-word"
   (interactive)
@@ -694,7 +679,7 @@
   (forward-word)
   (setq mark-active t))
 
-(global-set-key (kbd "M-Y") 'my/mark-paragraph)
+(global-set-key (kbd "M-s h") 'mark-paragraph)
 (global-set-key (kbd "M-@") 'my/mark-word)
 
 ;;
@@ -954,66 +939,17 @@
 ;;
 ;; (setq font-general "Noto Sans Mono 14")
 ;; (setq font-general "MesloLGS Nerd Font Mono 11")
-;; (setq font-general "Source Code Pro 13")
+(setq font-general "Source Code Pro 13")
 ;; (setq font-general "Source Code Pro Light 14")
 ;; (setq font-general "Nimbus Mono PS 14")
 ;; (setq font-general "MesloLGS Nerd Font Mono 14")
-(setq font-general "Droid Sans Mono 12")
+;; (setq font-general "Droid Sans Mono 12")
 ;; (setq font-general "Hack Nerd Font Mono 13")
 
 (set-frame-font font-general nil t)
 
 ;; the set-frame-font doesn't seem to work in server / client mode
 (add-to-list 'default-frame-alist `(font . ,font-general))
-
-;;
-;; -> custom-set-faces
-;;
-(custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
-  '(cursor ((t (:background "#ffffff" :inverse-video t))))
-  '(diredfl-date-time ((t (:foreground "#8d909b"))))
-  '(diredfl-dir-heading ((t (:foreground "#aa5555" :weight bold))))
-  '(diredfl-dir-priv ((t (:foreground "DarkRed"))))
-  '(diredfl-exec-priv ((t (:foreground "#999999"))))
-  '(diredfl-file-name ((t (:foreground "#818282"))))
-  '(diredfl-no-priv ((t nil)))
-  '(diredfl-number ((t (:foreground "#999999"))))
-  '(diredfl-read-priv ((t nil)))
-  '(diredfl-write-priv ((t nil)))
-  '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
-  '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
-  '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
-  '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
-  '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2"))))
-  '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
-  '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.1 :family "Source Code Pro"))))
-  '(org-code ((t (:inherit (shadow fixed-pitch)))))
-  '(org-modern-date-active ((t (:inherit fixed-pitch))))
-  '(org-date ((t (:inherit fixed-pitch))))
-  '(org-document-info ((t (:foreground "#8f4800"))))
-  '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
-  '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
-  '(org-link ((t (:foreground "#5555ff" :underline t))))
-  '(org-property-value ((t (:inherit fixed-pitch))) t)
-  '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
-  '(org-tag ((t (:inherit (shadow fixed-pitch) :weight regular :height 0.8))))
-  '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
-  '(tab-bar ((t (:background "#282828" :foreground "#fdf4c1" :height 1.2))))
-  '(indent-guide-face ((t (:background "#282828" :foreground "#666666"))))
-  '(outline-1 ((t (:weight regular))))
-  '(outline-2 ((t (:weight regular))))
-  '(widget-button ((t (:inherit fixed-pitch :weight regular))))
-  '(window-divider ((t (:foreground "black"))))
-  '(vertical-border ((t (:foreground "#000000")))))
-
-  (custom-theme-set-faces
-   'user
-   '(variable-pitch ((t (:family "Sans Serif" :height 150 :weight normal))))
-   '(fixed-pitch ((t ( :family "Fira Code Retina" :height 130)))))
 
 ;;
 ;; -> image-dired
@@ -1145,8 +1081,8 @@
 (add-hook 'text-mode-hook #'visual-line-mode)
 (add-hook 'org-mode-hook '(lambda () (visual-line-mode)))
 (setq-default truncate-partial-width-windows 120)
-(set-frame-parameter nil 'alpha-background 98)
-(add-to-list 'default-frame-alist '(alpha-background . 98))
+(set-frame-parameter nil 'alpha-background 95)
+(add-to-list 'default-frame-alist '(alpha-background . 95))
 (set-fringe-mode '(0 . 0))
 (set-display-table-slot standard-display-table 0 ?\ )
 
@@ -1318,14 +1254,15 @@
 (use-package jinx)
 (use-package powerthesaurus)
 
-(global-set-key (kbd "M-*")
+(global-set-key (kbd "M-s l")
   (lambda () (interactive)
     ;; (backward-word)
     (jinx-correct)
     (forward-word)))
 
-(global-set-key (kbd "M-)") 'dictionary-lookup-definition)
-(global-set-key (kbd "M-(") 'powerthesaurus-lookup-synonyms-dwim)
+(global-set-key (kbd "M-s j") 'jinx-mode)
+(global-set-key (kbd "M-s k") 'dictionary-lookup-definition)
+(global-set-key (kbd "M-s n") 'powerthesaurus-lookup-synonyms-dwim)
 
 (setq ispell-local-dictionary "en_GB")
 (setq ispell-program-name "hunspell")
@@ -1690,12 +1627,8 @@
 (add-hook 'sh-mode-hook
   (lambda () (setq sh-basic-offset 3)))
 
-(use-package indent-guide
-  :init (indent-guide-global-mode -1)
-  :custom
-  (setq indent-guide-char ":")
-  (setq indent-guide-recursive t)
-  (set-face-background 'indent-guide-face "#666666"))
+(use-package highlight-indent-guides
+  :custom (highlight-indent-guides-method 'character))
 
 ;;
 ;; -> etags
@@ -1877,3 +1810,23 @@
        :scroll-bar-width 8)))
 
 (use-package lorem-ipsum)
+
+
+(defun selected-window-accent ()
+  (interactive)
+  (set-face-background 'fringe "#77002e")
+  (walk-windows
+    (lambda (window)
+      (if (eq window (selected-window))
+        (progn
+          (set-window-margins window 1 0)
+          (set-window-fringes window 12 0 t nil))
+        (progn
+          (set-window-margins window 2 0)
+          (set-window-fringes window 0 0 t nil))
+        )
+      )
+    nil t))
+
+(add-hook 'window-configuration-change-hook 'selected-window-accent)
+(add-hook 'window-state-change-hook 'selected-window-accent)
