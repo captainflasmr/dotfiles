@@ -6,10 +6,11 @@ fundamental-mode ;; Available everywhere
 
 org-mode
 
-(jds n "#+begin_src " q r "#+end_src" n)
+(jds "#+begin_src " q n r "#+end_src" n)
 (jdi "#+attr_org: :width 300px" n "#+attr_html: :width 100%")
 (jde "#+attr_org: :width 300px" n "#+attr_html: :class emacs-img")
 (jdo "---" n "#+TOC: headlines 1 local" n "---")
+(jdq "#+begin_quote " q n r "#+end_quote" n)
 
 sh-mode
 (jdd n "echo \"poop: " q "\"" n)
