@@ -28,7 +28,7 @@
 (setq use-package-verbose t
   use-package-expand-minimally nil
   use-package-compute-statistics t
-  debug-on-error t)
+  debug-on-error nil)
 ;; )
 
 ;;
@@ -217,6 +217,7 @@
 (define-key my-jump-keymap (kbd "g") (lambda () (interactive) (find-file "~/.config")))
 (define-key my-jump-keymap (kbd "i") (lambda () (interactive) (find-file "~/DCIM/content/aaa--todo.org")))
 (define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~")))
+(define-key my-jump-keymap (kbd "m") (lambda () (interactive) (find-file "~")))
 (define-key my-jump-keymap (kbd "n") (lambda () (interactive) (find-file "~/nas")))
 (define-key my-jump-keymap (kbd "o") (lambda () (interactive) (find-file "~/.config/emacs/emacs--init.org")))
 (define-key my-jump-keymap (kbd "p") 'emms)
@@ -400,7 +401,7 @@
 (define-key minibuffer-local-map (kbd "C-c e") 'embark-collect)
 (global-set-key (kbd "M-L") 'tab-next)
 (global-set-key (kbd "M-H") 'tab-previous)
-(global-set-key (kbd "C-o") 'consult-outline)
+(bind-key* (kbd "M-g o") 'consult-outline)
 (bind-key* (kbd "M-g i") 'consult-imenu)
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "C-c j") 'winner-undo)
@@ -425,7 +426,7 @@
 (global-set-key (kbd "M-;") 'my/comment-or-uncomment)
 (global-set-key (kbd "M-?") 'my/grep)
 (define-key dired-mode-map (kbd "C") 'my/rsync)
-(define-key dired-mode-map (kbd "C-c r") 'my/image-dired-sort)
+(define-key dired-mode-map (kbd "C-c i") 'my/image-dired-sort)
 (define-key dired-mode-map (kbd "C-c d") 'my/dired-duplicate-file)
 (bind-key* (kbd "C-c C-,") 'embark-act)
 
@@ -551,7 +552,7 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
-  '(custom-enabled-themes '(doom-solarized-dark-high-contrast))
+  '(custom-enabled-themes '(doom-one))
   '(warning-suppress-log-types '((frameset)))
   '(warning-suppress-types '((frameset))))
 
@@ -816,6 +817,7 @@
     org-edit-src-content-indentation 0
     org-src-preserve-indentation t
     org-hide-leading-stars t
+    org-log-done 'time
     org-tags-sort-function 'org-string-collate-greaterp
     org-export-with-sub-superscripts nil
     org-hugo-base-dir "~/DCIM"
@@ -834,11 +836,38 @@
     org-cycle-separator-lines 2)
   :bind
   (:map org-mode-map
-    ("M-N" . org-metadown)
-    ("M-P" . org-metaup)
+    ("M-n" . org-metadown)
+    ("M-p" . org-metaup)
+    ("M-N" . org-shiftdown)
+    ("M-P" . org-shiftup)
+    ("M-H" . org-shiftleft)
+    ("M-L" . org-shiftright)
     ("M-[" . org-metaleft)
     ("M-]" . org-metaright)))
 
+(use-package org-tidy)
+
+(use-package org-modern
+  :init (global-org-modern-mode -1))
+
+(defun my/org-ql-emacs ()
+  (interactive)
+  (org-ql-search (org-agenda-files)
+    '(and (done) (tags "2023") (tags "emacs"))
+    :title "Emacs-related project tasks"
+    :sort '(date priority todo)
+    :super-groups '((:auto-parent t))))
+
+(defun org-syntax-table-modify ()
+  "Modify `org-mode-syntax-table' for the current org buffer."
+  (modify-syntax-entry ?< "." org-mode-syntax-table)
+  (modify-syntax-entry ?> "." org-mode-syntax-table))
+
+(add-hook 'org-mode-hook #'org-syntax-table-modify)
+
+;;
+;; -> org-agenda
+;;
 (defun display-year-agenda (&optional year)
   "Display an agenda entryf for a whole year."
   (interactive (list (read-string "Enter the year: "
@@ -860,39 +889,19 @@
      "~/DCIM/content/aaa--todo.org"
      "~/DCIM/content/art--all.org"
      "~/DCIM/content/dad--betting.org"
-     "~/DCIM/content/downloads--all.org"
      "~/DCIM/content/emacs--all.org"
-     "~/DCIM/content/kate--all.org"
+     "~/DCIM/content/gifts--james.org"
+     "~/DCIM/content/gifts--others.org"
      "~/DCIM/content/kate--health.org"
+     "~/DCIM/content/kate--loss.org"
      "~/DCIM/content/linux--all.org"
+     "~/DCIM/content/misc--subs.org"
      "~/DCIM/content/posts--all.org"
-     "~/DCIM/content/presents.org"
-     "~/DCIM/content/subscriptions-all.org"
      ))
 
 ;; (setq org-agenda-files
 ;;   (cl-remove-if-not #'(lambda (file) (string-suffix-p ".org" file))
 ;;     (directory-files org-directory t "\\.org$")))
-
-(use-package org-tidy)
-
-(use-package org-modern
-  :init (global-org-modern-mode -1))
-
-(defun my/org-ql-emacs ()
-  (interactive)
-  (org-ql-search (org-agenda-files)
-    '(and (done) (tags "2023") (tags "emacs"))
-    :title "Emacs-related project tasks"
-    :sort '(date priority todo)
-    :super-groups '((:auto-parent t))))
-
-(defun org-syntax-table-modify ()
-  "Modify `org-mode-syntax-table' for the current org buffer."
-  (modify-syntax-entry ?< "." org-mode-syntax-table)
-  (modify-syntax-entry ?> "." org-mode-syntax-table))
-
-(add-hook 'org-mode-hook #'org-syntax-table-modify)
 
 ;;
 ;; -> dwim
@@ -1086,8 +1095,8 @@
 (set-fringe-mode '(0 . 0))
 (set-display-table-slot standard-display-table 0 ?\ )
 
-(setq window-divider-default-bottom-width 4)
-(setq window-divider-default-right-width 4)
+(setq window-divider-default-bottom-width 6)
+(setq window-divider-default-right-width 6)
 (setq window-divider-default-places t)
 
 (window-divider-mode -1)
@@ -1799,18 +1808,17 @@
 ;;
 (use-package spacious-padding
   :init
-  (spacious-padding-mode -1)
+  (spacious-padding-mode 1)
   :config
   (setq spacious-padding-widths
-    '(:internal-border-width 20
+    '(:internal-border-width 10
        :header-line-width 4
        :mode-line-width 1
        :tab-width 4
-       :right-divider-width 2
+       :right-divider-width 6
        :scroll-bar-width 8)))
 
 (use-package lorem-ipsum)
-
 
 (defun selected-window-accent ()
   (interactive)
@@ -1820,7 +1828,9 @@
       (if (eq window (selected-window))
         (progn
           (set-window-margins window 1 0)
-          (set-window-fringes window 12 0 t nil))
+          (if (eq visual-fill-column-mode t)
+            (visual-fill-column-mode t))
+          (set-window-fringes window 10 0 t nil))
         (progn
           (set-window-margins window 2 0)
           (set-window-fringes window 0 0 t nil))
@@ -1830,3 +1840,47 @@
 
 (add-hook 'window-configuration-change-hook 'selected-window-accent)
 (add-hook 'window-state-change-hook 'selected-window-accent)
+
+(defun subtract-weight (weight-str avg-loss)
+  "Subtract AVG-LOSS pounds from WEIGHT-STR given in 'stones:pounds' format."
+  (let* ((stones-pounds (split-string weight-str ":"))
+         (stones (string-to-number (car stones-pounds)))
+         (pounds (string-to-number (cadr stones-pounds)))
+         (total-pounds (+ pounds (* stones 14)))      ;; Convert stones to pounds
+         (new-total-pounds (- total-pounds avg-loss)) ;; Subtract weight loss
+         (new-stones (truncate (/ new-total-pounds 14))) ;; Calculate new stones
+         (new-pounds (mod new-total-pounds 14)))      ;; Calculate remaining pounds
+    (format "%d:%d" new-stones new-pounds)))         ;; Format new weight
+
+(defun extrapolate-weight-loss (num-weeks)
+  "Extrapolate weight loss for NUM-WEEKS using the last 'av/pd' value in the org-table."
+  (interactive "p")
+  (save-excursion
+    (let ((last-avg-loss 2.9)
+           (last-date "")
+           (week 0)
+           (next-date ""))
+      (print num-weeks)
+      (when (org-table-p)
+        (goto-char (org-table-end))
+        ;; Find the last date and week number
+        (search-backward-regexp "|\\s-?\\([0-9]+\\)\\s-?|\\s-?<\\([0-9-]+\\)" nil t)
+        (setq week (string-to-number (match-string 1)))
+        (setq last-date (match-string 2))
+        (setq last-weight "16:10")
+
+        (goto-char (org-table-end))
+
+        ;; Loop for num-weeks to generate new lines
+        (dotimes (i num-weeks)
+          (setq next-date
+            (format-time-string "<%Y-%m-%d %a>"
+              (time-add (org-time-string-to-time last-date)
+                (days-to-time (+ (* i 7) 7))))) ;; add 7 days per week
+          (setq week (+ week 1))
+          (insert (format "| %d | %s | %s | | | | | | |\n"
+                    week next-date (subtract-weight last-weight (* (+ i 1) last-avg-loss)))))
+        )
+      )
+    )
+  (org-table-align))
