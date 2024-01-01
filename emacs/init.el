@@ -227,8 +227,14 @@
 (global-set-key (kbd "M-m") my-jump-keymap)
 
 (defvar my-win-keymap (make-sparse-keymap))
-(define-key my-win-keymap (kbd "b") 'toggle-frame-tab-bar)
+(define-key my-win-keymap (kbd "1") (lambda () (interactive)(tab-bar-select-tab 1)))
+(define-key my-win-keymap (kbd "2") (lambda () (interactive)(tab-bar-select-tab 2)))
+(define-key my-win-keymap (kbd "3") (lambda () (interactive)(tab-bar-select-tab 3)))
+(define-key my-win-keymap (kbd "4") (lambda () (interactive)(tab-bar-select-tab 4)))
+(define-key my-win-keymap (kbd "5") (lambda () (interactive)(tab-bar-select-tab 5)))
+(define-key my-win-keymap (kbd "b") 'tab-bar-mode)
 (define-key my-win-keymap (kbd "d") 'window-divider-mode)
+(define-key my-win-keymap (kbd "f") 'font-lock-mode)
 (define-key my-win-keymap (kbd "g") 'revert-buffer-quick)
 (define-key my-win-keymap (kbd "i") 'highlight-indent-guides-mode)
 (define-key my-win-keymap (kbd "k") 'font-lock-mode)
@@ -397,6 +403,8 @@
 ;;
 ;; -> keybinding
 ;;
+(global-set-key (kbd "M-H") 'tab-bar-switch-to-next-tab)
+(global-set-key (kbd "M-L") 'tab-bar-switch-to-prev-tab)
 (global-set-key (kbd "M-=") 'count-words)
 (define-key minibuffer-local-map (kbd "C-c e") 'embark-collect)
 (global-set-key (kbd "M-L") 'tab-next)
@@ -428,7 +436,7 @@
 (define-key dired-mode-map (kbd "C") 'my/rsync)
 (define-key dired-mode-map (kbd "C-c i") 'my/image-dired-sort)
 (define-key dired-mode-map (kbd "C-c d") 'my/dired-duplicate-file)
-(bind-key* (kbd "C-c C-,") 'embark-act)
+(bind-key* (kbd "C-c ,") 'embark-act)
 
 ;;
 ;; -> modes
@@ -450,6 +458,7 @@
 (winner-mode 1)
 (pixel-scroll-precision-mode 1)
 (repeat-mode -1)
+(tab-bar-mode 1)
 
 ;;
 ;; -> bell
@@ -824,24 +833,24 @@
     org-image-actual-width (list 50)
     org-startup-indented t
     org-todo-keywords
-    '((sequence "TODO" "DOIN" "WAIT" "ORDR" "SENT" "|" "CANCELLED" "DONE"))
+    '((sequence "TODO" "DOING" "WAIT" "ORDR" "SENT" "|" "CANCELLED" "DONE"))
     org-todo-keyword-faces
     '(("TODO" . "#ee5566")
-       ("DOIN" . "#5577aa")
+       ("DOING" . "#5577aa")
        ("WAIT" . "#bb7744")
        ("ORDR" . "#bb44ee")
        ("SENT" . "#bb44ee")
        ("CANCELLED" . "#426b3e")
        ("DONE" . "#77aa66"))
-    org-cycle-separator-lines 2)
+    org-cycle-separator-lines 0)
   :bind
   (:map org-mode-map
     ("M-n" . org-metadown)
     ("M-p" . org-metaup)
     ("M-N" . org-shiftdown)
     ("M-P" . org-shiftup)
-    ("M-H" . org-shiftleft)
-    ("M-L" . org-shiftright)
+    ("M-J" . org-shiftleft)
+    ("M-K" . org-shiftright)
     ("M-[" . org-metaleft)
     ("M-]" . org-metaright)))
 
@@ -1266,8 +1275,8 @@
 (global-set-key (kbd "M-s l")
   (lambda () (interactive)
     ;; (backward-word)
-    (jinx-correct)
-    (forward-word)))
+    (jinx-correct)))
+    ;; (forward-word)))
 
 (global-set-key (kbd "M-s j") 'jinx-mode)
 (global-set-key (kbd "M-s k") 'dictionary-lookup-definition)
@@ -1291,7 +1300,7 @@
   (shell-command "web rsync dyerdwelling")
   (shell-command "web rsync sway"))
 
-(global-set-key (kbd "C-c x") #'my/hugo-org-export-subtree)
+(global-set-key (kbd "M-s e") #'my/hugo-org-export-subtree)
 
 ;;
 ;; -> gdb
@@ -1820,22 +1829,27 @@
 
 (use-package lorem-ipsum)
 
+
 (defun selected-window-accent ()
   (interactive)
   (set-face-background 'fringe "#77002e")
   (walk-windows
     (lambda (window)
-      (if (eq window (selected-window))
-        (progn
-          (set-window-margins window 1 0)
-          (if (eq visual-fill-column-mode t)
-            (visual-fill-column-mode t))
-          (set-window-fringes window 10 0 t nil))
-        (progn
-          (set-window-margins window 2 0)
-          (set-window-fringes window 0 0 t nil))
+        (if (eq window (selected-window))
+          (progn
+            (set-window-margins window 1 0)
+            (with-selected-window window
+              (if (eq visual-fill-column-mode t)
+              (visual-fill-column-mode t)))
+            (set-window-fringes window 10 0 t nil))
+          (progn
+            (set-window-margins window 2 0)
+            (with-selected-window window
+              (if (eq visual-fill-column-mode t)
+              (visual-fill-column-mode t)))
+            (set-window-fringes window 0 0 t nil))
+          )
         )
-      )
     nil t))
 
 (add-hook 'window-configuration-change-hook 'selected-window-accent)
@@ -1884,3 +1898,16 @@
       )
     )
   (org-table-align))
+
+;; tab-bar experimentation
+
+(add-to-list 'tab-bar-format #'tab-bar-format-menu-bar)
+
+(define-icon tab-bar-menu-bar nil
+  '((emoji "🫥")
+     (text "Menu" :face tab-bar-tab-inactive))
+  "Icon for the menu bar."
+  :version "29.1"
+  :help-echo "Menu bar")
+
+(setq tab-bar-menu-bar-button (icon-string 'tab-bar-menu-bar))
