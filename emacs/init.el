@@ -232,6 +232,7 @@
 (define-key my-win-keymap (kbd "3") (lambda () (interactive)(tab-bar-select-tab 3)))
 (define-key my-win-keymap (kbd "4") (lambda () (interactive)(tab-bar-select-tab 4)))
 (define-key my-win-keymap (kbd "5") (lambda () (interactive)(tab-bar-select-tab 5)))
+(define-key my-win-keymap (kbd "a") 'selected-window-accent-mode)
 (define-key my-win-keymap (kbd "b") 'tab-bar-mode)
 (define-key my-win-keymap (kbd "d") 'window-divider-mode)
 (define-key my-win-keymap (kbd "f") 'font-lock-mode)
@@ -249,6 +250,7 @@
 (define-key my-win-keymap (kbd "u") 'toggle-truncate-lines)
 (define-key my-win-keymap (kbd "v") 'visual-line-mode)
 (define-key my-win-keymap (kbd "w") 'whitespace-mode)
+(define-key my-win-keymap (kbd "y") 'switch-selected-window-accent-style)
 (global-set-key (kbd "M-o") my-win-keymap)
 
 ;;
@@ -558,13 +560,13 @@
 ;; -> custom-settings
 ;;
 (custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-enabled-themes '(ef-cherie))
- '(warning-suppress-log-types '((frameset)))
- '(warning-suppress-types '((frameset))))
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+  '(custom-enabled-themes '(gruvbox))
+  '(warning-suppress-log-types '((frameset)))
+  '(warning-suppress-types '((frameset))))
 
 ;;
 ;; -> defun
@@ -1112,6 +1114,8 @@
 (window-divider-mode -1)
 
 (setq-default left-margin-width 0 right-margin-width 0)
+
+(modify-all-frames-parameters `((internal-border-width . 10)))
 
 ;;
 ;; -> imenu
@@ -1816,19 +1820,7 @@
 ;;
 ;; -> development
 ;;
-(use-package spacious-padding
-  :init
-  (spacious-padding-mode 1)
-  :config
-  (setq spacious-padding-widths
-    '(:internal-border-width 10
-       :header-line-width 4
-       :mode-line-width 1
-       :tab-width 4
-       :right-divider-width 6
-       :scroll-bar-width 8)))
-
-(defvar my/internal-border-width 15 "Default internal border width for toggling.")
+(defvar my/internal-border-width 10 "Default internal border width for toggling.")
 
 (defun my/toggle-internal-border-width (&optional value)
   (interactive "P")
@@ -1841,40 +1833,6 @@
     (modify-all-frames-parameters `((internal-border-width . ,new-value)))))
 
 (use-package lorem-ipsum)
-
-(defun selected-window-accent (&optional custom-accent-colour)
-  (interactive)
-  (let* ((init-accent-colour (or custom-accent-colour (face-attribute 'highlight :background)))
-         (accent-offset (if (string-greaterp init-accent-colour "#888888888888") -10 -10))
-         (accent-bg-colour
-           (color-desaturate-name
-             (color-darken-name init-accent-colour accent-offset) 20))
-         (accent-fg-colour (if (string-greaterp accent-bg-colour "#888888888888") "#000000" "#ffffff")))
-    (set-face-attribute 'fringe nil :background accent-bg-colour)
-    (set-face-attribute 'mode-line-active nil :background accent-bg-colour :foreground accent-fg-colour)
-    (walk-windows
-     (lambda (window)
-       (if (eq window (selected-window))
-           (progn
-             (set-window-margins window 1 0)
-             (with-selected-window window
-               (if (eq visual-fill-column-mode t)
-                   (visual-fill-column-mode t)))
-             (set-window-fringes window 10 10 t nil))
-         (progn
-           (set-window-margins window 2 0)
-           (with-selected-window window
-             (if (eq visual-fill-column-mode t)
-                 (visual-fill-column-mode t)))
-           (set-window-fringes window 0 0 t nil))
-         )
-       )
-      nil t)))
-
-(add-hook 'window-configuration-change-hook 'selected-window-accent)
-;; (add-hook 'window-configuration-change-hook (lambda () (interactive)(selected-window-accent "blue")))
-(add-hook 'window-state-change-hook 'selected-window-accent)
-;; (add-hook 'window-state-change-hook (lambda () (interactive)(selected-window-accent "blue")))
 
   (defun subtract-weight (weight-str avg-loss)
     "Subtract AVG-LOSS pounds from WEIGHT-STR given in 'stones:pounds' format."
@@ -1934,28 +1892,13 @@
   (setq tab-bar-menu-bar-button (icon-string 'tab-bar-menu-bar))
 
   (use-package ox-epub)
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(fringe ((t :background "#282828")))
- '(header-line ((t :box (:line-width 4 :color "#282828" :style nil))))
- '(header-line-highlight ((t :box (:color "#ebdbb2"))))
- '(line-number ((t :background "#282828")))
- '(mode-line ((t :box (:line-width 6 :color "#665c54" :style nil))))
- '(mode-line-active ((t :box (:line-width 6 :color "#a7a7a7" :style nil))))
- '(mode-line-highlight ((t :box (:color "#ebdbb2"))))
- '(mode-line-inactive ((t :box (:line-width 6 :color "#151515" :style nil))))
- '(tab-bar-tab ((t :box (:line-width 4 :color "#504945" :style nil))))
- '(tab-bar-tab-inactive ((t :box (:line-width 4 :color "#282828" :style nil))))
- '(whitespace-missing-newline-at-eof ((t (:foreground "#666566656665"))))
- '(whitespace-newline ((t (:foreground "#666566656665"))))
- '(whitespace-space ((t (:foreground "#666566656665"))))
- '(whitespace-space-after-tab ((t (:foreground "#666566656665"))))
- '(whitespace-space-before-tab ((t (:foreground "#666566656665"))))
- '(whitespace-tab ((t (:foreground "#666566656665"))))
- '(whitespace-trailing ((t (:foreground "#666566656665"))))
- '(window-divider ((t :background "#282828" :foreground "#282828")))
- '(window-divider-first-pixel ((t :background "#282828" :foreground "#282828")))
- '(window-divider-last-pixel ((t :background "#282828" :foreground "#282828"))))
+
+(use-package selected-window-accent-mode
+  ;;   :load-path "~/repos/selected-window-accent-mode"
+  :vc (:fetcher github :repo "captainflasmr/selected-window-accent-mode")
+  :custom
+  (selected-window-accent-fringe-thickness 6)
+  (selected-window-accent-custom-color "#88dd88")
+  (selected-window-accent-mode-style 'tiling))
+
+(selected-window-accent-mode)

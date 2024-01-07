@@ -69,6 +69,7 @@ The avoiding a flash of light at startup is a very minor thing but nice to not g
 ;;
 (use-package fd-find
   :load-path "~/repos/fd-find")
+
 #+end_src
 
 * package-remote
@@ -86,6 +87,7 @@ The avoiding a flash of light at startup is a very minor thing but nice to not g
 (use-package org-ql
   :defer t
   :vc (:fetcher github :repo "alphapapa/org-ql"))
+
 #+end_src
 
 * use-package
@@ -333,6 +335,7 @@ The avoiding a flash of light at startup is a very minor thing but nice to not g
 (define-key my-win-keymap (kbd "3") (lambda () (interactive)(tab-bar-select-tab 3)))
 (define-key my-win-keymap (kbd "4") (lambda () (interactive)(tab-bar-select-tab 4)))
 (define-key my-win-keymap (kbd "5") (lambda () (interactive)(tab-bar-select-tab 5)))
+(define-key my-win-keymap (kbd "a") 'selected-window-accent-mode)
 (define-key my-win-keymap (kbd "b") 'tab-bar-mode)
 (define-key my-win-keymap (kbd "d") 'window-divider-mode)
 (define-key my-win-keymap (kbd "f") 'font-lock-mode)
@@ -350,6 +353,7 @@ The avoiding a flash of light at startup is a very minor thing but nice to not g
 (define-key my-win-keymap (kbd "u") 'toggle-truncate-lines)
 (define-key my-win-keymap (kbd "v") 'visual-line-mode)
 (define-key my-win-keymap (kbd "w") 'whitespace-mode)
+(define-key my-win-keymap (kbd "y") 'switch-selected-window-accent-style)
 (global-set-key (kbd "M-o") my-win-keymap)
 #+end_src
 
@@ -1368,6 +1372,9 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 (window-divider-mode -1)
 
 (setq-default left-margin-width 0 right-margin-width 0)
+
+(modify-all-frames-parameters `((internal-border-width . 10)))
+
 #+end_src
 
 * imenu
@@ -2276,19 +2283,7 @@ echo
 ;;
 ;; -> development
 ;;
-(use-package spacious-padding
-  :init
-  (spacious-padding-mode 1)
-  :config
-  (setq spacious-padding-widths
-    '(:internal-border-width 10
-       :header-line-width 4
-       :mode-line-width 1
-       :tab-width 4
-       :right-divider-width 6
-       :scroll-bar-width 8)))
-
-(defvar my/internal-border-width 15 "Default internal border width for toggling.")
+(defvar my/internal-border-width 10 "Default internal border width for toggling.")
 
 (defun my/toggle-internal-border-width (&optional value)
   (interactive "P")
@@ -2301,40 +2296,6 @@ echo
     (modify-all-frames-parameters `((internal-border-width . ,new-value)))))
 
 (use-package lorem-ipsum)
-
-(defun selected-window-accent (&optional custom-accent-colour)
-  (interactive)
-  (let* ((init-accent-colour (or custom-accent-colour (face-attribute 'highlight :background)))
-         (accent-offset (if (string-greaterp init-accent-colour "#888888888888") -10 -10))
-         (accent-bg-colour
-           (color-desaturate-name
-             (color-darken-name init-accent-colour accent-offset) 20))
-         (accent-fg-colour (if (string-greaterp accent-bg-colour "#888888888888") "#000000" "#ffffff")))
-    (set-face-attribute 'fringe nil :background accent-bg-colour)
-    (set-face-attribute 'mode-line-active nil :background accent-bg-colour :foreground accent-fg-colour)
-    (walk-windows
-     (lambda (window)
-       (if (eq window (selected-window))
-           (progn
-             (set-window-margins window 1 0)
-             (with-selected-window window
-               (if (eq visual-fill-column-mode t)
-                   (visual-fill-column-mode t)))
-             (set-window-fringes window 10 10 t nil))
-         (progn
-           (set-window-margins window 2 0)
-           (with-selected-window window
-             (if (eq visual-fill-column-mode t)
-                 (visual-fill-column-mode t)))
-           (set-window-fringes window 0 0 t nil))
-         )
-       )
-      nil t)))
-
-(add-hook 'window-configuration-change-hook 'selected-window-accent)
-;; (add-hook 'window-configuration-change-hook (lambda () (interactive)(selected-window-accent "#c34444")))
-(add-hook 'window-state-change-hook 'selected-window-accent)
-;; (add-hook 'window-state-change-hook (lambda () (interactive)(selected-window-accent "#c34444")))
 
   (defun subtract-weight (weight-str avg-loss)
     "Subtract AVG-LOSS pounds from WEIGHT-STR given in 'stones:pounds' format."
@@ -2394,4 +2355,15 @@ echo
   (setq tab-bar-menu-bar-button (icon-string 'tab-bar-menu-bar))
 
   (use-package ox-epub)
+
+(use-package selected-window-accent-mode
+  ;;   :load-path "~/repos/selected-window-accent-mode"
+  :vc (:fetcher github :repo "captainflasmr/selected-window-accent-mode")
+  :custom
+  (selected-window-accent-fringe-thickness 6)
+  (selected-window-accent-custom-color "#88dd88")
+  (selected-window-accent-mode-style 'tiling))
+
+(selected-window-accent-mode)
+
 #+end_src
