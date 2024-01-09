@@ -233,7 +233,7 @@
 (define-key my-win-keymap (kbd "4") (lambda () (interactive)(tab-bar-select-tab 4)))
 (define-key my-win-keymap (kbd "5") (lambda () (interactive)(tab-bar-select-tab 5)))
 (define-key my-win-keymap (kbd "a") 'selected-window-accent-mode)
-(define-key my-win-keymap (kbd "b") 'tab-bar-mode)
+(define-key my-win-keymap (kbd "b") 'my/tab-bar-mode)
 (define-key my-win-keymap (kbd "d") 'window-divider-mode)
 (define-key my-win-keymap (kbd "f") 'font-lock-mode)
 (define-key my-win-keymap (kbd "g") 'revert-buffer-quick)
@@ -461,7 +461,7 @@
 (winner-mode 1)
 (pixel-scroll-precision-mode 1)
 (repeat-mode -1)
-(tab-bar-mode 1)
+(tab-bar-mode -1)
 
 ;;
 ;; -> bell
@@ -688,12 +688,28 @@
   (interactive)
   (if (not (looking-at "\\<"))
     (backward-word))
-  (push-mark)
+  (when (not (region-active-p))
+    (push-mark))
   (forward-word)
   (setq mark-active t))
 
-(global-set-key (kbd "M-s h") 'mark-paragraph)
-(global-set-key (kbd "M-@") 'my/mark-word)
+(defun my/mark-block ()
+   "Marking a block of text surrounded by a newline"
+   (interactive)
+   (when (not (region-active-p))
+      (backward-char))
+   (skip-chars-forward " \n\t")
+   (re-search-backward "^[ \t]*\n" nil 1)
+   (skip-chars-forward " \n\t")
+   (when (not (region-active-p))
+      (push-mark))
+   (re-search-forward "^[ \t]*\n" nil 1)
+   (skip-chars-backward " \n\t")
+  (setq mark-active t))
+
+(global-set-key (kbd "M-s h") 'my/mark-block)
+(global-set-key (kbd "M-@") 'my/mark-block)
+(global-set-key (kbd "M-#") 'my/mark-word)
 
 ;;
 ;; -> window-positioning
@@ -735,13 +751,20 @@
 ;;
 (setq bookmark-fringe-mark nil)
 
+(defun my-capture-top-level ()
+  "Function to capture a new entry at the top level of the given file."
+  (goto-char (point-min))
+  (or (outline-next-heading)
+      (goto-char (point-max)))
+  (unless (bolp) (insert "\n")))
+
 (setq org-capture-templates
   '(
      ("p" "Post" plain
-       (file+headline
+       (file+function
          "~/DCIM/content/posts--all.org"
-         "Posts")
-       "** TODO %^{title} :2023:
+         my-capture-top-level)
+       "* TODO %^{title} :2023:
 :PROPERTIES:
 :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>-posts--%\\1
 :EXPORT_HUGO_SECTION: posts
@@ -752,10 +775,10 @@
 " :prepend t :jump-to-captured t)
 
      ("e" "Emacs" plain
-       (file+headline
+       (file+function
          "~/DCIM/content/emacs--all.org"
-         "Emacs")
-       "** TODO %^{title} :emacs:2023:
+         my-capture-top-level)
+       "* TODO %^{title} :emacs:2023:
 :PROPERTIES:
 :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>-emacs--%\\1
 :EXPORT_HUGO_SECTION: emacs
@@ -766,9 +789,9 @@
 " :prepend t :jump-to-captured t)
 
      ("l" "Linux" plain
-       (file+headline
+       (file+function
          "~/DCIM/content/linux--all.org"
-         "Linux")
+         my-capture-top-level)
        "** TODO %^{title} :2023:
 :PROPERTIES:
 :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>-linux--%\\1
@@ -782,10 +805,10 @@
      ("a" "Art")
 
      ("av" "Art Videos" plain
-       (file+headline
+       (file+function
          "~/DCIM/content/art--all.org"
-         "Art")
-       "** TODO %^{title} Video :videos:painter:krita:artrage:2023:
+         my-capture-top-level)
+       "* TODO %^{title} Video :videos:painter:krita:artrage:2023:
 :PROPERTIES:
 :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>--%\\1-%\\2
 :EXPORT_HUGO_SECTION: art--videos
@@ -800,9 +823,9 @@
 " :prepend t :jump-to-captured t)
 
      ("aa" "Art" plain
-       (file+headline
+       (file+function
          "~/DCIM/content/art--all.org"
-         "Art")
+         my-capture-top-level)
        "** TODO %^{title} :painter:krita:artrage:2023:
 :PROPERTIES:
 :EXPORT_FILE_NAME: %\\1
@@ -1102,8 +1125,8 @@
 (add-hook 'text-mode-hook #'visual-line-mode)
 (add-hook 'org-mode-hook '(lambda () (visual-line-mode)))
 (setq-default truncate-partial-width-windows 120)
-(set-frame-parameter nil 'alpha-background 95)
-(add-to-list 'default-frame-alist '(alpha-background . 95))
+(set-frame-parameter nil 'alpha-background 90)
+(add-to-list 'default-frame-alist '(alpha-background . 90))
 (set-fringe-mode '(0 . 0))
 (set-display-table-slot standard-display-table 0 ?\ )
 
@@ -1762,6 +1785,8 @@
   (setq eshell-scroll-to-bottom-on-input t)
   (add-hook 'eshell-mode-hook 'my/eshell-hook))
 
+(global-set-key (kbd "M-T") 'eshell)
+
 ;;
 ;; -> chatGPT
 ;;
@@ -1834,71 +1859,117 @@
 
 (use-package lorem-ipsum)
 
-  (defun subtract-weight (weight-str avg-loss)
-    "Subtract AVG-LOSS pounds from WEIGHT-STR given in 'stones:pounds' format."
-    (let* ((stones-pounds (split-string weight-str ":"))
-            (stones (string-to-number (car stones-pounds)))
-            (pounds (string-to-number (cadr stones-pounds)))
-            (total-pounds (+ pounds (* stones 14)))      ;; Convert stones to pounds
-            (new-total-pounds (- total-pounds avg-loss)) ;; Subtract weight loss
-            (new-stones (truncate (/ new-total-pounds 14))) ;; Calculate new stones
-            (new-pounds (mod new-total-pounds 14)))      ;; Calculate remaining pounds
-      (format "%d:%d" new-stones new-pounds)))         ;; Format new weight
+(defun subtract-weight (weight-str avg-loss)
+  "Subtract AVG-LOSS pounds from WEIGHT-STR given in 'stones:pounds' format."
+  (let* ((stones-pounds (split-string weight-str ":"))
+          (stones (string-to-number (car stones-pounds)))
+          (pounds (string-to-number (cadr stones-pounds)))
+          (total-pounds (+ pounds (* stones 14)))      ;; Convert stones to pounds
+          (new-total-pounds (- total-pounds avg-loss)) ;; Subtract weight loss
+          (new-stones (truncate (/ new-total-pounds 14))) ;; Calculate new stones
+          (new-pounds (mod new-total-pounds 14)))      ;; Calculate remaining pounds
+    (format "%d:%d" new-stones new-pounds)))         ;; Format new weight
 
-  (defun extrapolate-weight-loss (num-weeks)
-    "Extrapolate weight loss for NUM-WEEKS using the last 'av/pd' value in the org-table."
-    (interactive "p")
-    (save-excursion
-      (let ((last-avg-loss 2.9)
-             (last-date "")
-             (week 0)
-             (next-date ""))
-        (print num-weeks)
-        (when (org-table-p)
-          (goto-char (org-table-end))
-          ;; Find the last date and week number
-          (search-backward-regexp "|\\s-?\\([0-9]+\\)\\s-?|\\s-?<\\([0-9-]+\\)" nil t)
-          (setq week (string-to-number (match-string 1)))
-          (setq last-date (match-string 2))
-          (setq last-weight "16:10")
+(defun extrapolate-weight-loss (num-weeks)
+  "Extrapolate weight loss for NUM-WEEKS using the last 'av/pd' value in the org-table."
+  (interactive "p")
+  (save-excursion
+    (let ((last-avg-loss 2.9)
+           (last-date "")
+           (week 0)
+           (next-date ""))
+      (print num-weeks)
+      (when (org-table-p)
+        (goto-char (org-table-end))
+        ;; Find the last date and week number
+        (search-backward-regexp "|\\s-?\\([0-9]+\\)\\s-?|\\s-?<\\([0-9-]+\\)" nil t)
+        (setq week (string-to-number (match-string 1)))
+        (setq last-date (match-string 2))
+        (setq last-weight "16:10")
 
-          (goto-char (org-table-end))
+        (goto-char (org-table-end))
 
-          ;; Loop for num-weeks to generate new lines
-          (dotimes (i num-weeks)
-            (setq next-date
-              (format-time-string "<%Y-%m-%d %a>"
-                (time-add (org-time-string-to-time last-date)
-                  (days-to-time (+ (* i 7) 7))))) ;; add 7 days per week
-            (setq week (+ week 1))
-            (insert (format "| %d | %s | %s | | | | | | |\n"
-                      week next-date (subtract-weight last-weight (* (+ i 1) last-avg-loss)))))
-          )
+        ;; Loop for num-weeks to generate new lines
+        (dotimes (i num-weeks)
+          (setq next-date
+            (format-time-string "<%Y-%m-%d %a>"
+              (time-add (org-time-string-to-time last-date)
+                (days-to-time (+ (* i 7) 7))))) ;; add 7 days per week
+          (setq week (+ week 1))
+          (insert (format "| %d | %s | %s | | | | | | |\n"
+                    week next-date (subtract-weight last-weight (* (+ i 1) last-avg-loss)))))
         )
       )
-    (org-table-align))
+    )
+  (org-table-align))
 
-  ;; tab-bar experimentation
+;; tab-bar experimentation
 
-  (add-to-list 'tab-bar-format #'tab-bar-format-menu-bar)
+;; (add-to-list 'tab-bar-format #'tab-bar-format-menu-bar)
 
-  (define-icon tab-bar-menu-bar nil
-    '((emoji "🫥")
-       (text "Menu" :face tab-bar-tab-inactive))
-    "Icon for the menu bar."
-    :version "29.1"
-    :help-echo "Menu bar")
+;; (define-icon tab-bar-menu-bar nil
+;;   '((emoji "🫥")
+;;      (text "Menu" :face tab-bar-tab-inactive))
+;;   "Icon for the menu bar."
+;;   :version "29.1"
+;;   :help-echo "Menu bar")
 
-  (setq tab-bar-menu-bar-button (icon-string 'tab-bar-menu-bar))
+;; (setq tab-bar-menu-bar-button (icon-string 'tab-bar-menu-bar))
 
-  (use-package ox-epub)
+(use-package ox-epub)
 
 (use-package selected-window-accent-mode
   ;;   :load-path "~/repos/selected-window-accent-mode"
   :vc (:fetcher github :repo "captainflasmr/selected-window-accent-mode")
   :custom
-  (selected-window-accent-fringe-thickness 6)
-  (selected-window-accent-custom-color "#88dd88")
-  (selected-window-accent-mode-style 'tiling))
+  (selected-window-accent-fringe-thickness 10)
+  (selected-window-accent-custom-color "#8888bf")
+  (selected-window-accent-mode-style 'subtle))
+
+(set-face-attribute 'tab-bar-tab nil :background "#32325b" :foreground "#ffffff")
 
 (selected-window-accent-mode)
+
+(defun my/tab-bar-mode()
+  ""
+  (interactive)
+  (tab-bar-mode 'toggle)
+  (set-face-attribute 'tab-bar-tab nil :background "#32325b" :foreground "#ffffff"))
+
+(setq test-fn
+  '(("/home/jdyer/repos/selected-window-accent-mode/README.org"
+      "/home/jdyer/repos/selected-window-accent-mode/selected-window-accent-mode.el"
+      ";;; Commentary:"
+      ";; END")))
+
+(defun my/push-block (&optional value)
+  ""
+  (interactive "p")
+  (dolist (item test-fn)
+    (when (string-equal (buffer-file-name) (nth 0 item))
+      (org-ascii-export-to-ascii)
+      (with-current-buffer
+        (find-file-noselect
+          (concat (file-name-sans-extension (nth 0 item)) ".txt"))
+        (delete-duplicate-lines (point-min)(point-max) nil t nil)
+        (goto-char (point-min))
+        (while (re-search-forward "^" nil t)
+          (replace-match ";; "))
+        (mark-whole-buffer)
+        (save-buffer)
+        (kill-buffer))
+      (with-current-buffer
+        (find-file-noselect (nth 1 item))
+        (goto-char (point-min))
+        (re-search-forward (nth 2 item) nil nil value)
+        (newline)
+        (setq point-start (point))
+        (re-search-forward (nth 3 item) nil nil 1)
+        (backward-char (length (nth 3 item)))
+        (kill-region point-start (point))
+        (insert-file-contents (concat (file-name-sans-extension (nth 0 item)) ".txt"))
+        (save-buffer)
+        )
+      )
+    )
+  )
