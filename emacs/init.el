@@ -1220,7 +1220,7 @@
 ;;
 (setq-default mode-line-modified
   '(:eval (if (and (buffer-file-name) (buffer-modified-p))
-            (propertize " * Modified " 'face
+            (propertize " * " 'face
               '(:background "#ff0000" :foreground "#ffffff" :inherit bold)) "")))
 
 (set-face-attribute 'mode-line-active nil :height 130 :underline nil :overline nil :box nil
@@ -1950,7 +1950,7 @@
   ;;   :load-path "~/repos/selected-window-accent-mode"
   :vc (:fetcher github :repo "captainflasmr/selected-window-accent-mode")
   :custom
-  (selected-window-accent-fringe-thickness 20)
+  (selected-window-accent-fringe-thickness 10)
   (selected-window-accent-custom-color my/accent-color)
   (selected-window-accent-mode-style 'subtle))
 
@@ -1964,7 +1964,8 @@
     (set-face-attribute 'tab-bar-tab nil :background darker-accent-color)))
 
 (setq test-fn
-  '(("~/repos/selected-window-accent-mode/TODO.org"
+  '(
+     ("~/repos/selected-window-accent-mode/TODO.org"
       "~/repos/selected-window-accent-mode/README.org"
       "* TODOs / ROADMAP"
       ":TODO_END"
@@ -1985,27 +1986,43 @@
 (defun my/push-block (&optional value)
   ""
   (interactive "p")
+  (print value)
   (dolist (item test-fn)
-    (when (string-equal
-            (expand-file-name (buffer-file-name))
-            (expand-file-name (nth 0 item)))
+    (when (or (string-equal
+                (expand-file-name (buffer-file-name))
+                (expand-file-name (nth 0 item)))
+            (> value 1))
       (pcase (nth 4 item)
         (:org
           (if (eq (nth 5 item) :hugo)
             (progn
-              (org-hugo-export-wim-to-md)
-              (shell-command "web rsync emacs")
-              (shell-command "web rsync art")
-              (shell-command "web rsync dyerdwelling")
-              (shell-command "web rsync sway"))
+              (when (= value 1)
+                (org-hugo-export-wim-to-md)
+                (shell-command "web rsync emacs")
+                (shell-command "web rsync art")
+                (shell-command "web rsync dyerdwelling")
+                (shell-command "web rsync sway"))
+              )
             (progn
               (pcase (nth 5 item)
                 (:ascii
-                  (org-ascii-export-to-ascii)
+                  (if (> value 1)
+                    (with-current-buffer
+                      (find-file-noselect (expand-file-name (nth 0 item)))
+                      (org-ascii-export-to-ascii)
+                      )
+                    (org-ascii-export-to-ascii)
+                    )
                   (setq export-file (concat (file-name-sans-extension
                                               (expand-file-name (nth 0 item))) ".txt")))
                 (:html
-                  (org-html-export-to-html)
+                  (if (> value 1)
+                    (with-current-buffer
+                      (find-file-noselect (expand-file-name (nth 0 item)))
+                      (org-html-export-to-html)
+                      )
+                    (org-ascii-export-to-ascii)
+                    )
                   (setq export-file (concat (file-name-sans-extension
                                               (expand-file-name(nth 0 item))) ".html")))
                 )
@@ -2025,7 +2042,7 @@
               (with-current-buffer
                 (find-file-noselect (expand-file-name (nth 1 item)))
                 (goto-char (point-min))
-                (re-search-forward (nth 2 item) nil nil value)
+                (re-search-forward (nth 2 item) nil nil 1)
                 (newline)
                 (setq point-start (point))
                 (re-search-forward (nth 3 item) nil nil 1)
