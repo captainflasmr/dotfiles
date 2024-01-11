@@ -220,10 +220,12 @@
 (define-key my-jump-keymap (kbd "m") (lambda () (interactive) (find-file "~")))
 (define-key my-jump-keymap (kbd "n") (lambda () (interactive) (find-file "~/nas")))
 (define-key my-jump-keymap (kbd "o") (lambda () (interactive) (find-file "~/.config/emacs/emacs--init.org")))
-(define-key my-jump-keymap (kbd "p") 'emms)
+(define-key my-jump-keymap (kbd "p") 'proced)
 (define-key my-jump-keymap (kbd "r") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
 (define-key my-jump-keymap (kbd "h") 'customize-themes)
+(define-key my-jump-keymap (kbd "u") (lambda () (interactive) (find-file "/run/media/jdyer/")))
 (define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
+(define-key my-jump-keymap (kbd "y") 'emms)
 (global-set-key (kbd "M-m") my-jump-keymap)
 
 (defvar my-win-keymap (make-sparse-keymap))
@@ -405,6 +407,7 @@
 ;;
 ;; -> keybinding
 ;;
+(global-set-key (kbd "M-s e") 'my/push-block)
 (global-set-key (kbd "M-e") 'dired-jump)
 (global-set-key (kbd "M-H") 'tab-bar-switch-to-next-tab)
 (global-set-key (kbd "M-L") 'tab-bar-switch-to-prev-tab)
@@ -415,14 +418,16 @@
 (bind-key* (kbd "M-g o") 'consult-outline)
 (bind-key* (kbd "M-g i") 'consult-imenu)
 (global-set-key (kbd "C-c a") 'org-agenda)
-(global-set-key (kbd "C-c j") 'winner-undo)
-(global-set-key (kbd "C-c k") 'winner-redo)
+;; (global-set-key (kbd "C-c j") 'winner-undo)
+;; (global-set-key (kbd "C-c k") 'winner-redo)
+(global-set-key (kbd "M-u") 'winner-undo)
+(global-set-key (kbd "M-i") 'winner-redo)
 (bind-key* (kbd "M-j") (lambda()(interactive)(next-line (/ (window-height) 8))))
 (bind-key* (kbd "M-k") (lambda()(interactive)(previous-line (/ (window-height) 8))))
 (bind-key* (kbd "M-l") (lambda()(interactive)(select-window (next-window (selected-window)))))
 (bind-key* (kbd "M-h") (lambda()(interactive)(select-window (previous-window (selected-window)))))
-(bind-key* (kbd "M-i") (lambda ()(interactive)(my/resize-window 4 t)))
-(bind-key* (kbd "M-u") (lambda ()(interactive)(my/resize-window -4 t)))
+(bind-key* (kbd "M-I") (lambda ()(interactive)(my/resize-window 4 t)))
+(bind-key* (kbd "M-U") (lambda ()(interactive)(my/resize-window -4 t)))
 (global-set-key (kbd "C-c b") (lambda ()(interactive)(async-shell-command "do_backup home" "*backup*")))
 (global-set-key (kbd "C-c c") 'org-capture)
 (global-set-key (kbd "C-c f") 'my/fold)
@@ -693,6 +698,17 @@
   (forward-word)
   (setq mark-active t))
 
+(defun my/mark-word ()
+  "redefinition of mark-word"
+  (interactive)
+  (when (not (region-active-p))
+    (backward-to-word 1))
+  (forward-to-word 1)
+  (when (not (region-active-p))
+    (push-mark))
+  (forward-word)
+  (setq mark-active t))
+
 (defun my/mark-block ()
    "Marking a block of text surrounded by a newline"
    (interactive)
@@ -709,7 +725,7 @@
 
 (global-set-key (kbd "M-s h") 'my/mark-block)
 (global-set-key (kbd "M-@") 'my/mark-block)
-(global-set-key (kbd "M-#") 'my/mark-word)
+(global-set-key (kbd "M-'") 'my/mark-word)
 
 ;;
 ;; -> window-positioning
@@ -852,6 +868,7 @@
     org-edit-src-content-indentation 0
     org-src-preserve-indentation t
     org-hide-leading-stars t
+    org-reverse-note-order t
     org-log-done 'time
     org-tags-sort-function 'org-string-collate-greaterp
     org-export-with-sub-superscripts nil
@@ -859,11 +876,12 @@
     org-image-actual-width (list 50)
     org-startup-indented t
     org-todo-keywords
-    '((sequence "TODO" "DOING" "WAIT" "ORDR" "SENT" "|" "CANCELLED" "DONE"))
+    '((sequence "TODO" "DOING" "WAIT" "WATCH" "ORDR" "SENT" "|" "CANCELLED" "DONE"))
     org-todo-keyword-faces
     '(("TODO" . "#ee5566")
        ("DOING" . "#5577aa")
        ("WAIT" . "#bb7744")
+       ("WATCH" . "#bbad44")
        ("ORDR" . "#bb44ee")
        ("SENT" . "#bb44ee")
        ("CANCELLED" . "#426b3e")
@@ -1125,8 +1143,8 @@
 (add-hook 'text-mode-hook #'visual-line-mode)
 (add-hook 'org-mode-hook '(lambda () (visual-line-mode)))
 (setq-default truncate-partial-width-windows 120)
-(set-frame-parameter nil 'alpha-background 90)
-(add-to-list 'default-frame-alist '(alpha-background . 90))
+(set-frame-parameter nil 'alpha-background 97)
+(add-to-list 'default-frame-alist '(alpha-background . 97))
 (set-fringe-mode '(0 . 0))
 (set-display-table-slot standard-display-table 0 ?\ )
 
@@ -1315,20 +1333,6 @@
 (setq dictionary-default-dictionary "*")
 (setq dictionary-server "dict.org")
 (setq dictionary-use-single-buffer t)
-
-;;
-;; -> hugo
-;;
-(defun my/hugo-org-export-subtree ()
-  "Hugo export processing."
-  (interactive)
-  (org-hugo-export-wim-to-md)
-  (shell-command "web rsync emacs")
-  (shell-command "web rsync art")
-  (shell-command "web rsync dyerdwelling")
-  (shell-command "web rsync sway"))
-
-(global-set-key (kbd "M-s e") #'my/hugo-org-export-subtree)
 
 ;;
 ;; -> gdb
@@ -1918,57 +1922,97 @@
 
 (use-package ox-epub)
 
+(setq my/accent-color "#426c00")
+
 (use-package selected-window-accent-mode
   ;;   :load-path "~/repos/selected-window-accent-mode"
   :vc (:fetcher github :repo "captainflasmr/selected-window-accent-mode")
   :custom
   (selected-window-accent-fringe-thickness 10)
-  (selected-window-accent-custom-color "#8888bf")
+  (selected-window-accent-custom-color my/accent-color)
   (selected-window-accent-mode-style 'subtle))
-
-(set-face-attribute 'tab-bar-tab nil :background "#32325b" :foreground "#ffffff")
 
 (selected-window-accent-mode)
 
 (defun my/tab-bar-mode()
   ""
   (interactive)
-  (tab-bar-mode 'toggle)
-  (set-face-attribute 'tab-bar-tab nil :background "#32325b" :foreground "#ffffff"))
+  (let ((darker-accent-color (color-darken-name my/accent-color 30)))
+    (tab-bar-mode 'toggle)
+    (set-face-attribute 'tab-bar-tab nil :background darker-accent-color)))
 
 (setq test-fn
-  '(("/home/jdyer/repos/selected-window-accent-mode/README.org"
-      "/home/jdyer/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-      ";;; Commentary:"
-      ";; END")))
+  '(("~/repos/selected-window-accent-mode/TODO.org"
+      "~/repos/selected-window-accent-mode/README.org"
+      "* TODOs / ROADMAP"
+      ":TODO_END"
+      :org :ascii "  ")
+     ("~/repos/selected-window-accent-mode/README.org"
+       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
+       ";;; Commentary:"
+       ";; END"
+       :org :ascii ";; ")
+     ("~/DCIM/content/art--all.org" "" "" "" :org :hugo "")
+     ("~/DCIM/content/emacs--all.org" "" "" "" :org :hugo "")
+     ("~/DCIM/content/kate--blog.org" "" "" "" :org :hugo "")
+     ("~/DCIM/content/linux--all.org" "" "" "" :org :hugo "")
+     ("~/DCIM/content/posts--all.org" "" "" "" :org :hugo "")
+     )
+  )
 
 (defun my/push-block (&optional value)
   ""
   (interactive "p")
   (dolist (item test-fn)
-    (when (string-equal (buffer-file-name) (nth 0 item))
-      (org-ascii-export-to-ascii)
-      (with-current-buffer
-        (find-file-noselect
-          (concat (file-name-sans-extension (nth 0 item)) ".txt"))
-        (delete-duplicate-lines (point-min)(point-max) nil t nil)
-        (goto-char (point-min))
-        (while (re-search-forward "^" nil t)
-          (replace-match ";; "))
-        (mark-whole-buffer)
-        (save-buffer)
-        (kill-buffer))
-      (with-current-buffer
-        (find-file-noselect (nth 1 item))
-        (goto-char (point-min))
-        (re-search-forward (nth 2 item) nil nil value)
-        (newline)
-        (setq point-start (point))
-        (re-search-forward (nth 3 item) nil nil 1)
-        (backward-char (length (nth 3 item)))
-        (kill-region point-start (point))
-        (insert-file-contents (concat (file-name-sans-extension (nth 0 item)) ".txt"))
-        (save-buffer)
+    (when (string-equal
+            (expand-file-name (buffer-file-name))
+            (expand-file-name (nth 0 item)))
+      (pcase (nth 4 item)
+        (:org
+          (if (eq (nth 5 item) :hugo)
+            (progn
+              (org-hugo-export-wim-to-md)
+              (shell-command "web rsync emacs")
+              (shell-command "web rsync art")
+              (shell-command "web rsync dyerdwelling")
+              (shell-command "web rsync sway"))
+            (progn
+              (pcase (nth 5 item)
+                (:ascii
+                  (org-ascii-export-to-ascii)
+                  (setq export-file (concat (file-name-sans-extension
+                                              (expand-file-name (nth 0 item))) ".txt")))
+                (:html
+                  (org-html-export-to-html)
+                  (setq export-file (concat (file-name-sans-extension
+                                              (expand-file-name(nth 0 item))) ".html")))
+                )
+              (with-current-buffer
+                (find-file-noselect export-file)
+                (delete-duplicate-lines (point-min)(point-max) nil t nil)
+                (goto-char (point-min))
+                (flush-lines "~~~~")
+                (flush-lines "----")
+                (flush-lines "====")
+                (goto-char (point-min))
+                (while (re-search-forward "^" nil t)
+                  (replace-match (nth 6 item)))
+                (mark-whole-buffer)
+                (save-buffer)
+                (kill-buffer))
+              (with-current-buffer
+                (find-file-noselect (expand-file-name (nth 1 item)))
+                (goto-char (point-min))
+                (re-search-forward (nth 2 item) nil nil value)
+                (newline)
+                (setq point-start (point))
+                (re-search-forward (nth 3 item) nil nil 1)
+                (backward-char (length (nth 3 item)))
+                (kill-region point-start (point))
+                (newline 3)
+                (previous-line 2)
+                (insert-file-contents export-file)
+                (save-buffer)))))
         )
       )
     )
