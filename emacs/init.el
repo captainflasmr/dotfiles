@@ -687,7 +687,7 @@
       (kill-new filename)
       (message "Copied buffer file name '%s' to the clipboard." filename))))
 
-(global-set-key (kbd "C-c w") 'my/copy-file-name-to-clipboard)
+(global-set-key (kbd "C-c w") 'file-info-show)
 
 (defun my/mark-word ()
   "redefinition of mark-word"
@@ -920,7 +920,16 @@
   (modify-syntax-entry ?< "." org-mode-syntax-table)
   (modify-syntax-entry ?> "." org-mode-syntax-table))
 
+(defun my/org-shrink-tables ()
+  "Shrink all tables in the current org buffer."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (while (search-forward "|-" nil t)
+      (org-table-shrink))))
+
 (add-hook 'org-mode-hook #'org-syntax-table-modify)
+(add-hook 'org-mode-hook #'my/org-shrink-tables)
 
 ;;
 ;; -> org-agenda
@@ -1160,7 +1169,7 @@
 
 (setq-default left-margin-width 0 right-margin-width 0)
 
-(modify-all-frames-parameters `((internal-border-width . 10)))
+(modify-all-frames-parameters `((internal-border-width . 0)))
 
 ;;
 ;; -> imenu
@@ -1225,14 +1234,14 @@
      (:eval
        (propertize (format "%s" (abbreviate-file-name default-directory))))
      (:eval
+       (when (or (eq major-mode 'image-mode)
+               (eq major-mode 'image-dired-image-mode))
+         (process-lines  "identify"  "-format"  "[%m %wx%h %b]" (buffer-file-name))))
+     (:eval
        (if (not (equal major-mode 'dired-mode))
          (propertize (format "%s " (buffer-name))
            'face '(:inherit bold))
          " "))
-     (:eval
-       (when (or (eq major-mode 'image-mode)
-               (eq major-mode 'image-dired-image-mode))
-         (process-lines  "identify"  "-format"  "[%m %wx%h %b]" (buffer-file-name))))
      mode-line-position
      mode-line-modes
      mode-line-misc-info))
@@ -1941,7 +1950,7 @@
   ;;   :load-path "~/repos/selected-window-accent-mode"
   :vc (:fetcher github :repo "captainflasmr/selected-window-accent-mode")
   :custom
-  (selected-window-accent-fringe-thickness 10)
+  (selected-window-accent-fringe-thickness 20)
   (selected-window-accent-custom-color my/accent-color)
   (selected-window-accent-mode-style 'subtle))
 
@@ -2050,3 +2059,5 @@
     (setq search-term (replace-regexp-in-string "[[:space:]\n]+" "+" search-term))
     ;; Open in an external browser
     (browse-url (concat "https://www.startpage.com/search?q=" search-term))))
+
+(use-package file-info)
