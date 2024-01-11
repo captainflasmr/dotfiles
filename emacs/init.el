@@ -238,7 +238,7 @@
 (define-key my-win-keymap (kbd "b") 'my/tab-bar-mode)
 (define-key my-win-keymap (kbd "d") 'window-divider-mode)
 (define-key my-win-keymap (kbd "f") 'font-lock-mode)
-(define-key my-win-keymap (kbd "g") 'revert-buffer-quick)
+(define-key my-win-keymap (kbd "g") 'my/toggle-scroll-margin)
 (define-key my-win-keymap (kbd "i") 'highlight-indent-guides-mode)
 (define-key my-win-keymap (kbd "k") 'font-lock-mode)
 (define-key my-win-keymap (kbd "l") 'display-line-numbers-mode)
@@ -740,6 +740,9 @@
 
 (add-to-list 'display-buffer-alist
   '("\\*Proced" display-buffer-same-window))
+
+(add-to-list 'display-buffer-alist
+  '("\\*Messages" display-buffer-same-window))
 
 (add-to-list 'display-buffer-alist
   '("\\*deadgrep"
@@ -1861,6 +1864,15 @@
                        0))))
     (modify-all-frames-parameters `((internal-border-width . ,new-value)))))
 
+(defun my/toggle-scroll-margin (&optional value)
+  (interactive "P")
+  (let ((new-value (if value
+                     value
+                     (if (= (or scroll-margin 0) 0)
+                       20
+                       0))))
+    (setq scroll-margin new-value)))
+
 (use-package lorem-ipsum)
 
 (defun subtract-weight (weight-str avg-loss)
@@ -2012,7 +2024,11 @@
                 (newline 3)
                 (previous-line 2)
                 (insert-file-contents export-file)
-                (save-buffer)))))
+                (save-buffer))
+              (delete-file export-file)
+              )
+            )
+          )
         )
       )
     )
