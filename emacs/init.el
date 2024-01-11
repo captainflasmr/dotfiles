@@ -408,6 +408,7 @@
 ;; -> keybinding
 ;;
 (global-set-key (kbd "M-s e") 'my/push-block)
+(global-set-key (kbd "M-s g") 'my/text-browser-search)
 (global-set-key (kbd "M-e") 'dired-jump)
 (global-set-key (kbd "M-H") 'tab-bar-switch-to-next-tab)
 (global-set-key (kbd "M-L") 'tab-bar-switch-to-prev-tab)
@@ -2033,3 +2034,19 @@
       )
     )
   )
+
+(defun my/text-browser-search ()
+  "Use the selected text (or the word under the cursor) as the search term for a Google search in a web browser."
+  (interactive)
+  (let (search-term start end)
+    ;; Check if text is selected, otherwise use the word at the cursor position
+    (if (use-region-p)
+        (setq start (region-beginning)
+              end (region-end))
+      (setq start (beginning-of-thing 'word)
+            end (end-of-thing 'word)))
+    ;; Extract the search term and urlencode it
+    (setq search-term (buffer-substring-no-properties start end))
+    (setq search-term (replace-regexp-in-string "[[:space:]\n]+" "+" search-term))
+    ;; Open in an external browser
+    (browse-url (concat "https://www.startpage.com/search?q=" search-term))))
