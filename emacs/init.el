@@ -1963,7 +1963,7 @@
     (tab-bar-mode 'toggle)
     (set-face-attribute 'tab-bar-tab nil :background darker-accent-color)))
 
-(setq test-fn
+(setq my/push-block-spec
   '(
      ;; Entry format: (source-file export-file header-tag end-tag export-type format-specifier prefix-string)
      ("~/repos/selected-window-accent-mode/TODO.org"
@@ -1987,67 +1987,74 @@
 (defun my/push-block (&optional value)
   "Export content from one org file to another in various formats and update files accordingly."
   (interactive "p")
-  (dolist (item test-fn)
+
+  (defun execute-shell-commands (commands)
+    (mapc 'shell-command commands))
+
+  (defun export-to-format (source-file format-spec export-file)
+    (with-temp-buffer
+      (insert-file-contents source-file)
+      (org-mode)
+      (let ((exported-file (concat (file-name-sans-extension export-file)
+                                   (cond ((eq format-spec :ascii) ".txt")
+                                         ((eq format-spec :html) ".html")))))
+        (org-export-to-file (pcase format-spec
+                              (:ascii 'ascii)
+                              (:html 'html))
+                            exported-file)
+        exported-file)))
+
+  (defun remove-special-lines-and-add-prefix (exported-file prefix-string)
+    (with-temp-buffer
+      (insert-file-contents exported-file)
+      (delete-duplicate-lines (point-min) (point-max) nil t nil)
+      (flush-lines "~~~~")
+      (flush-lines "----")
+      (flush-lines "====")
+      (goto-char (point-min))
+      (while (search-forward-regexp "^" nil t)
+        (replace-match prefix-string))
+      (write-region (point-min) (point-max) exported-file)))
+
+  (defun insert-exported-contents (source-file export-file spec)
+    (with-temp-buffer
+      (insert-file-contents export-file)
+      (goto-char (point-min))
+      (re-search-forward (nth 2 spec) nil nil 1)
+      (newline)
+      (let ((point-start (point)))
+        (re-search-forward (nth 3 spec) nil nil 1)
+        (backward-char (length (nth 3 spec)))
+        (kill-region point-start (point)))
+      (newline 2)
+      (previous-line 1)
+      (insert-file-contents source-file)
+      (write-region (point-min) (point-max) export-file)))
+
+  (dolist (item my/push-block-spec)
     (let* ((source-file (expand-file-name (nth 0 item)))
-            (export-file (expand-file-name (nth 1 item)))
-            (export-type (nth 4 item))
-            (format-spec (nth 5 item))
-            (prefix-string (nth 6 item))
-            (in-current (string-equal (expand-file-name (buffer-file-name)) source-file)))
+           (export-file (expand-file-name (nth 1 item)))
+           (export-type (nth 4 item))
+           (format-spec (nth 5 item))
+           (prefix-string (nth 6 item))
+           (in-current (string-equal (expand-file-name (buffer-file-name)) source-file)))
+
       (when (or in-current (> value 1))
         (pcase export-type
           (:org
-            (cond
-              ((eq format-spec :hugo)
-                (when (= value 1)
-                  (org-hugo-export-wim-to-md)
-                  (mapc 'shell-command
-                    '("web rsync emacs"
-                       "web rsync art"
-                       "web rsync dyerdwelling"
-                       "web rsync sway"))))
-              (t
-                (let (exported-file)
-                  (pcase format-spec
-                    (:ascii
-                      (setq exported-file
-                        (concat (file-name-sans-extension
-                                  (expand-file-name (nth 0 item))) ".txt"))
-                      (with-temp-buffer (insert-file-contents source-file)
-                        (org-mode)
-                        (org-export-to-file 'ascii exported-file)))
-                    (:html
-                      (setq exported-file
-                        (concat (file-name-sans-extension
-                                  (expand-file-name(nth 0 item))) ".html"))
-                      (with-temp-buffer (insert-file-contents source-file)
-                        (org-mode)
-                        (org-export-to-file 'html exported-file)))
-                    )
-                  (with-temp-buffer
-                    (insert-file-contents exported-file)
-                    (delete-duplicate-lines (point-min)(point-max) nil t nil)
-                    (flush-lines "~~~~")
-                    (flush-lines "----")
-                    (flush-lines "====")
-                    (goto-char (point-min))
-                    (while (search-forward-regexp "^" nil t)
-                      (replace-match prefix-string))
-                    (write-region (point-min) (point-max) exported-file))
-                  (with-temp-buffer
-                    (insert-file-contents export-file)
-                    (goto-char (point-min))
-                    (re-search-forward (nth 2 item) nil nil 1)
-                    (newline)
-                    (setq point-start (point))
-                    (re-search-forward (nth 3 item) nil nil 1)
-                    (backward-char (length (nth 3 item)))
-                    (kill-region point-start (point))
-                    (newline 2)
-                    (previous-line 1)
-                    (insert-file-contents exported-file)
-                    (write-region (point-min) (point-max) export-file))
-                  (delete-file exported-file))))))))))
+           (cond
+            ((eq format-spec :hugo)
+             (when (= value 1)
+               (org-hugo-export-wim-to-md)
+               (execute-shell-commands '("web rsync emacs"
+                                          "web rsync art"
+                                          "web rsync dyerdwelling"
+                                          "web rsync sway"))))
+            (t
+             (let ((exported-file (export-to-format source-file format-spec export-file)))
+               (remove-special-lines-and-add-prefix exported-file prefix-string)
+               (insert-exported-contents exported-file export-file item)
+               (delete-file exported-file))))))))))
 
 (defun my/text-browser-search ()
   "Use the selected text (or the word under the cursor) as the search term for a Google search in a web browser."
