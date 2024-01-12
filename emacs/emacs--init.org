@@ -2423,11 +2423,12 @@ echo
 
 (setq test-fn
   '(
+     ;; Entry format: (source-file export-file header-tag end-tag export-type format-specifier prefix-string)
      ("~/repos/selected-window-accent-mode/TODO.org"
-      "~/repos/selected-window-accent-mode/README.org"
-      "* TODOs / ROADMAP"
-      "* Testing"
-      :org :ascii "  ")
+       "~/repos/selected-window-accent-mode/README.org"
+       "* TODOs / ROADMAP"
+       "* Testing"
+       :org :ascii "  ")
      ("~/repos/selected-window-accent-mode/README.org"
        "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
        ";;; Commentary:"
@@ -2458,26 +2459,28 @@ echo
               ((eq format-spec :hugo)
                 (when (= value 1)
                   (org-hugo-export-wim-to-md)
-                  (mapc 'shell-command '("web rsync emacs" "web rsync art" "web rsync dyerdwelling" "web rsync sway"))))
+                  (mapc 'shell-command
+                    '("web rsync emacs"
+                       "web rsync art"
+                       "web rsync dyerdwelling"
+                       "web rsync sway"))))
               (t
                 (let (exported-file)
                   (pcase format-spec
                     (:ascii
-                      (setq exported-file (concat (file-name-sans-extension
-                                                    (expand-file-name (nth 0 item))) ".txt"))
+                      (setq exported-file
+                        (concat (file-name-sans-extension
+                                  (expand-file-name (nth 0 item))) ".txt"))
                       (with-temp-buffer (insert-file-contents source-file)
                         (org-mode)
-                        (org-export-to-file 'ascii exported-file)
-                        )
-                      )
+                        (org-export-to-file 'ascii exported-file)))
                     (:html
-                      (setq exported-file (concat (file-name-sans-extension
-                                                    (expand-file-name(nth 0 item))) ".html"))
+                      (setq exported-file
+                        (concat (file-name-sans-extension
+                                  (expand-file-name(nth 0 item))) ".html"))
                       (with-temp-buffer (insert-file-contents source-file)
                         (org-mode)
-                        (org-export-to-file 'html exported-file)
-                        )
-                      )
+                        (org-export-to-file 'html exported-file)))
                     )
                   (with-temp-buffer
                     (insert-file-contents exported-file)
@@ -2502,15 +2505,7 @@ echo
                     (previous-line 1)
                     (insert-file-contents exported-file)
                     (write-region (point-min) (point-max) export-file))
-                  )
-                )
-              )
-            )
-          )
-        )
-      )
-    )
-  )
+                  (delete-file exported-file))))))))))
 
 (defun my/text-browser-search ()
   "Use the selected text (or the word under the cursor) as the search term for a Google search in a web browser."
@@ -2518,10 +2513,10 @@ echo
   (let (search-term start end)
     ;; Check if text is selected, otherwise use the word at the cursor position
     (if (use-region-p)
-        (setq start (region-beginning)
-              end (region-end))
+      (setq start (region-beginning)
+        end (region-end))
       (setq start (beginning-of-thing 'word)
-            end (end-of-thing 'word)))
+        end (end-of-thing 'word)))
     ;; Extract the search term and urlencode it
     (setq search-term (buffer-substring-no-properties start end))
     (setq search-term (replace-regexp-in-string "[[:space:]\n]+" "+" search-term))
