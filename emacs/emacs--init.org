@@ -2402,7 +2402,7 @@ echo
 
 (use-package ox-epub)
 
-(setq my/accent-color "#426c00")
+(setq my/accent-color "#6c5f00")
 
 (use-package selected-window-accent-mode
   ;;   :load-path "~/repos/selected-window-accent-mode"
@@ -2426,12 +2426,12 @@ echo
      ("~/repos/selected-window-accent-mode/TODO.org"
       "~/repos/selected-window-accent-mode/README.org"
       "* TODOs / ROADMAP"
-      ":TODO_END"
+      "* Testing"
       :org :ascii "  ")
      ("~/repos/selected-window-accent-mode/README.org"
        "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
        ";;; Commentary:"
-       ";; END"
+       ";; Code"
        :org :ascii ";; ")
      ("~/DCIM/content/art--all.org" "" "" "" :org :hugo "")
      ("~/DCIM/content/emacs--all.org" "" "" "" :org :hugo "")
@@ -2442,75 +2442,68 @@ echo
   )
 
 (defun my/push-block (&optional value)
-  ""
+  "Export content from one org file to another in various formats and update files accordingly."
   (interactive "p")
-  (print value)
   (dolist (item test-fn)
-    (when (or (string-equal
-                (expand-file-name (buffer-file-name))
-                (expand-file-name (nth 0 item)))
-            (> value 1))
-      (pcase (nth 4 item)
-        (:org
-          (if (eq (nth 5 item) :hugo)
-            (progn
-              (when (= value 1)
-                (org-hugo-export-wim-to-md)
-                (shell-command "web rsync emacs")
-                (shell-command "web rsync art")
-                (shell-command "web rsync dyerdwelling")
-                (shell-command "web rsync sway"))
-              )
-            (progn
-              (pcase (nth 5 item)
-                (:ascii
-                  (if (> value 1)
-                    (with-current-buffer
-                      (find-file-noselect (expand-file-name (nth 0 item)))
-                      (org-ascii-export-to-ascii)
+    (let* ((source-file (expand-file-name (nth 0 item)))
+            (export-file (expand-file-name (nth 1 item)))
+            (export-type (nth 4 item))
+            (format-spec (nth 5 item))
+            (prefix-string (nth 6 item))
+            (in-current (string-equal (expand-file-name (buffer-file-name)) source-file)))
+      (when (or in-current (> value 1))
+        (pcase export-type
+          (:org
+            (cond
+              ((eq format-spec :hugo)
+                (when (= value 1)
+                  (org-hugo-export-wim-to-md)
+                  (mapc 'shell-command '("web rsync emacs" "web rsync art" "web rsync dyerdwelling" "web rsync sway"))))
+              (t
+                (let (exported-file)
+                  (pcase format-spec
+                    (:ascii
+                      (setq exported-file (concat (file-name-sans-extension
+                                                    (expand-file-name (nth 0 item))) ".txt"))
+                      (with-temp-buffer (insert-file-contents source-file)
+                        (org-mode)
+                        (org-export-to-file 'ascii exported-file)
+                        )
                       )
-                    (org-ascii-export-to-ascii)
-                    )
-                  (setq export-file (concat (file-name-sans-extension
-                                              (expand-file-name (nth 0 item))) ".txt")))
-                (:html
-                  (if (> value 1)
-                    (with-current-buffer
-                      (find-file-noselect (expand-file-name (nth 0 item)))
-                      (org-html-export-to-html)
+                    (:html
+                      (setq exported-file (concat (file-name-sans-extension
+                                                    (expand-file-name(nth 0 item))) ".html"))
+                      (with-temp-buffer (insert-file-contents source-file)
+                        (org-mode)
+                        (org-export-to-file 'html exported-file)
+                        )
                       )
-                    (org-ascii-export-to-ascii)
                     )
-                  (setq export-file (concat (file-name-sans-extension
-                                              (expand-file-name(nth 0 item))) ".html")))
+                  (with-temp-buffer
+                    (insert-file-contents exported-file)
+                    (delete-duplicate-lines (point-min)(point-max) nil t nil)
+                    (flush-lines "~~~~")
+                    (flush-lines "----")
+                    (flush-lines "====")
+                    (goto-char (point-min))
+                    (while (search-forward-regexp "^" nil t)
+                      (replace-match prefix-string))
+                    (write-region (point-min) (point-max) exported-file))
+                  (with-temp-buffer
+                    (insert-file-contents export-file)
+                    (goto-char (point-min))
+                    (re-search-forward (nth 2 item) nil nil 1)
+                    (newline)
+                    (setq point-start (point))
+                    (re-search-forward (nth 3 item) nil nil 1)
+                    (backward-char (length (nth 3 item)))
+                    (kill-region point-start (point))
+                    (newline 2)
+                    (previous-line 1)
+                    (insert-file-contents exported-file)
+                    (write-region (point-min) (point-max) export-file))
+                  )
                 )
-              (with-current-buffer
-                (find-file-noselect export-file)
-                (delete-duplicate-lines (point-min)(point-max) nil t nil)
-                (goto-char (point-min))
-                (flush-lines "~~~~")
-                (flush-lines "----")
-                (flush-lines "====")
-                (goto-char (point-min))
-                (while (re-search-forward "^" nil t)
-                  (replace-match (nth 6 item)))
-                (mark-whole-buffer)
-                (save-buffer)
-                (kill-buffer))
-              (with-current-buffer
-                (find-file-noselect (expand-file-name (nth 1 item)))
-                (goto-char (point-min))
-                (re-search-forward (nth 2 item) nil nil 1)
-                (newline)
-                (setq point-start (point))
-                (re-search-forward (nth 3 item) nil nil 1)
-                (backward-char (length (nth 3 item)))
-                (kill-region point-start (point))
-                (newline 3)
-                (previous-line 2)
-                (insert-file-contents export-file)
-                (save-buffer))
-              (delete-file export-file)
               )
             )
           )
