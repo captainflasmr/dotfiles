@@ -236,6 +236,7 @@
 (define-key my-win-keymap (kbd "5") (lambda () (interactive)(tab-bar-select-tab 5)))
 (define-key my-win-keymap (kbd "a") 'selected-window-accent-mode)
 (define-key my-win-keymap (kbd "b") 'my/tab-bar-mode)
+(define-key my-win-keymap (kbd "c") 'global-display-fill-column-indicator-mode)
 (define-key my-win-keymap (kbd "d") 'window-divider-mode)
 (define-key my-win-keymap (kbd "f") 'font-lock-mode)
 (define-key my-win-keymap (kbd "g") 'my/toggle-scroll-margin)
@@ -1965,22 +1966,38 @@
 
 (setq my/push-block-spec
   '(
-     ;; Entry format: (source-file export-file header-tag end-tag export-type format-specifier prefix-string)
-     ("~/repos/selected-window-accent-mode/TODO.org"
-       "~/repos/selected-window-accent-mode/README.org"
-       "* TODOs / ROADMAP"
-       "* Testing"
-       :org :ascii "  ")
+     ;; Entry format: (source-file export-file source-start-tag source-end-tag export-header-tag export-end-tag export-type format-specifier prefix-string)
+     ("~/repos/selected-window-accent-mode/TODO.org" ;; 0
+       "~/repos/selected-window-accent-mode/README.org" ;; 1
+       "" ;; 2
+       "" ;; 3
+       "* TODOs / ROADMAP" ;; 4
+       "* Testing" ;; 5
+       :org ;; 6
+       :ascii ;; 7
+       "  " ;; 8
+       )
      ("~/repos/selected-window-accent-mode/README.org"
        "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
+       "6.1 selected-window-accent-fringe-thickness"
+       "6.2 selected-window-accent-custom-color"
+       "defcustom selected-window-accent-fringe-thickness"
+       "\\:type"
+       :org
+       :ascii
+       " ")
+     ("~/repos/selected-window-accent-mode/README.org"
+       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
+       ""
+       ""
        ";;; Commentary:"
        ";; Code"
        :org :ascii ";; ")
-     ("~/DCIM/content/art--all.org" "" "" "" :org :hugo "")
-     ("~/DCIM/content/emacs--all.org" "" "" "" :org :hugo "")
-     ("~/DCIM/content/kate--blog.org" "" "" "" :org :hugo "")
-     ("~/DCIM/content/linux--all.org" "" "" "" :org :hugo "")
-     ("~/DCIM/content/posts--all.org" "" "" "" :org :hugo "")
+     ("~/DCIM/content/art--all.org" "" "" "" "" "" :org :hugo "")
+     ("~/DCIM/content/emacs--all.org" "" "" "" "" "" :org :hugo "")
+     ("~/DCIM/content/kate--blog.org" "" "" "" "" "" :org :hugo "")
+     ("~/DCIM/content/linux--all.org" "" "" "" "" "" :org :hugo "")
+     ("~/DCIM/content/posts--all.org" "" "" "" "" "" :org :hugo "")
      )
   )
 
@@ -1996,12 +2013,12 @@
       (insert-file-contents source-file)
       (org-mode)
       (let ((exported-file (concat (file-name-sans-extension export-file)
-                                   (cond ((eq format-spec :ascii) ".txt")
-                                         ((eq format-spec :html) ".html")))))
+                             (cond ((eq format-spec :ascii) ".txt")
+                               ((eq format-spec :html) ".html")))))
         (org-export-to-file (pcase format-spec
                               (:ascii 'ascii)
                               (:html 'html))
-                            exported-file)
+          exported-file)
         exported-file)))
 
   (defun remove-special-lines-and-add-prefix (exported-file prefix-string)
@@ -2017,44 +2034,66 @@
       (write-region (point-min) (point-max) exported-file)))
 
   (defun insert-exported-contents (source-file export-file spec)
-    (with-temp-buffer
-      (insert-file-contents export-file)
-      (goto-char (point-min))
-      (re-search-forward (nth 2 spec) nil nil 1)
-      (newline)
-      (let ((point-start (point)))
-        (re-search-forward (nth 3 spec) nil nil 1)
-        (backward-char (length (nth 3 spec)))
-        (kill-region point-start (point)))
-      (newline 2)
-      (previous-line 1)
-      (insert-file-contents source-file)
-      (write-region (point-min) (point-max) export-file)))
+    (let ((source-start-tag (nth 2 spec))
+           (source-end-tag (nth 3 spec))
+           (export-start-tag (nth 4 spec))
+           (export-end-tag (nth 5 spec)))
+
+      (with-temp-buffer
+        (insert-file-contents source-file)
+        ;; Conditionally narrow the content if both source start and end tags are provided
+        (when (and (stringp source-start-tag) (stringp source-end-tag)
+                (not (string-empty-p source-start-tag)) (not (string-empty-p source-end-tag)))
+          (goto-char (point-min))
+          (re-search-forward source-start-tag nil t)
+          (forward-line 1) ; Assuming the tag itself should not be included
+          (let ((start (point)))
+            (re-search-forward source-end-tag nil t)
+            (forward-line -1) ; Assuming the tag itself should not be included
+            (narrow-to-region start (point))))
+        (write-region (point-min) (point-max) source-file))
+
+      ;; Insert into the export file between the export tags
+      (with-temp-buffer
+        (insert-file-contents export-file)
+        (goto-char (point-min))
+        (re-search-forward export-start-tag nil t)
+        (newline)
+        (let ((insertion-point (point)))
+          (re-search-forward export-end-tag nil t)
+          (backward-char (length export-end-tag))
+          (delete-region insertion-point (point)))
+        (newline 2)
+        (previous-line 1)
+        (insert-file-contents source-file)
+        (write-region (point-min) (point-max) export-file))))
 
   (dolist (item my/push-block-spec)
     (let* ((source-file (expand-file-name (nth 0 item)))
-           (export-file (expand-file-name (nth 1 item)))
-           (export-type (nth 4 item))
-           (format-spec (nth 5 item))
-           (prefix-string (nth 6 item))
-           (in-current (string-equal (expand-file-name (buffer-file-name)) source-file)))
+            (export-file (expand-file-name (nth 1 item)))
+            (export-type (nth 6 item))
+            (format-spec (nth 7 item))
+            (prefix-string (nth 8 item))
+            (in-current (string-equal (expand-file-name (buffer-file-name)) source-file)))
 
       (when (or in-current (> value 1))
         (pcase export-type
           (:org
-           (cond
-            ((eq format-spec :hugo)
-             (when (= value 1)
-               (org-hugo-export-wim-to-md)
-               (execute-shell-commands '("web rsync emacs"
-                                          "web rsync art"
-                                          "web rsync dyerdwelling"
-                                          "web rsync sway"))))
-            (t
-             (let ((exported-file (export-to-format source-file format-spec export-file)))
-               (remove-special-lines-and-add-prefix exported-file prefix-string)
-               (insert-exported-contents exported-file export-file item)
-               (delete-file exported-file))))))))))
+            (cond
+              ((eq format-spec :hugo)
+                (when (= value 1)
+                  (org-hugo-export-wim-to-md)
+                  (execute-shell-commands '("web rsync emacs"
+                                             "web rsync art"
+                                             "web rsync dyerdwelling"
+                                             "web rsync sway"))))
+              (t
+                (let
+                  ((exported-file (export-to-format source-file format-spec export-file)))
+                  (remove-special-lines-and-add-prefix exported-file prefix-string)
+                  (insert-exported-contents exported-file export-file item)
+                  )))))))))
+                  ;; (delete-file exported-file))))))))))
 
 (defun my/text-browser-search ()
   "Use the selected text (or the word under the cursor) as the search term for a Google search in a web browser."
