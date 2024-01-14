@@ -410,8 +410,6 @@
 (global-set-key (kbd "M-s e") 'my/push-block)
 (global-set-key (kbd "M-s g") 'my/text-browser-search)
 (global-set-key (kbd "M-e") 'dired-jump)
-(global-set-key (kbd "M-H") 'tab-bar-switch-to-next-tab)
-(global-set-key (kbd "M-L") 'tab-bar-switch-to-prev-tab)
 (global-set-key (kbd "M-=") 'count-words)
 (define-key minibuffer-local-map (kbd "C-c e") 'embark-collect)
 (global-set-key (kbd "M-L") 'tab-next)
@@ -419,12 +417,6 @@
 (bind-key* (kbd "M-g o") 'consult-outline)
 (bind-key* (kbd "M-g i") 'consult-imenu)
 (global-set-key (kbd "C-c a") 'org-agenda)
-;; (global-set-key (kbd "C-c j") 'winner-undo)
-;; (global-set-key (kbd "C-c k") 'winner-redo)
-;; (global-set-key (kbd "M-u") 'winner-undo)
-;; (global-set-key (kbd "M-i") 'winner-redo)
-(global-set-key (kbd "M-u") 'tab-bar-history-back)
-(global-set-key (kbd "M-i") 'tab-bar-history-forward)
 (bind-key* (kbd "M-j") (lambda()(interactive)(next-line (/ (window-height) 8))))
 (bind-key* (kbd "M-k") (lambda()(interactive)(previous-line (/ (window-height) 8))))
 (bind-key* (kbd "M-l") (lambda()(interactive)(select-window (next-window (selected-window)))))
@@ -466,11 +458,8 @@
 (show-paren-mode 1)
 (setq tooltip-mode nil)
 (transient-mark-mode 1)
-;; (winner-mode 1)
-(tab-bar-history-mode 1)
 (pixel-scroll-precision-mode 1)
 (repeat-mode -1)
-(tab-bar-mode 1)
 
 ;;
 ;; -> bell
@@ -524,11 +513,7 @@
 (setq reb-re-syntax 'string)
 (setq truncate-lines t)
 (setq suggest-key-bindings nil)
-(setq tab-bar-new-button-show nil)
-(setq tab-bar-close-button-show nil)
-(setq tab-bar-history-limit 100)
 (setq diary-file "~/DCIM/content/diary.org")
-(setq tab-bar-auto-width-max '(50 20))
 
 ;;
 ;; -> confirm
@@ -1090,8 +1075,6 @@
   '(indent-guide-face ((t (:background "#282828" :foreground "#666666"))))
   '(outline-1 ((t (:weight regular))))
   '(outline-2 ((t (:weight regular))))
-  '(tab-bar-tab ((t (:inherit tab-bar :box (:line-width (2 . 2) :color "#9c9c9c" :style flat)))))
-  '(tab-bar-tab-inactive ((t (:inherit tab-bar :box (:line-width (2 . 2) :color "#575757" :style flat)))))
   '(widget-button ((t (:inherit fixed-pitch :weight regular))))
   '(window-divider ((t (:foreground "black"))))
   '(vertical-border ((t (:foreground "#000000")))))
@@ -1935,6 +1918,50 @@
   (dired-mode . all-the-icons-dired-mode))
 
 ;;
+;; -> tab-bar
+;;
+(use-package tab-bar
+  :ensure nil ;; Since tab-bar is built-in, no package needs to be downloaded
+  :init
+  (tab-bar-mode 1)
+  (tab-bar-history-mode 1)
+  :custom
+  (tab-bar-new-button-show nil)
+  (tab-bar-close-button-show nil)
+  (tab-bar-history-limit 100)
+  (tab-bar-auto-width-max '(50 20))
+  (tab-bar-menu-bar-button (icon-string 'tab-bar-menu-bar))
+  (tab-bar-tab-hints t)
+  (tab-bar-tab-name-format-function #'my-tab-bar-tab-name-format)
+  :config
+  (add-to-list 'tab-bar-format #'tab-bar-format-menu-bar)
+  (define-icon tab-bar-menu-bar nil
+    '((emoji "🫥")
+       (text "Menu" :face tab-bar-tab-inactive))
+    "Icon for the menu bar."
+    :version "29.1"
+    :help-echo "Menu bar")
+  (defun my-tab-bar-tab-name-format (tab i)
+    (let ((current-p (eq (car tab) 'current-tab)))
+      (propertize
+        (concat (if tab-bar-tab-hints (format "  %d " i) "")
+          (alist-get 'name tab)
+          (or (and tab-bar-close-button-show
+                (not (eq tab-bar-close-button-show
+                       (if current-p 'non-selected 'selected)))
+                tab-bar-close-button)
+            ""))
+        'face (funcall tab-bar-tab-face-function tab))))
+  :bind
+  (("M-H" . tab-bar-switch-to-prev-tab)
+    ("M-L" . tab-bar-switch-to-next-tab)
+    ("M-u" . tab-bar-history-back)
+    ("M-i" . tab-bar-history-forward))
+  :custom-face
+  (tab-bar-tab ((t (:inherit tab-bar :box (:line-width (2 . 2) :color "#9c9c9c" :style flat)))))
+  (tab-bar-tab-inactive ((t (:inherit tab-bar :box (:line-width (2 . 2) :color "#575757" :style flat))))))
+
+;;
 ;; -> development
 ;;
 (defvar my/internal-border-width 10 "Default internal border width for toggling.")
@@ -2003,19 +2030,6 @@
       )
     )
   (org-table-align))
-
-;; tab-bar experimentation
-
-;; (add-to-list 'tab-bar-format #'tab-bar-format-menu-bar)
-
-;; (define-icon tab-bar-menu-bar nil
-;;   '((emoji "🫥")
-;;      (text "Menu" :face tab-bar-tab-inactive))
-;;   "Icon for the menu bar."
-;;   :version "29.1"
-;;   :help-echo "Menu bar")
-
-;; (setq tab-bar-menu-bar-button (icon-string 'tab-bar-menu-bar))
 
 (use-package ox-epub)
 
@@ -2183,22 +2197,3 @@
     (browse-url (concat "https://www.startpage.com/search?q=" search-term))))
 
 (use-package file-info)
-
-(setq tab-bar-tab-hints t)
-
-(defun my-tab-bar-tab-name-format (tab i)
-  (let ((current-p (eq (car tab) 'current-tab)))
-    (propertize
-     (concat (if tab-bar-tab-hints (format "  %d " i) "")
-             (alist-get 'name tab)
-             (or (and tab-bar-close-button-show
-                      (not (eq tab-bar-close-button-show
-                               (if current-p 'non-selected 'selected)))
-                      tab-bar-close-button)
-                 ""))
-     'face (funcall tab-bar-tab-face-function tab))))
-
-;; (defun my-tab-bar-tab-name-format (tab i)
-;;   (format "   %d   " i))
-
-(setq tab-bar-tab-name-format-function #'my-tab-bar-tab-name-format)
