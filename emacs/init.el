@@ -1044,7 +1044,6 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
-  '(cursor ((t (:background "#ffffff" :inverse-video t))))
   '(diredfl-date-time ((t (:foreground "#8d909b"))))
   '(diredfl-dir-heading ((t (:foreground "#aa5555" :weight bold))))
   '(diredfl-dir-priv ((t (:foreground "DarkRed"))))
@@ -1926,31 +1925,18 @@
   (tab-bar-mode 1)
   (tab-bar-history-mode 1)
   :custom
+  (tab-bar-format (remove 'tab-bar-format-history tab-bar-format))
   (tab-bar-new-button-show nil)
   (tab-bar-close-button-show nil)
   (tab-bar-history-limit 100)
-  (tab-bar-auto-width-max '(50 20))
-  (tab-bar-menu-bar-button (icon-string 'tab-bar-menu-bar))
+  (tab-bar-auto-width-max '(100 20))
   (tab-bar-tab-hints t)
   (tab-bar-tab-name-format-function #'my-tab-bar-tab-name-format)
   :config
-  (add-to-list 'tab-bar-format #'tab-bar-format-menu-bar)
-  (define-icon tab-bar-menu-bar nil
-    '((emoji "🫥")
-       (text "Menu" :face tab-bar-tab-inactive))
-    "Icon for the menu bar."
-    :version "29.1"
-    :help-echo "Menu bar")
   (defun my-tab-bar-tab-name-format (tab i)
     (let ((current-p (eq (car tab) 'current-tab)))
       (propertize
-        (concat (if tab-bar-tab-hints (format "  %d " i) "")
-          (alist-get 'name tab)
-          (or (and tab-bar-close-button-show
-                (not (eq tab-bar-close-button-show
-                       (if current-p 'non-selected 'selected)))
-                tab-bar-close-button)
-            ""))
+        (format " %d " i)
         'face (funcall tab-bar-tab-face-function tab))))
   :bind
   (("M-H" . tab-bar-switch-to-prev-tab)
