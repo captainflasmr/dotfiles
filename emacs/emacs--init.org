@@ -306,29 +306,29 @@ The avoiding a flash of light at startup is a very minor thing but nice to not g
 ;; -> navigation
 ;;
 (defvar my-jump-keymap (make-sparse-keymap))
-(define-key my-jump-keymap (kbd "1") (lambda () (interactive)(tab-bar-select-tab 1)))
-(define-key my-jump-keymap (kbd "2") (lambda () (interactive)(tab-bar-select-tab 2)))
-(define-key my-jump-keymap (kbd "3") (lambda () (interactive)(tab-bar-select-tab 3)))
-(define-key my-jump-keymap (kbd "4") (lambda () (interactive)(tab-bar-select-tab 4)))
-(define-key my-jump-keymap (kbd "5") (lambda () (interactive)(tab-bar-select-tab 5)))
+
 (define-key my-jump-keymap (kbd "a") 'emms-browse-by-album)
 (define-key my-jump-keymap (kbd "b") (lambda () (interactive) (find-file "~/bin")))
 (define-key my-jump-keymap (kbd "c") (lambda () (interactive) (find-file "~/DCIM/Camera")))
-(define-key my-jump-keymap (kbd "d") 'consult-recent-file)
+(define-key my-jump-keymap (kbd "d") (lambda () (interactive) (find-file "/run/media/jdyer/")))
 (define-key my-jump-keymap (kbd "e") (lambda () (interactive) (find-file "~/.config/emacs/init.el")))
 (define-key my-jump-keymap (kbd "f") 'find-file-rg)
 (define-key my-jump-keymap (kbd "g") (lambda () (interactive) (find-file "~/.config")))
+(define-key my-jump-keymap (kbd "h") 'consult-theme)
 (define-key my-jump-keymap (kbd "i") (lambda () (interactive) (find-file "~/DCIM/content/aaa--todo.org")))
 (define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~")))
-(define-key my-jump-keymap (kbd "m") (lambda () (interactive) (find-file "~")))
+(define-key my-jump-keymap (kbd "l") 'consult-recent-file)
+(define-key my-jump-keymap (kbd "m") 'switch-to-buffer)
 (define-key my-jump-keymap (kbd "n") (lambda () (interactive) (find-file "~/nas")))
 (define-key my-jump-keymap (kbd "o") (lambda () (interactive) (find-file "~/.config/emacs/emacs--init.org")))
 (define-key my-jump-keymap (kbd "p") 'proced)
-(define-key my-jump-keymap (kbd "r") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
-(define-key my-jump-keymap (kbd "h") 'customize-themes)
-(define-key my-jump-keymap (kbd "u") (lambda () (interactive) (find-file "/run/media/jdyer/")))
+(define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
+(define-key my-jump-keymap (kbd "t") 'customize-themes)
 (define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
 (define-key my-jump-keymap (kbd "y") 'emms)
+(define-key my-jump-keymap (kbd "=") 'my/create-tab-with-number)
+(define-key my-jump-keymap (kbd "-") 'tab-close)
+
 (global-set-key (kbd "M-m") my-jump-keymap)
 
 (defvar my-win-keymap (make-sparse-keymap))
@@ -344,7 +344,6 @@ The avoiding a flash of light at startup is a very minor thing but nice to not g
 (define-key my-win-keymap (kbd "f") 'font-lock-mode)
 (define-key my-win-keymap (kbd "g") 'my/toggle-scroll-margin)
 (define-key my-win-keymap (kbd "i") 'highlight-indent-guides-mode)
-(define-key my-win-keymap (kbd "k") 'font-lock-mode)
 (define-key my-win-keymap (kbd "l") 'display-line-numbers-mode)
 (define-key my-win-keymap (kbd "m") 'toggle-menu-bar-mode-from-frame)
 (define-key my-win-keymap (kbd "n") 'global-tab-line-mode)
@@ -555,8 +554,10 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 (global-set-key (kbd "C-c a") 'org-agenda)
 ;; (global-set-key (kbd "C-c j") 'winner-undo)
 ;; (global-set-key (kbd "C-c k") 'winner-redo)
-(global-set-key (kbd "M-u") 'winner-undo)
-(global-set-key (kbd "M-i") 'winner-redo)
+;; (global-set-key (kbd "M-u") 'winner-undo)
+;; (global-set-key (kbd "M-i") 'winner-redo)
+(global-set-key (kbd "M-u") 'tab-bar-history-back)
+(global-set-key (kbd "M-i") 'tab-bar-history-forward)
 (bind-key* (kbd "M-j") (lambda()(interactive)(next-line (/ (window-height) 8))))
 (bind-key* (kbd "M-k") (lambda()(interactive)(previous-line (/ (window-height) 8))))
 (bind-key* (kbd "M-l") (lambda()(interactive)(select-window (next-window (selected-window)))))
@@ -602,7 +603,8 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 (show-paren-mode 1)
 (setq tooltip-mode nil)
 (transient-mark-mode 1)
-(winner-mode 1)
+;; (winner-mode 1)
+(tab-bar-history-mode 1)
 (pixel-scroll-precision-mode 1)
 (repeat-mode -1)
 (tab-bar-mode -1)
@@ -669,7 +671,9 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 (setq suggest-key-bindings nil)
 (setq tab-bar-new-button-show nil)
 (setq tab-bar-close-button-show nil)
-;; (setq diary-file "~/DCIM/content/diary.org")
+(setq tab-bar-history-limit 100)
+(setq diary-file "~/DCIM/content/diary.org")
+(setq tab-bar-auto-width-max '(50 20))
 #+end_src
 
 * confirm
@@ -916,6 +920,9 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
   '("\\*Messages" display-buffer-same-window))
 
 (add-to-list 'display-buffer-alist
+  '("magit:" display-buffer-same-window))
+
+(add-to-list 'display-buffer-alist
   '("\\*deadgrep"
      (display-buffer-reuse-window display-buffer-in-direction)
      (direction . leftmost)
@@ -1104,15 +1111,32 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
   (modify-syntax-entry ?> "." org-mode-syntax-table))
 
 (defun my/org-shrink-tables ()
-  "Shrink all tables in the current org buffer."
+  "Shrink all tables in the current Org buffer, skipping tables inside source blocks."
   (interactive)
   (save-excursion
-    (goto-char (point-min))
-    (while (search-forward "|-" nil t)
-      (org-table-shrink))))
+    (let ((block-start (point-min))   ;; Initialize to the start of the buffer
+           (block-end (point-min)))
+      (goto-char (point-min))
+      ;; Loop over all tables in the buffer
+      (while (search-forward "|-" nil t)
+        (save-excursion
+          ;; Check if we're currently in a source block
+          (when (org-between-regexps-p "^[ \t]*#\\+begin_src" "^[ \t]*#\\+end_src")
+            ;; If yes, move block-end to the end of the current source block
+            (end-of-line)
+            (search-forward-regexp "^[ \t]*#\\+end_src" nil t)
+            (setq block-end (point))
+            ;; Jump to the end of the current source block
+            (goto-char block-end)))
+        ;; Ensure we're not inside a recently skipped source block
+        (unless (<= (point) block-end)
+          ;; Shrink table as we're outside a source block
+          (org-table-shrink))))))
 
-(add-hook 'org-mode-hook #'org-syntax-table-modify)
-(add-hook 'org-mode-hook #'my/org-shrink-tables)
+  (add-hook 'org-mode-hook #'my/org-shrink-tables)
+  (add-hook 'org-mode-hook #'org-syntax-table-modify)
+  ;; (remove-hook 'org-mode-hook #'org-syntax-table-modify)
+  ;; (remove-hook 'org-mode-hook #'my/org-shrink-tables)
 #+end_src
 
 * org-agenda
@@ -1228,7 +1252,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 
 * custom-set-faces
 
-#+begin_src elisp :tangle no
+#+begin_src elisp
 ;;
 ;; -> custom-set-faces
 ;;
@@ -1268,6 +1292,8 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
   '(indent-guide-face ((t (:background "#282828" :foreground "#666666"))))
   '(outline-1 ((t (:weight regular))))
   '(outline-2 ((t (:weight regular))))
+  '(tab-bar-tab ((t (:inherit tab-bar :box (:line-width (2 . 2) :color "#9c9c9c" :style flat)))))
+  '(tab-bar-tab-inactive ((t (:inherit tab-bar :box (:line-width (2 . 2) :color "#575757" :style flat)))))
   '(widget-button ((t (:inherit fixed-pitch :weight regular))))
   '(window-divider ((t (:foreground "black"))))
   '(vertical-border ((t (:foreground "#000000")))))
@@ -2403,11 +2429,11 @@ echo
 
 (use-package ox-epub)
 
-(setq my/accent-color "#6c5f00")
+(setq my/accent-color "#378400")
 
 (use-package selected-window-accent-mode
   ;;   :load-path "~/repos/selected-window-accent-mode"
-  :vc (:fetcher github :repo "captainflasmr/selected-window-accent-mode")
+  ;; :vc (:fetcher github :repo "captainflasmr/selected-window-accent-mode")
   :custom
   (selected-window-accent-fringe-thickness 10)
   (selected-window-accent-custom-color my/accent-color)
@@ -2420,7 +2446,10 @@ echo
   (interactive)
   (let ((darker-accent-color (color-darken-name my/accent-color 30)))
     (tab-bar-mode 'toggle)
+    (tab-rename (number-to-string (length (tab-bar-tabs))))
     (set-face-attribute 'tab-bar-tab nil :background darker-accent-color)))
+
+(my/tab-bar-mode)
 
 (setq my/push-block-spec
   '(
@@ -2458,6 +2487,10 @@ echo
      ("~/DCIM/content/posts--all.org" "" "" "" "" "" :org :hugo "")
      )
   )
+
+;; BUG:
+;; TODO gets stuck if blank prefix defined
+;; TODO start / end point must be related to generated file and not local
 
 (defun my/push-block (&optional value)
   "Export content from one org file to another in various formats and update files accordingly."
@@ -2570,5 +2603,11 @@ echo
     (browse-url (concat "https://www.startpage.com/search?q=" search-term))))
 
 (use-package file-info)
+
+(defun my/create-tab-with-number ()
+  "Create a new tab and name it based on its relative position."
+  (interactive)
+  (tab-bar-new-tab-to -1)
+  (tab-rename (number-to-string (length (tab-bar-tabs)))))
 
 #+end_src
