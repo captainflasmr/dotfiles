@@ -223,8 +223,6 @@
 (define-key my-jump-keymap (kbd "t") 'customize-themes)
 (define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
 (define-key my-jump-keymap (kbd "y") 'emms)
-(define-key my-jump-keymap (kbd "=") (lambda () (interactive) (tab-bar-new-tab-to -1)))
-(define-key my-jump-keymap (kbd "-") 'tab-close)
 
 (global-set-key (kbd "M-m") my-jump-keymap)
 
@@ -253,6 +251,8 @@
 (define-key my-win-keymap (kbd "v") 'visual-line-mode)
 (define-key my-win-keymap (kbd "w") 'whitespace-mode)
 (define-key my-win-keymap (kbd "y") 'switch-selected-window-accent-style)
+(define-key my-win-keymap (kbd "=") (lambda () (interactive) (tab-bar-new-tab-to -1)))
+(define-key my-win-keymap (kbd "-") 'tab-close)
 (global-set-key (kbd "M-o") my-win-keymap)
 
 ;;
@@ -1919,13 +1919,18 @@
 ;;
 ;; -> tab-bar
 ;;
+
+(display-time-mode 1)
+
 (use-package tab-bar
   :ensure nil ;; Since tab-bar is built-in, no package needs to be downloaded
   :init
   (tab-bar-mode 1)
   (tab-bar-history-mode 1)
   :custom
-  (tab-bar-format (remove 'tab-bar-format-history tab-bar-format))
+  (tab-bar-format '(tab-bar-format-tabs-groups
+                     tab-bar-format-align-right
+                     tab-bar-format-global))
   (tab-bar-new-button-show nil)
   (tab-bar-close-button-show nil)
   (tab-bar-history-limit 100)
