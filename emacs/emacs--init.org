@@ -326,7 +326,7 @@ The avoiding a flash of light at startup is a very minor thing but nice to not g
 (define-key my-jump-keymap (kbd "t") 'customize-themes)
 (define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
 (define-key my-jump-keymap (kbd "y") 'emms)
-(define-key my-jump-keymap (kbd "=") 'my/create-tab-with-number)
+(define-key my-jump-keymap (kbd "=") (lambda () (interactive) (tab-bar-new-tab-to -1)))
 (define-key my-jump-keymap (kbd "-") 'tab-close)
 
 (global-set-key (kbd "M-m") my-jump-keymap)
@@ -338,7 +338,7 @@ The avoiding a flash of light at startup is a very minor thing but nice to not g
 (define-key my-win-keymap (kbd "4") (lambda () (interactive)(tab-bar-select-tab 4)))
 (define-key my-win-keymap (kbd "5") (lambda () (interactive)(tab-bar-select-tab 5)))
 (define-key my-win-keymap (kbd "a") 'selected-window-accent-mode)
-(define-key my-win-keymap (kbd "b") 'my/tab-bar-mode)
+(define-key my-win-keymap (kbd "b") '(lambda () (interactive)(tab-bar-mode 'toggle)))
 (define-key my-win-keymap (kbd "c") 'global-display-fill-column-indicator-mode)
 (define-key my-win-keymap (kbd "d") 'window-divider-mode)
 (define-key my-win-keymap (kbd "f") 'font-lock-mode)
@@ -607,7 +607,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 (tab-bar-history-mode 1)
 (pixel-scroll-precision-mode 1)
 (repeat-mode -1)
-(tab-bar-mode -1)
+(tab-bar-mode 1)
 #+end_src
 
 * bell
@@ -2441,16 +2441,6 @@ echo
 
 (selected-window-accent-mode)
 
-(defun my/tab-bar-mode()
-  ""
-  (interactive)
-  (let ((darker-accent-color (color-darken-name my/accent-color 30)))
-    (tab-bar-mode 'toggle)
-    (tab-rename (number-to-string (length (tab-bar-tabs))))
-    (set-face-attribute 'tab-bar-tab nil :background darker-accent-color)))
-
-(my/tab-bar-mode)
-
 (setq my/push-block-spec
   '(
      ;; Entry format: (source-file export-file source-start-tag source-end-tag export-header-tag export-end-tag export-type format-specifier prefix-string)
@@ -2604,10 +2594,23 @@ echo
 
 (use-package file-info)
 
-(defun my/create-tab-with-number ()
-  "Create a new tab and name it based on its relative position."
-  (interactive)
-  (tab-bar-new-tab-to -1)
-  (tab-rename (number-to-string (length (tab-bar-tabs)))))
+(setq tab-bar-tab-hints t)
+
+(defun my-tab-bar-tab-name-format (tab i)
+  (let ((current-p (eq (car tab) 'current-tab)))
+    (propertize
+     (concat (if tab-bar-tab-hints (format "  %d " i) "")
+             (alist-get 'name tab)
+             (or (and tab-bar-close-button-show
+                      (not (eq tab-bar-close-button-show
+                               (if current-p 'non-selected 'selected)))
+                      tab-bar-close-button)
+                 ""))
+     'face (funcall tab-bar-tab-face-function tab))))
+
+;; (defun my-tab-bar-tab-name-format (tab i)
+;;   (format "   %d   " i))
+
+(setq tab-bar-tab-name-format-function #'my-tab-bar-tab-name-format)
 
 #+end_src
