@@ -2344,10 +2344,9 @@ echo
   (tab-bar-tab-name-format-function #'my-tab-bar-tab-name-format)
   :config
   (defun my-tab-bar-tab-name-format (tab i)
-    (let ((current-p (eq (car tab) 'current-tab)))
-      (propertize
-        (format " %d " i)
-        'face (funcall tab-bar-tab-face-function tab))))
+    (propertize
+      (format " %d " i)
+      'face (funcall tab-bar-tab-face-function tab)))
   :bind
   (("M-H" . tab-bar-switch-to-prev-tab)
     ("M-L" . tab-bar-switch-to-next-tab)
