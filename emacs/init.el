@@ -16,7 +16,6 @@
 ;;                           ("elpa" . "~/emacs-pkgs/elpa")
 ;;                           ("org" . "~/emacs-pkgs/org-mode/lisp")))
 
-
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
 (setq use-package-verbose t)
@@ -1066,11 +1065,10 @@
   '(widget-button ((t (:inherit fixed-pitch :weight regular))))
   '(window-divider ((t (:foreground "black"))))
   '(vertical-border ((t (:foreground "#000000"))))
-  '(tab-bar-tab-inactive ((t (:inherit tab-bar :box (:line-width (2 . 2) :color "#575757" :style flat)))))
-  )
+  '(tab-bar-tab-inactive ((t (:inherit tab-bar :box (:line-width (1 . 1) :color "#575757" :style flat))))))
 
 (custom-set-faces
- `(tab-bar-tab ((t (:inherit tab-bar :background ,my/accent-color :box (:line-width (2 . 2) :color "#9c9c9c" :style flat))))))
+ `(tab-bar-tab ((t (:inherit tab-bar :background ,my/accent-color :box (:line-width (1 . 1) :color "#9c9c9c" :style flat))))))
 
 (custom-theme-set-faces
   'user
@@ -1238,8 +1236,8 @@
 (add-hook 'text-mode-hook #'visual-line-mode)
 (add-hook 'org-mode-hook '(lambda () (visual-line-mode)))
 (setq-default truncate-partial-width-windows 120)
-(set-frame-parameter nil 'alpha-background 97)
-(add-to-list 'default-frame-alist '(alpha-background . 97))
+(set-frame-parameter nil 'alpha-background 90)
+(add-to-list 'default-frame-alist '(alpha-background . 90))
 (set-fringe-mode '(0 . 0))
 (set-display-table-slot standard-display-table 0 ?\ )
 
@@ -1325,7 +1323,7 @@
            'face '(:inherit bold))
          " "))
      mode-line-position
-     ;; mode-line-modes
+     mode-line-modes
      mode-line-misc-info))
 ;; "-%-"))
 
@@ -1978,7 +1976,7 @@
   (tab-bar-new-button-show nil) ;; 27.1
   (tab-bar-close-button-show nil) ;; 27.1
   (tab-bar-history-limit 100) ;; 27.1
-  (tab-bar-auto-width-max '(50 20)) ;; 29.1
+  (tab-bar-auto-width-max '(100 20)) ;; 29.1
   (tab-bar-tab-hints t) ;; 27.1
   (tab-bar-tab-name-format-function #'my-tab-bar-tab-name-format) ;; 28.1
   :config
@@ -2274,19 +2272,37 @@
     ) ;; dolist
   ) ;; defun
 
-(defun my/dired-async-mode-line-message (text face &rest args)
-  "Notify end of operation in `mode-line'."
-  (message "Dired Async has finished!!")
-  (let ((mode-line-format (concat
-                           " " (propertize
-                                (if args
-                                    (apply #'format text args)
-                                  text)
-                                 'face
-                                 '(:background "#ff0000" :foreground "#ffffff" :inherit bold)
-                                 ))))
-    (force-mode-line-update)
-    (sit-for 8)
-    (force-mode-line-update)))
+;; (defun my/dired-async-mode-line-message (text face &rest args)
+;;   "Notify end of async operation in `mode-line'."
+;;   (let* ((my/message "Dired Async has finished!!")
+;;           (mode-line-format (concat
+;;                               " " (propertize
+;;                                     my/message
+;;                                     'face
+;;                                     '(:background "#ff0000" :foreground "#ffffff" :inherit bold)
+;;                                     ))))
+;;     (message my/message)
+;;     (force-mode-line-update)
+;;     (sit-for 8)
+;;     (force-mode-line-update)))
 
-(setq dired-async-message-function 'my/dired-async-mode-line-message)
+;; (setq dired-async-message-function 'my/dired-async-mode-line-message)
+
+(require 'cl-lib)
+
+(defun my/collapse-next-consecutive-blank-lines ()
+  "Collapses the next set of consecutive blank lines down to a single blank line, then stops."
+  (interactive)
+  (save-excursion
+    (let ((found-blank-lines nil))
+      (while (and (not (eobp)))
+        (if (looking-at "^\n\\{2,\\}")
+          (progn
+            (setq found-blank-lines t)
+            (replace-match "\n")  ; Collapses multiple newlines down to one
+            )
+          (if found-blank-lines
+            (cl-return)  ; If we've already found and collapsed blank lines, we exit the loop
+            (forward-line 1)))))))  ; Else, we keep looking
+
+(global-set-key (kbd "C-x C-o") 'my/collapse-next-consecutive-blank-lines)
