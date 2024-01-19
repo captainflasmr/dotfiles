@@ -61,6 +61,13 @@ The avoiding a flash of light at startup is a very minor thing but nice to not g
 ;; )
 #+end_src
 
+* top-level-variables
+#+begin_src elisp
+;;
+;; -> top-level-variables
+;;
+(setq my/accent-color "#5d8400")
+#+end_src
 * package-local
 
 #+begin_src elisp
@@ -307,6 +314,12 @@ The avoiding a flash of light at startup is a very minor thing but nice to not g
 ;;
 (defvar my-jump-keymap (make-sparse-keymap))
 
+(define-key my-jump-keymap (kbd "1") (lambda () (interactive)(tab-select 1)))
+(define-key my-jump-keymap (kbd "2") (lambda () (interactive)(tab-select 2)))
+(define-key my-jump-keymap (kbd "3") (lambda () (interactive)(tab-select 3)))
+(define-key my-jump-keymap (kbd "4") (lambda () (interactive)(tab-select 4)))
+(define-key my-jump-keymap (kbd "5") (lambda () (interactive)(tab-select 5)))
+(define-key my-jump-keymap (kbd "6") (lambda () (interactive)(tab-select 6)))
 (define-key my-jump-keymap (kbd "a") 'emms-browse-by-album)
 (define-key my-jump-keymap (kbd "b") (lambda () (interactive) (find-file "~/bin")))
 (define-key my-jump-keymap (kbd "c") (lambda () (interactive) (find-file "~/DCIM/Camera")))
@@ -315,29 +328,27 @@ The avoiding a flash of light at startup is a very minor thing but nice to not g
 (define-key my-jump-keymap (kbd "f") 'find-file-rg)
 (define-key my-jump-keymap (kbd "g") (lambda () (interactive) (find-file "~/.config")))
 (define-key my-jump-keymap (kbd "h") 'consult-theme)
-(define-key my-jump-keymap (kbd "i") (lambda () (interactive) (find-file "~/DCIM/content/aaa--todo.org")))
+(define-key my-jump-keymap (kbd "i") 'tab-close)
 (define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~")))
+(define-key my-jump-keymap (kbd "k") (lambda () (interactive) (find-file "~/DCIM/content/aaa--todo.org")))
 (define-key my-jump-keymap (kbd "l") 'consult-recent-file)
 (define-key my-jump-keymap (kbd "m") 'switch-to-buffer)
 (define-key my-jump-keymap (kbd "n") (lambda () (interactive) (find-file "~/nas")))
-(define-key my-jump-keymap (kbd "o") (lambda () (interactive) (find-file "~/.config/emacs/emacs--init.org")))
+(define-key my-jump-keymap (kbd "o") (lambda () (interactive) (tab-bar-new-tab-to -1)))
 (define-key my-jump-keymap (kbd "p") 'proced)
 (define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
 (define-key my-jump-keymap (kbd "t") 'customize-themes)
+(define-key my-jump-keymap (kbd "u") 'tab-undo)
 (define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
+(define-key my-jump-keymap (kbd "x") (lambda () (interactive) (find-file "~/.config/emacs/emacs--init.org")))
 (define-key my-jump-keymap (kbd "y") 'emms)
 
-(global-set-key (kbd "M-m") my-jump-keymap)
+(global-set-key (kbd "M-o") my-jump-keymap)
 
 (defvar my-win-keymap (make-sparse-keymap))
-(define-key my-win-keymap (kbd "1") (lambda () (interactive)(tab-bar-select-tab 1)))
-(define-key my-win-keymap (kbd "2") (lambda () (interactive)(tab-bar-select-tab 2)))
-(define-key my-win-keymap (kbd "3") (lambda () (interactive)(tab-bar-select-tab 3)))
-(define-key my-win-keymap (kbd "4") (lambda () (interactive)(tab-bar-select-tab 4)))
-(define-key my-win-keymap (kbd "5") (lambda () (interactive)(tab-bar-select-tab 5)))
 (define-key my-win-keymap (kbd "a") 'selected-window-accent-mode)
 (define-key my-win-keymap (kbd "b") '(lambda () (interactive)(tab-bar-mode 'toggle)))
-(define-key my-win-keymap (kbd "c") 'global-display-fill-column-indicator-mode)
+(define-key my-win-keymap (kbd "c") 'display-fill-column-indicator-mode)
 (define-key my-win-keymap (kbd "d") 'window-divider-mode)
 (define-key my-win-keymap (kbd "f") 'font-lock-mode)
 (define-key my-win-keymap (kbd "g") 'my/toggle-scroll-margin)
@@ -354,9 +365,7 @@ The avoiding a flash of light at startup is a very minor thing but nice to not g
 (define-key my-win-keymap (kbd "v") 'visual-line-mode)
 (define-key my-win-keymap (kbd "w") 'whitespace-mode)
 (define-key my-win-keymap (kbd "y") 'switch-selected-window-accent-style)
-(define-key my-win-keymap (kbd "=") (lambda () (interactive) (tab-bar-new-tab-to -1)))
-(define-key my-win-keymap (kbd "-") 'tab-close)
-(global-set-key (kbd "M-o") my-win-keymap)
+(global-set-key (kbd "M-m") my-win-keymap)
 #+end_src
 
 * unbinding
@@ -622,7 +631,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
      ("\\.\\(kra\\)$" "org.kde.krita")
      ("\\.\\(odt\\|ods\\)$" "libreoffice")
      ("\\.\\(html\\|htm\\)$" "firefox")
-     ("\\.\\(pdf\\|epub\\)$" "okular")))
+     ("\\.\\(pdf\\|epub\\)$" "okular" "calibre")))
 (setq dired-dwim-target t)
 (setq dired-listing-switches "-alGgh")
 (setq fit-window-to-buffer-horizontally t)
@@ -1278,7 +1287,12 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
   '(outline-2 ((t (:weight regular))))
   '(widget-button ((t (:inherit fixed-pitch :weight regular))))
   '(window-divider ((t (:foreground "black"))))
-  '(vertical-border ((t (:foreground "#000000")))))
+  '(vertical-border ((t (:foreground "#000000"))))
+  '(tab-bar-tab-inactive ((t (:inherit tab-bar :box (:line-width (2 . 2) :color "#575757" :style flat)))))
+  )
+
+(custom-set-faces
+ `(tab-bar-tab ((t (:inherit tab-bar :background ,my/accent-color :box (:line-width (2 . 2) :color "#9c9c9c" :style flat))))))
 
 (custom-theme-set-faces
   'user
@@ -2331,35 +2345,66 @@ echo
 ;;
 
 (display-time-mode 1)
+(setq display-time-day-and-date t)
+(setq display-time-interval 4)
+(setq display-time-load-average-threshold 2.0)
 
-(use-package tab-bar
+(defun my-tab-line-buffer-name ()
+  "Return the current buffer name for use in the tab line."
+  (let ((buffer-name (buffer-name)))
+    (propertize (concat buffer-name "  ") 'face 'default)))
+
+(use-package tab-bar ;; 29.1
   :ensure nil ;; Since tab-bar is built-in, no package needs to be downloaded
   :init
-  (tab-bar-mode 1)
-  (tab-bar-history-mode 1)
+  (tab-bar-mode 1) ;; 27.1
+  (tab-bar-history-mode 1) ;; 27.1
   :custom
   (tab-bar-format '(tab-bar-format-tabs-groups
                      tab-bar-format-align-right
-                     tab-bar-format-global))
-  (tab-bar-new-button-show nil)
-  (tab-bar-close-button-show nil)
-  (tab-bar-history-limit 100)
-  (tab-bar-auto-width-max '(100 20))
-  (tab-bar-tab-hints t)
-  (tab-bar-tab-name-format-function #'my-tab-bar-tab-name-format)
+                     my-tab-line-buffer-name
+                     tab-bar-format-global)) ;; 28.1
+  (tab-bar-select-tab-modifiers '(control)) ;; 27.1
+  (tab-bar-new-button-show nil) ;; 27.1
+  (tab-bar-close-button-show nil) ;; 27.1
+  (tab-bar-history-limit 100) ;; 27.1
+  (tab-bar-auto-width-max '(50 20)) ;; 29.1
+  (tab-bar-tab-hints t) ;; 27.1
+  (tab-bar-tab-name-format-function #'my-tab-bar-tab-name-format) ;; 28.1
   :config
   (defun my-tab-bar-tab-name-format (tab i)
     (propertize
       (format " %d " i)
       'face (funcall tab-bar-tab-face-function tab)))
   :bind
-  (("M-H" . tab-bar-switch-to-prev-tab)
-    ("M-L" . tab-bar-switch-to-next-tab)
-    ("M-u" . tab-bar-history-back)
-    ("M-i" . tab-bar-history-forward))
-  :custom-face
-  (tab-bar-tab ((t (:inherit tab-bar :box (:line-width (2 . 2) :color "#9c9c9c" :style flat)))))
-  (tab-bar-tab-inactive ((t (:inherit tab-bar :box (:line-width (2 . 2) :color "#575757" :style flat))))))
+  (("M-H" . tab-bar-switch-to-prev-tab) ;; 27.1
+    ("M-L" . tab-bar-switch-to-next-tab) ;; 27.1
+    ("M-u" . tab-bar-history-back) ;; 27.1
+    ("M-i" . tab-bar-history-forward)) ;; 27.1
+  )
+
+;; (use-package tab-bar ;; 27.1
+;;   :ensure nil ;; Since tab-bar is built-in, no package needs to be downloaded
+;;   :init
+;;   (tab-bar-mode 1) ;; 27.1
+;;   (tab-bar-history-mode 1) ;; 27.1
+;;   :custom
+;;   (tab-bar-select-tab-modifiers '(control)) ;; 27.1
+;;   (tab-bar-new-button-show nil) ;; 27.1
+;;   (tab-bar-close-button-show nil) ;; 27.1
+;;   (tab-bar-history-limit 100) ;; 27.1
+;;   (tab-bar-tab-hints t) ;; 27.1
+;;   (tab-bar-tab-name-function 'tab-bar-tab-name-truncated) ;; *27.1
+;;   (tab-bar-tab-name-truncated-max 1) ;; *27.1
+;;   (tab-bar-tab-name-ellipsis " ") ;; *27.1
+;;   :bind
+;;   (("M-H" . tab-bar-switch-to-prev-tab) ;; 27.1
+;;     ("M-L" . tab-bar-switch-to-next-tab) ;; 27.1
+;;     ("M-u" . tab-bar-history-back) ;; 27.1
+;;     ("M-i" . tab-bar-history-forward)) ;; 27.1
+;;   :custom-face
+;;   (tab-bar-tab ((t (:inherit tab-bar :box (:line-width (2 . 2) :color "#9c9c9c" :style flat))))) ;; 27.1
+;;   (tab-bar-tab-inactive ((t (:inherit tab-bar :box (:line-width (2 . 2) :color "#575757" :style flat)))))) ;; 27.1
 
 #+end_src
 
@@ -2438,8 +2483,6 @@ echo
 
 (use-package ox-epub)
 
-(setq my/accent-color "#378400")
-
 (use-package selected-window-accent-mode
   ;;   :load-path "~/repos/selected-window-accent-mode"
   ;; :vc (:fetcher github :repo "captainflasmr/selected-window-accent-mode")
@@ -2449,141 +2492,6 @@ echo
   (selected-window-accent-mode-style 'subtle))
 
 (selected-window-accent-mode)
-
-(setq my/push-block-spec
-  '(
-     ;; Entry format: (source-file export-file source-start-tag source-end-tag export-header-tag export-end-tag export-type format-specifier prefix-string)
-     ("~/repos/selected-window-accent-mode/TODO.org" ;; 0
-       "~/repos/selected-window-accent-mode/README.org" ;; 1
-       "" ;; 2
-       "" ;; 3
-       "* TODOs / ROADMAP" ;; 4
-       "* Testing" ;; 5
-       :org ;; 6
-       :ascii ;; 7
-       "  " ;; 8
-       )
-     ("~/repos/selected-window-accent-mode/README.org"
-       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       "6.1 selected-window-accent-fringe-thickness"
-       "6.2 selected-window-accent-custom-color"
-       "defcustom selected-window-accent-fringe-thickness"
-       "\\:type"
-       :org
-       :ascii
-       " ")
-     ("~/repos/selected-window-accent-mode/README.org"
-       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       ""
-       ""
-       ";;; Commentary:"
-       ";; Code"
-       :org :ascii ";; ")
-     ("~/DCIM/content/art--all.org" "" "" "" "" "" :org :hugo "")
-     ("~/DCIM/content/emacs--all.org" "" "" "" "" "" :org :hugo "")
-     ("~/DCIM/content/kate--blog.org" "" "" "" "" "" :org :hugo "")
-     ("~/DCIM/content/linux--all.org" "" "" "" "" "" :org :hugo "")
-     ("~/DCIM/content/posts--all.org" "" "" "" "" "" :org :hugo "")
-     )
-  )
-
-;; BUG:
-;; TODO gets stuck if blank prefix defined
-;; TODO start / end point must be related to generated file and not local
-
-(defun my/push-block (&optional value)
-  "Export content from one org file to another in various formats and update files accordingly."
-  (interactive "p")
-
-  (defun execute-shell-commands (commands)
-    (mapc 'shell-command commands))
-
-  (defun export-to-format (source-file format-spec export-file)
-    (with-temp-buffer
-      (insert-file-contents source-file)
-      (org-mode)
-      (let ((exported-file (concat (file-name-sans-extension export-file)
-                             (cond ((eq format-spec :ascii) ".txt")
-                               ((eq format-spec :html) ".html")))))
-        (org-export-to-file (pcase format-spec
-                              (:ascii 'ascii)
-                              (:html 'html))
-          exported-file)
-        exported-file)))
-
-  (defun remove-special-lines-and-add-prefix (exported-file prefix-string)
-    (with-temp-buffer
-      (insert-file-contents exported-file)
-      (delete-duplicate-lines (point-min) (point-max) nil t nil)
-      (flush-lines "~~~~")
-      (flush-lines "----")
-      (flush-lines "====")
-      (goto-char (point-min))
-      (while (search-forward-regexp "^" nil t)
-        (replace-match prefix-string))
-      (write-region (point-min) (point-max) exported-file)))
-
-  (defun insert-exported-contents (source-file export-file spec)
-    (let ((source-start-tag (nth 2 spec))
-           (source-end-tag (nth 3 spec))
-           (export-start-tag (nth 4 spec))
-           (export-end-tag (nth 5 spec)))
-
-      (with-temp-buffer
-        (insert-file-contents source-file)
-        ;; Conditionally narrow the content if both source start and end tags are provided
-        (when (and (stringp source-start-tag) (stringp source-end-tag)
-                (not (string-empty-p source-start-tag)) (not (string-empty-p source-end-tag)))
-          (goto-char (point-min))
-          (re-search-forward source-start-tag nil t)
-          (forward-line 1) ; Assuming the tag itself should not be included
-          (let ((start (point)))
-            (re-search-forward source-end-tag nil t)
-            (forward-line -1) ; Assuming the tag itself should not be included
-            (narrow-to-region start (point))))
-        (write-region (point-min) (point-max) source-file))
-
-      ;; Insert into the export file between the export tags
-      (with-temp-buffer
-        (insert-file-contents export-file)
-        (goto-char (point-min))
-        (re-search-forward export-start-tag nil t)
-        (newline)
-        (let ((insertion-point (point)))
-          (re-search-forward export-end-tag nil t)
-          (backward-char (length export-end-tag))
-          (delete-region insertion-point (point)))
-        (newline 2)
-        (previous-line 1)
-        (insert-file-contents source-file)
-        (write-region (point-min) (point-max) export-file))))
-
-  (dolist (item my/push-block-spec)
-    (let* ((source-file (expand-file-name (nth 0 item)))
-            (export-file (expand-file-name (nth 1 item)))
-            (export-type (nth 6 item))
-            (format-spec (nth 7 item))
-            (prefix-string (nth 8 item))
-            (in-current (string-equal (expand-file-name (buffer-file-name)) source-file)))
-
-      (when (or in-current (> value 1))
-        (pcase export-type
-          (:org
-            (cond
-              ((eq format-spec :hugo)
-                (when (= value 1)
-                  (org-hugo-export-wim-to-md)
-                  (execute-shell-commands '("web rsync emacs"
-                                             "web rsync art"
-                                             "web rsync dyerdwelling"
-                                             "web rsync sway"))))
-              (t
-                (let
-                  ((exported-file (export-to-format source-file format-spec export-file)))
-                  (remove-special-lines-and-add-prefix exported-file prefix-string)
-                  (insert-exported-contents exported-file export-file item)
-                  )))))))))
-                  ;; (delete-file exported-file))))))))))
 
 (defun my/text-browser-search ()
   "Use the selected text (or the word under the cursor) as the search term for a Google search in a web browser."
@@ -2602,5 +2510,162 @@ echo
     (browse-url (concat "https://www.startpage.com/search?q=" search-term))))
 
 (use-package file-info)
+
+(setq my/push-block-spec
+  '(
+     ("~/repos/selected-window-accent-mode/TODO.org" ;; source-file
+       "~/repos/selected-window-accent-mode/README.org" ;; export-file
+       "" ;; source-start-tag
+       "" ;; source-end-tag
+       "* TODOs / ROADMAP\n" ;; export-start-tag
+       "\n* Testing" ;; export-end-tag
+       :ascii ;; format-spec
+       "  ") ;; prefix-string
+     ("~/repos/selected-window-accent-mode/README.org"
+       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
+       "\\*\\* selected-window-accent-fringe-thickness"
+       "\\*\\* selected-window-accent-custom-color"
+       "defcustom selected-window-accent-fringe-thickness 6\n  \""
+       "\"\n  \\:type"
+       :ascii
+       " ")
+     ("~/repos/selected-window-accent-mode/README.org"
+       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
+       "\\*\\* selected-window-accent-custom-color"
+       "\\*\\* selected-window-accent-mode"
+       "defcustom selected-window-accent-custom-color nil\n  \""
+       "\"\n  \\:type"
+       :ascii
+       " ")
+     ("~/repos/selected-window-accent-mode/README.org"
+       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
+       "\\*\\* selected-window-accent-mode"
+       "\\*\\* selected-window-accent-mode-style"
+       "defcustom selected-window-accent-mode nil\n  \""
+       "\"\n  \\:type"
+       :ascii
+       " ")
+     ("~/repos/selected-window-accent-mode/README.org"
+       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
+       "\\*\\* selected-window-accent-mode-style"
+       "\\* Minor Mode"
+       "defcustom selected-window-accent-mode-style \'default\n  \""
+       "\"\n  \\:type"
+       :ascii
+       " ")
+     ("~/repos/selected-window-accent-mode/README.org"
+       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
+       ""
+       ""
+       ";;; Commentary:\n"
+       ";; Code\n"
+       :ascii
+       ";; ")
+     ("~/DCIM/content/art--all.org" "" "" "" "" "" :hugo "")
+     ("~/DCIM/content/emacs--all.org" "" "" "" "" "" :hugo "")
+     ("~/DCIM/content/kate--blog.org" "" "" "" "" "" :hugo "")
+     ("~/DCIM/content/linux--all.org" "" "" "" "" "" :hugo "")
+     ("~/DCIM/content/posts--all.org" "" "" "" "" "" :hugo "")
+     )
+  )
+
+(setq my/push-black-flush-lines '("----" "====" "~~~~"))
+
+(setq dst-valid '(:raw :org :ascii :hugo))
+
+(defun my/push-block (&optional value)
+  "Export content from one file to another in various formats and update files accordingly."
+  (interactive "p")
+
+  (dolist (item my/push-block-spec)
+    (let* ((source-file (expand-file-name (nth 0 item)))
+            (export-file (expand-file-name (nth 1 item)))
+            (source-start-tag (nth 2 item))
+            (source-end-tag (nth 3 item))
+            (export-start-tag (nth 4 item))
+            (export-end-tag (nth 5 item))
+            (format-spec (nth 6 item))
+            (prefix-string (nth 7 item))
+            (tmp-file (make-temp-file "tmp"))
+            (buff-contents "")
+            (in-current (string-equal (expand-file-name (buffer-file-name)) source-file)))
+
+      (access-file source-file "source file")
+      (access-file export-file "export file")
+
+      (if (or in-current (> value 1)) ;; should I process file?
+        (if (memq format-spec dst-valid) ;; check for valid dst format
+          (progn
+            (pcase format-spec
+              (:hugo
+                (org-hugo-export-wim-to-md)
+                (mapc 'shell-command
+                  '("web rsync emacs" "web rsync art"
+                     "web rsync dyerdwelling" "web rsync sway")))
+              (save-excursion ;; other org processing
+                (when (and (stringp source-start-tag) (stringp source-end-tag)
+                        (not (string-empty-p source-start-tag)) (not (string-empty-p source-end-tag)))
+                  (goto-char (point-min))
+                  (re-search-forward source-start-tag nil t)
+                  (forward-line 1)
+                  (let ((start (point)))
+                    (re-search-forward source-end-tag nil t)
+                    (forward-line -1)
+                    (narrow-to-region start (point))))
+
+                ;; perform the export
+                (pcase format-spec
+                  (:raw (write-region (point-min)(point-max) tmp-file)) ;; just raw text
+                  (progn
+                    ;; lets go through org output
+                    (org-export-to-file (pcase format-spec
+                                          (:ascii 'ascii)
+                                          (:html 'html)
+                                          (:icalendar 'icalendar)
+                                          (:latex 'latex)
+                                          (:odt 'odt)) tmp-file)))
+                (widen)
+                ;; modify the export
+                (with-temp-buffer
+                  (insert-file-contents tmp-file)
+                  ;; remove duplicates
+                  (delete-duplicate-lines (point-min)(point-max) nil t nil)
+                  ;; filter lines
+                  (mapcar (lambda (x)
+                            (goto-char (point-min))
+                            (flush-lines x)) my/push-black-flush-lines)
+                  ;; apply prefix
+                  (when (not (s-blank-p prefix-string))
+                    (goto-char (point-min))
+                    (while (search-forward-regexp "^" nil t)
+                      (replace-match prefix-string)))
+                  (whitespace-cleanup)
+                  ;; write to file
+                  (setq buff-contents (buffer-substring (point-min)(buffer-size))))
+
+                ;; transplant src block to dst block
+                (with-temp-buffer
+                  (insert-file-contents export-file)
+                  (goto-char (point-min))
+                  (re-search-forward export-start-tag nil t)
+                  ;; delete destination region
+                  (let ((insert-point (point)))
+                    (re-search-forward export-end-tag nil t)
+                    (backward-char (length export-end-tag))
+                    (delete-region insert-point (point)))
+                  ;; insert transformed input
+                  (insert buff-contents)
+                  ;; write to file
+                  (write-region (point-min)(point-max) export-file))
+                ) ;; save-excursion
+              ) ;; pcase format-spec
+            ) ;; progn if dst-valid
+          (message (format "Invalid format-spec %s not in %s" format-spec dst-valid))
+          ) ;; if mdemq
+        ;; (message (format "%s %s not processed" source-file export-file))
+        ) ;; end if in-current value
+      ) ;; let
+    ) ;; dolist
+  ) ;; defun
 
 #+end_src
