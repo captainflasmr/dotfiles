@@ -58,8 +58,10 @@
 ;;
 ;; -> use-package
 ;;
+(use-package diminish)
 (use-package diredfl
-  :init (diredfl-global-mode 1))
+  :init (diredfl-global-mode 1)
+  :diminish diredfl-mode)
 (use-package i3wm-config-mode)
 (use-package git-timemachine)
 (use-package gnuplot)
@@ -83,6 +85,7 @@
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
 (use-package rainbow-mode
+  :diminish rainbow-mode colour-shift-mode
   :hook
   (prog-mode . rainbow-mode)
   (conf-space-mode . rainbow-mode)
@@ -150,7 +153,7 @@
   ;; Require trigger prefix before template name when completing.
   ;; :custom
   ;; (tempel-trigger-prefix "<")
-
+  :diminish tempel-abbrev-mode global-tempel-abbrev-mode abbrev-mode
   :bind (("M-+" . tempel-complete) ;; Alternative tempel-expand
           ("M-*" . tempel-insert))
 
@@ -222,12 +225,12 @@
 (define-key my-jump-keymap (kbd "e") (lambda () (interactive) (find-file "~/.config/emacs/init.el")))
 (define-key my-jump-keymap (kbd "f") 'find-file-rg)
 (define-key my-jump-keymap (kbd "g") (lambda () (interactive) (find-file "~/.config")))
-(define-key my-jump-keymap (kbd "h") 'consult-theme)
+(define-key my-jump-keymap (kbd "h") (lambda () (interactive) (find-file "~")))
 (define-key my-jump-keymap (kbd "i") 'tab-close)
-(define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~")))
-(define-key my-jump-keymap (kbd "k") (lambda () (interactive) (find-file "~/DCIM/content/aaa--todo.org")))
+(define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~/DCIM/content/aaa--todo.org")))
+(define-key my-jump-keymap (kbd "k") (lambda () (interactive) (find-file "~/.config/emacs/emacs--init.org")))
 (define-key my-jump-keymap (kbd "l") 'consult-recent-file)
-(define-key my-jump-keymap (kbd "m") 'switch-to-buffer)
+(define-key my-jump-keymap (kbd "m") 'consult-theme)
 (define-key my-jump-keymap (kbd "n") (lambda () (interactive) (find-file "~/nas")))
 (define-key my-jump-keymap (kbd "o") (lambda () (interactive) (tab-bar-new-tab-to -1)))
 (define-key my-jump-keymap (kbd "p") 'proced)
@@ -235,7 +238,6 @@
 (define-key my-jump-keymap (kbd "t") 'customize-themes)
 (define-key my-jump-keymap (kbd "u") 'tab-undo)
 (define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
-(define-key my-jump-keymap (kbd "x") (lambda () (interactive) (find-file "~/.config/emacs/emacs--init.org")))
 (define-key my-jump-keymap (kbd "y") 'emms)
 
 (global-set-key (kbd "M-o") my-jump-keymap)
@@ -416,7 +418,6 @@
 ;;
 (global-set-key (kbd "M-s e") 'my/push-block)
 (global-set-key (kbd "M-s g") 'my/text-browser-search)
-(global-set-key (kbd "M-e") 'dired-jump)
 (global-set-key (kbd "M-=") 'count-words)
 (define-key minibuffer-local-map (kbd "C-c e") 'embark-collect)
 (global-set-key (kbd "M-L") 'tab-next)
@@ -443,9 +444,6 @@
 (global-set-key (kbd "M-3") 'split-window-horizontally)
 (global-set-key (kbd "M-;") 'my/comment-or-uncomment)
 (global-set-key (kbd "M-?") 'my/grep)
-(define-key dired-mode-map (kbd "C") 'my/rsync)
-(define-key dired-mode-map (kbd "C-c i") 'my/image-dired-sort)
-(define-key dired-mode-map (kbd "C-c d") 'my/dired-duplicate-file)
 (bind-key* (kbd "C-c ,") 'embark-act)
 
 ;;
@@ -477,20 +475,9 @@
 ;;
 ;; -> setqs
 ;;
-(setq dired-guess-shell-alist-user
-  '(("\\.\\(jpg\\|jpeg\\|png\\|gif\\|bmp\\)$" "gthumb")
-     ("\\.\\(mp4\\|mkv\\|avi\\|mov\\|wmv\\|flv\\|mpg\\)$" "mpv")
-     ("\\.\\(mp3\\|wav\\|ogg\\|\\)$" "mpv")
-     ("\\.\\(kra\\)$" "org.kde.krita")
-     ("\\.\\(odt\\|ods\\)$" "libreoffice")
-     ("\\.\\(html\\|htm\\)$" "firefox")
-     ("\\.\\(pdf\\|epub\\)$" "okular" "calibre")))
-(setq dired-dwim-target t)
-(setq dired-listing-switches "-alGgh")
 (setq fit-window-to-buffer-horizontally t)
 (setq case-fold-search t)
 (setq custom-safe-themes t)
-(setq dired-auto-revert-buffer t)
 (setq tramp-default-method "ssh")
 (setq enable-local-variables :all)
 (setq proced-auto-update-interval 1)
@@ -525,12 +512,6 @@
 ;;
 ;; -> confirm
 ;;
-(setq dired-clean-confirm-killing-deleted-buffers nil)
-(setq dired-confirm-shell-command nil)
-(setq dired-no-confirm t)
-(setq dired-recursive-deletes (quote always))
-(setq dired-deletion-confirmer '(lambda (x) t))
-(setq dired-recursive-deletes 'always)
 (defalias 'yes-or-no-p 'y-or-n-p)
 (setq confirm-kill-emacs 'y-or-n-p)
 (setq confirm-kill-processes nil)
@@ -763,8 +744,7 @@
 
 (add-to-list 'display-buffer-alist
   '("\\*Help\\*"
-     (display-buffer-reuse-window)
-     (inhibit-same-window . t)))
+     (display-buffer-reuse-window display-buffer-same-window)))
 
 ;;
 ;; -> org-capture
@@ -865,7 +845,9 @@
 ;; -> org
 ;;
 (use-package org
-  :hook (org-mode . org-indent-mode)
+  :hook
+  (org-mode . (lambda ()(org-indent-mode)(diminish 'org-indent-mode)))
+  ;; :diminish org-indent-mode
   :config
   (setq org-src-tab-acts-natively t ;; commenting better in org src blocks
     org-indent-indentation-per-level 2
@@ -1096,9 +1078,40 @@
   '(fixed-pitch ((t ( :family "Fira Code Retina" :height 130)))))
 
 ;;
+;; -> dired
+;;
+(use-package dired
+  :ensure nil
+  :diminish dired-async-mode
+  :commands (dired dired-jump)
+  :bind (("M-e" . dired-jump)
+          (:map dired-mode-map
+            ("C-c i" . my/image-dired-sort)
+            ("C-c d" . my/dired-duplicate-file)))
+  :custom
+  (dired-async--modeline-mode 1)
+  (dired-guess-shell-alist-user
+    '(("\\.\\(jpg\\|jpeg\\|png\\|gif\\|bmp\\)$" "gthumb")
+       ("\\.\\(mp4\\|mkv\\|avi\\|mov\\|wmv\\|flv\\|mpg\\)$" "mpv")
+       ("\\.\\(mp3\\|wav\\|ogg\\|\\)$" "mpv")
+       ("\\.\\(kra\\)$" "org.kde.krita")
+       ("\\.\\(odt\\|ods\\)$" "libreoffice")
+       ("\\.\\(html\\|htm\\)$" "firefox")
+       ("\\.\\(pdf\\|epub\\)$" "okular" "calibre")))
+  (dired-dwim-target t)
+  (dired-listing-switches "-alGgh")
+  (dired-auto-revert-buffer t)
+  (dired-clean-confirm-killing-deleted-buffers nil)
+  (dired-confirm-shell-command nil)
+  (dired-no-confirm t)
+  (dired-recursive-deletes 'always)
+  (dired-deletion-confirmer '(lambda (x) t))
+  :config
+  (dired-async-mode 1))
+
+;;
 ;; -> image-dired
 ;;
-
 (require 'image-mode)
 (require 'image-dired)
 
@@ -1312,7 +1325,7 @@
            'face '(:inherit bold))
          " "))
      mode-line-position
-     mode-line-modes
+     ;; mode-line-modes
      mode-line-misc-info))
 ;; "-%-"))
 
@@ -1855,23 +1868,30 @@
 (setq explicit-shell-file-name "/usr/bin/bash")
 (setq shell-file-name "/bin/bash")
 
-;;
-;; -> eshell
-;;
 (defun my/eshell-hook ()
   "set up company completions to be a little more fish like"
   (interactive)
-  ;; (company-mode)
-  ;; (setq-local company-backends '(company-files))
   (define-key eshell-mode-map (kbd "<tab>") #'company-complete)
   (define-key eshell-hist-mode-map (kbd "M-r") #'consult-history))
+
+(defun my/shell-hook ()
+  "set up company completions to be a little more fish like"
+  (interactive)
+  (define-key shell-mode-map (kbd "<tab>") #'company-complete)
+  (define-key shell-mode-map (kbd "M-r") #'consult-history))
 
 (use-package eshell
   :config
   (setq eshell-scroll-to-bottom-on-input t)
-  (add-hook 'eshell-mode-hook 'my/eshell-hook))
+  :hook
+  (eshell-mode . my/eshell-hook))
 
-(global-set-key (kbd "M-T") 'eshell)
+(use-package shell
+  :config
+  :hook
+  (shell-mode . my/shell-hook))
+
+(global-set-key (kbd "M-T") 'shell)
 
 ;;
 ;; -> chatGPT
@@ -1925,6 +1945,8 @@
   (marginalia-mode all-the-icons-completion-marginalia-setup))
 
 (use-package all-the-icons-dired
+  :diminish
+  all-the-icons-dired-mode
   :hook
   (dired-mode . all-the-icons-dired-mode))
 
@@ -2069,6 +2091,7 @@
 (use-package selected-window-accent-mode
   ;;   :load-path "~/repos/selected-window-accent-mode"
   ;; :vc (:fetcher github :repo "captainflasmr/selected-window-accent-mode")
+  :diminish selected-window-accent-mode
   :custom
   (selected-window-accent-fringe-thickness 10)
   (selected-window-accent-custom-color my/accent-color)
@@ -2250,3 +2273,20 @@
       ) ;; let
     ) ;; dolist
   ) ;; defun
+
+(defun my/dired-async-mode-line-message (text face &rest args)
+  "Notify end of operation in `mode-line'."
+  (message "Dired Async has finished!!")
+  (let ((mode-line-format (concat
+                           " " (propertize
+                                (if args
+                                    (apply #'format text args)
+                                  text)
+                                 'face
+                                 '(:background "#ff0000" :foreground "#ffffff" :inherit bold)
+                                 ))))
+    (force-mode-line-update)
+    (sit-for 8)
+    (force-mode-line-update)))
+
+(setq dired-async-message-function 'my/dired-async-mode-line-message)
