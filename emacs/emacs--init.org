@@ -61,12 +61,14 @@ The avoiding a flash of light at startup is a very minor thing but nice to not g
 #+end_src
 
 * top-level-variables
+
 #+begin_src elisp
 ;;
 ;; -> top-level-variables
 ;;
-(setq my/accent-color "#4e657c")
+(setq my/accent-color "#2a562a")
 #+end_src
+
 * package-local
 
 #+begin_src elisp
@@ -370,8 +372,6 @@ The avoiding a flash of light at startup is a very minor thing but nice to not g
 (define-key my-win-keymap (kbd "x") 'my/change-accent-color)
 (define-key my-win-keymap (kbd "y") 'switch-selected-window-accent-style)
 
-
-
 #+end_src
 
 * unbinding
@@ -509,29 +509,6 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
     (setq elfeed-show-entry-switch #'my/show-elfeed)))
 #+end_src
 
-* save-desktop
-
-#+begin_src elisp
-;;
-;; -> save-desktop
-;;
-(setq desktop-save t
-  desktop-restore-eager t
-  desktop-lazy-idle-delay 1
-  desktop-lazy-verbose nil
-  desktop-files-not-to-save "^$"
-  desktop-auto-save-timeout 30)
-(push '(foreground-color . :never) frameset-filter-alist)
-(push '(background-color . :never) frameset-filter-alist)
-(push '(font . :never) frameset-filter-alist)
-(push '(cursor-color . :never) frameset-filter-alist)
-(push '(background-mode . :never) frameset-filter-alist)
-(push '(ns-appearance . :never) frameset-filter-alist)
-(push '(background-mode . :never) frameset-filter-alist)
-
-(desktop-save-mode -1)
-#+end_src
-
 * expansion
 
 #+begin_src elisp
@@ -555,6 +532,10 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ;;
 ;; -> keybinding
 ;;
+(global-set-key (kbd "C-r") 'isearch-backward-regexp)
+(global-set-key (kbd "C-s") 'isearch-forward-regexp)
+(global-set-key (kbd "<f8>") 'next-error)
+(global-set-key (kbd "S-<f8>") 'previous-error)
 (global-set-key (kbd "M-s e") 'my/push-block)
 (global-set-key (kbd "M-s g") 'my/text-browser-search)
 (global-set-key (kbd "M-=") 'count-words)
@@ -574,8 +555,6 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 (global-set-key (kbd "C-c c") 'org-capture)
 (global-set-key (kbd "C-c f") 'my/fold)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
-(global-set-key (kbd "C-x j") 'previous-buffer)
-(global-set-key (kbd "C-x k") 'next-buffer)
 (global-set-key (kbd "C-x l") 'scroll-lock-mode)
 (global-set-key (kbd "M-0") 'delete-window)
 (global-set-key (kbd "M-1") 'delete-other-windows)
@@ -752,24 +731,6 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
   (insert-kbd-macro name)
   (newline))
 
-(defun my/rsync (dest)
-  "Rsync copy."
-  (interactive
-    (list
-      (expand-file-name (read-file-name "rsync to:"
-                          (dired-dwim-target-directory)))))
-  (let ((files (dired-get-marked-files nil current-prefix-arg))
-         (command "rsync -arvz --progress --no-g "))
-    (dolist (file files)
-      (setq command (concat command (shell-quote-argument file) " ")))
-    (setq command (concat command (shell-quote-argument dest)))
-    (async-shell-command command "*rsync*")
-    (dired-unmark-all-marks)
-    (other-window 1)
-    (sleep-for 1)
-    (dired-revert)
-    (revert-buffer nil t nil)))
-
 (defun my/comment-or-uncomment ()
   "Comments or uncomments the current line or region."
   (interactive)
@@ -826,27 +787,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
           (pounds (string-to-number (cadr parts))))
     (+ (* stone 14) pounds)))
 
-(defun my/copy-file-name-to-clipboard ()
-  "Copy the current buffer file name to the clipboard."
-  (interactive)
-  (let ((filename (if (equal major-mode 'dired-mode)
-                    default-directory
-                    (buffer-file-name))))
-    (when filename
-      (kill-new filename)
-      (message "Copied buffer file name '%s' to the clipboard." filename))))
-
 (global-set-key (kbd "C-c w") 'file-info-show)
-
-(defun my/mark-word ()
-  "redefinition of mark-word"
-  (interactive)
-  (if (not (looking-at "\\<"))
-    (backward-word))
-  (when (not (region-active-p))
-    (push-mark))
-  (forward-word)
-  (setq mark-active t))
 
 (defun my/mark-word ()
   "redefinition of mark-word"
@@ -940,6 +881,22 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 
 (setq org-capture-templates
   '(
+     ("t" "Tagged" plain
+       (file+function
+         "~/DCIM/content/tags--all.org"
+         my-capture-top-level)
+       "* DONE %^{title} tagged :%\\1:
+:PROPERTIES:
+:EXPORT_FILE_NAME: index
+:EXPORT_HUGO_SECTION: tagged/%\\1
+:EXPORT_HUGO_LASTMOD: <%<%Y-%m-%d %H:%M>>
+:EXPORT_HUGO_TYPE: gallery
+:EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :thumbnail /tagged/%\\1.jpg
+:END:
+%\\1 tagged
+%?
+" :prepend t :jump-to-captured t)
+
      ("p" "Post" plain
        (file+function
          "~/DCIM/content/posts--all.org"
@@ -1218,7 +1175,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ;;
 ;; (setq font-general "Noto Sans Mono 14")
 ;; (setq font-general "MesloLGS Nerd Font Mono 11")
-(setq font-general "Source Code Pro 13")
+(setq font-general "Source Code Pro 12")
 ;; (setq font-general "Source Code Pro Light 14")
 ;; (setq font-general "Nimbus Mono PS 14")
 ;; (setq font-general "MesloLGS Nerd Font Mono 14")
@@ -1275,10 +1232,9 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
   '(widget-button ((t (:inherit fixed-pitch :weight regular))))
   '(window-divider ((t (:foreground "black"))))
   '(vertical-border ((t (:foreground "#000000"))))
-  '(tab-bar-tab-inactive ((t (:inherit tab-bar :box (:line-width (1 . 1) :color "#575757" :style flat))))))
-
-(custom-set-faces
- `(tab-bar-tab ((t (:inherit tab-bar :background ,my/accent-color :box (:line-width (1 . 1) :color "#9c9c9c" :style flat))))))
+  `(tab-bar ((t (:foreground unspecified)))))
+  ;; `(tab-bar-tab ((t (:inherit tab-bar :background ,my/accent-color :foreground "#222222" :box (:line-width (1 . 1) :color "#9c9c9c" :style flat)))))
+  ;; '(tab-bar-tab-inactive ((t (:inherit tab-bar :box (:line-width (1 . 1) :color "#575757" :style flat))))))
 
 (custom-theme-set-faces
   'user
@@ -1301,7 +1257,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
             ("C-c i" . my/image-dired-sort)
             ("C-c d" . my/dired-duplicate-file)))
   :custom
-  (dired-async--modeline-mode 1)
+  ;; (dired-async--modeline-mode 1)
   (dired-guess-shell-alist-user
     '(("\\.\\(jpg\\|jpeg\\|png\\|gif\\|bmp\\)$" "gthumb")
        ("\\.\\(mp4\\|mkv\\|avi\\|mov\\|wmv\\|flv\\|mpg\\)$" "mpv")
@@ -1424,10 +1380,10 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 (eval-after-load 'image-dired
   '(progn
      (define-key image-dired-thumbnail-mode-map (kbd "C-d") 'my/delete-current-image-thumbnails)
-     ;; (define-key image-dired-thumbnail-mode-map (kbd "C-f")
-     ;;   (lambda ()(interactive)(image-dired-forward-image)(image-dired-display-this)))
-     ;; (define-key image-dired-thumbnail-mode-map (kbd "C-b")
-     ;;   (lambda ()(interactive)(image-dired-backward-image)(image-dired-display-this)))
+     (define-key image-dired-thumbnail-mode-map (kbd "n")
+       (lambda ()(interactive)(image-dired-forward-image)(image-dired-display-this)))
+     (define-key image-dired-thumbnail-mode-map (kbd "p")
+       (lambda ()(interactive)(image-dired-backward-image)(image-dired-display-this)))
      ;; (define-key image-dired-thumbnail-mode-map (kbd "C-n")
      ;;   (lambda ()(interactive)(image-dired-next-line)(image-dired-display-this)))
      ;; (define-key image-dired-thumbnail-mode-map (kbd "C-p")
@@ -1462,21 +1418,57 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
   (unless (string= (buffer-file-name) (expand-file-name "~/.config/emacs/emacs--init.org"))
     (visual-line-mode)))
 (add-hook 'org-mode-hook 'my-org-visual-line-mode-exclude-init)
+
 (setq-default truncate-partial-width-windows 120)
-(set-frame-parameter nil 'alpha-background 98)
-(add-to-list 'default-frame-alist '(alpha-background . 98))
+
+(set-frame-parameter nil 'alpha-background 90)
+(add-to-list 'default-frame-alist '(alpha-background . 90))
+
 (set-fringe-mode '(0 . 0))
 (set-display-table-slot standard-display-table 0 ?\ )
 
 (setq window-divider-default-bottom-width 6)
 (setq window-divider-default-right-width 6)
 (setq window-divider-default-places t)
-
 (window-divider-mode -1)
 
 (setq-default left-margin-width 0 right-margin-width 0)
 
-(modify-all-frames-parameters `((internal-border-width . 0)))
+(defvar my/internal-border-width 10 "Default internal border width for toggling.")
+
+(defun my/toggle-internal-border-width (&optional value)
+  (interactive "P")
+  (let ((new-value (if value
+                     value
+                     (if (= (or (frame-parameter nil 'internal-border-width) 0)
+                           0)
+                       my/internal-border-width
+                       0))))
+    (modify-all-frames-parameters `((internal-border-width . ,new-value)))))
+
+(modify-all-frames-parameters `((internal-border-width . ,my/internal-border-width)))
+
+(defun my/change-accent-color ()
+  "Prompt for a new color and apply it as the accent color."
+  (interactive)
+  (let ((new-color (read-color "Choose new accent color: ")))
+    (setq my/accent-color new-color)
+
+    ;; Update tab-bar-tab face
+    ;; (custom-set-faces
+      ;; `(tab-bar-tab ((t (:inherit tab-bar :background ,my/accent-color :foreground "#222222" :box (:line-width (1 . 1) :color "#9c9c9c" :style flat))))))
+
+    ;; Update selected-window-accent-mode custom variables
+    (when (featurep 'selected-window-accent-mode)
+      (setq selected-window-accent-custom-color my/accent-color)
+      ;; Update any other properties if needed...
+
+      ;; Refresh the mode to apply the changes.
+      (selected-window-accent-mode -1)
+      (selected-window-accent-mode +1))
+
+    ;; Display a message to confirm the change
+    (message "Accent color changed to %s" my/accent-color)))
 
 #+end_src
 
@@ -1540,7 +1532,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ;;
 (setq-default mode-line-modified
   '(:eval (if (and (buffer-file-name) (buffer-modified-p))
-            (propertize " * " 'face
+            (propertize " Modified " 'face
               '(:background "#ff0000" :foreground "#ffffff" :inherit bold)) "")))
 
 (set-face-attribute 'mode-line-active nil :height 130 :underline nil :overline nil :box nil
@@ -1559,8 +1551,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
          (process-lines  "identify"  "-format"  "[%m %wx%h %b]" (buffer-file-name))))
      (:eval
        (if (not (equal major-mode 'dired-mode))
-         (propertize (format "%s " (buffer-name))
-           'face '(:inherit bold))
+         (propertize (format "%s " (buffer-name)))
          " "))
      mode-line-position
      mode-line-modes
@@ -1678,8 +1669,8 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
     ;; (forward-word)))
 
 (global-set-key (kbd "M-s j") 'jinx-mode)
-(global-set-key (kbd "M-s k") 'dictionary-lookup-definition)
-(global-set-key (kbd "M-s n") 'powerthesaurus-lookup-synonyms-dwim)
+(global-set-key (kbd "M-s d") 'dictionary-lookup-definition)
+(global-set-key (kbd "M-s s") 'powerthesaurus-lookup-synonyms-dwim)
 
 (setq ispell-local-dictionary "en_GB")
 (setq ispell-program-name "hunspell")
@@ -1724,6 +1715,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 #+end_src
 
 * auto-mode-alist
+
 #+begin_src elisp
 ;;
 ;; -> auto-mode-alist
@@ -2262,6 +2254,7 @@ echo
        ";; Code\n"
        :ascii
        ";; ")
+     ("~/DCIM/content/tagged--all.org" "" "" "" "" "" :hugo "")
      ("~/DCIM/content/art--all.org" "" "" "" "" "" :hugo "")
      ("~/DCIM/content/emacs--all.org" "" "" "" "" "" :hugo "")
      ("~/DCIM/content/kate--blog.org" "" "" "" "" "" :hugo "")
@@ -2448,8 +2441,8 @@ echo
 ;;
 ;; -> shell
 ;;
-(setq explicit-shell-file-name "/usr/bin/bash")
-(setq shell-file-name "/bin/bash")
+(setq explicit-shell-file-name "/usr/bin/fish")
+(setq shell-file-name "/bin/fish")
 
 (defun my/eshell-hook ()
   "set up company completions to be a little more fish like"
@@ -2474,7 +2467,7 @@ echo
   :hook
   (shell-mode . my/shell-hook))
 
-(global-set-key (kbd "M-T") 'shell)
+(global-set-key (kbd "M-T") 'ansi-term)
 #+end_src
 
 * chatGPT
@@ -2520,6 +2513,7 @@ echo
           ("f" . proced-narrow)
           ("G" . my/proced-toggle-update)))
 #+end_src
+
 * all-the-icons
 #+begin_src elisp
 ;;
@@ -2621,18 +2615,6 @@ echo
 ;;
 ;; -> development
 ;;
-(defvar my/internal-border-width 10 "Default internal border width for toggling.")
-
-(defun my/toggle-internal-border-width (&optional value)
-  (interactive "P")
-  (let ((new-value (if value
-                     value
-                     (if (= (or (frame-parameter nil 'internal-border-width) 0)
-                           0)
-                       my/internal-border-width
-                       0))))
-    (modify-all-frames-parameters `((internal-border-width . ,new-value)))))
-
 (defun my/toggle-scroll-margin (&optional value)
   (interactive "P")
   (let ((new-value (if value
@@ -2726,43 +2708,23 @@ echo
 
 (require 'cl-lib)
 
-(defun my/collapse-next-consecutive-blank-lines ()
-  "Collapses the next set of consecutive blank lines down to a single blank line, then stops."
+(defun my/collapse-space ()
+  "Collapses consecutive blank lines down to a single blank line if there's more than one, or removes a single blank line if that's all that is found."
   (interactive)
   (save-excursion
-    (let ((found-blank-lines nil))
+    (let ((found-blank-lines 0))
       (while (and (not (eobp)))
-        (if (looking-at "^\n\\{2,\\}")
+        (if (looking-at "^[ ]*\n")
           (progn
-            (setq found-blank-lines t)
-            (replace-match "\n")  ; Collapses multiple newlines down to one
-            )
-          (if found-blank-lines
-            (cl-return)  ; If we've already found and collapsed blank lines, we exit the loop
-            (forward-line 1)))))))  ; Else, we keep looking
+            (setq found-blank-lines (1+ found-blank-lines))
+            (replace-match ""))
+          (if (> found-blank-lines 0)
+            (progn
+              (if (> found-blank-lines 1)
+                (insert "\n"))
+              (cl-return))
+            (forward-line)))))))
 
-(global-set-key (kbd "C-x C-o") 'my/collapse-next-consecutive-blank-lines)
-
-(defun my/change-accent-color ()
-  "Prompt for a new color and apply it as the accent color."
-  (interactive)
-  (let ((new-color (read-color "Choose new accent color: ")))
-    (setq my/accent-color new-color)
-
-    ;; Update tab-bar-tab face
-    (custom-set-faces
-     `(tab-bar-tab ((t (:inherit tab-bar :background ,my/accent-color :box (:line-width (1 . 1) :color "#9c9c9c" :style flat))))))
-
-    ;; Update selected-window-accent-mode custom variables
-    (when (featurep 'selected-window-accent-mode)
-      (setq selected-window-accent-custom-color my/accent-color)
-      ;; Update any other properties if needed...
-
-      ;; Refresh the mode to apply the changes.
-      (selected-window-accent-mode -1)
-      (selected-window-accent-mode +1))
-
-    ;; Display a message to confirm the change
-    (message "Accent color changed to %s" my/accent-color)))
+(global-set-key (kbd "C-x C-o") 'my/collapse-space)
 
 #+end_src

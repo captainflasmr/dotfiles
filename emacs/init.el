@@ -33,7 +33,7 @@
 ;;
 ;; -> top-level-variables
 ;;
-(setq my/accent-color "#4e657c")
+(setq my/accent-color "#2a562a")
 
 ;;
 ;; -> package-local
@@ -382,25 +382,6 @@
     (setq elfeed-show-entry-switch #'my/show-elfeed)))
 
 ;;
-;; -> save-desktop
-;;
-(setq desktop-save t
-  desktop-restore-eager t
-  desktop-lazy-idle-delay 1
-  desktop-lazy-verbose nil
-  desktop-files-not-to-save "^$"
-  desktop-auto-save-timeout 30)
-(push '(foreground-color . :never) frameset-filter-alist)
-(push '(background-color . :never) frameset-filter-alist)
-(push '(font . :never) frameset-filter-alist)
-(push '(cursor-color . :never) frameset-filter-alist)
-(push '(background-mode . :never) frameset-filter-alist)
-(push '(ns-appearance . :never) frameset-filter-alist)
-(push '(background-mode . :never) frameset-filter-alist)
-
-(desktop-save-mode -1)
-
-;;
 ;; -> expansion
 ;;
 (setq-default abbrev-mode t)
@@ -416,6 +397,10 @@
 ;;
 ;; -> keybinding
 ;;
+(global-set-key (kbd "C-r") 'isearch-backward-regexp)
+(global-set-key (kbd "C-s") 'isearch-forward-regexp)
+(global-set-key (kbd "<f8>") 'next-error)
+(global-set-key (kbd "S-<f8>") 'previous-error)
 (global-set-key (kbd "M-s e") 'my/push-block)
 (global-set-key (kbd "M-s g") 'my/text-browser-search)
 (global-set-key (kbd "M-=") 'count-words)
@@ -435,8 +420,6 @@
 (global-set-key (kbd "C-c c") 'org-capture)
 (global-set-key (kbd "C-c f") 'my/fold)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
-(global-set-key (kbd "C-x j") 'previous-buffer)
-(global-set-key (kbd "C-x k") 'next-buffer)
 (global-set-key (kbd "C-x l") 'scroll-lock-mode)
 (global-set-key (kbd "M-0") 'delete-window)
 (global-set-key (kbd "M-1") 'delete-other-windows)
@@ -544,13 +527,13 @@
 ;; -> custom-settings
 ;;
 (custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-enabled-themes '(doom-one))
- '(warning-suppress-log-types '((frameset)))
- '(warning-suppress-types '((frameset))))
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+  '(custom-enabled-themes '(doom-one))
+  '(warning-suppress-log-types '((frameset)))
+  '(warning-suppress-types '((frameset))))
 
 ;;
 ;; -> defun
@@ -580,24 +563,6 @@
   (newline)
   (insert-kbd-macro name)
   (newline))
-
-(defun my/rsync (dest)
-  "Rsync copy."
-  (interactive
-    (list
-      (expand-file-name (read-file-name "rsync to:"
-                          (dired-dwim-target-directory)))))
-  (let ((files (dired-get-marked-files nil current-prefix-arg))
-         (command "rsync -arvz --progress --no-g "))
-    (dolist (file files)
-      (setq command (concat command (shell-quote-argument file) " ")))
-    (setq command (concat command (shell-quote-argument dest)))
-    (async-shell-command command "*rsync*")
-    (dired-unmark-all-marks)
-    (other-window 1)
-    (sleep-for 1)
-    (dired-revert)
-    (revert-buffer nil t nil)))
 
 (defun my/comment-or-uncomment ()
   "Comments or uncomments the current line or region."
@@ -655,27 +620,7 @@
           (pounds (string-to-number (cadr parts))))
     (+ (* stone 14) pounds)))
 
-(defun my/copy-file-name-to-clipboard ()
-  "Copy the current buffer file name to the clipboard."
-  (interactive)
-  (let ((filename (if (equal major-mode 'dired-mode)
-                    default-directory
-                    (buffer-file-name))))
-    (when filename
-      (kill-new filename)
-      (message "Copied buffer file name '%s' to the clipboard." filename))))
-
 (global-set-key (kbd "C-c w") 'file-info-show)
-
-(defun my/mark-word ()
-  "redefinition of mark-word"
-  (interactive)
-  (if (not (looking-at "\\<"))
-    (backward-word))
-  (when (not (region-active-p))
-    (push-mark))
-  (forward-word)
-  (setq mark-active t))
 
 (defun my/mark-word ()
   "redefinition of mark-word"
@@ -760,6 +705,22 @@
 
 (setq org-capture-templates
   '(
+     ("t" "Tagged" plain
+       (file+function
+         "~/DCIM/content/tags--all.org"
+         my-capture-top-level)
+       "* DONE %^{title} tagged :%\\1:
+:PROPERTIES:
+:EXPORT_FILE_NAME: index
+:EXPORT_HUGO_SECTION: tagged/%\\1
+:EXPORT_HUGO_LASTMOD: <%<%Y-%m-%d %H:%M>>
+:EXPORT_HUGO_TYPE: gallery
+:EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :thumbnail /tagged/%\\1.jpg
+:END:
+%\\1 tagged
+%?
+" :prepend t :jump-to-captured t)
+
      ("p" "Post" plain
        (file+function
          "~/DCIM/content/posts--all.org"
@@ -1013,7 +974,7 @@
 ;;
 ;; (setq font-general "Noto Sans Mono 14")
 ;; (setq font-general "MesloLGS Nerd Font Mono 11")
-(setq font-general "Source Code Pro 13")
+(setq font-general "Source Code Pro 12")
 ;; (setq font-general "Source Code Pro Light 14")
 ;; (setq font-general "Nimbus Mono PS 14")
 ;; (setq font-general "MesloLGS Nerd Font Mono 14")
@@ -1029,56 +990,46 @@
 ;; -> custom-set-faces
 ;;
 (custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(diredfl-date-time ((t (:foreground "#8d909b"))))
- '(diredfl-dir-heading ((t (:foreground "#aa5555" :weight bold))))
- '(diredfl-dir-priv ((t (:foreground "DarkRed"))))
- '(diredfl-exec-priv ((t (:foreground "#999999"))))
- '(diredfl-file-name ((t (:foreground "#818282"))))
- '(diredfl-no-priv ((t nil)))
- '(diredfl-number ((t (:foreground "#999999"))))
- '(diredfl-read-priv ((t nil)))
- '(diredfl-write-priv ((t nil)))
- '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
- '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
- '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
- '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
- '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.1 :family "Source Code Pro"))))
- '(fixed-pitch ((t (:family "Fira Code Retina" :height 130))))
- '(indent-guide-face ((t (:background "#282828" :foreground "#666666"))))
- '(org-code ((t (:inherit (shadow fixed-pitch)))))
- '(org-date ((t (:inherit fixed-pitch))))
- '(org-document-info ((t (:foreground "#8f4800"))))
- '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
- '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
- '(org-link ((t (:foreground "#5555ff" :underline t))))
- '(org-modern-date-active ((t (:inherit fixed-pitch))))
- '(org-property-value ((t (:inherit fixed-pitch))) t)
- '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
- '(org-tag ((t (:inherit (shadow fixed-pitch) :weight regular :height 0.8))))
- '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
- '(outline-1 ((t (:weight regular))))
- '(outline-2 ((t (:weight regular))))
- '(tab-bar-tab ((t (:inherit tab-bar :background "#4e657c" :box (:line-width (1 . 1) :color "#9c9c9c" :style flat)))))
- '(tab-bar-tab-inactive ((t (:inherit tab-bar :box (:line-width (1 . 1) :color "#575757" :style flat)))))
- '(variable-pitch ((t (:family "Sans Serif" :height 140 :weight normal))))
- '(vertical-border ((t (:foreground "#000000"))))
- '(whitespace-missing-newline-at-eof ((t (:foreground "#666566656665"))))
- '(whitespace-newline ((t (:foreground "#666566656665"))))
- '(whitespace-space ((t (:foreground "#666566656665"))))
- '(whitespace-space-after-tab ((t (:foreground "#666566656665"))))
- '(whitespace-space-before-tab ((t (:foreground "#666566656665"))))
- '(whitespace-tab ((t (:foreground "#666566656665"))))
- '(whitespace-trailing ((t (:foreground "#666566656665"))))
- '(widget-button ((t (:inherit fixed-pitch :weight regular))))
- '(window-divider ((t (:foreground "black"))))
- '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
- '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2")))))
-
-
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+  '(diredfl-date-time ((t (:foreground "#8d909b"))))
+  '(diredfl-dir-heading ((t (:foreground "#aa5555" :weight bold))))
+  '(diredfl-dir-priv ((t (:foreground "DarkRed"))))
+  '(diredfl-exec-priv ((t (:foreground "#999999"))))
+  '(diredfl-file-name ((t (:foreground "#818282"))))
+  '(diredfl-no-priv ((t nil)))
+  '(diredfl-number ((t (:foreground "#999999"))))
+  '(diredfl-read-priv ((t nil)))
+  '(diredfl-write-priv ((t nil)))
+  '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
+  '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
+  '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
+  '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
+  '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2"))))
+  '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
+  '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.1 :family "Source Code Pro"))))
+  '(org-code ((t (:inherit (shadow fixed-pitch)))))
+  '(org-modern-date-active ((t (:inherit fixed-pitch))))
+  '(org-date ((t (:inherit fixed-pitch))))
+  '(org-document-info ((t (:foreground "#8f4800"))))
+  '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+  '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
+  '(org-link ((t (:foreground "#5555ff" :underline t))))
+  '(org-property-value ((t (:inherit fixed-pitch))) t)
+  '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+  '(org-tag ((t (:inherit (shadow fixed-pitch) :weight regular :height 0.8))))
+  '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
+  '(indent-guide-face ((t (:background "#282828" :foreground "#666666"))))
+  '(outline-1 ((t (:weight regular))))
+  '(outline-2 ((t (:weight regular))))
+  '(widget-button ((t (:inherit fixed-pitch :weight regular))))
+  '(window-divider ((t (:foreground "black"))))
+  '(vertical-border ((t (:foreground "#000000"))))
+  `(tab-bar ((t (:foreground unspecified)))))
+  ;; `(tab-bar-tab ((t (:inherit tab-bar :background ,my/accent-color :foreground "#222222" :box (:line-width (1 . 1) :color "#9c9c9c" :style flat)))))
+  ;; '(tab-bar-tab-inactive ((t (:inherit tab-bar :box (:line-width (1 . 1) :color "#575757" :style flat))))))
 
 (custom-theme-set-faces
   'user
@@ -1097,7 +1048,7 @@
             ("C-c i" . my/image-dired-sort)
             ("C-c d" . my/dired-duplicate-file)))
   :custom
-  (dired-async--modeline-mode 1)
+  ;; (dired-async--modeline-mode 1)
   (dired-guess-shell-alist-user
     '(("\\.\\(jpg\\|jpeg\\|png\\|gif\\|bmp\\)$" "gthumb")
        ("\\.\\(mp4\\|mkv\\|avi\\|mov\\|wmv\\|flv\\|mpg\\)$" "mpv")
@@ -1215,10 +1166,10 @@
 (eval-after-load 'image-dired
   '(progn
      (define-key image-dired-thumbnail-mode-map (kbd "C-d") 'my/delete-current-image-thumbnails)
-     ;; (define-key image-dired-thumbnail-mode-map (kbd "C-f")
-     ;;   (lambda ()(interactive)(image-dired-forward-image)(image-dired-display-this)))
-     ;; (define-key image-dired-thumbnail-mode-map (kbd "C-b")
-     ;;   (lambda ()(interactive)(image-dired-backward-image)(image-dired-display-this)))
+     (define-key image-dired-thumbnail-mode-map (kbd "n")
+       (lambda ()(interactive)(image-dired-forward-image)(image-dired-display-this)))
+     (define-key image-dired-thumbnail-mode-map (kbd "p")
+       (lambda ()(interactive)(image-dired-backward-image)(image-dired-display-this)))
      ;; (define-key image-dired-thumbnail-mode-map (kbd "C-n")
      ;;   (lambda ()(interactive)(image-dired-next-line)(image-dired-display-this)))
      ;; (define-key image-dired-thumbnail-mode-map (kbd "C-p")
@@ -1249,21 +1200,57 @@
   (unless (string= (buffer-file-name) (expand-file-name "~/.config/emacs/emacs--init.org"))
     (visual-line-mode)))
 (add-hook 'org-mode-hook 'my-org-visual-line-mode-exclude-init)
+
 (setq-default truncate-partial-width-windows 120)
-(set-frame-parameter nil 'alpha-background 98)
-(add-to-list 'default-frame-alist '(alpha-background . 98))
+
+(set-frame-parameter nil 'alpha-background 90)
+(add-to-list 'default-frame-alist '(alpha-background . 90))
+
 (set-fringe-mode '(0 . 0))
 (set-display-table-slot standard-display-table 0 ?\ )
 
 (setq window-divider-default-bottom-width 6)
 (setq window-divider-default-right-width 6)
 (setq window-divider-default-places t)
-
 (window-divider-mode -1)
 
 (setq-default left-margin-width 0 right-margin-width 0)
 
-(modify-all-frames-parameters `((internal-border-width . 0)))
+(defvar my/internal-border-width 10 "Default internal border width for toggling.")
+
+(defun my/toggle-internal-border-width (&optional value)
+  (interactive "P")
+  (let ((new-value (if value
+                     value
+                     (if (= (or (frame-parameter nil 'internal-border-width) 0)
+                           0)
+                       my/internal-border-width
+                       0))))
+    (modify-all-frames-parameters `((internal-border-width . ,new-value)))))
+
+(modify-all-frames-parameters `((internal-border-width . ,my/internal-border-width)))
+
+(defun my/change-accent-color ()
+  "Prompt for a new color and apply it as the accent color."
+  (interactive)
+  (let ((new-color (read-color "Choose new accent color: ")))
+    (setq my/accent-color new-color)
+
+    ;; Update tab-bar-tab face
+    ;; (custom-set-faces
+      ;; `(tab-bar-tab ((t (:inherit tab-bar :background ,my/accent-color :foreground "#222222" :box (:line-width (1 . 1) :color "#9c9c9c" :style flat))))))
+
+    ;; Update selected-window-accent-mode custom variables
+    (when (featurep 'selected-window-accent-mode)
+      (setq selected-window-accent-custom-color my/accent-color)
+      ;; Update any other properties if needed...
+
+      ;; Refresh the mode to apply the changes.
+      (selected-window-accent-mode -1)
+      (selected-window-accent-mode +1))
+
+    ;; Display a message to confirm the change
+    (message "Accent color changed to %s" my/accent-color)))
 
 ;;
 ;; -> imenu
@@ -1314,7 +1301,7 @@
 ;;
 (setq-default mode-line-modified
   '(:eval (if (and (buffer-file-name) (buffer-modified-p))
-            (propertize " * " 'face
+            (propertize " Modified " 'face
               '(:background "#ff0000" :foreground "#ffffff" :inherit bold)) "")))
 
 (set-face-attribute 'mode-line-active nil :height 130 :underline nil :overline nil :box nil
@@ -1333,8 +1320,7 @@
          (process-lines  "identify"  "-format"  "[%m %wx%h %b]" (buffer-file-name))))
      (:eval
        (if (not (equal major-mode 'dired-mode))
-         (propertize (format "%s " (buffer-name))
-           'face '(:inherit bold))
+         (propertize (format "%s " (buffer-name)))
          " "))
      mode-line-position
      mode-line-modes
@@ -1432,8 +1418,8 @@
     ;; (forward-word)))
 
 (global-set-key (kbd "M-s j") 'jinx-mode)
-(global-set-key (kbd "M-s k") 'dictionary-lookup-definition)
-(global-set-key (kbd "M-s n") 'powerthesaurus-lookup-synonyms-dwim)
+(global-set-key (kbd "M-s d") 'dictionary-lookup-definition)
+(global-set-key (kbd "M-s s") 'powerthesaurus-lookup-synonyms-dwim)
 
 (setq ispell-local-dictionary "en_GB")
 (setq ispell-program-name "hunspell")
@@ -1870,6 +1856,7 @@
        ";; Code\n"
        :ascii
        ";; ")
+     ("~/DCIM/content/tagged--all.org" "" "" "" "" "" :hugo "")
      ("~/DCIM/content/art--all.org" "" "" "" "" "" :hugo "")
      ("~/DCIM/content/emacs--all.org" "" "" "" "" "" :hugo "")
      ("~/DCIM/content/kate--blog.org" "" "" "" "" "" :hugo "")
@@ -2048,8 +2035,8 @@
 ;;
 ;; -> shell
 ;;
-(setq explicit-shell-file-name "/usr/bin/bash")
-(setq shell-file-name "/bin/bash")
+(setq explicit-shell-file-name "/usr/bin/fish")
+(setq shell-file-name "/bin/fish")
 
 (defun my/eshell-hook ()
   "set up company completions to be a little more fish like"
@@ -2074,7 +2061,7 @@
   :hook
   (shell-mode . my/shell-hook))
 
-(global-set-key (kbd "M-T") 'shell)
+(global-set-key (kbd "M-T") 'ansi-term)
 
 ;;
 ;; -> chatGPT
@@ -2202,18 +2189,6 @@
 ;;
 ;; -> development
 ;;
-(defvar my/internal-border-width 10 "Default internal border width for toggling.")
-
-(defun my/toggle-internal-border-width (&optional value)
-  (interactive "P")
-  (let ((new-value (if value
-                     value
-                     (if (= (or (frame-parameter nil 'internal-border-width) 0)
-                           0)
-                       my/internal-border-width
-                       0))))
-    (modify-all-frames-parameters `((internal-border-width . ,new-value)))))
-
 (defun my/toggle-scroll-margin (&optional value)
   (interactive "P")
   (let ((new-value (if value
@@ -2307,41 +2282,21 @@
 
 (require 'cl-lib)
 
-(defun my/collapse-next-consecutive-blank-lines ()
-  "Collapses the next set of consecutive blank lines down to a single blank line, then stops."
+(defun my/collapse-space ()
+  "Collapses consecutive blank lines down to a single blank line if there's more than one, or removes a single blank line if that's all that is found."
   (interactive)
   (save-excursion
-    (let ((found-blank-lines nil))
+    (let ((found-blank-lines 0))
       (while (and (not (eobp)))
-        (if (looking-at "^\n\\{2,\\}")
+        (if (looking-at "^[ ]*\n")
           (progn
-            (setq found-blank-lines t)
-            (replace-match "\n")  ; Collapses multiple newlines down to one
-            )
-          (if found-blank-lines
-            (cl-return)  ; If we've already found and collapsed blank lines, we exit the loop
-            (forward-line 1)))))))  ; Else, we keep looking
+            (setq found-blank-lines (1+ found-blank-lines))
+            (replace-match ""))
+          (if (> found-blank-lines 0)
+            (progn
+              (if (> found-blank-lines 1)
+                (insert "\n"))
+              (cl-return))
+            (forward-line)))))))
 
-(global-set-key (kbd "C-x C-o") 'my/collapse-next-consecutive-blank-lines)
-
-(defun my/change-accent-color ()
-  "Prompt for a new color and apply it as the accent color."
-  (interactive)
-  (let ((new-color (read-color "Choose new accent color: ")))
-    (setq my/accent-color new-color)
-
-    ;; Update tab-bar-tab face
-    (custom-set-faces
-     `(tab-bar-tab ((t (:inherit tab-bar :background ,my/accent-color :box (:line-width (1 . 1) :color "#9c9c9c" :style flat))))))
-
-    ;; Update selected-window-accent-mode custom variables
-    (when (featurep 'selected-window-accent-mode)
-      (setq selected-window-accent-custom-color my/accent-color)
-      ;; Update any other properties if needed...
-
-      ;; Refresh the mode to apply the changes.
-      (selected-window-accent-mode -1)
-      (selected-window-accent-mode +1))
-
-    ;; Display a message to confirm the change
-    (message "Accent color changed to %s" my/accent-color)))
+(global-set-key (kbd "C-x C-o") 'my/collapse-space)
