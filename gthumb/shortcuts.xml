@@ -34,7 +34,7 @@
   <shortcut accelerator="1" action="image-zoom-100"/>
   <shortcut accelerator="2" action="image-zoom-200"/>
   <shortcut accelerator="3" action="image-zoom-300"/>
-  <shortcut accelerator="plus" action="image-zoom-in"/>
+  <shortcut accelerator="&lt;Shift&gt;plus" action="image-zoom-in"/>
   <shortcut accelerator="minus" action="image-zoom-out"/>
   <shortcut accelerator="&lt;Shift&gt;x" action="image-zoom-fit"/>
   <shortcut accelerator="&lt;Shift&gt;h" action="image-zoom-fit-height"/>
