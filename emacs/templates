@@ -1,7 +1,8 @@
 fundamental-mode ;; Available everywhere
 
 (jda (format-time-string "<%Y-%m-%d>"))
-(jdt (format-time-string "%Y%m%d%H%M%S"))
+(jdT (format-time-string "%Y%m%d%H%M%S"))
+(jdt (format-time-string "%Y%m%d"))
 (jdq "\"" \r "\"")
 
 org-mode
