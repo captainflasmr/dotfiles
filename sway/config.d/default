@@ -1,10 +1,10 @@
 #
 # -> visuals
 #
-gaps inner 8px
-gaps outer -4px
-gaps top -6px
-gaps bottom -8px
+gaps inner 6px
+gaps outer 0px
+gaps top 0px
+gaps bottom -4px
 
 # workspace 1 gaps outer 10
 # workspace 1 gaps inner 8
@@ -20,8 +20,8 @@ workspace number 1
 default_border pixel 4px
 
 # -> class              border  backgr. text    indicator child_border
-client.focused          #000000 #0b4b55 #cccccc #ffffff44   #ffffff44
-client.focused_inactive #333333 #333333 #cccccc #505658   #4c4c4c
+client.focused          #000000 #0b4b55 #cccccc #946f0033   #946f0033
+client.focused_inactive #333333 #333333 #cccccc #00000099   #00000099
 client.unfocused        #333333 #222222 #cccccc #292d2e   #222222
 client.urgent           #2f343a #900000 #cccccc #900000   #900000
 client.placeholder      #000000 #0c0c0c #cccccc #000000   #0c0c0c
@@ -67,13 +67,16 @@ bindsym $mod+shift+w exec wallpaper_change_sway.sh
 # programs
 bindsym $mod+space exec nwg-drawer -c 7 -is 70 -spacing 23
 bindsym $mod+shift+s exec screenshot_wayland.sh
+bindsym $mod+shift+r exec screenshot_wayland_001.sh
 bindsym $mod+e exec thunar ~/DCIM/Camera
 bindsym $mod+i exec nwg-look
 bindsym $mod+c exec emacs
 bindsym $mod+m exec thunderbird
-bindsym $mod+w exec flatpak run com.microsoft.Edge
+# bindsym $mod+w exec flatpak run com.microsoft.Edge
+bindsym $mod+w exec firefox
 bindsym $mod+s exec pamac-manager
 bindsym $mod+p exec keepassxc
+bindsym $mod+g exec screen-record.sh
 
 # terminal
 bindsym $mod+return exec $term
@@ -85,10 +88,13 @@ bindsym Mod1+F4 kill
 
 # launcher
 bindsym Mod1+space exec rofi -show drun
-bindsym $mod+d exec --no-startup-id dmenu_run -fn "Mono:pixelsize=22"
+bindsym $mod+d exec --no-startup-id dmenu_run -fn "Mono:pixelsize=16"
 
 # exit
 bindsym $mod+shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+
+# Single Windows key to call up top level menu
+# bindsym --release Super_L exec nwg-drawer -c 7 -is 70 -spacing 23
 
 #
 # -> Moving around
@@ -101,7 +107,7 @@ bindsym $mod+Left focus left
 bindsym $mod+Right focus right
 bindsym $mod+Up focus up
 bindsym $mod+Down focus down
-bindsym control+Mod1+o focus left
+# bindsym $mod+o focus left
 
 bindsym $mod+Shift+$left move left
 bindsym $mod+Shift+$down move down
@@ -142,33 +148,36 @@ bindsym $mod+f fullscreen
 # -> reload
 #
 bindsym $mod+shift+c reload
-bindsym $mod+shift+r reload
+# bindsym $mod+shift+r reload
 
 #
 # -> resize
 #
-bindsym control+Mod1+u resize grow width 25px
-bindsym control+Mod1+i resize shrink width 25px
+bindsym control+$mod+u resize grow width 25px
+bindsym control+$mod+i resize shrink width 25px
 
 #
 # -> other
 #
-smart_borders off
+smart_borders on
 
 #
 # -> floating
 #
 # Drag floating windows by holding down $mod and left mouse button.
-# Resize them with right mouse button + $mod.
-# Despite the name, also works for non-floating windows.
-# Change normal to inverse to use left mouse button for resizing and right
-# mouse button for dragging.
+# Resize them with right mouse button + $mod.  Despite the name, also
+# works for non-floating windows.  Change normal to inverse to use
+# left mouse button for resizing and right mouse button for dragging.
 floating_modifier $mod
 
 # Toggle the current focus between tiling and floating mode
 bindsym $mod+Shift+space floating toggle
 
-# Press $mod+Shift+g to enter the gap mode. Choose o or i for modifying outer/inner gaps. Press one of + / - (in-/decrement for current workspace) or 0 (remove gaps for current workspace). If you also press Shift with these keys, the change will be global for all workspaces.
+# Press $mod+Shift+g to enter the gap mode. Choose o or i for
+# modifying outer/inner gaps. Press one of + / - (in-/decrement for
+# current workspace) or 0 (remove gaps for current workspace). If you
+# also press Shift with these keys, the change will be global for all
+# workspaces.
 set $mode_gaps Gaps: (o) outer, (i) inner
 set $mode_gaps_outer Outer Gaps: +|-|0 (local), Shift + +|-|0 (global)
 set $mode_gaps_inner Inner Gaps: +|-|0 (local), Shift + +|-|0 (global)
@@ -205,7 +214,6 @@ mode "$mode_gaps_outer" {
         bindsym Escape mode "default"
 }
 
-
 # ------------------------------------------------------------
 # -> sway specific
 # ------------------------------------------------------------
@@ -214,15 +222,17 @@ include /etc/sway/config.d/*
 bindgesture swipe:4:right workspace prev
 bindgesture swipe:4:left workspace next
 
+bindgesture swipe:4:up floating toggle
+
 bindgesture swipe:3:right exec ydotool key 56:1 105:1 56:0 105:0
 bindgesture swipe:3:left exec ydotool key 56:1 106:1 56:0 106:0
 
 focus_wrapping force
 
 for_window [app_id="thunar"] opacity 0.95
-for_window [app_id="dolphin"] opacity 0.95
-for_window [app_id="gnome-terminal"] opacity 0.95
-for_window [app_id="thunderbird"] opacity 0.8
+for_window [app_id="dolphin"] opacity 0.96
+for_window [app_id="gnome-terminal"] opacity 0.94
+for_window [app_id="thunderbird"] opacity 0.98
 
 #
 # -> input
@@ -254,25 +264,20 @@ input 11551:337:WCOM014A:00_2D1F:0151_Stylus {
 }
 
 exec swayidle -w \
-   timeout 120 'swaymsg "output * dpms off"' \
+   timeout 240 'swaymsg "output * dpms off"' \
    resume 'swaymsg "output * dpms on"' \
    before-sleep 'swaymsg "output * dpms off"' \
    after-resume 'swaymsg "output * dpms on"'
 
-# exec swayidle -w \
-#          timeout 300 'swaylock -f -c 2c3639' \
-#          timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
-#          before-sleep 'swaylock -f -c 2c3639 --indicator-radius 70 --indicator-thickness 15 --inside-color 2c3639'\
-
 #
 # -> swayfx
 #
-corner_radius 15
+corner_radius 20
 blur enable
-blur_passes 10
-blur_radius 10
+blur_passes 8
+blur_radius 4
 shadows enable
-shadow_blur_radius 10
+shadow_blur_radius 5
 shadow_color #000000ff
 # default_dim_inactive 0
 layer_effects "waybar" blur enable; shadows disable;
