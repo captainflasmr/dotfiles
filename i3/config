@@ -1,12 +1,12 @@
 #
 # -> visuals
 #
-gaps inner 8px
-gaps outer -6px
-gaps top -6px
-gaps bottom -8px
+gaps inner 6px
+gaps outer 0px
+gaps top -4px
+gaps bottom -4px
 
-# workspace 1 gaps outer 40
+# workspace 1 gaps outer 10
 # workspace 1 gaps inner 8
 # workspace 2 gaps outer 10
 # workspace 2 gaps inner 8
@@ -17,11 +17,11 @@ gaps bottom -8px
 
 # workspace number 1
 
-default_border pixel 4px
+default_border pixel 6px
 
 # -> class              border  backgr. text    indicator child_border
-client.focused          #000000 #0b4b55 #cccccc #ffffff44   #ffffff44
-client.focused_inactive #333333 #333333 #cccccc #505658   #4c4c4c
+client.focused          #000000 #0b4b55 #cccccc #946f0033   #946f0033
+client.focused_inactive #333333 #333333 #cccccc #00000099   #00000099
 client.unfocused        #333333 #222222 #cccccc #292d2e   #222222
 client.urgent           #2f343a #900000 #cccccc #900000   #900000
 client.placeholder      #000000 #0c0c0c #cccccc #000000   #0c0c0c
@@ -62,7 +62,7 @@ bindsym XF86MonBrightnessDown exec brightnessctl set 2%-
 # -> Key bindings
 #
 bindsym $mod+shift+p exec kcolorchooser
-bindsym $mod+shift+w exec wallpaper_updatewal-styli.sh
+bindsym $mod+shift+w exec wallpaper_change_kde.sh
 
 # programs
 #bindsym $mod+space exec nwg-drawer -c 7 -is 70 -spacing 23
@@ -71,9 +71,11 @@ bindsym $mod+e exec thunar ~/DCIM/Camera
 bindsym $mod+i exec lxappearance
 bindsym $mod+c exec emacs
 bindsym $mod+m exec thunderbird
-bindsym $mod+w exec flatpak run com.microsoft.Edge
+# bindsym $mod+w exec flatpak run com.microsoft.Edge
+bindsym $mod+w exec firefox
 bindsym $mod+s exec pamac-manager
 bindsym $mod+p exec keepassxc
+bindsym $mod+g exec screen-record.sh
 
 # terminal
 bindsym $mod+return exec $term
@@ -101,7 +103,7 @@ bindsym $mod+Left focus left
 bindsym $mod+Right focus right
 bindsym $mod+Up focus up
 bindsym $mod+Down focus down
-bindsym control+Mod1+o focus left
+# bindsym $mod+o focus left
 
 bindsym $mod+Shift+$left move left
 bindsym $mod+Shift+$down move down
@@ -142,51 +144,36 @@ bindsym $mod+f fullscreen
 # -> reload
 #
 bindsym $mod+shift+c reload
-bindsym $mod+shift+r reload
+# bindsym $mod+shift+r reload
 
 #
 # -> resize
 #
-bindsym control+Mod1+u resize grow width 25px
-bindsym control+Mod1+i resize shrink width 25px
+bindsym control+$mod+u resize grow width 25px
+bindsym control+$mod+i resize shrink width 25px
 
 #
 # -> other
 #
-# smart_borders off
+smart_borders on
 
 #
 # -> floating
 #
 # Drag floating windows by holding down $mod and left mouse button.
-# Resize them with right mouse button + $mod.
-# Despite the name, also works for non-floating windows.
-# Change normal to inverse to use left mouse button for resizing and right
-# mouse button for dragging.
+# Resize them with right mouse button + $mod.  Despite the name, also
+# works for non-floating windows.  Change normal to inverse to use
+# left mouse button for resizing and right mouse button for dragging.
 floating_modifier $mod
 
 # Toggle the current focus between tiling and floating mode
 bindsym $mod+Shift+space floating toggle
 
-# bar {
-# 	status_command exec /usr/bin/net-speed.sh
-# 	#strip_workspace_numbers yes|no
-# 	#strip_workspace_name yes|no
-# 	colors {
-#     background #2f343f
-#     statusline #FFFFFF
-#     separator  #666666
-
-#     focused_workspace  #4C7899 #285577 #FFFFFF
-#     active_workspace   #333333 #222222 #FFFFFF
-#     inactive_workspace #333333 #222222 #888888
-#     urgent_workspace   #2F343A #900000 #FFFFFF
-#     #binding_mode      #2F343A #900000 #FFFFFF
-#     # colour of border, background, and text
-#     }
-# }
-
-# Press $mod+Shift+g to enter the gap mode. Choose o or i for modifying outer/inner gaps. Press one of + / - (in-/decrement for current workspace) or 0 (remove gaps for current workspace). If you also press Shift with these keys, the change will be global for all workspaces.
+# Press $mod+Shift+g to enter the gap mode. Choose o or i for
+# modifying outer/inner gaps. Press one of + / - (in-/decrement for
+# current workspace) or 0 (remove gaps for current workspace). If you
+# also press Shift with these keys, the change will be global for all
+# workspaces.
 set $mode_gaps Gaps: (o) outer, (i) inner
 set $mode_gaps_outer Outer Gaps: +|-|0 (local), Shift + +|-|0 (global)
 set $mode_gaps_inner Inner Gaps: +|-|0 (local), Shift + +|-|0 (global)
