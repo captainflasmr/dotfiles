@@ -2,7 +2,7 @@
     "layer": "bottom",
     "position": "top",
     "mode": "dock",
-    // "height": 45,
+    "height": 35,
     // "width": 1910,
     "spacing": 12,
     "margin-top": 3,
