@@ -36,6 +36,14 @@
 (setq my/accent-color "#2a562a")
 
 ;;
+;; -> startup
+;;
+(defun display-startup-time ()
+  (message "Emacs startup time: %s" (emacs-init-time)))
+
+(add-hook 'emacs-startup-hook 'display-startup-time)
+
+;;
 ;; -> package-local
 ;;
 (use-package fd-find
@@ -481,7 +489,6 @@
 (setq use-short-answers t)
 (setq delete-by-moving-to-trash t)
 (setq european-calendar-style t)
-(setq esup-depth 0)
 (setq frame-inhibit-implied-resize t)
 (setq global-auto-revert-non-file-buffers t)
 (setq grep-command "grep -ni ")
@@ -974,7 +981,8 @@
 ;;
 ;; (setq font-general "Noto Sans Mono 14")
 ;; (setq font-general "MesloLGS Nerd Font Mono 11")
-(setq font-general "Source Code Pro 12")
+;; (setq font-general "Source Code Pro 12")
+(setq font-general "Monospace 12")
 ;; (setq font-general "Source Code Pro Light 14")
 ;; (setq font-general "Nimbus Mono PS 14")
 ;; (setq font-general "MesloLGS Nerd Font Mono 14")

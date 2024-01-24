@@ -20,6 +20,12 @@ The avoiding a flash of light at startup is a very minor thing but nice to not g
 (set-face-attribute 'mode-line nil :background "#222222" :foreground "#ffffff" :box 'unspecified)
 #+end_src
 
+Garbage collection
+
+#+begin_src elisp :tangle ~/.config/emacs/early-init.el
+(setq gc-cons-threshold (* 20 1024 1024)) ; Set to 20MB
+#+end_src
+
 * requires
 
 #+begin_src elisp
@@ -69,6 +75,18 @@ The avoiding a flash of light at startup is a very minor thing but nice to not g
 (setq my/accent-color "#2a562a")
 #+end_src
 
+* startup
+
+#+begin_src elisp
+;;
+;; -> startup
+;;
+(defun display-startup-time ()
+  (message "Emacs startup time: %s" (emacs-init-time)))
+
+(add-hook 'emacs-startup-hook 'display-startup-time)
+#+end_src
+
 * package-local
 
 #+begin_src elisp
@@ -96,6 +114,21 @@ The avoiding a flash of light at startup is a very minor thing but nice to not g
   :defer t
   :vc (:fetcher github :repo "alphapapa/org-ql"))
 
+#+end_src
+
+* profiler
+
+Turn on a profiler if we would like
+
+#+begin_src elisp :tangle no
+;;
+;; -> profile
+;;
+(use-package esup
+  :ensure t
+  :config (setq esup-depth 0)
+  ;; To use MELPA Stable use ":pin melpa-stable",
+  :pin melpa)
 #+end_src
 
 * use-package
@@ -628,7 +661,6 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 (setq use-short-answers t)
 (setq delete-by-moving-to-trash t)
 (setq european-calendar-style t)
-(setq esup-depth 0)
 (setq frame-inhibit-implied-resize t)
 (setq global-auto-revert-non-file-buffers t)
 (setq grep-command "grep -ni ")
@@ -1175,7 +1207,8 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ;;
 ;; (setq font-general "Noto Sans Mono 14")
 ;; (setq font-general "MesloLGS Nerd Font Mono 11")
-(setq font-general "Source Code Pro 12")
+;; (setq font-general "Source Code Pro 12")
+(setq font-general "Monospace 12")
 ;; (setq font-general "Source Code Pro Light 14")
 ;; (setq font-general "Nimbus Mono PS 14")
 ;; (setq font-general "MesloLGS Nerd Font Mono 14")
@@ -2009,35 +2042,6 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
   '(cleanup auto-cleanup))
 #+end_src
 
-* dashboard
-
-#+begin_src elisp :tangle no
-;;
-;; -> dashboard
-;;
-(setq dashboard-projects-backend 'project-el)
-(setq dashboard-projects-switch-function (lambda (dir) (dired dir)))
-
-(use-package dashboard
-  :ensure t
-  :hook
-  (dashboard-after-initialize . (lambda ()
-                                  (dashboard-jump-to-recents)))
-  :config
-  (setq dashboard-banner-logo-title "Welcome James!")
-  (setq dashboard-startup-banner 'logo)
-  (setq dashboard-items '((recents . 10)
-                           (projects . 10)
-                           (bookmarks . 2)
-                           (agenda . 2)
-                           (registers . 5)))
-  (setq dashboard-set-init-info t)
-  (setq dashboard-set-footer nil)
-  (setq dashboard-center-content t)
-  (dashboard-insert-startupify-lists)
-  (dashboard-setup-startup-hook))
-#+end_src
-
 * project
 
 #+begin_src elisp
@@ -2539,8 +2543,8 @@ echo
 #+end_src
 
 * tab-bar
-#+begin_src elisp
 
+#+begin_src elisp
 ;;
 ;; -> tab-bar
 ;;
