@@ -33,7 +33,7 @@
 ;;
 ;; -> top-level-variables
 ;;
-(setq my/accent-color "#2a562a")
+(setq my/accent-color "#821a00")
 
 ;;
 ;; -> startup
@@ -270,7 +270,7 @@
 (define-key my-win-keymap (kbd "v") 'visual-line-mode)
 (define-key my-win-keymap (kbd "w") 'whitespace-mode)
 (define-key my-win-keymap (kbd "x") 'my/change-accent-color)
-(define-key my-win-keymap (kbd "y") 'switch-selected-window-accent-style)
+(define-key my-win-keymap (kbd "y") 'selected-window-accent--switch-selected-window-accent-style)
 
 ;;
 ;; -> unbinding
@@ -405,8 +405,8 @@
 ;;
 ;; -> keybinding
 ;;
-(global-set-key (kbd "C-r") 'isearch-backward-regexp)
-(global-set-key (kbd "C-s") 'isearch-forward-regexp)
+(global-set-key (kbd "C-r") 'isearch-backward)
+(global-set-key (kbd "C-s") 'isearch-forward)
 (global-set-key (kbd "<f8>") 'next-error)
 (global-set-key (kbd "S-<f8>") 'previous-error)
 (global-set-key (kbd "M-s e") 'my/push-block)
@@ -683,7 +683,7 @@
      (display-buffer-reuse-window display-buffer-in-direction)
      (direction . leftmost)
      (dedicated . t)
-     (window-width . 0.3)
+     (window-width . 0.33)
      (inhibit-same-window . t)))
 
 (add-to-list 'display-buffer-alist
@@ -952,14 +952,36 @@
      "VideoReplaceVideoAudio" "VideoRescale" "VideoReverse"
      "VideoRotate" "VideoRotateLeft" "VideoRotateRight" "VideoShrink"
      "VideoSlowDown" "VideoSpeedUp" "VideoZoom" "WhatsAppConvert"
-     "PictureCorrect" "Picture2pdf"
+     "PictureCorrect" "Picture2pdf" "PictureTag" "PictureTagRename"
      "OtherTagDate")
   "List of commands for dwim-convert.")
 
+(defun my/read-lines (file-path)
+  "Return a list of lines of a file at FILE-PATH."
+  (with-temp-buffer
+    (insert-file-contents file-path)
+    (split-string (buffer-string) "\n" t)))
+
 (defun my/dwim-convert-generic (command)
   "Execute a dwim-shell-command-on-marked-files with the given COMMAND."
-  (let ((files (dired-get-marked-files nil current-prefix-arg)))
-    (async-shell-command (concat command " " (mapconcat 'identity files " ")) "*convert*")))
+  ;; Define the path to the unique text file.
+  (let* ((unique-text-file "/home/jdyer/.config/emacs/category-list-uniq.txt")
+         ;; Initialize user-selection to nil.
+         (user-selection nil)
+         ;; Get the list of marked files.
+         (files (dired-get-marked-files nil current-prefix-arg))
+         ;; Command with appended files.
+         (command-and-files (concat command " " (mapconcat 'identity files " "))))
+    ;; Check if the command is PictureTag and get user selection if it is.
+    (when (string= command "PictureTag")
+      (setq user-selection (completing-read "Choose an option: "
+                                            (my/read-lines unique-text-file)
+                                            nil t)))
+    ;; Add user-selection to the command-and-files if not nil.
+    (async-shell-command (if user-selection
+                           (concat command " " user-selection " " (mapconcat 'identity files " "))
+                           (concat command " " (mapconcat 'identity files " ")))
+      "*convert*")))
 
 (defun my/dwim-convert-with-selection ()
   "Prompt user to choose command and execute dwim-shell-command-on-marked-files."
@@ -1498,6 +1520,9 @@
 
 (setq eldoc-echo-area-use-multiline-p nil)
 
+(use-package flycheck)
+(use-package package-lint)
+
 ;;
 ;; -> diff
 ;;
@@ -1804,9 +1829,9 @@
 ;; -> selected-window-accent-mode
 ;;
 (use-package selected-window-accent-mode
-  ;;   :load-path "~/repos/selected-window-accent-mode"
-  ;; :vc (:fetcher github :repo "captainflasmr/selected-window-accent-mode")
-  :diminish selected-window-accent-mode
+    ;; :load-path "~/repos/selected-window-accent-mode"
+  :vc (:fetcher github :repo "captainflasmr/selected-window-accent-mode")
+  ;; :diminish selected-window-accent-mode
   :custom
   (selected-window-accent-fringe-thickness 10)
   (selected-window-accent-custom-color my/accent-color)
@@ -1823,47 +1848,47 @@
        "* TODOs / ROADMAP\n" ;; export-start-tag
        "\n* Testing" ;; export-end-tag
        :ascii ;; format-spec
-       "  ") ;; prefix-string
+       "  ")
      ("~/repos/selected-window-accent-mode/README.org"
        "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       "\\*\\* selected-window-accent-fringe-thickness"
-       "\\*\\* selected-window-accent-custom-color"
-       "defcustom selected-window-accent-fringe-thickness 6\n  \""
-       "\"\n  \\:type"
-       :ascii
-       " ")
-     ("~/repos/selected-window-accent-mode/README.org"
-       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       "\\*\\* selected-window-accent-custom-color"
-       "\\*\\* selected-window-accent-mode"
-       "defcustom selected-window-accent-custom-color nil\n  \""
-       "\"\n  \\:type"
-       :ascii
-       " ")
-     ("~/repos/selected-window-accent-mode/README.org"
-       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       "\\*\\* selected-window-accent-mode"
-       "\\*\\* selected-window-accent-mode-style"
-       "defcustom selected-window-accent-mode nil\n  \""
-       "\"\n  \\:type"
-       :ascii
-       " ")
-     ("~/repos/selected-window-accent-mode/README.org"
-       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       "\\*\\* selected-window-accent-mode-style"
-       "\\* Minor Mode"
-       "defcustom selected-window-accent-mode-style \'default\n  \""
-       "\"\n  \\:type"
-       :ascii
-       " ")
-     ("~/repos/selected-window-accent-mode/README.org"
-       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       ""
-       ""
-       ";;; Commentary:\n"
-       ";; Code\n"
+       "\\* Summary"
+       "\\#\\+attr_org"
+       ";;; Commentary:\n;;\n"
+       ";\n(require"
        :ascii
        ";; ")
+     ("~/repos/selected-window-accent-mode/README.org"
+       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
+       "\\*\\* selected-window-accent-fringe-thickness\n"
+       "\n\*\* selected-window-accent-custom-color"
+       "defcustom selected-window-accent-fringe-thickness 6\n  \""
+       "\"\n  \:type"
+       :ascii
+       "")
+     ("~/repos/selected-window-accent-mode/README.org"
+       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
+       "\\*\\* selected-window-accent-custom-color\n"
+       "\n\*\* selected-window-accent-mode"
+       "defcustom selected-window-accent-custom-color nil\n  \""
+       "\"\n  \:type"
+       :ascii
+       "")
+     ("~/repos/selected-window-accent-mode/README.org"
+       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
+       "\\*\\* selected-window-accent-mode\n"
+       "\n\*\* selected-window-accent-mode-style"
+       "defcustom selected-window-accent-mode nil\n  \""
+       "\"\n  \:type"
+       :ascii
+       "")
+     ("~/repos/selected-window-accent-mode/README.org"
+       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
+       "\\*\\* selected-window-accent-mode-style"
+       "\* Minor Mode"
+       "defcustom selected-window-accent-mode-style \'default\n  \""
+       "\"\n  \:type"
+       :ascii
+       "")
      ("~/DCIM/content/tagged--all.org" "" "" "" "" "" :hugo "")
      ("~/DCIM/content/art--all.org" "" "" "" "" "" :hugo "")
      ("~/DCIM/content/emacs--all.org" "" "" "" "" "" :hugo "")
@@ -1873,103 +1898,103 @@
      )
   )
 
-(setq my/push-black-flush-lines '("----" "====" "~~~~"))
+(setq my/push-block-flush-lines '("----" "====" "~~~~"))
 
 (setq dst-valid '(:raw :org :ascii :hugo))
 
 (defun my/push-block (&optional value)
   "Export content from one file to another in various formats and update files accordingly."
   (interactive "p")
+  (save-excursion
+    (dolist (item my/push-block-spec)
+      (let* ((source-file (expand-file-name (nth 0 item)))
+              (export-file (expand-file-name (nth 1 item)))
+              (source-start-tag (nth 2 item))
+              (source-end-tag (nth 3 item))
+              (export-start-tag (nth 4 item))
+              (export-end-tag (nth 5 item))
+              (format-spec (nth 6 item))
+              (prefix-string (nth 7 item))
+              (buff-contents "")
+              (in-current (string-equal (expand-file-name (buffer-file-name)) source-file)))
 
-  (dolist (item my/push-block-spec)
-    (let* ((source-file (expand-file-name (nth 0 item)))
-            (export-file (expand-file-name (nth 1 item)))
-            (source-start-tag (nth 2 item))
-            (source-end-tag (nth 3 item))
-            (export-start-tag (nth 4 item))
-            (export-end-tag (nth 5 item))
-            (format-spec (nth 6 item))
-            (prefix-string (nth 7 item))
-            (tmp-file (make-temp-file "tmp"))
-            (buff-contents "")
-            (in-current (string-equal (expand-file-name (buffer-file-name)) source-file)))
+        (access-file source-file "source file")
+        (access-file export-file "export file")
 
-      (access-file source-file "source file")
-      (access-file export-file "export file")
-
-      (if (or in-current (> value 1)) ;; should I process file?
-        (if (memq format-spec dst-valid) ;; check for valid dst format
-          (progn
-            (pcase format-spec
-              (:hugo
-                (org-hugo-export-wim-to-md)
-                (mapc 'shell-command
-                  '("web rsync emacs" "web rsync art"
-                     "web rsync dyerdwelling" "web rsync sway")))
-              (save-excursion ;; other org processing
-                (when (and (stringp source-start-tag) (stringp source-end-tag)
-                        (not (string-empty-p source-start-tag)) (not (string-empty-p source-end-tag)))
-                  (goto-char (point-min))
-                  (re-search-forward source-start-tag nil t)
-                  (forward-line 1)
-                  (let ((start (point)))
-                    (re-search-forward source-end-tag nil t)
-                    (forward-line -1)
-                    (narrow-to-region start (point))))
-
-                ;; perform the export
-                (pcase format-spec
-                  (:raw (write-region (point-min)(point-max) tmp-file)) ;; just raw text
-                  (progn
-                    ;; lets go through org output
-                    (org-export-to-file (pcase format-spec
-                                          (:ascii 'ascii)
-                                          (:html 'html)
-                                          (:icalendar 'icalendar)
-                                          (:latex 'latex)
-                                          (:odt 'odt)) tmp-file)))
-                (widen)
-                ;; modify the export
-                (with-temp-buffer
-                  (insert-file-contents tmp-file)
-                  ;; remove duplicates
-                  (delete-duplicate-lines (point-min)(point-max) nil t nil)
-                  ;; filter lines
-                  (mapcar (lambda (x)
-                            (goto-char (point-min))
-                            (flush-lines x)) my/push-black-flush-lines)
-                  ;; apply prefix
-                  (when (not (s-blank-p prefix-string))
+        (if (or in-current (> value 1)) ;; should I process file?
+          (if (memq format-spec dst-valid) ;; check for valid dst format
+            (progn
+              (pcase format-spec
+                (:hugo
+                  (org-hugo-export-wim-to-md)
+                  (mapc 'shell-command
+                    '("web rsync emacs" "web rsync art"
+                       "web rsync dyerdwelling" "web rsync sway")))
+                (save-excursion ;; other org processing
+                  (setq tmp-file (make-temp-file "tmp"))
+                  (when (and (stringp source-start-tag) (stringp source-end-tag)
+                          (not (string-empty-p source-start-tag)) (not (string-empty-p source-end-tag)))
                     (goto-char (point-min))
-                    (while (search-forward-regexp "^" nil t)
-                      (replace-match prefix-string)))
-                  (whitespace-cleanup)
-                  ;; write to file
-                  (setq buff-contents (buffer-substring (point-min)(buffer-size))))
+                    (re-search-forward source-start-tag nil t)
+                    (let ((start (point)))
+                      (re-search-forward source-end-tag nil t)
+                      (backward-char (length source-end-tag))
+                      (narrow-to-region start (point))))
 
-                ;; transplant src block to dst block
-                (with-temp-buffer
-                  (insert-file-contents export-file)
-                  (goto-char (point-min))
-                  (re-search-forward export-start-tag nil t)
-                  ;; delete destination region
-                  (let ((insert-point (point)))
-                    (re-search-forward export-end-tag nil t)
-                    (backward-char (length export-end-tag))
-                    (delete-region insert-point (point)))
-                  ;; insert transformed input
-                  (insert buff-contents)
-                  ;; write to file
-                  (write-region (point-min)(point-max) export-file))
-                ) ;; save-excursion
-              ) ;; pcase format-spec
-            ) ;; progn if dst-valid
-          (message (format "Invalid format-spec %s not in %s" format-spec dst-valid))
-          ) ;; if mdemq
-        ;; (message (format "%s %s not processed" source-file export-file))
-        ) ;; end if in-current value
-      ) ;; let
-    ) ;; dolist
+                  ;; perform the export
+                  (pcase format-spec
+                    (:raw (write-region (point-min)(point-max) tmp-file)) ;; just raw text
+                    (progn
+                      ;; lets go through org output
+                      (org-export-to-file (pcase format-spec
+                                            (:ascii 'ascii)
+                                            (:html 'html)
+                                            (:icalendar 'icalendar)
+                                            (:latex 'latex)
+                                            (:odt 'odt)) tmp-file)))
+                  (widen)
+                  ;; modify the export
+                  (with-temp-buffer
+                    (insert-file-contents tmp-file)
+                    ;; remove duplicates
+                    (delete-duplicate-lines (point-min)(point-max) nil t nil)
+                    ;; filter lines
+                    (mapcar (lambda (x)
+                              (goto-char (point-min))
+                              (flush-lines x)) my/push-block-flush-lines)
+                    ;; apply prefix
+                    (when (not (s-blank-p prefix-string))
+                      (goto-char (point-min))
+                      (while (search-forward-regexp "^" nil t)
+                        (replace-match prefix-string)))
+                    (whitespace-cleanup)
+                    ;; write to file
+                    (setq buff-contents (buffer-substring (point-min)(buffer-size))))
+
+                  ;; transplant src block to dst block
+                  (with-temp-buffer
+                    (insert-file-contents export-file)
+                    (goto-char (point-min))
+                    (re-search-forward export-start-tag nil t)
+                    ;; delete destination region
+                    (let ((insert-point (point)))
+                      (re-search-forward export-end-tag nil t)
+                      (backward-char (length export-end-tag))
+                      (delete-region insert-point (point)))
+                    ;; insert transformed input
+                    (insert buff-contents)
+                    ;; write to file
+                    (write-region (point-min)(point-max) export-file))
+                  ) ;; save-excursion
+                ) ;; pcase format-spec
+              ) ;; progn if dst-valid
+            (message (format "Invalid format-spec %s not in %s" format-spec dst-valid))
+            ) ;; if mdemq
+          ;; (message (format "%s %s not processed" source-file export-file))
+          ) ;; end if in-current value
+        ) ;; let
+      ) ;; dolist
+    ) ;; save-excursion
   ) ;; defun
 
 ;;
@@ -2308,3 +2333,7 @@
             (forward-line)))))))
 
 (global-set-key (kbd "C-x C-o") 'my/collapse-space)
+
+(use-package project-mode-line-tag
+  :config
+  (project-mode-line-tag-mode 1))
