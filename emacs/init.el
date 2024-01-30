@@ -229,9 +229,9 @@
 (define-key my-jump-keymap (kbd "a") 'emms-browse-by-album)
 (define-key my-jump-keymap (kbd "b") (lambda () (interactive) (find-file "~/bin")))
 (define-key my-jump-keymap (kbd "c") (lambda () (interactive) (find-file "~/DCIM/Camera")))
-(define-key my-jump-keymap (kbd "d") (lambda () (interactive) (find-file "/run/media/jdyer/")))
+(define-key my-jump-keymap (kbd "d") 'find-name-dired)
 (define-key my-jump-keymap (kbd "e") (lambda () (interactive) (find-file "~/.config/emacs/init.el")))
-(define-key my-jump-keymap (kbd "f") 'find-file-rg)
+(define-key my-jump-keymap (kbd "f") 'my/find-file)
 (define-key my-jump-keymap (kbd "g") (lambda () (interactive) (find-file "~/.config")))
 (define-key my-jump-keymap (kbd "h") (lambda () (interactive) (find-file "~")))
 (define-key my-jump-keymap (kbd "i") 'tab-close)
@@ -254,6 +254,7 @@
 (define-key my-win-keymap (kbd "b") '(lambda () (interactive)(tab-bar-mode 'toggle)))
 (define-key my-win-keymap (kbd "c") 'display-fill-column-indicator-mode)
 (define-key my-win-keymap (kbd "d") 'window-divider-mode)
+(define-key my-win-keymap (kbd "e") 'whitespace-mode)
 (define-key my-win-keymap (kbd "f") 'font-lock-mode)
 (define-key my-win-keymap (kbd "g") 'my/toggle-scroll-margin)
 (define-key my-win-keymap (kbd "i") 'highlight-indent-guides-mode)
@@ -268,7 +269,7 @@
 (define-key my-win-keymap (kbd "t") 'org-tidy-toggle)
 (define-key my-win-keymap (kbd "u") 'toggle-truncate-lines)
 (define-key my-win-keymap (kbd "v") 'visual-line-mode)
-(define-key my-win-keymap (kbd "w") 'whitespace-mode)
+(define-key my-win-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
 (define-key my-win-keymap (kbd "x") 'my/change-accent-color)
 (define-key my-win-keymap (kbd "y") 'selected-window-accent--switch-selected-window-accent-style)
 
@@ -323,6 +324,7 @@
   (magit-repository-directories
     '(("~/.config" . 0)
        ("~/repos" . 2)
+       ("~/bin" . 1)
        ("~/DCIM/Art/Content" . 2)
        ("~/DCIM/themes" . 2))))
 
@@ -405,6 +407,9 @@
 ;;
 ;; -> keybinding
 ;;
+
+(global-set-key (kbd "M-8") 'tab-bar-switch-to-prev-tab)
+(global-set-key (kbd "M-9") 'tab-bar-switch-to-next-tab)
 (global-set-key (kbd "C-r") 'isearch-backward)
 (global-set-key (kbd "C-s") 'isearch-forward)
 (global-set-key (kbd "<f8>") 'next-error)
@@ -413,8 +418,6 @@
 (global-set-key (kbd "M-s g") 'my/text-browser-search)
 (global-set-key (kbd "M-=") 'count-words)
 (define-key minibuffer-local-map (kbd "C-c e") 'embark-collect)
-(global-set-key (kbd "M-L") 'tab-next)
-(global-set-key (kbd "M-H") 'tab-previous)
 (bind-key* (kbd "M-g o") 'consult-outline)
 (bind-key* (kbd "M-g i") 'consult-imenu)
 (global-set-key (kbd "C-c a") 'org-agenda)
@@ -538,7 +541,7 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
-  '(custom-enabled-themes '(doom-one))
+  '(custom-enabled-themes '(doom-monokai-ristretto))
   '(warning-suppress-log-types '((frameset)))
   '(warning-suppress-types '((frameset))))
 
@@ -1056,10 +1059,7 @@
   '(outline-2 ((t (:weight regular))))
   '(widget-button ((t (:inherit fixed-pitch :weight regular))))
   '(window-divider ((t (:foreground "black"))))
-  '(vertical-border ((t (:foreground "#000000"))))
-  `(tab-bar ((t (:foreground unspecified)))))
-  ;; `(tab-bar-tab ((t (:inherit tab-bar :background ,my/accent-color :foreground "#222222" :box (:line-width (1 . 1) :color "#9c9c9c" :style flat)))))
-  ;; '(tab-bar-tab-inactive ((t (:inherit tab-bar :box (:line-width (1 . 1) :color "#575757" :style flat))))))
+  '(vertical-border ((t (:foreground "#000000")))))
 
 (custom-theme-set-faces
   'user
@@ -1121,98 +1121,100 @@
 (defun my/image-dired-sort (arg)
   "Sort images in various ways."
   (interactive "p")
-  (cond
-    ((equal current-prefix-arg nil)   ; no C-u
-      (setq dired-actual-switches "-lGghat"))
-    ((equal current-prefix-arg '(4))  ; C-u
-      (setq dired-actual-switches "-lGgha"))
-    ((equal current-prefix-arg 1)     ; C-u 1
-      (setq dired-actual-switches "-lGgha")))
-  (setq w (selected-window))
-  (delete-other-windows)
-  (revert-buffer)
-  (image-dired ".")
-  (setq idw (selected-window))
-  (select-window w)
-  (dired-unmark-all-marks)
-  (select-window idw)
-  (image-dired-display-thumbnail-original-image)
-  (image-dired-line-up-dynamic))
+  ;; Use `let` to temporarily set `dired-actual-switches`
+  (let ((dired-actual-switches
+          (cond
+            ((equal arg nil)            ; no C-u
+              "-lGghat  --ignore=*.xmp")
+            ((equal arg '(4))           ; C-u
+              "-lGgha  --ignore=*.xmp")
+            ((equal arg 1)              ; C-u 1
+              "-lGgha  --ignore=*.xmp"))))
+    (let ((w (selected-window)))
+      (delete-other-windows)
+      (revert-buffer)
+      (image-dired ".")
+      (let ((idw (selected-window)))
+        (select-window w)
+        (dired-unmark-all-marks)
+        (select-window idw)
+        (image-dired-display-thumbnail-original-image)
+        (image-dired-line-up-dynamic)))))
 
-(setq image-use-external-converter t)
-(setq image-dired-external-viewer "/usr/bin/gthumb")
-(setq image-dired-show-all-from-dir-max-files 999)
-(setq image-dired-thumbs-per-row 999)
-(setq image-dired-thumb-relief 0)
-(setq image-dired-thumb-margin 5)
-(setq image-dired-thumb-size 120)
+  (setq image-use-external-converter t)
+  (setq image-dired-external-viewer "/usr/bin/gthumb")
+  (setq image-dired-show-all-from-dir-max-files 999)
+  (setq image-dired-thumbs-per-row 999)
+  (setq image-dired-thumb-relief 0)
+  (setq image-dired-thumb-margin 5)
+  (setq image-dired-thumb-size 120)
 
-(defun my/image-save-as ()
-  "Save the current image buffer as a new file."
-  (interactive)
-  (let* ((file (buffer-file-name))
-          (dir (file-name-directory file))
-          (name (file-name-nondirectory file))
-          (base-name (file-name-sans-extension name))
-          (extension (file-name-extension name t))
-          (initial_mode major-mode)
-          (counter 1)
-          (new-file))
-    (while (and (setq new-file
-                  (format "%s%s_%03d%s" dir base-name counter extension))
-             (file-exists-p new-file))
-      (setq counter (1+ counter)))
-    (write-region (point-min) (point-max) new-file nil 'no-message)
-    (revert-buffer nil t nil)
-    ;; (delete-file file t)
-    (if (equal initial_mode 'image-dired-image-mode)
-      (progn
-        (image-dired ".")
-        (image-dired-display-this))
-      (find-file new-file t))))
+  (defun my/image-save-as ()
+    "Save the current image buffer as a new file."
+    (interactive)
+    (let* ((file (buffer-file-name))
+            (dir (file-name-directory file))
+            (name (file-name-nondirectory file))
+            (base-name (file-name-sans-extension name))
+            (extension (file-name-extension name t))
+            (initial_mode major-mode)
+            (counter 1)
+            (new-file))
+      (while (and (setq new-file
+                    (format "%s%s_%03d%s" dir base-name counter extension))
+               (file-exists-p new-file))
+        (setq counter (1+ counter)))
+      (write-region (point-min) (point-max) new-file nil 'no-message)
+      (revert-buffer nil t nil)
+      ;; (delete-file file t)
+      (if (equal initial_mode 'image-dired-image-mode)
+        (progn
+          (image-dired ".")
+          (image-dired-display-this))
+        (find-file new-file t))))
 
-(defun my/delete-current-image-and-move-to-next ()
-  "Delete the current image file and move to the next image in the directory."
-  (interactive)
-  (let ((current-file (buffer-file-name)))
-    (when current-file
-      (image-next-file 1)
-      (delete-file current-file)
-      (message "Deleted %s" current-file))))
+  (defun my/delete-current-image-and-move-to-next ()
+    "Delete the current image file and move to the next image in the directory."
+    (interactive)
+    (let ((current-file (buffer-file-name)))
+      (when current-file
+        (image-next-file 1)
+        (delete-file current-file)
+        (message "Deleted %s" current-file))))
 
-(defun my/delete-current-image-thumbnails ()
-  "Delete the current image file and move to the next image in the directory."
-  (interactive)
-  (let ((file-name (image-dired-original-file-name)))
-    (delete-file file-name)
-    (image-dired-delete-char)
-    (image-dired-display-this)))
+  (defun my/delete-current-image-thumbnails ()
+    "Delete the current image file and move to the next image in the directory."
+    (interactive)
+    (let ((file-name (image-dired-original-file-name)))
+      (delete-file file-name)
+      (image-dired-delete-char)
+      (image-dired-display-this)))
 
-(eval-after-load 'image-mode
-  '(progn
-     (define-key image-mode-map (kbd "C-d") 'my/delete-current-image-and-move-to-next)
-     (define-key image-mode-map (kbd "C-x C-s") 'my/image-save-as)))
+  (eval-after-load 'image-mode
+    '(progn
+       (define-key image-mode-map (kbd "C-d") 'my/delete-current-image-and-move-to-next)
+       (define-key image-mode-map (kbd "C-x C-s") 'my/image-save-as)))
 
-(eval-after-load 'image-dired
-  '(progn
-     (define-key image-dired-thumbnail-mode-map (kbd "C-d") 'my/delete-current-image-thumbnails)
-     (define-key image-dired-thumbnail-mode-map (kbd "n")
-       (lambda ()(interactive)(image-dired-forward-image)(image-dired-display-this)))
-     (define-key image-dired-thumbnail-mode-map (kbd "p")
-       (lambda ()(interactive)(image-dired-backward-image)(image-dired-display-this)))
-     ;; (define-key image-dired-thumbnail-mode-map (kbd "C-n")
-     ;;   (lambda ()(interactive)(image-dired-next-line)(image-dired-display-this)))
-     ;; (define-key image-dired-thumbnail-mode-map (kbd "C-p")
-     ;;   (lambda ()(interactive)(image-dired-previous-line)(image-dired-display-this)))
-     ;; (define-key image-dired-thumbnail-mode-map (kbd "C-a")
-     ;;   (lambda ()(interactive)(image-dired-move-beginning-of-line)(image-dired-display-this)))
-     ;; (define-key image-dired-thumbnail-mode-map (kbd "C-e")
-     ;;   (lambda ()(interactive)(image-dired-move-end-of-line)(image-dired-display-this)))
-     ;; (define-key image-dired-thumbnail-mode-map (kbd "M-<")
-     ;;   (lambda ()(interactive)(image-dired-beginning-of-buffer)(image-dired-display-this)))
-     ;; (define-key image-dired-thumbnail-mode-map (kbd "M->")
-     ;;   (lambda ()(interactive)(image-dired-end-of-buffer)(image-dired-display-this)))
-     ))
+  (eval-after-load 'image-dired
+    '(progn
+       (define-key image-dired-thumbnail-mode-map (kbd "C-d") 'my/delete-current-image-thumbnails)
+       (define-key image-dired-thumbnail-mode-map (kbd "n")
+         (lambda ()(interactive)(image-dired-forward-image)(image-dired-display-this)))
+       (define-key image-dired-thumbnail-mode-map (kbd "p")
+         (lambda ()(interactive)(image-dired-backward-image)(image-dired-display-this)))
+       ;; (define-key image-dired-thumbnail-mode-map (kbd "C-n")
+       ;;   (lambda ()(interactive)(image-dired-next-line)(image-dired-display-this)))
+       ;; (define-key image-dired-thumbnail-mode-map (kbd "C-p")
+       ;;   (lambda ()(interactive)(image-dired-previous-line)(image-dired-display-this)))
+       ;; (define-key image-dired-thumbnail-mode-map (kbd "C-a")
+       ;;   (lambda ()(interactive)(image-dired-move-beginning-of-line)(image-dired-display-this)))
+       ;; (define-key image-dired-thumbnail-mode-map (kbd "C-e")
+       ;;   (lambda ()(interactive)(image-dired-move-end-of-line)(image-dired-display-this)))
+       ;; (define-key image-dired-thumbnail-mode-map (kbd "M-<")
+       ;;   (lambda ()(interactive)(image-dired-beginning-of-buffer)(image-dired-display-this)))
+       ;; (define-key image-dired-thumbnail-mode-map (kbd "M->")
+       ;;   (lambda ()(interactive)(image-dired-end-of-buffer)(image-dired-display-this)))
+       ))
 
 ;;
 ;; -> visuals
@@ -1233,8 +1235,8 @@
 
 (setq-default truncate-partial-width-windows 120)
 
-(set-frame-parameter nil 'alpha-background 90)
-(add-to-list 'default-frame-alist '(alpha-background . 90))
+(set-frame-parameter nil 'alpha-background 95)
+(add-to-list 'default-frame-alist '(alpha-background . 95))
 
 (set-fringe-mode '(0 . 0))
 (set-display-table-slot standard-display-table 0 ?\ )
@@ -1324,7 +1326,6 @@
 
 (setq recentf-max-menu-items 200)
 (setq recentf-max-saved-items 200)
-(global-set-key (kbd "C-x m") 'consult-recent-file)
 
 ;;
 ;; -> modeline
@@ -1447,9 +1448,11 @@
     (jinx-correct)))
     ;; (forward-word)))
 
+(global-set-key (kbd "M-s c") 'wc-mode)
 (global-set-key (kbd "M-s j") 'jinx-mode)
 (global-set-key (kbd "M-s d") 'dictionary-lookup-definition)
 (global-set-key (kbd "M-s s") 'powerthesaurus-lookup-synonyms-dwim)
+(global-set-key (kbd "M-s t") 'powerthesaurus-lookup-synonyms-dwim)
 
 (setq ispell-local-dictionary "en_GB")
 (setq ispell-program-name "hunspell")
@@ -1829,12 +1832,15 @@
 ;; -> selected-window-accent-mode
 ;;
 (use-package selected-window-accent-mode
-    ;; :load-path "~/repos/selected-window-accent-mode"
-  :vc (:fetcher github :repo "captainflasmr/selected-window-accent-mode")
+    :load-path "~/repos/selected-window-accent-mode"
+  ;; :vc (:fetcher github :repo "captainflasmr/selected-window-accent-mode")
   ;; :diminish selected-window-accent-mode
   :custom
   (selected-window-accent-fringe-thickness 10)
-  (selected-window-accent-custom-color my/accent-color)
+  (selected-window-accent-percentage-darken 30)
+  (selected-window-accent-percentage-desaturate 50)
+  ;; (selected-window-accent-custom-color "#427900")
+  (selected-window-accent-custom-color nil)
   (selected-window-accent-mode-style 'subtle))
 
 (selected-window-accent-mode)
@@ -2190,7 +2196,8 @@
       (format " %d " i)
       'face (funcall tab-bar-tab-face-function tab)))
   :bind
-  (("M-H" . tab-bar-switch-to-prev-tab) ;; 27.1
+  (
+    ("M-H" . tab-bar-switch-to-prev-tab) ;; 27.1
     ("M-L" . tab-bar-switch-to-next-tab) ;; 27.1
     ("M-u" . tab-bar-history-back) ;; 27.1
     ("M-i" . tab-bar-history-forward)) ;; 27.1
@@ -2297,22 +2304,6 @@
 
 (use-package file-info)
 
-;; (defun my/dired-async-mode-line-message (text face &rest args)
-;;   "Notify end of async operation in `mode-line'."
-;;   (let* ((my/message "Dired Async has finished!!")
-;;           (mode-line-format (concat
-;;                               " " (propertize
-;;                                     my/message
-;;                                     'face
-;;                                     '(:background "#ff0000" :foreground "#ffffff" :inherit bold)
-;;                                     ))))
-;;     (message my/message)
-;;     (force-mode-line-update)
-;;     (sit-for 8)
-;;     (force-mode-line-update)))
-
-;; (setq dired-async-message-function 'my/dired-async-mode-line-message)
-
 (require 'cl-lib)
 
 (defun my/collapse-space ()
@@ -2337,3 +2328,66 @@
 (use-package project-mode-line-tag
   :config
   (project-mode-line-tag-mode 1))
+
+(consult-customize
+   consult-theme :preview-key '(:debounce 0.2 any)
+   consult-recent-file consult-outline consult-imenu consult-history :preview-key nil)
+
+(defun my/color-name-to-hex (color-name)
+  "Convert COLOR-NAME to its hexadecimal representation."
+  (let ((rgb (color-name-to-rgb color-name)))
+    (when rgb
+      (apply #'format "#%02x%02x%02x"
+        (mapcar (lambda (x) (round (* x 255))) rgb)))))
+
+;; WC[%W%w/%tw]
+(use-package wc-mode
+  ;; :hook
+  ;; (org-mode . wc-mode)
+  :custom
+  (wc-modeline-format "WC:%tw"))
+
+(defun my-word-count-function (rstart rend)
+  "Counts words without lines containing 'DONE' and the 'PROPERTIES' and 'END:' drawers.
+Or indeed other filters as defined in the main unless"
+  (let ((count 0))
+    (save-excursion
+      (goto-char rstart)
+      ;; Loop over each line in the region
+      (while (< (point) rend)
+        (let ((line (buffer-substring-no-properties (line-beginning-position)
+                                                    (line-end-position))))
+          ;; Only count words if the line doesn't contain DONE or is not between PROPERTIES and END
+          ;; Or indeed other filters as defined below
+          (unless (or
+                    (string-match-p "\\* DONE" line)
+                    (string-match-p "\\* TODO" line)
+                    (string-match-p "file\:" line)
+                    (and (string-match-p ":PROPERTIES:" line) (re-search-forward ":END:" nil t))
+                    (and (string-match-p "\\#\\+begin" line) (re-search-forward "\\#\\+end" nil t))
+                    (string-match-p "\\#\\+" line)
+                    )
+            (setq count (+ count (1+ (how-many " " (line-beginning-position) (line-end-position))))))
+            ;; (setq count (+ count (length (split-string line "\\W+" t)))))
+          ;; Go to the beginning of the next line
+          (forward-line 1))))
+    count))
+
+;; Set the custom wc-mode counting function
+(setq wc-count-words-function 'my-word-count-function)
+
+(defun my/find-file ()
+  "Find file from current directory using different finds"
+  (interactive)
+  (let* ((file-list (split-string
+                      ;; (shell-command-to-string "find -type f -printf \"$PWD/%p\\0\"") "\0" t))
+                      ;; (shell-command-to-string "fd --absolute-path --type f -0") "\0" t))
+                      (shell-command-to-string "rg --follow --files --null") "\0" t))
+         (metadata '((category . file)))
+         (file (completing-read (format "Find file in %s: " (abbreviate-file-name default-directory))
+                 (lambda (str pred action)
+                   (if (eq action 'metadata)
+                     `(metadata . ,metadata)
+                     (complete-with-action action file-list str pred)))
+                 nil t nil 'file-name-history)))
+    (when file (find-file (expand-file-name file)))))
