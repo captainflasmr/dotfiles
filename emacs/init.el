@@ -248,6 +248,7 @@
 (define-key my-jump-keymap (kbd "y") 'emms)
 
 (defvar my-win-keymap (make-sparse-keymap))
+;; (global-set-key (kbd "C-z") my-win-keymap)
 (global-set-key (kbd "M-m") my-win-keymap)
 
 (define-key my-win-keymap (kbd "a") 'selected-window-accent-mode)
@@ -276,7 +277,7 @@
 ;;
 ;; -> unbinding
 ;;
-(global-unset-key (kbd "C-z"))
+;; (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-h h"))
 
 (use-package diff-mode
@@ -408,10 +409,6 @@
 ;; -> keybinding
 ;;
 
-(global-set-key (kbd "M-8") 'tab-bar-switch-to-prev-tab)
-(global-set-key (kbd "M-9") 'tab-bar-switch-to-next-tab)
-(global-set-key (kbd "C-r") 'isearch-backward)
-(global-set-key (kbd "C-s") 'isearch-forward)
 (global-set-key (kbd "<f8>") 'next-error)
 (global-set-key (kbd "S-<f8>") 'previous-error)
 (global-set-key (kbd "M-s e") 'my/push-block)
@@ -421,10 +418,10 @@
 (bind-key* (kbd "M-g o") 'consult-outline)
 (bind-key* (kbd "M-g i") 'consult-imenu)
 (global-set-key (kbd "C-c a") 'org-agenda)
+(bind-key* (kbd "M-h") (lambda()(interactive)(select-window (previous-window (selected-window)))))
 (bind-key* (kbd "M-j") (lambda()(interactive)(next-line (/ (window-height) 8))))
 (bind-key* (kbd "M-k") (lambda()(interactive)(previous-line (/ (window-height) 8))))
 (bind-key* (kbd "M-l") (lambda()(interactive)(select-window (next-window (selected-window)))))
-(bind-key* (kbd "M-h") (lambda()(interactive)(select-window (previous-window (selected-window)))))
 (bind-key* (kbd "M-I") (lambda ()(interactive)(my/resize-window 4 t)))
 (bind-key* (kbd "M-U") (lambda ()(interactive)(my/resize-window -4 t)))
 (global-set-key (kbd "C-c b") (lambda ()(interactive)(async-shell-command "do_backup home" "*backup*")))
@@ -715,6 +712,13 @@
 
 (setq org-capture-templates
   '(
+     ("c" "Calendar" entry
+       (file+headline
+         "~/DCIM/content/aaa--calendar.org"
+         "calendar")
+       "* TODO %?\n SCHEDULED: %(cfw:org-capture-day)\n"
+       :prepend t :jump-to-captured t)
+
      ("t" "Tagged" plain
        (file+function
          "~/DCIM/content/tags--all.org"
@@ -816,10 +820,12 @@
 ;; -> org
 ;;
 (use-package org
+  :defer t
   :hook
   (org-mode . (lambda ()(org-indent-mode)(diminish 'org-indent-mode)))
   ;; :diminish org-indent-mode
   :config
+  (define-key org-mode-map (kbd "M-h") nil)
   (setq org-src-tab-acts-natively t ;; commenting better in org src blocks
     org-indent-indentation-per-level 2
     org-edit-src-content-indentation 0
@@ -916,12 +922,15 @@
     (org-agenda-goto-today)
     (recenter-top-bottom 10)))
 
+(setq org-agenda-include-diary nil)
+
 ;; Bind a key for easy access
 (global-set-key (kbd "C-c y") 'display-year-agenda)
 
 (setq org-directory "~/DCIM/content/")
 (setq org-agenda-files
   '(
+     "~/DCIM/content/aaa--calendar.org"
      "~/DCIM/content/aaa--todo.org"
      "~/DCIM/content/art--all.org"
      "~/DCIM/content/dad--betting.org"
@@ -2183,7 +2192,7 @@
                      tab-bar-format-align-right
                      my-tab-line-buffer-name
                      tab-bar-format-global)) ;; 28.1
-  (tab-bar-select-tab-modifiers '(control)) ;; 27.1
+  ;; (tab-bar-select-tab-modifiers '(control)) ;; 27.1
   (tab-bar-new-button-show nil) ;; 27.1
   (tab-bar-close-button-show nil) ;; 27.1
   (tab-bar-history-limit 100) ;; 27.1
@@ -2197,10 +2206,10 @@
       'face (funcall tab-bar-tab-face-function tab)))
   :bind
   (
-    ("M-H" . tab-bar-switch-to-prev-tab) ;; 27.1
-    ("M-L" . tab-bar-switch-to-next-tab) ;; 27.1
-    ("M-u" . tab-bar-history-back) ;; 27.1
-    ("M-i" . tab-bar-history-forward)) ;; 27.1
+    ("M-u" . tab-bar-switch-to-prev-tab) ;; 27.1
+    ("M-i" . tab-bar-switch-to-next-tab) ;; 27.1
+    ("M-8" . tab-bar-history-back) ;; 27.1
+    ("M-9" . tab-bar-history-forward)) ;; 27.1
   )
 
 ;; (use-package tab-bar ;; 27.1
@@ -2391,3 +2400,26 @@ Or indeed other filters as defined in the main unless"
                      (complete-with-action action file-list str pred)))
                  nil t nil 'file-name-history)))
     (when file (find-file (expand-file-name file)))))
+
+(use-package calfw)
+(use-package calfw-org)
+(use-package calfw-cal)
+
+;; Function to open calendar view
+(defun open-calfw-org-calendar ()
+  (interactive)
+  (cfw:open-org-calendar))
+
+(global-set-key (kbd "C-c o") 'open-calfw-org-calendar)
+
+(setq org-default-notes-file "~/DCIM/content/aaa--todo.org")
+
+(setq calendar-holidays nil)
+
+(setq cfw:org-capture-template
+  '("c" "Calendar" entry
+     (file+headline
+       "~/DCIM/content/aaa--todo.org"
+       "Calendar")
+     "* TODO %?\n %(cfw:org-capture-day)\n"
+     :prepend t :jump-to-captured t))
