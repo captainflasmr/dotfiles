@@ -712,10 +712,10 @@
 
 (setq org-capture-templates
   '(
-     ("c" "Calendar" entry
-       (file+headline
-         "~/DCIM/content/aaa--calendar.org"
-         "calendar")
+     ("c" "Calendar" plain
+       (file+function
+         "~/DCIM/content/calendar.org"
+         my-capture-top-level)
        "* TODO %?\n SCHEDULED: %(cfw:org-capture-day)\n"
        :prepend t :jump-to-captured t)
 
@@ -930,9 +930,11 @@
 (setq org-directory "~/DCIM/content/")
 (setq org-agenda-files
   '(
-     "~/DCIM/content/aaa--calendar.org"
      "~/DCIM/content/aaa--todo.org"
      "~/DCIM/content/art--all.org"
+     "~/DCIM/content/calendar--anniversary.org"
+     "~/DCIM/content/calendar.org"
+     "~/DCIM/content/calendar--repeat.org"
      "~/DCIM/content/dad--betting.org"
      "~/DCIM/content/emacs--all.org"
      "~/DCIM/content/gifts--james.org"
@@ -2208,8 +2210,8 @@
   (
     ("M-u" . tab-bar-switch-to-prev-tab) ;; 27.1
     ("M-i" . tab-bar-switch-to-next-tab) ;; 27.1
-    ("M-8" . tab-bar-history-back) ;; 27.1
-    ("M-9" . tab-bar-history-forward)) ;; 27.1
+    ("M-7" . tab-bar-history-back) ;; 27.1
+    ("M-8" . tab-bar-history-forward)) ;; 27.1
   )
 
 ;; (use-package tab-bar ;; 27.1
@@ -2417,9 +2419,9 @@ Or indeed other filters as defined in the main unless"
 (setq calendar-holidays nil)
 
 (setq cfw:org-capture-template
-  '("c" "Calendar" entry
-     (file+headline
-       "~/DCIM/content/aaa--todo.org"
-       "Calendar")
-     "* TODO %?\n %(cfw:org-capture-day)\n"
-     :prepend t :jump-to-captured t))
+  '("c" "Calendar" plain
+    (file+function
+      "~/DCIM/content/calendar.org"
+      my-capture-top-level)
+    "* TODO %?\n SCHEDULED: %(cfw:org-capture-day)\n"
+    :prepend t :jump-to-captured t))
