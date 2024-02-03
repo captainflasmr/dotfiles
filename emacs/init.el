@@ -242,6 +242,7 @@
 (define-key my-jump-keymap (kbd "n") (lambda () (interactive) (find-file "~/nas")))
 (define-key my-jump-keymap (kbd "o") (lambda () (interactive) (tab-bar-new-tab-to -1)))
 (define-key my-jump-keymap (kbd "p") 'proced)
+(define-key my-jump-keymap (kbd "r") 'cfw:open-org-calendar)
 (define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
 (define-key my-jump-keymap (kbd "u") 'tab-undo)
 (define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
@@ -277,7 +278,7 @@
 ;;
 ;; -> unbinding
 ;;
-;; (global-unset-key (kbd "C-z"))
+(global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-h h"))
 
 (use-package diff-mode
@@ -455,7 +456,6 @@
 (setq tooltip-mode nil)
 (transient-mark-mode 1)
 (pixel-scroll-precision-mode 1)
-(repeat-mode -1)
 
 ;;
 ;; -> bell
@@ -714,7 +714,7 @@
   '(
      ("c" "Calendar" plain
        (file+function
-         "~/DCIM/content/calendar.org"
+         "~/DCIM/content/aaa--calendar.org"
          my-capture-top-level)
        "* TODO %?\n SCHEDULED: %(cfw:org-capture-day)\n"
        :prepend t :jump-to-captured t)
@@ -828,8 +828,10 @@
   (define-key org-mode-map (kbd "M-h") nil)
   (setq org-src-tab-acts-natively t ;; commenting better in org src blocks
     org-indent-indentation-per-level 2
+    org-blank-before-new-entry '((heading . nil) (plain-list-item . nil))
     org-edit-src-content-indentation 0
     org-src-preserve-indentation t
+    org-default-notes-file "~/DCIM/content/aaa--todo.org"
     org-hide-leading-stars t
     org-reverse-note-order t
     org-log-done 'time
@@ -910,45 +912,52 @@
 ;;
 ;; -> org-agenda
 ;;
-(defun display-year-agenda (&optional year)
-  "Display an agenda entryf for a whole year."
-  (interactive (list (read-string "Enter the year: "
-                       (format-time-string "%Y" (current-time)))))
-  (setq year (string-to-number year))
-  (org-agenda-list)
-  (org-agenda-year-view year)
-  (setq this-year (string-to-number (format-time-string "%Y" (current-time))))
-  (when (= year this-year)
-    (org-agenda-goto-today)
-    (recenter-top-bottom 10)))
 
-(setq org-agenda-include-diary nil)
-
-;; Bind a key for easy access
-(global-set-key (kbd "C-c y") 'display-year-agenda)
-
-(setq org-directory "~/DCIM/content/")
-(setq org-agenda-files
-  '(
-     "~/DCIM/content/aaa--todo.org"
-     "~/DCIM/content/art--all.org"
-     "~/DCIM/content/calendar--anniversary.org"
-     "~/DCIM/content/calendar.org"
-     "~/DCIM/content/calendar--repeat.org"
-     "~/DCIM/content/dad--betting.org"
-     "~/DCIM/content/emacs--all.org"
-     "~/DCIM/content/gifts--james.org"
-     "~/DCIM/content/gifts--others.org"
-     "~/DCIM/content/kate--health.org"
-     "~/DCIM/content/kate--loss.org"
-     "~/DCIM/content/linux--all.org"
-     "~/DCIM/content/misc--subs.org"
-     "~/DCIM/content/posts--all.org"
-     ))
-
-;; (setq org-agenda-files
-;;   (cl-remove-if-not #'(lambda (file) (string-suffix-p ".org" file))
-;;     (directory-files org-directory t "\\.org$")))
+(use-package org
+  :custom
+  (org-agenda-include-diary nil)
+  (org-directory "~/DCIM/content/")
+  (org-agenda-files '("~/DCIM/content/aaa--calendar.org"
+                      "~/DCIM/content/aaa--todo.org"
+                      "~/DCIM/content/art--all.org"
+                      "~/DCIM/content/calendar--anniversary.org"
+                      "~/DCIM/content/calendar--repeat.org"
+                      "~/DCIM/content/dad--betting.org"
+                      "~/DCIM/content/emacs--all.org"
+                      "~/DCIM/content/gifts--james.org"
+                      "~/DCIM/content/gifts--others.org"
+                      "~/DCIM/content/kate--health.org"
+                      "~/DCIM/content/kate--loss.org"
+                      "~/DCIM/content/linux--all.org"
+                      "~/DCIM/content/misc--subs.org"
+                      "~/DCIM/content/posts--all.org"))
+  :config
+  (unbind-key "M-m" org-agenda-mode-map)
+  (setq org-agenda-custom-commands
+        '(("m" "Month View" agenda ""
+           ((org-agenda-start-day "today")
+            (org-agenda-span 30)
+            (org-agenda-time-grid nil)))
+          ("0" "Year View (2020)" agenda ""
+           ((org-agenda-start-day "2020-01-01")
+            (org-agenda-span 'year)
+            (org-agenda-time-grid nil)))
+          ("1" "Year View (2021)" agenda ""
+           ((org-agenda-start-day "2021-01-01")
+            (org-agenda-span 'year)
+            (org-agenda-time-grid nil)))
+          ("2" "Year View (2022)" agenda ""
+           ((org-agenda-start-day "2022-01-01")
+            (org-agenda-span 'year)
+            (org-agenda-time-grid nil)))
+          ("3" "Year View (2023)" agenda ""
+           ((org-agenda-start-day "2023-01-01")
+            (org-agenda-span 'year)
+            (org-agenda-time-grid nil)))
+          ("4" "Year View (2024)" agenda ""
+           ((org-agenda-start-day "2024-01-01")
+            (org-agenda-span 'year)
+            (org-agenda-time-grid nil))))))
 
 ;;
 ;; -> dwim
@@ -1246,8 +1255,8 @@
 
 (setq-default truncate-partial-width-windows 120)
 
-(set-frame-parameter nil 'alpha-background 95)
-(add-to-list 'default-frame-alist '(alpha-background . 95))
+(set-frame-parameter nil 'alpha-background 90)
+(add-to-list 'default-frame-alist '(alpha-background . 90))
 
 (set-fringe-mode '(0 . 0))
 (set-display-table-slot standard-display-table 0 ?\ )
@@ -1377,6 +1386,22 @@
 (setq find-dired-refine-function 'find-dired-sort-by-filename)
 (setq find-dired-refine-function 'nil)
 (setq find-ls-option (cons "-exec ls -lSh {} +" "-lSh"))
+
+(defun my/find-file ()
+  "Find file from current directory using different finds"
+  (interactive)
+  (let* ((file-list (split-string
+                      ;; (shell-command-to-string "find -type f -printf \"$PWD/%p\\0\"") "\0" t))
+                      ;; (shell-command-to-string "fd --absolute-path --type f -0") "\0" t))
+                      (shell-command-to-string "rg --follow --files --null") "\0" t))
+         (metadata '((category . file)))
+         (file (completing-read (format "Find file in %s: " (abbreviate-file-name default-directory))
+                 (lambda (str pred action)
+                   (if (eq action 'metadata)
+                     `(metadata . ,metadata)
+                     (complete-with-action action file-list str pred)))
+                 nil t nil 'file-name-history)))
+    (when file (find-file (expand-file-name file)))))
 
 ;;
 ;; -> grep
@@ -1850,6 +1875,7 @@
   (selected-window-accent-fringe-thickness 10)
   (selected-window-accent-percentage-darken 30)
   (selected-window-accent-percentage-desaturate 50)
+  (selected-window-accent-tab-accent t)
   ;; (selected-window-accent-custom-color "#427900")
   (selected-window-accent-custom-color nil)
   (selected-window-accent-mode-style 'subtle))
@@ -1858,10 +1884,10 @@
 
 (setq my/push-block-spec
   '(
-     ("~/repos/selected-window-accent-mode/TODO.org" ;; source-file
+     ("~/repos/selected-window-accent-mode/CHANGELOG.org" ;; source-file
        "~/repos/selected-window-accent-mode/README.org" ;; export-file
-       "" ;; source-start-tag
-       "" ;; source-end-tag
+       "\\* ROADMAP" ;; source-start-tag
+       "\\* Latest TBD" ;; source-end-tag
        "* TODOs / ROADMAP\n" ;; export-start-tag
        "\n* Testing" ;; export-end-tag
        :ascii ;; format-spec
@@ -1869,7 +1895,7 @@
      ("~/repos/selected-window-accent-mode/README.org"
        "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
        "\\* Summary"
-       "\\#\\+attr_org"
+       "\\* Quick Start"
        ";;; Commentary:\n;;\n"
        ";\n(require"
        :ascii
@@ -1901,8 +1927,32 @@
      ("~/repos/selected-window-accent-mode/README.org"
        "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
        "\\*\\* selected-window-accent-mode-style"
-       "\* Minor Mode"
+       "\n\*\* selected-window-accent-percentage-darken"
        "defcustom selected-window-accent-mode-style \'default\n  \""
+       "\"\n  \:type"
+       :ascii
+       "")
+     ("~/repos/selected-window-accent-mode/README.org"
+       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
+       "\\*\\* selected-window-accent-percentage-darken"
+       "\n\*\* selected-window-accent-percentage-desaturate"
+       "defcustom selected-window-accent-percentage-darken 20\n  \""
+       "\"\n  \:type"
+       :ascii
+       "")
+     ("~/repos/selected-window-accent-mode/README.org"
+       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
+       "\\*\\* selected-window-accent-percentage-desaturate"
+       "\n\*\* selected-window-accent-tab-accent"
+       "defcustom selected-window-accent-percentage-desaturate 20\n  \""
+       "\"\n  \:type"
+       :ascii
+       "")
+     ("~/repos/selected-window-accent-mode/README.org"
+       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
+       "\\*\\* selected-window-accent-tab-accent"
+       "\* Minor Mode"
+       "defcustom selected-window-accent-tab-accent nil\n  \""
        "\"\n  \:type"
        :ascii
        "")
@@ -1915,7 +1965,7 @@
      )
   )
 
-(setq my/push-block-flush-lines '("----" "====" "~~~~"))
+(setq my/push-block-flush-lines '("----" "====" "~~~~" "<file:"))
 
 (setq dst-valid '(:raw :org :ascii :hugo))
 
@@ -2124,6 +2174,24 @@
        (auth-source-pass-get 'secret "openai-key")))))
 
 ;;
+;; -> calendar
+;;
+
+(use-package calfw)
+(use-package calfw-org)
+(use-package calfw-cal)
+
+(setq calendar-holidays nil)
+
+(setq cfw:org-capture-template
+  '("c" "Calendar" plain
+    (file+function
+      "~/DCIM/content/aaa--calendar.org"
+      my-capture-top-level)
+    "* TODO %?\n SCHEDULED: %(cfw:org-capture-day)\n"
+    :prepend t :jump-to-captured t))
+
+;;
 ;; —> proced
 ;;
 (use-package proced
@@ -2171,6 +2239,20 @@
   (dired-mode . all-the-icons-dired-mode))
 
 ;;
+;; -> repeat
+;;
+(repeat-mode 1)
+
+(defvar-keymap my/repeat-map
+  :repeat t
+  "j" #'tab-bar-history-back
+  "k" #'tab-bar-history-forward
+  "o" #'my/collapse-space)
+
+(dolist (cmd '(tab-bar-history-back tab-bar-history-forward my/collapse-space))
+  (put cmd 'repeat-map 'my/repeat-map))
+
+;;
 ;; -> tab-bar
 ;;
 
@@ -2210,8 +2292,8 @@
   (
     ("M-u" . tab-bar-switch-to-prev-tab) ;; 27.1
     ("M-i" . tab-bar-switch-to-next-tab) ;; 27.1
-    ("M-7" . tab-bar-history-back) ;; 27.1
-    ("M-8" . tab-bar-history-forward)) ;; 27.1
+    ("C-x j" . tab-bar-history-back) ;; 27.1
+    ("C-x k" . tab-bar-history-forward)) ;; 27.1
   )
 
 ;; (use-package tab-bar ;; 27.1
@@ -2387,41 +2469,4 @@ Or indeed other filters as defined in the main unless"
 ;; Set the custom wc-mode counting function
 (setq wc-count-words-function 'my-word-count-function)
 
-(defun my/find-file ()
-  "Find file from current directory using different finds"
-  (interactive)
-  (let* ((file-list (split-string
-                      ;; (shell-command-to-string "find -type f -printf \"$PWD/%p\\0\"") "\0" t))
-                      ;; (shell-command-to-string "fd --absolute-path --type f -0") "\0" t))
-                      (shell-command-to-string "rg --follow --files --null") "\0" t))
-         (metadata '((category . file)))
-         (file (completing-read (format "Find file in %s: " (abbreviate-file-name default-directory))
-                 (lambda (str pred action)
-                   (if (eq action 'metadata)
-                     `(metadata . ,metadata)
-                     (complete-with-action action file-list str pred)))
-                 nil t nil 'file-name-history)))
-    (when file (find-file (expand-file-name file)))))
-
-(use-package calfw)
-(use-package calfw-org)
-(use-package calfw-cal)
-
-;; Function to open calendar view
-(defun open-calfw-org-calendar ()
-  (interactive)
-  (cfw:open-org-calendar))
-
-(global-set-key (kbd "C-c o") 'open-calfw-org-calendar)
-
-(setq org-default-notes-file "~/DCIM/content/aaa--todo.org")
-
-(setq calendar-holidays nil)
-
-(setq cfw:org-capture-template
-  '("c" "Calendar" plain
-    (file+function
-      "~/DCIM/content/calendar.org"
-      my-capture-top-level)
-    "* TODO %?\n SCHEDULED: %(cfw:org-capture-day)\n"
-    :prepend t :jump-to-captured t))
+(use-package keepass-mode)
