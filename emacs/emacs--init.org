@@ -1,4 +1,4 @@
-#+title: My Emacs Configuration
+#+title: Linux Emacs Configuration
 #+options: toc:nil author:t title:t
 #+property: header-args :tangle ~/.config/emacs/init.el
 #+startup: overview
@@ -63,7 +63,6 @@ Garbage collection
   use-package-expand-minimally nil
   use-package-compute-statistics t
   debug-on-error nil)
-;; )
 #+end_src
 
 * top-level-variables
@@ -145,8 +144,6 @@ Turn on a profiler if we would like
 (use-package git-timemachine)
 (use-package gnuplot)
 (use-package ahk-mode)
-(use-package kbd-mode
-  :vc (:fetcher github :repo "kmonad/kbd-mode"))
 (use-package embark-consult)
 (use-package find-file-rg)
 (use-package gruvbox-theme)
@@ -382,7 +379,6 @@ Turn on a profiler if we would like
 (define-key my-jump-keymap (kbd "y") 'emms)
 
 (defvar my-win-keymap (make-sparse-keymap))
-;; (global-set-key (kbd "C-z") my-win-keymap)
 (global-set-key (kbd "M-m") my-win-keymap)
 
 (define-key my-win-keymap (kbd "a") 'selected-window-accent-mode)
@@ -597,6 +593,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 (global-set-key (kbd "M-?") 'my/grep)
 (bind-key* (kbd "C-c ,") 'embark-act)
 #+end_src
+
 * modes
 
 #+begin_src elisp
@@ -1126,6 +1123,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ;;
 
 (use-package org
+  :defer t
   :custom
   (org-agenda-include-diary nil)
   (org-directory "~/DCIM/content/")
@@ -1497,8 +1495,8 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 
 (setq-default truncate-partial-width-windows 120)
 
-(set-frame-parameter nil 'alpha-background 90)
-(add-to-list 'default-frame-alist '(alpha-background . 90))
+(set-frame-parameter nil 'alpha-background 80)
+(add-to-list 'default-frame-alist '(alpha-background . 80))
 
 (set-fringe-mode '(0 . 0))
 (set-display-table-slot standard-display-table 0 ?\ )
@@ -1522,7 +1520,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
                        0))))
     (modify-all-frames-parameters `((internal-border-width . ,new-value)))))
 
-(modify-all-frames-parameters `((internal-border-width . ,my/internal-border-width)))
+;; (modify-all-frames-parameters `((internal-border-width . ,my/internal-border-width)))
 
 (defun my/change-accent-color ()
   "Prompt for a new color and apply it as the accent color."

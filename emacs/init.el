@@ -28,7 +28,6 @@
   use-package-expand-minimally nil
   use-package-compute-statistics t
   debug-on-error nil)
-;; )
 
 ;;
 ;; -> top-level-variables
@@ -73,8 +72,6 @@
 (use-package git-timemachine)
 (use-package gnuplot)
 (use-package ahk-mode)
-(use-package kbd-mode
-  :vc (:fetcher github :repo "kmonad/kbd-mode"))
 (use-package embark-consult)
 (use-package find-file-rg)
 (use-package gruvbox-theme)
@@ -249,7 +246,6 @@
 (define-key my-jump-keymap (kbd "y") 'emms)
 
 (defvar my-win-keymap (make-sparse-keymap))
-;; (global-set-key (kbd "C-z") my-win-keymap)
 (global-set-key (kbd "M-m") my-win-keymap)
 
 (define-key my-win-keymap (kbd "a") 'selected-window-accent-mode)
@@ -914,6 +910,7 @@
 ;;
 
 (use-package org
+  :defer t
   :custom
   (org-agenda-include-diary nil)
   (org-directory "~/DCIM/content/")
@@ -1255,8 +1252,8 @@
 
 (setq-default truncate-partial-width-windows 120)
 
-(set-frame-parameter nil 'alpha-background 90)
-(add-to-list 'default-frame-alist '(alpha-background . 90))
+(set-frame-parameter nil 'alpha-background 80)
+(add-to-list 'default-frame-alist '(alpha-background . 80))
 
 (set-fringe-mode '(0 . 0))
 (set-display-table-slot standard-display-table 0 ?\ )
@@ -1280,7 +1277,7 @@
                        0))))
     (modify-all-frames-parameters `((internal-border-width . ,new-value)))))
 
-(modify-all-frames-parameters `((internal-border-width . ,my/internal-border-width)))
+;; (modify-all-frames-parameters `((internal-border-width . ,my/internal-border-width)))
 
 (defun my/change-accent-color ()
   "Prompt for a new color and apply it as the accent color."
