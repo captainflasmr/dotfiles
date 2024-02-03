@@ -136,6 +136,7 @@ Turn on a profiler if we would like
 ;;
 ;; -> use-package
 ;;
+(use-package async)
 (use-package diminish)
 (use-package diredfl
   :init (diredfl-global-mode 1)
