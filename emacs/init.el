@@ -467,7 +467,6 @@
 (setq custom-safe-themes t)
 (setq tramp-default-method "ssh")
 (setq enable-local-variables :all)
-(setq proced-auto-update-interval 1)
 (setq isearch-lazy-count t)
 (setq shr-max-image-proportion 0.5)
 (setq shr-max-width 80)
@@ -523,7 +522,6 @@
 (add-hook 'calendar-mode-hook 'diary-mark-entries)
 (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
 (add-hook 'diary-mark-entries-hook 'diary-mark-included-diary-files)
-(add-hook 'proced-mode-hook 'proced-settings)
 (add-hook 'next-error-hook #'org-show-all)
 
 ;;
@@ -541,8 +539,6 @@
 ;;
 ;; -> defun
 ;;
-(defun proced-settings()
-  (proced-toggle-auto-update 1))
 
 (defun my/show-elfeed (buffer)
   (display-buffer buffer))
@@ -819,7 +815,6 @@
   :defer t
   :hook
   (org-mode . (lambda ()(org-indent-mode)(diminish 'org-indent-mode)))
-  ;; :diminish org-indent-mode
   :config
   (define-key org-mode-map (kbd "M-h") nil)
   (setq org-src-tab-acts-natively t ;; commenting better in org src blocks
@@ -827,6 +822,7 @@
     org-blank-before-new-entry '((heading . nil) (plain-list-item . nil))
     org-edit-src-content-indentation 0
     org-src-preserve-indentation t
+    org-directory "~/DCIM/content/"
     org-default-notes-file "~/DCIM/content/aaa--todo.org"
     org-hide-leading-stars t
     org-reverse-note-order t
@@ -910,10 +906,8 @@
 ;;
 
 (use-package org
-  :defer t
   :custom
   (org-agenda-include-diary nil)
-  (org-directory "~/DCIM/content/")
   (org-agenda-files '("~/DCIM/content/aaa--calendar.org"
                        "~/DCIM/content/aaa--todo.org"
                        "~/DCIM/content/art--all.org"
@@ -929,32 +923,33 @@
                        "~/DCIM/content/misc--subs.org"
                        "~/DCIM/content/posts--all.org"))
   :config
-  (unbind-key "M-m" org-agenda-mode-map)
-  (setq org-agenda-custom-commands
-    '(("m" "Month View" agenda ""
-        ((org-agenda-start-day "today")
-          (org-agenda-span 30)
-          (org-agenda-time-grid nil)))
-       ("0" "Year View (2020)" agenda ""
-         ((org-agenda-start-day "2020-01-01")
-           (org-agenda-span 'year)
-           (org-agenda-time-grid nil)))
-       ("1" "Year View (2021)" agenda ""
-         ((org-agenda-start-day "2021-01-01")
-           (org-agenda-span 'year)
-           (org-agenda-time-grid nil)))
-       ("2" "Year View (2022)" agenda ""
-         ((org-agenda-start-day "2022-01-01")
-           (org-agenda-span 'year)
-           (org-agenda-time-grid nil)))
-       ("3" "Year View (2023)" agenda ""
-         ((org-agenda-start-day "2023-01-01")
-           (org-agenda-span 'year)
-           (org-agenda-time-grid nil)))
-       ("4" "Year View (2024)" agenda ""
-         ((org-agenda-start-day "2024-01-01")
-           (org-agenda-span 'year)
-           (org-agenda-time-grid nil))))))
+  (with-eval-after-load 'org-agenda
+    (unbind-key "M-m" org-agenda-mode-map)
+    (setq org-agenda-custom-commands
+      '(("m" "Month View" agenda ""
+          ((org-agenda-start-day "today")
+            (org-agenda-span 30)
+            (org-agenda-time-grid nil)))
+         ("0" "Year View (2020)" agenda ""
+           ((org-agenda-start-day "2020-01-01")
+             (org-agenda-span 'year)
+             (org-agenda-time-grid nil)))
+         ("1" "Year View (2021)" agenda ""
+           ((org-agenda-start-day "2021-01-01")
+             (org-agenda-span 'year)
+             (org-agenda-time-grid nil)))
+         ("2" "Year View (2022)" agenda ""
+           ((org-agenda-start-day "2022-01-01")
+             (org-agenda-span 'year)
+             (org-agenda-time-grid nil)))
+         ("3" "Year View (2023)" agenda ""
+           ((org-agenda-start-day "2023-01-01")
+             (org-agenda-span 'year)
+             (org-agenda-time-grid nil)))
+         ("4" "Year View (2024)" agenda ""
+           ((org-agenda-start-day "2024-01-01")
+             (org-agenda-span 'year)
+             (org-agenda-time-grid nil)))))))
 
 ;;
 ;; -> dwim
@@ -2191,28 +2186,34 @@
 ;;
 ;; —> proced
 ;;
+
 (use-package proced
-  :bind ("C-x x p" . 'proced)
-  :init (setq proced-auto-update-interval 1
-          proced-enable-color-flag 1
-          proced-format 'medium
-          proced-sort 'rss)
-  :hook (proced-mode . (lambda ()
-                         (interactive)
-                         (proced-toggle-auto-update 1))))
-
-(defun my/proced-toggle-update()
-  "Proced turn auto update on and off"
-  (interactive)
-  (if proced-auto-update-flag
-    (proced-toggle-auto-update -1)
-    (proced-toggle-auto-update 1)))
-
-(use-package proced-narrow
-  :after proced
-  :bind (:map proced-mode-map
+  :bind (("C-x x p" . proced)
+          :map proced-mode-map
           ("f" . proced-narrow)
-          ("G" . my/proced-toggle-update)))
+          ("G" . my/proced-toggle-update))
+  :init
+  (setq proced-auto-update-interval 1
+    proced-enable-color-flag 1
+    proced-format 'medium
+    proced-sort 'rss)
+  (defun my/proced-toggle-update()
+    "Proced turn auto update on and off"
+    (interactive)
+    (if proced-auto-update-flag
+      (proced-toggle-auto-update -1)
+      (proced-toggle-auto-update 1)))
+  (defun proced-settings()
+    "Initial settings for proced-mode."
+    (proced-toggle-auto-update 1))
+  :hook
+  ((proced-mode . (lambda ()
+                    (interactive)
+                    (proced-toggle-auto-update 1)))
+    (proced-mode . proced-settings))
+  :config
+  (use-package proced-narrow
+    :after proced))
 
 ;;
 ;; -> all-the-icons
