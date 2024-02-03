@@ -831,17 +831,17 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
   (setq mark-active t))
 
 (defun my/mark-block ()
-   "Marking a block of text surrounded by a newline"
-   (interactive)
-   (when (not (region-active-p))
-      (backward-char))
-   (skip-chars-forward " \n\t")
-   (re-search-backward "^[ \t]*\n" nil 1)
-   (skip-chars-forward " \n\t")
-   (when (not (region-active-p))
-      (push-mark))
-   (re-search-forward "^[ \t]*\n" nil 1)
-   (skip-chars-backward " \n\t")
+  "Marking a block of text surrounded by a newline"
+  (interactive)
+  (when (not (region-active-p))
+    (backward-char))
+  (skip-chars-forward " \n\t")
+  (re-search-backward "^[ \t]*\n" nil 1)
+  (skip-chars-forward " \n\t")
+  (when (not (region-active-p))
+    (push-mark))
+  (re-search-forward "^[ \t]*\n" nil 1)
+  (skip-chars-backward " \n\t")
   (setq mark-active t))
 
 (global-set-key (kbd "M-s h") 'my/mark-block)
@@ -906,7 +906,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
   "Function to capture a new entry at the top level of the given file."
   (goto-char (point-min))
   (or (outline-next-heading)
-      (goto-char (point-max)))
+    (goto-char (point-max)))
   (unless (bolp) (insert "\n")))
 
 (setq org-capture-templates
@@ -1112,10 +1112,10 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
           ;; Shrink table as we're outside a source block
           (org-table-shrink))))))
 
-  (add-hook 'org-mode-hook #'my/org-shrink-tables)
-  (add-hook 'org-mode-hook #'org-syntax-table-modify)
-  ;; (remove-hook 'org-mode-hook #'org-syntax-table-modify)
-  ;; (remove-hook 'org-mode-hook #'my/org-shrink-tables)
+(add-hook 'org-mode-hook #'my/org-shrink-tables)
+(add-hook 'org-mode-hook #'org-syntax-table-modify)
+;; (remove-hook 'org-mode-hook #'org-syntax-table-modify)
+;; (remove-hook 'org-mode-hook #'my/org-shrink-tables)
 #+end_src
 
 * org-agenda
@@ -1130,46 +1130,46 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
   (org-agenda-include-diary nil)
   (org-directory "~/DCIM/content/")
   (org-agenda-files '("~/DCIM/content/aaa--calendar.org"
-                      "~/DCIM/content/aaa--todo.org"
-                      "~/DCIM/content/art--all.org"
-                      "~/DCIM/content/calendar--anniversary.org"
-                      "~/DCIM/content/calendar--repeat.org"
-                      "~/DCIM/content/dad--betting.org"
-                      "~/DCIM/content/emacs--all.org"
-                      "~/DCIM/content/gifts--james.org"
-                      "~/DCIM/content/gifts--others.org"
-                      "~/DCIM/content/kate--health.org"
-                      "~/DCIM/content/kate--loss.org"
-                      "~/DCIM/content/linux--all.org"
-                      "~/DCIM/content/misc--subs.org"
-                      "~/DCIM/content/posts--all.org"))
+                       "~/DCIM/content/aaa--todo.org"
+                       "~/DCIM/content/art--all.org"
+                       "~/DCIM/content/calendar--anniversary.org"
+                       "~/DCIM/content/calendar--repeat.org"
+                       "~/DCIM/content/dad--betting.org"
+                       "~/DCIM/content/emacs--all.org"
+                       "~/DCIM/content/gifts--james.org"
+                       "~/DCIM/content/gifts--others.org"
+                       "~/DCIM/content/kate--health.org"
+                       "~/DCIM/content/kate--loss.org"
+                       "~/DCIM/content/linux--all.org"
+                       "~/DCIM/content/misc--subs.org"
+                       "~/DCIM/content/posts--all.org"))
   :config
   (unbind-key "M-m" org-agenda-mode-map)
   (setq org-agenda-custom-commands
-        '(("m" "Month View" agenda ""
-           ((org-agenda-start-day "today")
-            (org-agenda-span 30)
-            (org-agenda-time-grid nil)))
-          ("0" "Year View (2020)" agenda ""
-           ((org-agenda-start-day "2020-01-01")
-            (org-agenda-span 'year)
-            (org-agenda-time-grid nil)))
-          ("1" "Year View (2021)" agenda ""
-           ((org-agenda-start-day "2021-01-01")
-            (org-agenda-span 'year)
-            (org-agenda-time-grid nil)))
-          ("2" "Year View (2022)" agenda ""
-           ((org-agenda-start-day "2022-01-01")
-            (org-agenda-span 'year)
-            (org-agenda-time-grid nil)))
-          ("3" "Year View (2023)" agenda ""
-           ((org-agenda-start-day "2023-01-01")
-            (org-agenda-span 'year)
-            (org-agenda-time-grid nil)))
-          ("4" "Year View (2024)" agenda ""
-           ((org-agenda-start-day "2024-01-01")
-            (org-agenda-span 'year)
-            (org-agenda-time-grid nil))))))
+    '(("m" "Month View" agenda ""
+        ((org-agenda-start-day "today")
+          (org-agenda-span 30)
+          (org-agenda-time-grid nil)))
+       ("0" "Year View (2020)" agenda ""
+         ((org-agenda-start-day "2020-01-01")
+           (org-agenda-span 'year)
+           (org-agenda-time-grid nil)))
+       ("1" "Year View (2021)" agenda ""
+         ((org-agenda-start-day "2021-01-01")
+           (org-agenda-span 'year)
+           (org-agenda-time-grid nil)))
+       ("2" "Year View (2022)" agenda ""
+         ((org-agenda-start-day "2022-01-01")
+           (org-agenda-span 'year)
+           (org-agenda-time-grid nil)))
+       ("3" "Year View (2023)" agenda ""
+         ((org-agenda-start-day "2023-01-01")
+           (org-agenda-span 'year)
+           (org-agenda-time-grid nil)))
+       ("4" "Year View (2024)" agenda ""
+         ((org-agenda-start-day "2024-01-01")
+           (org-agenda-span 'year)
+           (org-agenda-time-grid nil))))))
 
 #+end_src
 
@@ -1206,17 +1206,17 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
   "Execute a dwim-shell-command-on-marked-files with the given COMMAND."
   ;; Define the path to the unique text file.
   (let* ((unique-text-file "/home/jdyer/.config/emacs/category-list-uniq.txt")
-         ;; Initialize user-selection to nil.
-         (user-selection nil)
-         ;; Get the list of marked files.
-         (files (dired-get-marked-files nil current-prefix-arg))
-         ;; Command with appended files.
-         (command-and-files (concat command " " (mapconcat 'identity files " "))))
+          ;; Initialize user-selection to nil.
+          (user-selection nil)
+          ;; Get the list of marked files.
+          (files (dired-get-marked-files nil current-prefix-arg))
+          ;; Command with appended files.
+          (command-and-files (concat command " " (mapconcat 'identity files " "))))
     ;; Check if the command is PictureTag and get user selection if it is.
     (when (string= command "PictureTag")
       (setq user-selection (completing-read "Choose an option: "
-                                            (my/read-lines unique-text-file)
-                                            nil t)))
+                             (my/read-lines unique-text-file)
+                             nil t)))
     ;; Add user-selection to the command-and-files if not nil.
     (async-shell-command (if user-selection
                            (concat command " " user-selection " " (mapconcat 'identity files " "))
@@ -1399,80 +1399,80 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
         (image-dired-display-thumbnail-original-image)
         (image-dired-line-up-dynamic)))))
 
-  (setq image-use-external-converter t)
-  (setq image-dired-external-viewer "/usr/bin/gthumb")
-  (setq image-dired-show-all-from-dir-max-files 999)
-  (setq image-dired-thumbs-per-row 999)
-  (setq image-dired-thumb-relief 0)
-  (setq image-dired-thumb-margin 5)
-  (setq image-dired-thumb-size 120)
+(setq image-use-external-converter t)
+(setq image-dired-external-viewer "/usr/bin/gthumb")
+(setq image-dired-show-all-from-dir-max-files 999)
+(setq image-dired-thumbs-per-row 999)
+(setq image-dired-thumb-relief 0)
+(setq image-dired-thumb-margin 5)
+(setq image-dired-thumb-size 120)
 
-  (defun my/image-save-as ()
-    "Save the current image buffer as a new file."
-    (interactive)
-    (let* ((file (buffer-file-name))
-            (dir (file-name-directory file))
-            (name (file-name-nondirectory file))
-            (base-name (file-name-sans-extension name))
-            (extension (file-name-extension name t))
-            (initial_mode major-mode)
-            (counter 1)
-            (new-file))
-      (while (and (setq new-file
-                    (format "%s%s_%03d%s" dir base-name counter extension))
-               (file-exists-p new-file))
-        (setq counter (1+ counter)))
-      (write-region (point-min) (point-max) new-file nil 'no-message)
-      (revert-buffer nil t nil)
-      ;; (delete-file file t)
-      (if (equal initial_mode 'image-dired-image-mode)
-        (progn
-          (image-dired ".")
-          (image-dired-display-this))
-        (find-file new-file t))))
+(defun my/image-save-as ()
+  "Save the current image buffer as a new file."
+  (interactive)
+  (let* ((file (buffer-file-name))
+          (dir (file-name-directory file))
+          (name (file-name-nondirectory file))
+          (base-name (file-name-sans-extension name))
+          (extension (file-name-extension name t))
+          (initial_mode major-mode)
+          (counter 1)
+          (new-file))
+    (while (and (setq new-file
+                  (format "%s%s_%03d%s" dir base-name counter extension))
+             (file-exists-p new-file))
+      (setq counter (1+ counter)))
+    (write-region (point-min) (point-max) new-file nil 'no-message)
+    (revert-buffer nil t nil)
+    ;; (delete-file file t)
+    (if (equal initial_mode 'image-dired-image-mode)
+      (progn
+        (image-dired ".")
+        (image-dired-display-this))
+      (find-file new-file t))))
 
-  (defun my/delete-current-image-and-move-to-next ()
-    "Delete the current image file and move to the next image in the directory."
-    (interactive)
-    (let ((current-file (buffer-file-name)))
-      (when current-file
-        (image-next-file 1)
-        (delete-file current-file)
-        (message "Deleted %s" current-file))))
+(defun my/delete-current-image-and-move-to-next ()
+  "Delete the current image file and move to the next image in the directory."
+  (interactive)
+  (let ((current-file (buffer-file-name)))
+    (when current-file
+      (image-next-file 1)
+      (delete-file current-file)
+      (message "Deleted %s" current-file))))
 
-  (defun my/delete-current-image-thumbnails ()
-    "Delete the current image file and move to the next image in the directory."
-    (interactive)
-    (let ((file-name (image-dired-original-file-name)))
-      (delete-file file-name)
-      (image-dired-delete-char)
-      (image-dired-display-this)))
+(defun my/delete-current-image-thumbnails ()
+  "Delete the current image file and move to the next image in the directory."
+  (interactive)
+  (let ((file-name (image-dired-original-file-name)))
+    (delete-file file-name)
+    (image-dired-delete-char)
+    (image-dired-display-this)))
 
-  (eval-after-load 'image-mode
-    '(progn
-       (define-key image-mode-map (kbd "C-d") 'my/delete-current-image-and-move-to-next)
-       (define-key image-mode-map (kbd "C-x C-s") 'my/image-save-as)))
+(eval-after-load 'image-mode
+  '(progn
+     (define-key image-mode-map (kbd "C-d") 'my/delete-current-image-and-move-to-next)
+     (define-key image-mode-map (kbd "C-x C-s") 'my/image-save-as)))
 
-  (eval-after-load 'image-dired
-    '(progn
-       (define-key image-dired-thumbnail-mode-map (kbd "C-d") 'my/delete-current-image-thumbnails)
-       (define-key image-dired-thumbnail-mode-map (kbd "n")
-         (lambda ()(interactive)(image-dired-forward-image)(image-dired-display-this)))
-       (define-key image-dired-thumbnail-mode-map (kbd "p")
-         (lambda ()(interactive)(image-dired-backward-image)(image-dired-display-this)))
-       ;; (define-key image-dired-thumbnail-mode-map (kbd "C-n")
-       ;;   (lambda ()(interactive)(image-dired-next-line)(image-dired-display-this)))
-       ;; (define-key image-dired-thumbnail-mode-map (kbd "C-p")
-       ;;   (lambda ()(interactive)(image-dired-previous-line)(image-dired-display-this)))
-       ;; (define-key image-dired-thumbnail-mode-map (kbd "C-a")
-       ;;   (lambda ()(interactive)(image-dired-move-beginning-of-line)(image-dired-display-this)))
-       ;; (define-key image-dired-thumbnail-mode-map (kbd "C-e")
-       ;;   (lambda ()(interactive)(image-dired-move-end-of-line)(image-dired-display-this)))
-       ;; (define-key image-dired-thumbnail-mode-map (kbd "M-<")
-       ;;   (lambda ()(interactive)(image-dired-beginning-of-buffer)(image-dired-display-this)))
-       ;; (define-key image-dired-thumbnail-mode-map (kbd "M->")
-       ;;   (lambda ()(interactive)(image-dired-end-of-buffer)(image-dired-display-this)))
-       ))
+(eval-after-load 'image-dired
+  '(progn
+     (define-key image-dired-thumbnail-mode-map (kbd "C-d") 'my/delete-current-image-thumbnails)
+     (define-key image-dired-thumbnail-mode-map (kbd "n")
+       (lambda ()(interactive)(image-dired-forward-image)(image-dired-display-this)))
+     (define-key image-dired-thumbnail-mode-map (kbd "p")
+       (lambda ()(interactive)(image-dired-backward-image)(image-dired-display-this)))
+     ;; (define-key image-dired-thumbnail-mode-map (kbd "C-n")
+     ;;   (lambda ()(interactive)(image-dired-next-line)(image-dired-display-this)))
+     ;; (define-key image-dired-thumbnail-mode-map (kbd "C-p")
+     ;;   (lambda ()(interactive)(image-dired-previous-line)(image-dired-display-this)))
+     ;; (define-key image-dired-thumbnail-mode-map (kbd "C-a")
+     ;;   (lambda ()(interactive)(image-dired-move-beginning-of-line)(image-dired-display-this)))
+     ;; (define-key image-dired-thumbnail-mode-map (kbd "C-e")
+     ;;   (lambda ()(interactive)(image-dired-move-end-of-line)(image-dired-display-this)))
+     ;; (define-key image-dired-thumbnail-mode-map (kbd "M-<")
+     ;;   (lambda ()(interactive)(image-dired-beginning-of-buffer)(image-dired-display-this)))
+     ;; (define-key image-dired-thumbnail-mode-map (kbd "M->")
+     ;;   (lambda ()(interactive)(image-dired-end-of-buffer)(image-dired-display-this)))
+     ))
 #+end_src
 
 * visuals
@@ -1532,7 +1532,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 
     ;; Update tab-bar-tab face
     ;; (custom-set-faces
-      ;; `(tab-bar-tab ((t (:inherit tab-bar :background ,my/accent-color :foreground "#222222" :box (:line-width (1 . 1) :color "#9c9c9c" :style flat))))))
+    ;; `(tab-bar-tab ((t (:inherit tab-bar :background ,my/accent-color :foreground "#222222" :box (:line-width (1 . 1) :color "#9c9c9c" :style flat))))))
 
     ;; Update selected-window-accent-mode custom variables
     (when (featurep 'selected-window-accent-mode)
@@ -1653,13 +1653,13 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
                       ;; (shell-command-to-string "find -type f -printf \"$PWD/%p\\0\"") "\0" t))
                       ;; (shell-command-to-string "fd --absolute-path --type f -0") "\0" t))
                       (shell-command-to-string "rg --follow --files --null") "\0" t))
-         (metadata '((category . file)))
-         (file (completing-read (format "Find file in %s: " (abbreviate-file-name default-directory))
-                 (lambda (str pred action)
-                   (if (eq action 'metadata)
-                     `(metadata . ,metadata)
-                     (complete-with-action action file-list str pred)))
-                 nil t nil 'file-name-history)))
+          (metadata '((category . file)))
+          (file (completing-read (format "Find file in %s: " (abbreviate-file-name default-directory))
+                  (lambda (str pred action)
+                    (if (eq action 'metadata)
+                      `(metadata . ,metadata)
+                      (complete-with-action action file-list str pred)))
+                  nil t nil 'file-name-history)))
     (when file (find-file (expand-file-name file)))))
 
 #+end_src
@@ -1758,7 +1758,7 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
   (lambda () (interactive)
     ;; (backward-word)
     (jinx-correct)))
-    ;; (forward-word)))
+;; (forward-word)))
 
 (global-set-key (kbd "M-s c") 'wc-mode)
 (global-set-key (kbd "M-s j") 'jinx-mode)
@@ -2262,7 +2262,7 @@ echo
 ;; -> selected-window-accent-mode
 ;;
 (use-package selected-window-accent-mode
-    :load-path "~/repos/selected-window-accent-mode"
+  :load-path "~/repos/selected-window-accent-mode"
   ;; :vc (:fetcher github :repo "captainflasmr/selected-window-accent-mode")
   ;; :diminish selected-window-accent-mode
   :custom
@@ -2596,11 +2596,11 @@ echo
 
 (setq cfw:org-capture-template
   '("c" "Calendar" plain
-    (file+function
-      "~/DCIM/content/aaa--calendar.org"
-      my-capture-top-level)
-    "* TODO %?\n SCHEDULED: %(cfw:org-capture-day)\n"
-    :prepend t :jump-to-captured t))
+     (file+function
+       "~/DCIM/content/aaa--calendar.org"
+       my-capture-top-level)
+     "* TODO %?\n SCHEDULED: %(cfw:org-capture-day)\n"
+     :prepend t :jump-to-captured t))
 
 #+end_src
 
@@ -2635,6 +2635,7 @@ echo
 #+end_src
 
 * all-the-icons
+
 #+begin_src elisp
 ;;
 ;; -> all-the-icons
@@ -2792,9 +2793,7 @@ echo
         (setq week (string-to-number (match-string 1)))
         (setq last-date (match-string 2))
         (setq last-weight "16:10")
-
         (goto-char (org-table-end))
-
         ;; Loop for num-weeks to generate new lines
         (dotimes (i num-weeks)
           (setq next-date
@@ -2855,8 +2854,8 @@ echo
   (project-mode-line-tag-mode 1))
 
 (consult-customize
-   consult-theme :preview-key '(:debounce 0.2 any)
-   consult-recent-file consult-outline consult-imenu consult-history :preview-key nil)
+  consult-theme :preview-key '(:debounce 0.2 any)
+  consult-recent-file consult-outline consult-imenu consult-history :preview-key nil)
 
 (defun my/color-name-to-hex (color-name)
   "Convert COLOR-NAME to its hexadecimal representation."
@@ -2881,7 +2880,7 @@ Or indeed other filters as defined in the main unless"
       ;; Loop over each line in the region
       (while (< (point) rend)
         (let ((line (buffer-substring-no-properties (line-beginning-position)
-                                                    (line-end-position))))
+                      (line-end-position))))
           ;; Only count words if the line doesn't contain DONE or is not between PROPERTIES and END
           ;; Or indeed other filters as defined below
           (unless (or
@@ -2893,7 +2892,7 @@ Or indeed other filters as defined in the main unless"
                     (string-match-p "\\#\\+" line)
                     )
             (setq count (+ count (1+ (how-many " " (line-beginning-position) (line-end-position))))))
-            ;; (setq count (+ count (length (split-string line "\\W+" t)))))
+          ;; (setq count (+ count (length (split-string line "\\W+" t)))))
           ;; Go to the beginning of the next line
           (forward-line 1))))
     count))
