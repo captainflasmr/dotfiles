@@ -136,6 +136,7 @@ Turn on a profiler if we would like
 ;;
 ;; -> use-package
 ;;
+(use-package async)
 (use-package diminish)
 (use-package diredfl
   :init (diredfl-global-mode 1)
@@ -1328,9 +1329,9 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
   (dired-confirm-shell-command nil)
   (dired-no-confirm t)
   (dired-recursive-deletes 'always)
-  (dired-deletion-confirmer '(lambda (x) t)))
-  ;; :config
-  ;; (dired-async-mode 1))
+  (dired-deletion-confirmer '(lambda (x) t))
+  :config
+  (dired-async-mode 1))
 
 #+end_src
 
