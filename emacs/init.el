@@ -64,6 +64,7 @@
 ;;
 ;; -> use-package
 ;;
+(use-package async)
 (use-package diminish)
 (use-package diredfl
   :init (diredfl-global-mode 1)
@@ -582,7 +583,6 @@
 (defun my/grep (arg)
   "Wrapper to grep."
   (interactive "p")
-  (print arg)
   (let ((search-term
           (if (equal major-mode 'dired-mode)
             (read-from-minibuffer "Search : ")
@@ -915,8 +915,8 @@
                        "~/DCIM/content/calendar--repeat.org"
                        "~/DCIM/content/dad--betting.org"
                        "~/DCIM/content/emacs--all.org"
-                       "~/DCIM/content/gifts--james.org"
-                       "~/DCIM/content/gifts--others.org"
+                       "~/DCIM/content/presents--james.org"
+                       "~/DCIM/content/presents--others.org"
                        "~/DCIM/content/kate--health.org"
                        "~/DCIM/content/kate--loss.org"
                        "~/DCIM/content/linux--all.org"
@@ -1087,6 +1087,8 @@
   :commands (dired dired-jump)
   :bind (("M-e" . dired-jump)
           (:map dired-mode-map
+            ("_" . my/dired-create-empty-file)
+            ("+" . my/dired-create-directory)
             ("C-c i" . my/image-dired-sort)
             ("C-c d" . my/dired-duplicate-file)))
   :custom
@@ -1109,6 +1111,20 @@
   (dired-deletion-confirmer '(lambda (x) t))
   :config
   (dired-async-mode 1))
+
+(defun my/dired-create-directory ()
+  "Wrapper to dired-create-directory to avoid minibuffer completion"
+  (interactive)
+  (let ((search-term
+          (read-from-minibuffer "Dir : ")))
+    (dired-create-directory search-term)))
+
+(defun my/dired-create-empty-file ()
+  "Wrapper to dired-create-empty-file to avoid minibuffer completion"
+  (interactive)
+  (let ((search-term
+          (read-from-minibuffer "File : ")))
+    (dired-create-empty-file search-term)))
 
 ;;
 ;; -> image-dired
