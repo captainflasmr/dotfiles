@@ -407,8 +407,8 @@
 ;; -> keybinding
 ;;
 
-(global-set-key (kbd "<f8>") 'next-error)
-(global-set-key (kbd "S-<f8>") 'previous-error)
+(global-set-key (kbd "<f8>") (lambda ()(interactive)(my/next-thing 1)))
+(global-set-key (kbd "S-<f8>") (lambda ()(interactive)(my/next-thing 2)))
 (global-set-key (kbd "M-s e") 'my/push-block)
 (global-set-key (kbd "M-s g") 'my/text-browser-search)
 (global-set-key (kbd "M-=") 'count-words)
@@ -1876,14 +1876,14 @@
 ;; -> selected-window-accent-mode
 ;;
 (use-package selected-window-accent-mode
-  :load-path "~/repos/selected-window-accent-mode"
+  ;; :load-path "~/repos/selected-window-accent-mode"
   ;; :vc (:fetcher github :repo "captainflasmr/selected-window-accent-mode")
   ;; :diminish selected-window-accent-mode
   :custom
   (selected-window-accent-fringe-thickness 10)
-  (selected-window-accent-percentage-darken 30)
-  (selected-window-accent-percentage-desaturate 50)
-  (selected-window-accent-tab-accent t)
+  ;; (selected-window-accent-percentage-darken 30)
+  ;; (selected-window-accent-percentage-desaturate 50)
+  ;; (selected-window-accent-tab-accent t)
   ;; (selected-window-accent-custom-color "#427900")
   (selected-window-accent-custom-color nil)
   (selected-window-accent-mode-style 'subtle))
@@ -2482,3 +2482,28 @@ Or indeed other filters as defined in the main unless"
 (setq wc-count-words-function 'my-word-count-function)
 
 (use-package keepass-mode)
+
+(defun my/next-thing (arg)
+  "Go to the next thing, meaning warning, error, grep, etc., based on ARG."
+  (interactive "p")
+  (catch 'done
+    (walk-windows
+     (lambda (win)
+       (with-selected-window win
+         (let ((buf-name (buffer-name)))
+           (condition-case err
+               (cond
+                ((string-match-p "compilation" buf-name)
+                 (funcall (if (> arg 1) #'re-search-backward #'re-search-forward) "[[:digit:]]: warning:")
+                 (compile-goto-error)
+                 (throw 'done t))
+                ((string-match-p "dead" buf-name)
+                 (funcall (if (> arg 1) #'deadgrep-backward-match #'deadgrep-forward-match))
+                  (deadgrep-visit-result-other-window)
+                  (org-show-entry)
+                 (throw 'done t))
+                ((string-match-p "occur" buf-name)
+                 (funcall (if (> arg 1) #'previous-error #'next-error))
+                 (throw 'done t)))
+             (error (message "%s" (error-message-string err)))))))
+     nil t)))
