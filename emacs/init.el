@@ -406,7 +406,7 @@
 ;;
 ;; -> keybinding
 ;;
-
+(global-set-key (kbd "M-s ;") 'save-buffer)
 (global-set-key (kbd "<f8>") (lambda ()(interactive)(my/next-thing 1)))
 (global-set-key (kbd "S-<f8>") (lambda ()(interactive)(my/next-thing 2)))
 (global-set-key (kbd "M-s e") 'my/push-block)
@@ -416,10 +416,10 @@
 (bind-key* (kbd "M-g o") 'consult-outline)
 (bind-key* (kbd "M-g i") 'consult-imenu)
 (global-set-key (kbd "C-c a") 'org-agenda)
-(bind-key* (kbd "M-h") (lambda()(interactive)(select-window (previous-window (selected-window)))))
+(bind-key* (kbd "M-u") (lambda()(interactive)(select-window (previous-window (selected-window)))))
 (bind-key* (kbd "M-j") (lambda()(interactive)(next-line (/ (window-height) 8))))
 (bind-key* (kbd "M-k") (lambda()(interactive)(previous-line (/ (window-height) 8))))
-(bind-key* (kbd "M-l") (lambda()(interactive)(select-window (next-window (selected-window)))))
+(bind-key* (kbd "M-i") (lambda()(interactive)(select-window (next-window (selected-window)))))
 (bind-key* (kbd "M-I") (lambda ()(interactive)(my/resize-window 4 t)))
 (bind-key* (kbd "M-U") (lambda ()(interactive)(my/resize-window -4 t)))
 (global-set-key (kbd "C-c b") (lambda ()(interactive)(async-shell-command "do_backup home" "*backup*")))
@@ -529,13 +529,15 @@
 ;; -> custom-settings
 ;;
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
-  '(custom-enabled-themes '(doom-monokai-ristretto))
-  '(warning-suppress-log-types '((frameset)))
-  '(warning-suppress-types '((frameset))))
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-enabled-themes '(doom-monokai-ristretto))
+ '(package-selected-packages
+    '(ox-gfm ztree yaml-mode wc-mode visual-fill-column vertico vc-use-package toc-org tempel spacious-padding rainbow-mode project-mode-line-tag proced-narrow powerthesaurus peg package-lint ox-hugo ox-epub ov org-tidy org-super-agenda org-ql org-modern org-bullets orderless marginalia magit lorem-ipsum keepass-mode kbd-mode jinx i3wm-config-mode highlight-indent-guides helm-org gruvbox-theme gpr-ts-mode gnuplot git-timemachine flycheck find-file-rg file-info esup emms embark-consult elfeed ef-themes doom-themes diredfl diminish deadgrep corfu company chatgpt-shell calfw-org calfw-cal calfw all-the-icons-ibuffer all-the-icons-dired all-the-icons-completion ahk-mode ada-mode))
+ '(warning-suppress-log-types '((frameset)))
+ '(warning-suppress-types '((frameset))))
 
 ;;
 ;; -> defun
@@ -1035,43 +1037,52 @@
 ;; -> custom-set-faces
 ;;
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
-  '(diredfl-date-time ((t (:foreground "#8d909b"))))
-  '(diredfl-dir-heading ((t (:foreground "#aa5555" :weight bold))))
-  '(diredfl-dir-priv ((t (:foreground "DarkRed"))))
-  '(diredfl-exec-priv ((t (:foreground "#999999"))))
-  '(diredfl-file-name ((t (:foreground "#818282"))))
-  '(diredfl-no-priv ((t nil)))
-  '(diredfl-number ((t (:foreground "#999999"))))
-  '(diredfl-read-priv ((t nil)))
-  '(diredfl-write-priv ((t nil)))
-  '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
-  '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
-  '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
-  '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
-  '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2"))))
-  '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
-  '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.1 :family "Source Code Pro"))))
-  '(org-code ((t (:inherit (shadow fixed-pitch)))))
-  '(org-modern-date-active ((t (:inherit fixed-pitch))))
-  '(org-date ((t (:inherit fixed-pitch))))
-  '(org-document-info ((t (:foreground "#8f4800"))))
-  '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
-  '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
-  '(org-link ((t (:foreground "#5555ff" :underline t))))
-  '(org-property-value ((t (:inherit fixed-pitch))) t)
-  '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
-  '(org-tag ((t (:inherit (shadow fixed-pitch) :weight regular :height 0.8))))
-  '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
-  '(indent-guide-face ((t (:background "#282828" :foreground "#666666"))))
-  '(outline-1 ((t (:weight regular))))
-  '(outline-2 ((t (:weight regular))))
-  '(widget-button ((t (:inherit fixed-pitch :weight regular))))
-  '(window-divider ((t (:foreground "black"))))
-  '(vertical-border ((t (:foreground "#000000")))))
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(diredfl-date-time ((t (:foreground "#8d909b"))))
+ '(diredfl-dir-heading ((t (:foreground "#aa5555" :weight bold))))
+ '(diredfl-dir-priv ((t (:foreground "DarkRed"))))
+ '(diredfl-exec-priv ((t (:foreground "#999999"))))
+ '(diredfl-file-name ((t (:foreground "#818282"))))
+ '(diredfl-no-priv ((t nil)))
+ '(diredfl-number ((t (:foreground "#999999"))))
+ '(diredfl-read-priv ((t nil)))
+ '(diredfl-write-priv ((t nil)))
+ '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
+ '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
+ '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
+ '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
+ '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.1 :family "Source Code Pro"))))
+ '(fixed-pitch ((t (:family "Fira Code Retina" :height 130))))
+ '(indent-guide-face ((t (:background "#282828" :foreground "#666666"))))
+ '(org-code ((t (:inherit (shadow fixed-pitch)))))
+ '(org-date ((t (:inherit fixed-pitch))))
+ '(org-document-info ((t (:foreground "#8f4800"))))
+ '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+ '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
+ '(org-link ((t (:foreground "#5555ff" :underline t))))
+ '(org-modern-date-active ((t (:inherit fixed-pitch))))
+ '(org-property-value ((t (:inherit fixed-pitch))))
+ '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+ '(org-tag ((t (:inherit (shadow fixed-pitch) :weight regular :height 0.8))))
+ '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
+ '(outline-1 ((t (:weight regular))))
+ '(outline-2 ((t (:weight regular))))
+ '(variable-pitch ((t (:family "Sans Serif" :height 140 :weight normal))))
+ '(vertical-border ((t (:foreground "#000000"))))
+ '(whitespace-missing-newline-at-eof ((t (:foreground "#666566656665"))))
+ '(whitespace-newline ((t (:foreground "#666566656665"))))
+ '(whitespace-space ((t (:foreground "#666566656665"))))
+ '(whitespace-space-after-tab ((t (:foreground "#666566656665"))))
+ '(whitespace-space-before-tab ((t (:foreground "#666566656665"))))
+ '(whitespace-tab ((t (:foreground "#666566656665"))))
+ '(whitespace-trailing ((t (:foreground "#666566656665"))))
+ '(widget-button ((t (:inherit fixed-pitch :weight regular))))
+ '(window-divider ((t (:foreground "black"))))
+ '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
+ '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2")))))
 
 (custom-theme-set-faces
   'user
@@ -1876,14 +1887,14 @@
 ;; -> selected-window-accent-mode
 ;;
 (use-package selected-window-accent-mode
-  ;; :load-path "~/repos/selected-window-accent-mode"
+  :load-path "~/repos/selected-window-accent-mode"
   ;; :vc (:fetcher github :repo "captainflasmr/selected-window-accent-mode")
   ;; :diminish selected-window-accent-mode
   :custom
   (selected-window-accent-fringe-thickness 10)
-  ;; (selected-window-accent-percentage-darken 30)
-  ;; (selected-window-accent-percentage-desaturate 50)
-  ;; (selected-window-accent-tab-accent t)
+  (selected-window-accent-percentage-darken -20)
+  (selected-window-accent-percentage-desaturate 50)
+  (selected-window-accent-tab-accent t)
   ;; (selected-window-accent-custom-color "#427900")
   (selected-window-accent-custom-color nil)
   (selected-window-accent-mode-style 'subtle))
@@ -1892,6 +1903,14 @@
 
 (setq my/push-block-spec
   '(
+     ("~/repos/selected-window-accent-mode/CHANGELOG.org" ;; source-file
+       "~/repos/selected-window-accent-mode/README.org" ;; export-file
+       "\\* ISSUES" ;; source-start-tag
+       "\\* ROADMAP" ;; source-end-tag
+       "* ISSUES\n" ;; export-start-tag
+       "\n* TODOs / ROADMAP" ;; export-end-tag
+       :ascii ;; format-spec
+       "  ")
      ("~/repos/selected-window-accent-mode/CHANGELOG.org" ;; source-file
        "~/repos/selected-window-accent-mode/README.org" ;; export-file
        "\\* ROADMAP" ;; source-start-tag
@@ -1903,7 +1922,7 @@
      ("~/repos/selected-window-accent-mode/README.org"
        "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
        "\\* Summary"
-       "\\* Quick Start"
+       "\\* Installation"
        ";;; Commentary:\n;;\n"
        ";\n(require"
        :ascii
@@ -2304,8 +2323,8 @@
       'face (funcall tab-bar-tab-face-function tab)))
   :bind
   (
-    ("M-u" . tab-bar-switch-to-prev-tab) ;; 27.1
-    ("M-i" . tab-bar-switch-to-next-tab) ;; 27.1
+    ("M-h" . tab-bar-switch-to-prev-tab) ;; 27.1
+    ("M-l" . tab-bar-switch-to-next-tab) ;; 27.1
     ("C-x j" . tab-bar-history-back) ;; 27.1
     ("C-x k" . tab-bar-history-forward)) ;; 27.1
   )
@@ -2492,18 +2511,30 @@ Or indeed other filters as defined in the main unless"
        (with-selected-window win
          (let ((buf-name (buffer-name)))
            (condition-case err
-               (cond
+             (cond
                 ((string-match-p "compilation" buf-name)
                  (funcall (if (> arg 1) #'re-search-backward #'re-search-forward) "[[:digit:]]: warning:")
                  (compile-goto-error)
-                 (throw 'done t))
+                  (throw 'done t))
+
                 ((string-match-p "dead" buf-name)
                  (funcall (if (> arg 1) #'deadgrep-backward-match #'deadgrep-forward-match))
                   (deadgrep-visit-result-other-window)
                   (org-show-entry)
-                 (throw 'done t))
-                ((string-match-p "occur" buf-name)
+                  (throw 'done t))
+
+               ((string-match-p "org agenda" buf-name)
+                 (if (> arg 1)
+                   (org-agenda-previous-item 1)
+                   (org-agenda-next-item 1))
+                  (org-agenda-goto)
+                  (org-show-entry)
+                  (throw 'done t))
+
+               ((or (string-match-p "occur" buf-name)
+                  (string-match-p "flycheck errors" buf-name))
                  (funcall (if (> arg 1) #'previous-error #'next-error))
-                 (throw 'done t)))
+                 (throw 'done t))
+               )
              (error (message "%s" (error-message-string err)))))))
      nil t)))

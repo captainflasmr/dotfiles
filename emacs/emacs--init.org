@@ -136,6 +136,7 @@ Turn on a profiler if we would like
 ;;
 ;; -> use-package
 ;;
+(use-package ox-gfm)
 (use-package async)
 (use-package diminish)
 (use-package diredfl
@@ -565,7 +566,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ;;
 ;; -> keybinding
 ;;
-
+(global-set-key (kbd "M-s ;") 'save-buffer)
 (global-set-key (kbd "<f8>") (lambda ()(interactive)(my/next-thing 1)))
 (global-set-key (kbd "S-<f8>") (lambda ()(interactive)(my/next-thing 2)))
 (global-set-key (kbd "M-s e") 'my/push-block)
@@ -575,10 +576,10 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 (bind-key* (kbd "M-g o") 'consult-outline)
 (bind-key* (kbd "M-g i") 'consult-imenu)
 (global-set-key (kbd "C-c a") 'org-agenda)
-(bind-key* (kbd "M-h") (lambda()(interactive)(select-window (previous-window (selected-window)))))
+(bind-key* (kbd "M-u") (lambda()(interactive)(select-window (previous-window (selected-window)))))
 (bind-key* (kbd "M-j") (lambda()(interactive)(next-line (/ (window-height) 8))))
 (bind-key* (kbd "M-k") (lambda()(interactive)(previous-line (/ (window-height) 8))))
-(bind-key* (kbd "M-l") (lambda()(interactive)(select-window (next-window (selected-window)))))
+(bind-key* (kbd "M-i") (lambda()(interactive)(select-window (next-window (selected-window)))))
 (bind-key* (kbd "M-I") (lambda ()(interactive)(my/resize-window 4 t)))
 (bind-key* (kbd "M-U") (lambda ()(interactive)(my/resize-window -4 t)))
 (global-set-key (kbd "C-c b") (lambda ()(interactive)(async-shell-command "do_backup home" "*backup*")))
@@ -2270,14 +2271,14 @@ echo
 ;; -> selected-window-accent-mode
 ;;
 (use-package selected-window-accent-mode
-  ;; :load-path "~/repos/selected-window-accent-mode"
+  :load-path "~/repos/selected-window-accent-mode"
   ;; :vc (:fetcher github :repo "captainflasmr/selected-window-accent-mode")
   ;; :diminish selected-window-accent-mode
   :custom
   (selected-window-accent-fringe-thickness 10)
-  ;; (selected-window-accent-percentage-darken 30)
-  ;; (selected-window-accent-percentage-desaturate 50)
-  ;; (selected-window-accent-tab-accent t)
+  (selected-window-accent-percentage-darken -20)
+  (selected-window-accent-percentage-desaturate 50)
+  (selected-window-accent-tab-accent t)
   ;; (selected-window-accent-custom-color "#427900")
   (selected-window-accent-custom-color nil)
   (selected-window-accent-mode-style 'subtle))
@@ -2286,6 +2287,14 @@ echo
 
 (setq my/push-block-spec
   '(
+     ("~/repos/selected-window-accent-mode/CHANGELOG.org" ;; source-file
+       "~/repos/selected-window-accent-mode/README.org" ;; export-file
+       "\\* ISSUES" ;; source-start-tag
+       "\\* ROADMAP" ;; source-end-tag
+       "* ISSUES\n" ;; export-start-tag
+       "\n* TODOs / ROADMAP" ;; export-end-tag
+       :ascii ;; format-spec
+       "  ")
      ("~/repos/selected-window-accent-mode/CHANGELOG.org" ;; source-file
        "~/repos/selected-window-accent-mode/README.org" ;; export-file
        "\\* ROADMAP" ;; source-start-tag
@@ -2297,7 +2306,7 @@ echo
      ("~/repos/selected-window-accent-mode/README.org"
        "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
        "\\* Summary"
-       "\\* Quick Start"
+       "\\* Installation"
        ";;; Commentary:\n;;\n"
        ";\n(require"
        :ascii
@@ -2733,8 +2742,8 @@ echo
       'face (funcall tab-bar-tab-face-function tab)))
   :bind
   (
-    ("M-u" . tab-bar-switch-to-prev-tab) ;; 27.1
-    ("M-i" . tab-bar-switch-to-next-tab) ;; 27.1
+    ("M-h" . tab-bar-switch-to-prev-tab) ;; 27.1
+    ("M-l" . tab-bar-switch-to-next-tab) ;; 27.1
     ("C-x j" . tab-bar-history-back) ;; 27.1
     ("C-x k" . tab-bar-history-forward)) ;; 27.1
   )
@@ -2926,19 +2935,31 @@ Or indeed other filters as defined in the main unless"
        (with-selected-window win
          (let ((buf-name (buffer-name)))
            (condition-case err
-               (cond
+             (cond
                 ((string-match-p "compilation" buf-name)
                  (funcall (if (> arg 1) #'re-search-backward #'re-search-forward) "[[:digit:]]: warning:")
                  (compile-goto-error)
-                 (throw 'done t))
+                  (throw 'done t))
+
                 ((string-match-p "dead" buf-name)
                  (funcall (if (> arg 1) #'deadgrep-backward-match #'deadgrep-forward-match))
                   (deadgrep-visit-result-other-window)
                   (org-show-entry)
-                 (throw 'done t))
-                ((string-match-p "occur" buf-name)
+                  (throw 'done t))
+
+               ((string-match-p "org agenda" buf-name)
+                 (if (> arg 1)
+                   (org-agenda-previous-item 1)
+                   (org-agenda-next-item 1))
+                  (org-agenda-goto)
+                  (org-show-entry)
+                  (throw 'done t))
+
+               ((or (string-match-p "occur" buf-name)
+                  (string-match-p "flycheck errors" buf-name))
                  (funcall (if (> arg 1) #'previous-error #'next-error))
-                 (throw 'done t)))
+                 (throw 'done t))
+               )
              (error (message "%s" (error-message-string err)))))))
      nil t)))
 #+end_src
