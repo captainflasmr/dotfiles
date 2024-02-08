@@ -64,6 +64,7 @@
 ;;
 ;; -> use-package
 ;;
+(use-package ox-gfm)
 (use-package async)
 (use-package diminish)
 (use-package diredfl
@@ -240,11 +241,12 @@
 (define-key my-jump-keymap (kbd "n") (lambda () (interactive) (find-file "~/nas")))
 (define-key my-jump-keymap (kbd "o") (lambda () (interactive) (tab-bar-new-tab-to -1)))
 (define-key my-jump-keymap (kbd "p") 'proced)
-(define-key my-jump-keymap (kbd "r") 'cfw:open-org-calendar)
+(define-key my-jump-keymap (kbd "r") (lambda () (interactive) (find-file "~/repos")))
 (define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
 (define-key my-jump-keymap (kbd "u") 'tab-undo)
 (define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
 (define-key my-jump-keymap (kbd "y") 'emms)
+(define-key my-jump-keymap (kbd "z") 'cfw:open-org-calendar)
 
 (defvar my-win-keymap (make-sparse-keymap))
 (global-set-key (kbd "M-m") my-win-keymap)
@@ -406,7 +408,7 @@
 ;;
 ;; -> keybinding
 ;;
-(global-set-key (kbd "M-s ;") 'save-buffer)
+(global-set-key (kbd "M-s l") 'save-buffer)
 (global-set-key (kbd "<f8>") (lambda ()(interactive)(my/next-thing 1)))
 (global-set-key (kbd "S-<f8>") (lambda ()(interactive)(my/next-thing 2)))
 (global-set-key (kbd "M-s e") 'my/push-block)
@@ -529,15 +531,13 @@
 ;; -> custom-settings
 ;;
 (custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-enabled-themes '(doom-monokai-ristretto))
- '(package-selected-packages
-    '(ox-gfm ztree yaml-mode wc-mode visual-fill-column vertico vc-use-package toc-org tempel spacious-padding rainbow-mode project-mode-line-tag proced-narrow powerthesaurus peg package-lint ox-hugo ox-epub ov org-tidy org-super-agenda org-ql org-modern org-bullets orderless marginalia magit lorem-ipsum keepass-mode kbd-mode jinx i3wm-config-mode highlight-indent-guides helm-org gruvbox-theme gpr-ts-mode gnuplot git-timemachine flycheck find-file-rg file-info esup emms embark-consult elfeed ef-themes doom-themes diredfl diminish deadgrep corfu company chatgpt-shell calfw-org calfw-cal calfw all-the-icons-ibuffer all-the-icons-dired all-the-icons-completion ahk-mode ada-mode))
- '(warning-suppress-log-types '((frameset)))
- '(warning-suppress-types '((frameset))))
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+  '(custom-enabled-themes '(doom-monokai-ristretto))
+  '(warning-suppress-log-types '((frameset)))
+  '(warning-suppress-types '((frameset))))
 
 ;;
 ;; -> defun
@@ -1037,52 +1037,43 @@
 ;; -> custom-set-faces
 ;;
 (custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(diredfl-date-time ((t (:foreground "#8d909b"))))
- '(diredfl-dir-heading ((t (:foreground "#aa5555" :weight bold))))
- '(diredfl-dir-priv ((t (:foreground "DarkRed"))))
- '(diredfl-exec-priv ((t (:foreground "#999999"))))
- '(diredfl-file-name ((t (:foreground "#818282"))))
- '(diredfl-no-priv ((t nil)))
- '(diredfl-number ((t (:foreground "#999999"))))
- '(diredfl-read-priv ((t nil)))
- '(diredfl-write-priv ((t nil)))
- '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
- '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
- '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
- '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
- '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.1 :family "Source Code Pro"))))
- '(fixed-pitch ((t (:family "Fira Code Retina" :height 130))))
- '(indent-guide-face ((t (:background "#282828" :foreground "#666666"))))
- '(org-code ((t (:inherit (shadow fixed-pitch)))))
- '(org-date ((t (:inherit fixed-pitch))))
- '(org-document-info ((t (:foreground "#8f4800"))))
- '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
- '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
- '(org-link ((t (:foreground "#5555ff" :underline t))))
- '(org-modern-date-active ((t (:inherit fixed-pitch))))
- '(org-property-value ((t (:inherit fixed-pitch))))
- '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
- '(org-tag ((t (:inherit (shadow fixed-pitch) :weight regular :height 0.8))))
- '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
- '(outline-1 ((t (:weight regular))))
- '(outline-2 ((t (:weight regular))))
- '(variable-pitch ((t (:family "Sans Serif" :height 140 :weight normal))))
- '(vertical-border ((t (:foreground "#000000"))))
- '(whitespace-missing-newline-at-eof ((t (:foreground "#666566656665"))))
- '(whitespace-newline ((t (:foreground "#666566656665"))))
- '(whitespace-space ((t (:foreground "#666566656665"))))
- '(whitespace-space-after-tab ((t (:foreground "#666566656665"))))
- '(whitespace-space-before-tab ((t (:foreground "#666566656665"))))
- '(whitespace-tab ((t (:foreground "#666566656665"))))
- '(whitespace-trailing ((t (:foreground "#666566656665"))))
- '(widget-button ((t (:inherit fixed-pitch :weight regular))))
- '(window-divider ((t (:foreground "black"))))
- '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
- '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2")))))
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+  '(diredfl-date-time ((t (:foreground "#8d909b"))))
+  '(diredfl-dir-heading ((t (:foreground "#aa5555" :weight bold))))
+  '(diredfl-dir-priv ((t (:foreground "DarkRed"))))
+  '(diredfl-exec-priv ((t (:foreground "#999999"))))
+  '(diredfl-file-name ((t (:foreground "#818282"))))
+  '(diredfl-no-priv ((t nil)))
+  '(diredfl-number ((t (:foreground "#999999"))))
+  '(diredfl-read-priv ((t nil)))
+  '(diredfl-write-priv ((t nil)))
+  '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
+  '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
+  '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
+  '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
+  '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2"))))
+  '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
+  '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.1 :family "Source Code Pro"))))
+  '(org-code ((t (:inherit (shadow fixed-pitch)))))
+  '(org-modern-date-active ((t (:inherit fixed-pitch))))
+  '(org-date ((t (:inherit fixed-pitch))))
+  '(org-document-info ((t (:foreground "#8f4800"))))
+  '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+  '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
+  '(org-link ((t (:foreground "#5555ff" :underline t))))
+  '(org-property-value ((t (:inherit fixed-pitch))) t)
+  '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+  '(org-tag ((t (:inherit (shadow fixed-pitch) :weight regular :height 0.8))))
+  '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
+  '(indent-guide-face ((t (:background "#282828" :foreground "#666666"))))
+  '(outline-1 ((t (:weight regular))))
+  '(outline-2 ((t (:weight regular))))
+  '(widget-button ((t (:inherit fixed-pitch :weight regular))))
+  '(window-divider ((t (:foreground "black"))))
+  '(vertical-border ((t (:foreground "#000000")))))
 
 (custom-theme-set-faces
   'user
@@ -1497,7 +1488,7 @@
 (use-package jinx)
 (use-package powerthesaurus)
 
-(global-set-key (kbd "M-s l")
+(global-set-key (kbd "M-s n")
   (lambda () (interactive)
     ;; (backward-word)
     (jinx-correct)))
@@ -1505,9 +1496,8 @@
 
 (global-set-key (kbd "M-s c") 'wc-mode)
 (global-set-key (kbd "M-s j") 'jinx-mode)
-(global-set-key (kbd "M-s d") 'dictionary-lookup-definition)
+(global-set-key (kbd "M-s f") 'dictionary-lookup-definition)
 (global-set-key (kbd "M-s s") 'powerthesaurus-lookup-synonyms-dwim)
-(global-set-key (kbd "M-s t") 'powerthesaurus-lookup-synonyms-dwim)
 
 (setq ispell-local-dictionary "en_GB")
 (setq ispell-program-name "hunspell")
@@ -2313,9 +2303,9 @@
   (tab-bar-new-button-show nil) ;; 27.1
   (tab-bar-close-button-show nil) ;; 27.1
   (tab-bar-history-limit 100) ;; 27.1
-  (tab-bar-auto-width-max '(100 20)) ;; 29.1
-  (tab-bar-tab-hints t) ;; 27.1
-  (tab-bar-tab-name-format-function #'my-tab-bar-tab-name-format) ;; 28.1
+  ;; (tab-bar-auto-width-max '(100 20)) ;; 29.1
+  ;; (tab-bar-tab-hints t) ;; 27.1
+  ;; (tab-bar-tab-name-format-function #'my-tab-bar-tab-name-format) ;; 28.1
   :config
   (defun my-tab-bar-tab-name-format (tab i)
     (propertize
