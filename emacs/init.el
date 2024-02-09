@@ -234,19 +234,19 @@
 (define-key my-jump-keymap (kbd "g") (lambda () (interactive) (find-file "~/.config")))
 (define-key my-jump-keymap (kbd "h") (lambda () (interactive) (find-file "~")))
 (define-key my-jump-keymap (kbd "i") 'tab-close)
-(define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~/DCIM/content/aaa--todo.org")))
+(define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~/DCIM/content/aab--todo.org")))
 (define-key my-jump-keymap (kbd "k") (lambda () (interactive) (find-file "~/.config/emacs/emacs--init.org")))
 (define-key my-jump-keymap (kbd "l") 'consult-recent-file)
 (define-key my-jump-keymap (kbd "m") 'customize-themes)
 (define-key my-jump-keymap (kbd "n") (lambda () (interactive) (find-file "~/nas")))
 (define-key my-jump-keymap (kbd "o") (lambda () (interactive) (tab-bar-new-tab-to -1)))
 (define-key my-jump-keymap (kbd "p") 'proced)
+(define-key my-jump-keymap (kbd "q") 'cfw:open-org-calendar)
 (define-key my-jump-keymap (kbd "r") (lambda () (interactive) (find-file "~/repos")))
 (define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
 (define-key my-jump-keymap (kbd "u") 'tab-undo)
 (define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
 (define-key my-jump-keymap (kbd "y") 'emms)
-(define-key my-jump-keymap (kbd "z") 'cfw:open-org-calendar)
 
 (defvar my-win-keymap (make-sparse-keymap))
 (global-set-key (kbd "M-m") my-win-keymap)
@@ -408,7 +408,8 @@
 ;;
 ;; -> keybinding
 ;;
-(global-set-key (kbd "M-s l") 'save-buffer)
+(global-set-key (kbd "M-m M-m") 'save-buffer)
+(global-set-key (kbd "M-s m") 'magit-status)
 (global-set-key (kbd "<f8>") (lambda ()(interactive)(my/next-thing 1)))
 (global-set-key (kbd "S-<f8>") (lambda ()(interactive)(my/next-thing 2)))
 (global-set-key (kbd "M-s e") 'my/push-block)
@@ -454,7 +455,7 @@
 (show-paren-mode 1)
 (setq tooltip-mode nil)
 (transient-mark-mode 1)
-(pixel-scroll-precision-mode 1)
+(pixel-scroll-precision-mode -1)
 
 ;;
 ;; -> bell
@@ -733,7 +734,7 @@
        (file+function
          "~/DCIM/content/posts--all.org"
          my-capture-top-level)
-       "* TODO %^{title} :2023:
+       "* TODO %^{title} :2024:
 :PROPERTIES:
 :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>-posts--%\\1
 :EXPORT_HUGO_SECTION: posts
@@ -747,7 +748,7 @@
        (file+function
          "~/DCIM/content/emacs--all.org"
          my-capture-top-level)
-       "* TODO %^{title} :emacs:2023:
+       "* TODO %^{title} :emacs:2024:
 :PROPERTIES:
 :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>-emacs--%\\1
 :EXPORT_HUGO_SECTION: emacs
@@ -761,7 +762,7 @@
        (file+function
          "~/DCIM/content/linux--all.org"
          my-capture-top-level)
-       "** TODO %^{title} :2023:
+       "** TODO %^{title} :2024:
 :PROPERTIES:
 :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>-linux--%\\1
 :EXPORT_HUGO_SECTION: linux
@@ -777,7 +778,7 @@
        (file+function
          "~/DCIM/content/art--all.org"
          my-capture-top-level)
-       "* TODO %^{title} Video :videos:painter:krita:artrage:2023:
+       "* TODO %^{title} Video :videos:painter:krita:artrage:2024:
 :PROPERTIES:
 :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>--%\\1-%\\2
 :EXPORT_HUGO_SECTION: art--videos
@@ -795,7 +796,7 @@
        (file+function
          "~/DCIM/content/art--all.org"
          my-capture-top-level)
-       "** TODO %^{title} :painter:krita:artrage:2023:
+       "** TODO %^{title} :painter:krita:artrage:2024:
 :PROPERTIES:
 :EXPORT_FILE_NAME: %\\1
 :EXPORT_HUGO_SECTION: art--all
@@ -825,7 +826,7 @@
     org-edit-src-content-indentation 0
     org-src-preserve-indentation t
     org-directory "~/DCIM/content/"
-    org-default-notes-file "~/DCIM/content/aaa--todo.org"
+    org-default-notes-file "~/DCIM/content/aab--todo.org"
     org-hide-leading-stars t
     org-reverse-note-order t
     org-log-done 'time
@@ -911,19 +912,17 @@
   :custom
   (org-agenda-include-diary nil)
   (org-agenda-files '("~/DCIM/content/aaa--calendar.org"
-                       "~/DCIM/content/aaa--todo.org"
+                       "~/DCIM/content/aab--todo.org"
+                       "~/DCIM/content/aad--kate.org"
                        "~/DCIM/content/art--all.org"
-                       "~/DCIM/content/calendar--anniversary.org"
-                       "~/DCIM/content/calendar--repeat.org"
                        "~/DCIM/content/dad--betting.org"
                        "~/DCIM/content/emacs--all.org"
-                       "~/DCIM/content/presents--james.org"
-                       "~/DCIM/content/presents--others.org"
-                       "~/DCIM/content/kate--health.org"
                        "~/DCIM/content/kate--loss.org"
                        "~/DCIM/content/linux--all.org"
                        "~/DCIM/content/misc--subs.org"
-                       "~/DCIM/content/posts--all.org"))
+                       "~/DCIM/content/posts--all.org"
+                       "~/DCIM/content/presents--james.org"
+                       "~/DCIM/content/presents--others.org"))
   :config
   (with-eval-after-load 'org-agenda
     (unbind-key "M-m" org-agenda-mode-map)
@@ -1370,8 +1369,35 @@
 (set-face-attribute 'mode-line-inactive nil :height 130 :underline nil :overline nil
   :background "#151515" :foreground "#cacaca")
 
+(defun my-tab-bar-number ()
+  "Return the current tab's index (number) as a string."
+  (let ((current-tab (assq 'current-tab (funcall tab-bar-tabs-function)))
+        (tabs (funcall tab-bar-tabs-function))
+        (index 1))
+    (while (and tabs (not (eq (car tabs) current-tab)))
+      (setq tabs (cdr tabs))
+      (setq index (1+ index)))
+    (format " %d " index)))
+
+(defun my-all-tabs-string ()
+  "Return a string representing all tabs with the current tab highlighted."
+  (let* ((current-tab (assq 'current-tab (funcall tab-bar-tabs-function)))
+         (tabs (funcall tab-bar-tabs-function))
+         (index 1)
+         (tabs-string ""))
+    (while tabs
+      ;; For the current tab, apply special properties. Otherwise, format normally.
+      (let ((tab-string (if (eq (car tabs) current-tab)
+                            (propertize (format " %d " index) 'face '(:inverse-video t))
+                          (format " %d " index))))
+        (setq tabs-string (concat tabs-string tab-string)))
+      (setq tabs (cdr tabs))
+      (setq index (1+ index)))
+    tabs-string))
+
 (setq-default mode-line-format
   '("%e"
+     (:eval (my-all-tabs-string))
      mode-line-modified
      (:eval
        (propertize (format "%s" (abbreviate-file-name default-directory))))
@@ -1388,7 +1414,7 @@
      mode-line-misc-info))
 ;; "-%-"))
 
-(setq mode-line-compact t)
+(setq mode-line-compact nil)
 
 ;;
 ;; -> find
@@ -1876,109 +1902,94 @@
 ;;
 ;; -> selected-window-accent-mode
 ;;
+
 (use-package selected-window-accent-mode
   :load-path "~/repos/selected-window-accent-mode"
   ;; :vc (:fetcher github :repo "captainflasmr/selected-window-accent-mode")
-  ;; :diminish selected-window-accent-mode
+  :config (selected-window-accent-mode 1)
   :custom
   (selected-window-accent-fringe-thickness 10)
-  (selected-window-accent-percentage-darken -20)
-  (selected-window-accent-percentage-desaturate 50)
+  (selected-window-accent-percentage-darken 0)
+  (selected-window-accent-percentage-desaturate 10)
+  (selected-window-accent-smart-borders nil)
   (selected-window-accent-tab-accent t)
-  ;; (selected-window-accent-custom-color "#427900")
+  ;; (selected-window-accent-custom-color "#006298")
   (selected-window-accent-custom-color nil)
   (selected-window-accent-mode-style 'subtle))
 
-(selected-window-accent-mode)
-
 (setq my/push-block-spec
   '(
-     ("~/repos/selected-window-accent-mode/CHANGELOG.org" ;; source-file
-       "~/repos/selected-window-accent-mode/README.org" ;; export-file
-       "\\* ISSUES" ;; source-start-tag
-       "\\* ROADMAP" ;; source-end-tag
-       "* ISSUES\n" ;; export-start-tag
-       "\n* TODOs / ROADMAP" ;; export-end-tag
-       :ascii ;; format-spec
-       "  ")
-     ("~/repos/selected-window-accent-mode/CHANGELOG.org" ;; source-file
-       "~/repos/selected-window-accent-mode/README.org" ;; export-file
-       "\\* ROADMAP" ;; source-start-tag
-       "\\* Latest TBD" ;; source-end-tag
-       "* TODOs / ROADMAP\n" ;; export-start-tag
-       "\n* Testing" ;; export-end-tag
-       :ascii ;; format-spec
-       "  ")
-     ("~/repos/selected-window-accent-mode/README.org"
+     (:ascii
+       "~/repos/selected-window-accent-mode/CHANGELOG.org"
+       "~/repos/selected-window-accent-mode/README.org"
+       "\\* Whats New" "\\* ISSUES"
+       "** Whats New\n" "\n** Screenshot" "  ")
+     (:ascii
+       "~/repos/selected-window-accent-mode/CHANGELOG.org"
+       "~/repos/selected-window-accent-mode/README.org"
+       "\\* ISSUES" "\\* ROADMAP"
+       "* ISSUES\n" "\n* TODOs / ROADMAP" "  ")
+     (:ascii
+       "~/repos/selected-window-accent-mode/CHANGELOG.org"
+       "~/repos/selected-window-accent-mode/README.org"
+       "\\* ROADMAP" "\\* Versions"
+       "* TODOs / ROADMAP\n" "\n* Testing" "  ")
+     (:ascii
+       "~/repos/selected-window-accent-mode/README.org"
        "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       "\\* Summary"
-       "\\* Installation"
-       ";;; Commentary:\n;;\n"
-       ";\n(require"
-       :ascii
-       ";; ")
-     ("~/repos/selected-window-accent-mode/README.org"
+       "\\* Summary" "\\*\\* Whats New"
+       ";;; Commentary:\n;;\n" "\n;; Quick Start" ";; ")
+     (:ascii
+       "~/repos/selected-window-accent-mode/README.org"
        "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       "\\*\\* selected-window-accent-fringe-thickness\n"
-       "\n\*\* selected-window-accent-custom-color"
-       "defcustom selected-window-accent-fringe-thickness 6\n  \""
-       "\"\n  \:type"
-       :ascii
-       "")
-     ("~/repos/selected-window-accent-mode/README.org"
+       "\\* Quick Start" "\\* Installation"
+       ";; Quick Start\n;;\n" ";;\n(require" ";; ")
+     (:ascii
+       "~/repos/selected-window-accent-mode/README.org"
        "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       "\\*\\* selected-window-accent-custom-color\n"
-       "\n\*\* selected-window-accent-mode"
-       "defcustom selected-window-accent-custom-color nil\n  \""
-       "\"\n  \:type"
-       :ascii
-       "")
-     ("~/repos/selected-window-accent-mode/README.org"
+       "\\*\\* selected-window-accent-fringe-thickness\n" "\n\*\* selected-window-accent-custom-color"
+       "defcustom selected-window-accent-fringe-thickness 6\n  \"" "\"\n  \:type" "")
+     (:ascii
+       "~/repos/selected-window-accent-mode/README.org"
        "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       "\\*\\* selected-window-accent-mode\n"
-       "\n\*\* selected-window-accent-mode-style"
-       "defcustom selected-window-accent-mode nil\n  \""
-       "\"\n  \:type"
-       :ascii
-       "")
-     ("~/repos/selected-window-accent-mode/README.org"
+       "\\*\\* selected-window-accent-custom-color\n" "\n\*\* selected-window-accent-mode"
+       "defcustom selected-window-accent-custom-color nil\n  \"" "\"\n  \:type" "")
+     (:ascii
+       "~/repos/selected-window-accent-mode/README.org"
        "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       "\\*\\* selected-window-accent-mode-style"
-       "\n\*\* selected-window-accent-percentage-darken"
-       "defcustom selected-window-accent-mode-style \'default\n  \""
-       "\"\n  \:type"
-       :ascii
-       "")
-     ("~/repos/selected-window-accent-mode/README.org"
+       "\\*\\* selected-window-accent-mode\n" "\n\*\* selected-window-accent-mode-style"
+       "defcustom selected-window-accent-mode nil\n  \"" "\"\n  \:type" "")
+     (:ascii
+       "~/repos/selected-window-accent-mode/README.org"
        "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       "\\*\\* selected-window-accent-percentage-darken"
-       "\n\*\* selected-window-accent-percentage-desaturate"
-       "defcustom selected-window-accent-percentage-darken 20\n  \""
-       "\"\n  \:type"
-       :ascii
-       "")
-     ("~/repos/selected-window-accent-mode/README.org"
+       "\\*\\* selected-window-accent-mode-style" "\n\*\* selected-window-accent-percentage-darken"
+       "defcustom selected-window-accent-mode-style \'default\n  \"" "\"\n  \:type" "")
+     (:ascii
+       "~/repos/selected-window-accent-mode/README.org"
        "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       "\\*\\* selected-window-accent-percentage-desaturate"
-       "\n\*\* selected-window-accent-tab-accent"
-       "defcustom selected-window-accent-percentage-desaturate 20\n  \""
-       "\"\n  \:type"
-       :ascii
-       "")
-     ("~/repos/selected-window-accent-mode/README.org"
+       "\\*\\* selected-window-accent-percentage-darken" "\n\*\* selected-window-accent-percentage-desaturate"
+       "defcustom selected-window-accent-percentage-darken 20\n  \"" "\"\n  \:type" "")
+     (:ascii
+       "~/repos/selected-window-accent-mode/README.org"
        "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       "\\*\\* selected-window-accent-tab-accent"
-       "\* Minor Mode"
-       "defcustom selected-window-accent-tab-accent nil\n  \""
-       "\"\n  \:type"
-       :ascii
-       "")
-     ("~/DCIM/content/tagged--all.org" "" "" "" "" "" :hugo "")
-     ("~/DCIM/content/art--all.org" "" "" "" "" "" :hugo "")
-     ("~/DCIM/content/emacs--all.org" "" "" "" "" "" :hugo "")
-     ("~/DCIM/content/kate--blog.org" "" "" "" "" "" :hugo "")
-     ("~/DCIM/content/linux--all.org" "" "" "" "" "" :hugo "")
-     ("~/DCIM/content/posts--all.org" "" "" "" "" "" :hugo "")
+       "\\*\\* selected-window-accent-percentage-desaturate" "\n\*\* selected-window-accent-tab-accent"
+       "defcustom selected-window-accent-percentage-desaturate 20\n  \"" "\"\n  \:type" "")
+     (:ascii
+       "~/repos/selected-window-accent-mode/README.org"
+       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
+       "\\*\\* selected-window-accent-tab-accent" "\n\*\* selected-window-accent-smart-borders"
+       "defcustom selected-window-accent-tab-accent nil\n  \"" "\"\n  \:type" "")
+     (:ascii
+       "~/repos/selected-window-accent-mode/README.org"
+       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
+       "\\*\\* selected-window-accent-smart-borders" "\* Minor Mode"
+       "defcustom selected-window-accent-smart-borders nil\n  \"" "\"\n  \:type" "")
+     (:hugo "~/DCIM/content/tagged--all.org" "" "" "" "" "" "")
+     (:hugo "~/DCIM/content/art--all.org" "" "" "" "" "" "")
+     (:hugo "~/DCIM/content/emacs--all.org" "" "" "" "" "" "")
+     (:hugo "~/DCIM/content/kate--blog.org" "" "" "" "" "" "")
+     (:hugo"~/DCIM/content/linux--all.org" "" "" "" "" "" "")
+     (:hugo "~/DCIM/content/posts--all.org" "" "" "" "" "" "")
      )
   )
 
@@ -1991,13 +2002,13 @@
   (interactive "p")
   (save-excursion
     (dolist (item my/push-block-spec)
-      (let* ((source-file (expand-file-name (nth 0 item)))
-              (export-file (expand-file-name (nth 1 item)))
-              (source-start-tag (nth 2 item))
-              (source-end-tag (nth 3 item))
-              (export-start-tag (nth 4 item))
-              (export-end-tag (nth 5 item))
-              (format-spec (nth 6 item))
+      (let* ((format-spec (nth 0 item))
+              (source-file (expand-file-name (nth 1 item)))
+              (export-file (expand-file-name (nth 2 item)))
+              (source-start-tag (nth 3 item))
+              (source-end-tag (nth 4 item))
+              (export-start-tag (nth 5 item))
+              (export-end-tag (nth 6 item))
               (prefix-string (nth 7 item))
               (buff-contents "")
               (in-current (string-equal (expand-file-name (buffer-file-name)) source-file)))
@@ -2292,7 +2303,7 @@
 (use-package tab-bar ;; 29.1
   :ensure nil ;; Since tab-bar is built-in, no package needs to be downloaded
   :init
-  (tab-bar-mode 1) ;; 27.1
+  (tab-bar-mode -1) ;; 27.1
   (tab-bar-history-mode 1) ;; 27.1
   :custom
   (tab-bar-format '(tab-bar-format-tabs-groups
@@ -2528,3 +2539,14 @@ Or indeed other filters as defined in the main unless"
                )
              (error (message "%s" (error-message-string err)))))))
      nil t)))
+
+(defun my/replace-spaces-with-dashes (start end)
+  "Replace all spaces with dashes in the selected region."
+  (interactive "r") ; The 'r' means this function uses the region as arguments
+  (let ((selected-text (buffer-substring start end))
+        (replacement-text))
+    (setq replacement-text (replace-regexp-in-string " " "-" selected-text))
+    (delete-region start end)
+    (insert replacement-text)))
+
+(global-set-key (kbd "M-_") #'my/replace-spaces-with-dashes)
