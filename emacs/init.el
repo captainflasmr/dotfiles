@@ -32,7 +32,7 @@
 ;;
 ;; -> top-level-variables
 ;;
-(setq my/accent-color "#97c84f")
+(setq my/accent-color "#821a00")
 
 ;;
 ;; -> startup
@@ -64,6 +64,10 @@
 ;;
 ;; -> use-package
 ;;
+(use-package lorem-ipsum)
+(use-package ox-epub)
+(use-package file-info)
+(use-package keepass-mode)
 (use-package ox-gfm)
 (use-package async)
 (use-package diminish)
@@ -422,6 +426,8 @@
 (bind-key* (kbd "M-u") (lambda()(interactive)(select-window (previous-window (selected-window)))))
 (bind-key* (kbd "M-j") (lambda()(interactive)(next-line (/ (window-height) 8))))
 (bind-key* (kbd "M-k") (lambda()(interactive)(previous-line (/ (window-height) 8))))
+(bind-key* (kbd "C-M-j") (lambda()(interactive)(next-line 1)))
+(bind-key* (kbd "C-M-k") (lambda()(interactive)(previous-line 1)))
 (bind-key* (kbd "M-i") (lambda()(interactive)(select-window (next-window (selected-window)))))
 (bind-key* (kbd "M-I") (lambda ()(interactive)(my/resize-window 4 t)))
 (bind-key* (kbd "M-U") (lambda ()(interactive)(my/resize-window -4 t)))
@@ -652,6 +658,63 @@
 (global-set-key (kbd "M-s h") 'my/mark-block)
 (global-set-key (kbd "M-@") 'my/mark-block)
 (global-set-key (kbd "M-'") 'my/mark-word)
+
+(defun my/replace-spaces-with-dashes (start end)
+  "Replace all spaces with dashes in the selected region."
+  (interactive "r") ; The 'r' means this function uses the region as arguments
+  (let ((selected-text (buffer-substring start end))
+        (replacement-text))
+    (setq replacement-text (replace-regexp-in-string " " "-" selected-text))
+    (delete-region start end)
+    (insert replacement-text)))
+
+(global-set-key (kbd "M-_") #'my/replace-spaces-with-dashes)
+
+(require 'cl-lib)
+
+(defun my/collapse-space ()
+  "Collapses consecutive blank lines down to a single blank line if there's more than one, or removes a single blank line if that's all that is found."
+  (interactive)
+  (save-excursion
+    (let ((found-blank-lines 0))
+      (while (and (not (eobp)))
+        (if (looking-at "^[ ]*\n")
+          (progn
+            (setq found-blank-lines (1+ found-blank-lines))
+            (replace-match ""))
+          (if (> found-blank-lines 0)
+            (progn
+              (if (> found-blank-lines 1)
+                (insert "\n"))
+              (cl-return))
+            (forward-line)))))))
+
+(global-set-key (kbd "C-x C-o") 'my/collapse-space)
+
+(defun my/text-browser-search ()
+  "Use the selected text (or the word under the cursor) as the search term for a Google search in a web browser."
+  (interactive)
+  (let (search-term start end)
+    ;; Check if text is selected, otherwise use the word at the cursor position
+    (if (use-region-p)
+      (setq start (region-beginning)
+        end (region-end))
+      (setq start (beginning-of-thing 'word)
+        end (end-of-thing 'word)))
+    ;; Extract the search term and urlencode it
+    (setq search-term (buffer-substring-no-properties start end))
+    (setq search-term (replace-regexp-in-string "[[:space:]\n]+" "+" search-term))
+    ;; Open in an external browser
+    (browse-url (concat "https://www.startpage.com/search?q=" search-term))))
+
+(defun my/toggle-scroll-margin (&optional value)
+  (interactive "P")
+  (let ((new-value (if value
+                     value
+                     (if (= (or scroll-margin 0) 0)
+                       20
+                       0))))
+    (setq scroll-margin new-value)))
 
 ;;
 ;; -> window-positioning
@@ -1515,7 +1578,7 @@
 (use-package jinx)
 (use-package powerthesaurus)
 
-(global-set-key (kbd "M-s n")
+(global-set-key (kbd "M-s l")
   (lambda () (interactive)
     ;; (backward-word)
     (jinx-correct)))
@@ -1523,8 +1586,10 @@
 
 (global-set-key (kbd "M-s c") 'wc-mode)
 (global-set-key (kbd "M-s j") 'jinx-mode)
+(global-set-key (kbd "M-s d") 'dictionary-lookup-definition)
 (global-set-key (kbd "M-s f") 'dictionary-lookup-definition)
 (global-set-key (kbd "M-s s") 'powerthesaurus-lookup-synonyms-dwim)
+(global-set-key (kbd "M-s t") 'powerthesaurus-lookup-synonyms-dwim)
 
 (setq ispell-local-dictionary "en_GB")
 (setq ispell-program-name "hunspell")
@@ -1914,8 +1979,8 @@
   (selected-window-accent-percentage-desaturate 10)
   (selected-window-accent-smart-borders nil)
   (selected-window-accent-tab-accent t)
-  (selected-window-accent-custom-color "#4D8A8C")
-  ;; (selected-window-accent-custom-color nil)
+  (selected-window-accent-custom-color nil)
+  (selected-window-accent-custom-color "#E4B359")
   (selected-window-accent-mode-style 'subtle))
 
 (setq my/push-block-spec
@@ -2094,6 +2159,37 @@
   ) ;; defun
 
 ;;
+;; -> kurecolor
+;;
+
+(use-package kurecolor
+  :ensure t ; Ensure the package is installed (optional)
+  :bind (("M-<up>" . (lambda () (interactive) (kurecolor-increase-brightness-by-step 0.2)))
+         ("M-<down>" . (lambda () (interactive) (kurecolor-decrease-brightness-by-step 0.2)))
+         ("M-<prior>" . (lambda () (interactive) (kurecolor-increase-saturation-by-step 0.2)))
+         ("M-<next>" . (lambda () (interactive) (kurecolor-decrease-saturation-by-step 0.2)))
+         ("M-<left>" . (lambda () (interactive) (kurecolor-decrease-hue-by-step 0.2)))
+         ("M-<right>" . (lambda () (interactive) (kurecolor-increase-hue-by-step 0.2))))
+  :config
+  (global-set-key (kbd "M-<home>") 'my/insert-random-color-at-point))
+
+(defun my/insert-random-color-at-point ()
+  "Generate a random color and insert it at the current hex color code under cursor."
+  (interactive)
+  (let* ((color (format "#%06x" (random (expt 16 6))))
+         (bounds (bounds-of-thing-at-point 'sexp))
+         (start (car bounds))
+         (end (cdr bounds)))
+    (if (and bounds (> end start))
+        (progn
+          (goto-char start)
+          (unless (looking-at "#[0-9a-fA-F]\\{6\\}")
+            (error "Not on a hex color code"))
+          (delete-region start end)
+          (insert color))
+      (error "No hex color code at point"))))
+
+;;
 ;; -> shell
 ;;
 (setq explicit-shell-file-name "/usr/bin/fish")
@@ -2118,11 +2214,8 @@
   (eshell-mode . my/eshell-hook))
 
 (use-package shell
-  :config
   :hook
   (shell-mode . my/shell-hook))
-
-(global-set-key (kbd "M-T") 'ansi-term)
 
 ;;
 ;; -> chatGPT
@@ -2160,7 +2253,7 @@
   :bind (("C-x x p" . proced)
           :map proced-mode-map
           ("f" . proced-narrow)
-          ("G" . my/proced-toggle-update))
+          ("P" . my/proced-toggle-update))
   :init
   (setq proced-auto-update-interval 1
     proced-enable-color-flag 1
@@ -2286,18 +2379,46 @@
 ;;   (tab-bar-tab-inactive ((t (:inherit tab-bar :box (:line-width (2 . 2) :color "#575757" :style flat)))))) ;; 27.1
 
 ;;
+;; -> word-count
+;;
+(use-package wc-mode
+  ;; :hook
+  ;; (org-mode . wc-mode)
+  :custom
+  (wc-modeline-format "WC:%tw"))
+
+(defun my-word-count-function (rstart rend)
+  "Counts words without lines containing 'DONE' and the 'PROPERTIES' and 'END:' drawers.
+Or indeed other filters as defined in the main unless"
+  (let ((count 0))
+    (save-excursion
+      (goto-char rstart)
+      ;; Loop over each line in the region
+      (while (< (point) rend)
+        (let ((line (buffer-substring-no-properties (line-beginning-position)
+                      (line-end-position))))
+          ;; Only count words if the line doesn't contain DONE or is not between PROPERTIES and END
+          ;; Or indeed other filters as defined below
+          (unless (or
+                    (string-match-p "\\* DONE" line)
+                    (string-match-p "\\* TODO" line)
+                    (string-match-p "file\:" line)
+                    (and (string-match-p ":PROPERTIES:" line) (re-search-forward ":END:" nil t))
+                    (and (string-match-p "\\#\\+begin" line) (re-search-forward "\\#\\+end" nil t))
+                    (string-match-p "\\#\\+" line)
+                    )
+            (setq count (+ count (1+ (how-many " " (line-beginning-position) (line-end-position))))))
+          ;; (setq count (+ count (length (split-string line "\\W+" t)))))
+          ;; Go to the beginning of the next line
+          (forward-line 1))))
+    count))
+
+;; Set the custom wc-mode counting function
+(setq wc-count-words-function 'my-word-count-function)
+
+;;
 ;; -> development
 ;;
-(defun my/toggle-scroll-margin (&optional value)
-  (interactive "P")
-  (let ((new-value (if value
-                     value
-                     (if (= (or scroll-margin 0) 0)
-                       20
-                       0))))
-    (setq scroll-margin new-value)))
-
-(use-package lorem-ipsum)
 
 (defun subtract-weight (weight-str avg-loss)
   "Subtract AVG-LOSS pounds from WEIGHT-STR given in 'stones:pounds' format."
@@ -2341,47 +2462,6 @@
     )
   (org-table-align))
 
-(use-package ox-epub)
-
-(defun my/text-browser-search ()
-  "Use the selected text (or the word under the cursor) as the search term for a Google search in a web browser."
-  (interactive)
-  (let (search-term start end)
-    ;; Check if text is selected, otherwise use the word at the cursor position
-    (if (use-region-p)
-      (setq start (region-beginning)
-        end (region-end))
-      (setq start (beginning-of-thing 'word)
-        end (end-of-thing 'word)))
-    ;; Extract the search term and urlencode it
-    (setq search-term (buffer-substring-no-properties start end))
-    (setq search-term (replace-regexp-in-string "[[:space:]\n]+" "+" search-term))
-    ;; Open in an external browser
-    (browse-url (concat "https://www.startpage.com/search?q=" search-term))))
-
-(use-package file-info)
-
-(require 'cl-lib)
-
-(defun my/collapse-space ()
-  "Collapses consecutive blank lines down to a single blank line if there's more than one, or removes a single blank line if that's all that is found."
-  (interactive)
-  (save-excursion
-    (let ((found-blank-lines 0))
-      (while (and (not (eobp)))
-        (if (looking-at "^[ ]*\n")
-          (progn
-            (setq found-blank-lines (1+ found-blank-lines))
-            (replace-match ""))
-          (if (> found-blank-lines 0)
-            (progn
-              (if (> found-blank-lines 1)
-                (insert "\n"))
-              (cl-return))
-            (forward-line)))))))
-
-(global-set-key (kbd "C-x C-o") 'my/collapse-space)
-
 (use-package project-mode-line-tag
   :config
   (project-mode-line-tag-mode 1))
@@ -2389,51 +2469,6 @@
 (consult-customize
   consult-theme :preview-key '(:debounce 0.2 any)
   consult-recent-file consult-outline consult-imenu consult-history :preview-key nil)
-
-(defun my/color-name-to-hex (color-name)
-  "Convert COLOR-NAME to its hexadecimal representation."
-  (let ((rgb (color-name-to-rgb color-name)))
-    (when rgb
-      (apply #'format "#%02x%02x%02x"
-        (mapcar (lambda (x) (round (* x 255))) rgb)))))
-
-;; WC[%W%w/%tw]
-(use-package wc-mode
-  ;; :hook
-  ;; (org-mode . wc-mode)
-  :custom
-  (wc-modeline-format "WC:%tw"))
-
-(defun my-word-count-function (rstart rend)
-  "Counts words without lines containing 'DONE' and the 'PROPERTIES' and 'END:' drawers.
-Or indeed other filters as defined in the main unless"
-  (let ((count 0))
-    (save-excursion
-      (goto-char rstart)
-      ;; Loop over each line in the region
-      (while (< (point) rend)
-        (let ((line (buffer-substring-no-properties (line-beginning-position)
-                      (line-end-position))))
-          ;; Only count words if the line doesn't contain DONE or is not between PROPERTIES and END
-          ;; Or indeed other filters as defined below
-          (unless (or
-                    (string-match-p "\\* DONE" line)
-                    (string-match-p "\\* TODO" line)
-                    (string-match-p "file\:" line)
-                    (and (string-match-p ":PROPERTIES:" line) (re-search-forward ":END:" nil t))
-                    (and (string-match-p "\\#\\+begin" line) (re-search-forward "\\#\\+end" nil t))
-                    (string-match-p "\\#\\+" line)
-                    )
-            (setq count (+ count (1+ (how-many " " (line-beginning-position) (line-end-position))))))
-          ;; (setq count (+ count (length (split-string line "\\W+" t)))))
-          ;; Go to the beginning of the next line
-          (forward-line 1))))
-    count))
-
-;; Set the custom wc-mode counting function
-(setq wc-count-words-function 'my-word-count-function)
-
-(use-package keepass-mode)
 
 (defun my/next-thing (arg)
   "Go to the next thing, meaning warning, error, grep, etc., based on ARG."
@@ -2477,17 +2512,6 @@ Or indeed other filters as defined in the main unless"
              (error (message "%s" (error-message-string err)))))))
      nil t)))
 
-(defun my/replace-spaces-with-dashes (start end)
-  "Replace all spaces with dashes in the selected region."
-  (interactive "r") ; The 'r' means this function uses the region as arguments
-  (let ((selected-text (buffer-substring start end))
-        (replacement-text))
-    (setq replacement-text (replace-regexp-in-string " " "-" selected-text))
-    (delete-region start end)
-    (insert replacement-text)))
-
-(global-set-key (kbd "M-_") #'my/replace-spaces-with-dashes)
-
 (defun my/dired-delete-async ()
   "Delete files asynchronously in Dired."
   (interactive)
@@ -2496,35 +2520,3 @@ Or indeed other filters as defined in the main unless"
       (dolist (file files)
         (async-shell-command (format "gio trash '%s'" file))))
     (message "Async deletion is set up only for trash. Set `delete-by-moving-to-trash` to t.")))
-
-(use-package kurecolor)
-
-(global-set-key (kbd "M-<home>") 'my/insert-random-color-at-point)
-(global-set-key (kbd "M-<up>")
-  (lambda () (interactive) (kurecolor-increase-brightness-by-step 0.2)))
-(global-set-key (kbd "M-<down>")
-  (lambda () (interactive) (kurecolor-decrease-brightness-by-step 0.2)))
-(global-set-key (kbd "M-<prior>")
-  (lambda () (interactive) (kurecolor-increase-saturation-by-step 0.2)))
-(global-set-key (kbd "M-<next>")
-  (lambda () (interactive) (kurecolor-decrease-saturation-by-step 0.2)))
-(global-set-key (kbd "M-<left>")
-  (lambda () (interactive) (kurecolor-decrease-hue-by-step 0.2)))
-(global-set-key (kbd "M-<right>")
-  (lambda () (interactive) (kurecolor-increase-hue-by-step 0.2)))
-
-(defun my/insert-random-color-at-point ()
-  "Generate a random color and insert it at the current hex color code under cursor."
-  (interactive)
-  (let* ((color (format "#%06x" (random (expt 16 6))))
-         (bounds (bounds-of-thing-at-point 'sexp))
-         (start (car bounds))
-         (end (cdr bounds)))
-    (if (and bounds (> end start))
-        (progn
-          (goto-char start)
-          (unless (looking-at "#[0-9a-fA-F]\\{6\\}")
-            (error "Not on a hex color code"))
-          (delete-region start end)
-          (insert color))
-      (error "No hex color code at point"))))
