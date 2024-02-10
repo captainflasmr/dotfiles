@@ -265,7 +265,6 @@ Turn on a profiler if we would like
 #+end_src
 
 * modeline-completion
-
 ** bespoke
 
 #+begin_src elisp :tangle no
@@ -1387,16 +1386,16 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 
 (defun my/image-dired-sort (arg)
   "Sort images in various ways."
-  (interactive "p")
+  (interactive "P")
   ;; Use `let` to temporarily set `dired-actual-switches`
   (let ((dired-actual-switches
           (cond
             ((equal arg nil)            ; no C-u
-              "-lGghat  --ignore=*.xmp")
+              "-lGghat --ignore=*.xmp")
             ((equal arg '(4))           ; C-u
-              "-lGgha  --ignore=*.xmp")
+              "-lGgha --ignore=*.xmp")
             ((equal arg 1)              ; C-u 1
-              "-lGgha  --ignore=*.xmp"))))
+              "-lGgha --ignore=*.xmp"))))
     (let ((w (selected-window)))
       (delete-other-windows)
       (revert-buffer)
@@ -1669,6 +1668,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
      mode-line-misc-info))
 ;; "-%-"))
 
+(display-time-mode -1)
 (setq mode-line-compact nil)
 #+end_src
 
@@ -2298,7 +2298,7 @@ echo
 ;;
 
 (use-package selected-window-accent-mode
-  :load-path "~/repos/selected-window-accent-mode"
+  ;; :load-path "~/repos/selected-window-accent-mode"
   ;; :vc (:fetcher github :repo "captainflasmr/selected-window-accent-mode")
   :config (selected-window-accent-mode 1)
   :custom
@@ -2490,14 +2490,14 @@ echo
 
 * colour-shift
 
-#+begin_src elisp
+#+begin_src elisp :tangle no
 ;;
 ;; -> colour-shift
 ;;
 (defun colour-shift (delta type)
   "Shift the hex text value colour by the desired delta for the defined type"
   (save-excursion
-    ;; find the colour in the form #ff4400
+    ;; find the colour in the form #f44100
     (forward-word)
     (search-backward-regexp "#\\([[:xdigit:]]\\{6\\}\\)" nil t)
     (setq str (match-string-no-properties 1))
@@ -2719,7 +2719,6 @@ echo
 ;; -> tab-bar
 ;;
 
-(display-time-mode 1)
 (setq display-time-day-and-date t)
 (setq display-time-interval 4)
 (setq display-time-load-average-threshold 2.0)
@@ -2947,12 +2946,17 @@ Or indeed other filters as defined in the main unless"
          (let ((buf-name (buffer-name)))
            (condition-case err
              (cond
-                ((string-match-p "compilation" buf-name)
+               ((string-match-p "compilation" buf-name)
                  (funcall (if (> arg 1) #'re-search-backward #'re-search-forward) "[[:digit:]]: warning:")
                  (compile-goto-error)
+                 (throw 'done t))
+
+               ((string-match-p "compile-log" buf-name)
+                 (funcall (if (> arg 1) #'previous-error-no-select #'next-error-no-select))
+                  (compile-goto-error)
                   (throw 'done t))
 
-                ((string-match-p "dead" buf-name)
+               ((string-match-p "dead" buf-name)
                  (funcall (if (> arg 1) #'deadgrep-backward-match #'deadgrep-forward-match))
                   (deadgrep-visit-result-other-window)
                   (org-show-entry)
@@ -2984,4 +2988,46 @@ Or indeed other filters as defined in the main unless"
     (insert replacement-text)))
 
 (global-set-key (kbd "M-_") #'my/replace-spaces-with-dashes)
-#+end_src
+
+(defun my/dired-delete-async ()
+  "Delete files asynchronously in Dired."
+  (interactive)
+  (if (eq delete-by-moving-to-trash t)
+    (let ((files (dired-get-marked-files)))
+      (dolist (file files)
+        (async-shell-command (format "gio trash '%s'" file))))
+    (message "Async deletion is set up only for trash. Set `delete-by-moving-to-trash` to t.")))
+
+(use-package kurecolor)
+
+(global-set-key (kbd "M-<home>") 'my/insert-random-color-at-point)
+(global-set-key (kbd "M-<up>")
+  (lambda () (interactive) (kurecolor-increase-brightness-by-step 0.2)))
+(global-set-key (kbd "M-<down>")
+  (lambda () (interactive) (kurecolor-decrease-brightness-by-step 0.2)))
+(global-set-key (kbd "M-<prior>")
+  (lambda () (interactive) (kurecolor-increase-saturation-by-step 0.2)))
+(global-set-key (kbd "M-<next>")
+  (lambda () (interactive) (kurecolor-decrease-saturation-by-step 0.2)))
+(global-set-key (kbd "M-<left>")
+  (lambda () (interactive) (kurecolor-decrease-hue-by-step 0.2)))
+(global-set-key (kbd "M-<right>")
+  (lambda () (interactive) (kurecolor-increase-hue-by-step 0.2)))
+
+(defun my/insert-random-color-at-point ()
+  "Generate a random color and insert it at the current hex color code under cursor."
+  (interactive)
+  (let* ((color (format "#%06x" (random (expt 16 6))))
+         (bounds (bounds-of-thing-at-point 'sexp))
+         (start (car bounds))
+         (end (cdr bounds)))
+    (if (and bounds (> end start))
+        (progn
+          (goto-char start)
+          (unless (looking-at "#[0-9a-fA-F]\\{6\\}")
+            (error "Not on a hex color code"))
+          (delete-region start end)
+          (insert color))
+      (error "No hex color code at point"))))
+
+    #+end_src

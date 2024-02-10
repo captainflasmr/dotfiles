@@ -32,7 +32,7 @@
 ;;
 ;; -> top-level-variables
 ;;
-(setq my/accent-color "#821a00")
+(setq my/accent-color "#97c84f")
 
 ;;
 ;; -> startup
@@ -239,7 +239,7 @@
 (define-key my-jump-keymap (kbd "l") 'consult-recent-file)
 (define-key my-jump-keymap (kbd "m") 'customize-themes)
 (define-key my-jump-keymap (kbd "n") (lambda () (interactive) (find-file "~/nas")))
-(define-key my-jump-keymap (kbd "o") (lambda () (interactive) (tab-bar-new-tab-to -1)))
+(define-key my-jump-keymap (kbd "o") (lambda () (interactive) (tab-bar-new-tab-to -1)(tab-bar-mode 'toggle)))
 (define-key my-jump-keymap (kbd "p") 'proced)
 (define-key my-jump-keymap (kbd "q") 'cfw:open-org-calendar)
 (define-key my-jump-keymap (kbd "r") (lambda () (interactive) (find-file "~/repos")))
@@ -1149,16 +1149,16 @@
 
 (defun my/image-dired-sort (arg)
   "Sort images in various ways."
-  (interactive "p")
+  (interactive "P")
   ;; Use `let` to temporarily set `dired-actual-switches`
   (let ((dired-actual-switches
           (cond
             ((equal arg nil)            ; no C-u
-              "-lGghat  --ignore=*.xmp")
+              "-lGghat --ignore=*.xmp")
             ((equal arg '(4))           ; C-u
-              "-lGgha  --ignore=*.xmp")
+              "-lGgha --ignore=*.xmp")
             ((equal arg 1)              ; C-u 1
-              "-lGgha  --ignore=*.xmp"))))
+              "-lGgha --ignore=*.xmp"))))
     (let ((w (selected-window)))
       (delete-other-windows)
       (revert-buffer)
@@ -1414,6 +1414,7 @@
      mode-line-misc-info))
 ;; "-%-"))
 
+(display-time-mode -1)
 (setq mode-line-compact nil)
 
 ;;
@@ -1904,7 +1905,7 @@
 ;;
 
 (use-package selected-window-accent-mode
-  :load-path "~/repos/selected-window-accent-mode"
+  ;; :load-path "~/repos/selected-window-accent-mode"
   ;; :vc (:fetcher github :repo "captainflasmr/selected-window-accent-mode")
   :config (selected-window-accent-mode 1)
   :custom
@@ -1913,8 +1914,8 @@
   (selected-window-accent-percentage-desaturate 10)
   (selected-window-accent-smart-borders nil)
   (selected-window-accent-tab-accent t)
-  ;; (selected-window-accent-custom-color "#006298")
-  (selected-window-accent-custom-color nil)
+  (selected-window-accent-custom-color "#4D8A8C")
+  ;; (selected-window-accent-custom-color nil)
   (selected-window-accent-mode-style 'subtle))
 
 (setq my/push-block-spec
@@ -2093,74 +2094,6 @@
   ) ;; defun
 
 ;;
-;; -> colour-shift
-;;
-(defun colour-shift (delta type)
-  "Shift the hex text value colour by the desired delta for the defined type"
-  (save-excursion
-    ;; find the colour in the form #ff4400
-    (forward-word)
-    (search-backward-regexp "#\\([[:xdigit:]]\\{6\\}\\)" nil t)
-    (setq str (match-string-no-properties 1))
-    (setq hsl (color-rgb-to-hsl
-                (/ (float
-                     (string-to-number
-                       (substring-no-properties str 0 2) 16)) (float 255))
-                (/ (float
-                     (string-to-number
-                       (substring-no-properties str 2 4) 16)) (float 255))
-                (/ (float
-                     (string-to-number
-                       (substring-no-properties str 4 6) 16)) (float 255))))
-    (cond
-      ((= type 1) ;; value
-        (setq hslmod
-          (list (nth 0 hsl) (nth 1 hsl) (+ (nth 2 hsl) delta))))
-      ((= type 4) ;; hue C-u
-        (setq hslmod
-          (list (+ (nth 0 hsl) delta) (nth 1 hsl) (nth 2 hsl))))
-      ((= type 16) ;; saturation C-u C-u
-        (setq hslmod
-          (list (nth 0 hsl) (+ (nth 1 hsl) delta) (nth 2 hsl) delta)))
-      ((= type 64) ;; random C-u C-u C-u
-        (setq hslmod
-          (list (/ (random 256) 255.0) (/ (random 256) 255.0) (/ (random 256) 255.0))))
-      (t ;; value
-        (setq hslmod
-          (list (nth 0 hsl) (nth 1 hsl) (+ (nth 2 hsl) delta)))))
-
-    ;; normalise hsl values
-    (setq hslmod (mapcar (lambda (x) (if (> x 1.0) 1.0 (if (< x 0.0) 0.0 x))) hslmod))
-    ;; convert back to hex
-    (setq rgb
-      (color-hsl-to-rgb (nth 0 hslmod) (nth 1 hslmod) (nth 2 hslmod)))
-    (setq hex
-      (substring-no-properties(color-rgb-to-hex (nth 0 rgb) (nth 1 rgb) (nth 2 rgb) 2) 1))
-    (replace-match (format "%06x" (string-to-number hex 16)) nil nil nil 1)))
-
-(define-minor-mode colour-shift-mode
-  "Toggle colour-shift minor mode."
-  :init-value nil
-  :lighter " CS"
-  :keymap (let ((map (make-sparse-keymap)))
-            (define-key map (kbd "M-<home>") (lambda () (interactive) (colour-shift 0.005 64)))
-            (define-key map (kbd "M-<prior>") (lambda () (interactive) (colour-shift 0.005 16)))
-            (define-key map (kbd "M-<next>") (lambda () (interactive) (colour-shift -0.005 16)))
-            (define-key map (kbd "M-<up>") (lambda () (interactive) (colour-shift 0.005 1)))
-            (define-key map (kbd "M-<down>") (lambda () (interactive) (colour-shift -0.005 1)))
-            (define-key map (kbd "M-<left>") (lambda () (interactive) (colour-shift -0.005 4)))
-            (define-key map (kbd "M-<right>") (lambda () (interactive) (colour-shift 0.005 4)))
-            map))
-
-(defun activate-colour-shift-mode ()
-  "Activate colour-shift-mode if rainbow-mode is active."
-  (if rainbow-mode
-    (colour-shift-mode 1)
-    (colour-shift-mode -1)))
-
-(add-hook 'rainbow-mode-hook 'activate-colour-shift-mode)
-
-;;
 ;; -> shell
 ;;
 (setq explicit-shell-file-name "/usr/bin/fish")
@@ -2290,7 +2223,6 @@
 ;; -> tab-bar
 ;;
 
-(display-time-mode 1)
 (setq display-time-day-and-date t)
 (setq display-time-interval 4)
 (setq display-time-load-average-threshold 2.0)
@@ -2513,12 +2445,17 @@ Or indeed other filters as defined in the main unless"
          (let ((buf-name (buffer-name)))
            (condition-case err
              (cond
-                ((string-match-p "compilation" buf-name)
+               ((string-match-p "compilation" buf-name)
                  (funcall (if (> arg 1) #'re-search-backward #'re-search-forward) "[[:digit:]]: warning:")
                  (compile-goto-error)
+                 (throw 'done t))
+
+               ((string-match-p "compile-log" buf-name)
+                 (funcall (if (> arg 1) #'previous-error-no-select #'next-error-no-select))
+                  (compile-goto-error)
                   (throw 'done t))
 
-                ((string-match-p "dead" buf-name)
+               ((string-match-p "dead" buf-name)
                  (funcall (if (> arg 1) #'deadgrep-backward-match #'deadgrep-forward-match))
                   (deadgrep-visit-result-other-window)
                   (org-show-entry)
@@ -2550,3 +2487,44 @@ Or indeed other filters as defined in the main unless"
     (insert replacement-text)))
 
 (global-set-key (kbd "M-_") #'my/replace-spaces-with-dashes)
+
+(defun my/dired-delete-async ()
+  "Delete files asynchronously in Dired."
+  (interactive)
+  (if (eq delete-by-moving-to-trash t)
+    (let ((files (dired-get-marked-files)))
+      (dolist (file files)
+        (async-shell-command (format "gio trash '%s'" file))))
+    (message "Async deletion is set up only for trash. Set `delete-by-moving-to-trash` to t.")))
+
+(use-package kurecolor)
+
+(global-set-key (kbd "M-<home>") 'my/insert-random-color-at-point)
+(global-set-key (kbd "M-<up>")
+  (lambda () (interactive) (kurecolor-increase-brightness-by-step 0.2)))
+(global-set-key (kbd "M-<down>")
+  (lambda () (interactive) (kurecolor-decrease-brightness-by-step 0.2)))
+(global-set-key (kbd "M-<prior>")
+  (lambda () (interactive) (kurecolor-increase-saturation-by-step 0.2)))
+(global-set-key (kbd "M-<next>")
+  (lambda () (interactive) (kurecolor-decrease-saturation-by-step 0.2)))
+(global-set-key (kbd "M-<left>")
+  (lambda () (interactive) (kurecolor-decrease-hue-by-step 0.2)))
+(global-set-key (kbd "M-<right>")
+  (lambda () (interactive) (kurecolor-increase-hue-by-step 0.2)))
+
+(defun my/insert-random-color-at-point ()
+  "Generate a random color and insert it at the current hex color code under cursor."
+  (interactive)
+  (let* ((color (format "#%06x" (random (expt 16 6))))
+         (bounds (bounds-of-thing-at-point 'sexp))
+         (start (car bounds))
+         (end (cdr bounds)))
+    (if (and bounds (> end start))
+        (progn
+          (goto-char start)
+          (unless (looking-at "#[0-9a-fA-F]\\{6\\}")
+            (error "Not on a hex color code"))
+          (delete-region start end)
+          (insert color))
+      (error "No hex color code at point"))))
