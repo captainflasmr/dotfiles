@@ -136,6 +136,11 @@ Turn on a profiler if we would like
 ;;
 ;; -> use-package
 ;;
+(use-package lorem-ipsum)
+(use-package ox-epub)
+(use-package file-info)
+(use-package keepass-mode)
+(use-package ox-gfm)
 (use-package async)
 (use-package diminish)
 (use-package diredfl
@@ -357,18 +362,25 @@ Turn on a profiler if we would like
 (define-key my-jump-keymap (kbd "4") (lambda () (interactive)(tab-select 4)))
 (define-key my-jump-keymap (kbd "5") (lambda () (interactive)(tab-select 5)))
 (define-key my-jump-keymap (kbd "6") (lambda () (interactive)(tab-select 6)))
+(define-key my-jump-keymap (kbd "b") (lambda () (interactive) (find-file "~/bin")))
+(define-key my-jump-keymap (kbd "c") (lambda () (interactive) (find-file "~/DCIM/Camera")))
 (define-key my-jump-keymap (kbd "d") 'find-name-dired)
 (define-key my-jump-keymap (kbd "e") (lambda () (interactive) (find-file "~/.emacs.d/init.el")))
 (define-key my-jump-keymap (kbd "f") 'my/find-file)
+(define-key my-jump-keymap (kbd "g") (lambda () (interactive) (find-file "~/.config")))
 (define-key my-jump-keymap (kbd "h") (lambda () (interactive) (find-file "~")))
 (define-key my-jump-keymap (kbd "i") 'tab-close)
+(define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~/DCIM/content/aab--todo.org")))
 (define-key my-jump-keymap (kbd "k") (lambda () (interactive) (find-file "~/.emacs.d/emacs--windows.org")))
 (define-key my-jump-keymap (kbd "l") 'consult-recent-file)
 (define-key my-jump-keymap (kbd "m") 'customize-themes)
 (define-key my-jump-keymap (kbd "n") (lambda () (interactive) (find-file "\\captainflasmr\Drive")))
-(define-key my-jump-keymap (kbd "o") (lambda () (interactive) (tab-bar-new-tab-to -1)))
+(define-key my-jump-keymap (kbd "o") (lambda () (interactive) (tab-bar-new-tab-to -1)(tab-bar-mode 'toggle)))
 ;; (define-key my-jump-keymap (kbd "p") 'proced)
+(define-key my-jump-keymap (kbd "r") (lambda () (interactive) (find-file "~/repos")))
+(define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
 (define-key my-jump-keymap (kbd "u") 'tab-undo)
+(define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
 
 (defvar my-win-keymap (make-sparse-keymap))
 (global-set-key (kbd "M-m") my-win-keymap)
@@ -392,7 +404,10 @@ Turn on a profiler if we would like
 (define-key my-win-keymap (kbd "t") 'org-tidy-toggle)
 (define-key my-win-keymap (kbd "u") 'toggle-truncate-lines)
 (define-key my-win-keymap (kbd "v") 'visual-line-mode)
+(define-key my-win-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
 (define-key my-win-keymap (kbd "x") 'my/change-accent-color)
+(define-key my-win-keymap (kbd "y") 'selected-window-accent--switch-selected-window-accent-style)
+
 #+end_src
 
 * unbinding
@@ -414,15 +429,6 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
                  (define-key diff-mode-map (kbd "M-2") nil)
                  (define-key diff-mode-map (kbd "M-3") nil)
                  (define-key diff-mode-map (kbd "M-4") nil))))
-
-;; (use-package magit
-;;   :config
-;;   (unbind-key "M-0" magit-mode-map)
-;;   (unbind-key "M-1" magit-mode-map)
-;;   (unbind-key "M-2" magit-mode-map)
-;;   (unbind-key "M-3" magit-mode-map)
-;;   (unbind-key "M-4" magit-mode-map))
-
 #+end_src
 
 * magit
@@ -433,6 +439,11 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ;;
 (use-package magit
   :config
+  (unbind-key "M-0" magit-mode-map)
+  (unbind-key "M-1" magit-mode-map)
+  (unbind-key "M-2" magit-mode-map)
+  (unbind-key "M-3" magit-mode-map)
+  (unbind-key "M-4" magit-mode-map))
   (magit-add-section-hook
     'magit-status-sections-hook 'magit-insert-tracked-files nil 'append)
   :custom
@@ -459,6 +470,9 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
        ("~/bin" . 1)
        ("~/DCIM/Art/Content" . 2)
        ("~/DCIM/themes" . 2))))
+
+(global-set-key (kbd "M-s m") 'magit-status)
+
 #+end_src
 
 * emms
@@ -554,9 +568,9 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 ;;
 ;; -> keybinding
 ;;
-
-(global-set-key (kbd "<f8>") 'next-error)
-(global-set-key (kbd "S-<f8>") 'previous-error)
+(global-set-key (kbd "M-m M-m") 'save-buffer)
+(global-set-key (kbd "<f8>") (lambda ()(interactive)(my/next-thing 1)))
+(global-set-key (kbd "S-<f8>") (lambda ()(interactive)(my/next-thing 2)))
 (global-set-key (kbd "M-s e") 'my/push-block)
 (global-set-key (kbd "M-s g") 'my/text-browser-search)
 (global-set-key (kbd "M-=") 'count-words)
@@ -564,10 +578,12 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 (bind-key* (kbd "M-g o") 'consult-outline)
 (bind-key* (kbd "M-g i") 'consult-imenu)
 (global-set-key (kbd "C-c a") 'org-agenda)
-(bind-key* (kbd "M-h") (lambda()(interactive)(select-window (previous-window (selected-window)))))
+(bind-key* (kbd "M-u") (lambda()(interactive)(select-window (previous-window (selected-window)))))
 (bind-key* (kbd "M-j") (lambda()(interactive)(next-line (/ (window-height) 8))))
 (bind-key* (kbd "M-k") (lambda()(interactive)(previous-line (/ (window-height) 8))))
-(bind-key* (kbd "M-l") (lambda()(interactive)(select-window (next-window (selected-window)))))
+(bind-key* (kbd "C-M-j") (lambda()(interactive)(next-line 1)))
+(bind-key* (kbd "C-M-k") (lambda()(interactive)(previous-line 1)))
+(bind-key* (kbd "M-i") (lambda()(interactive)(select-window (next-window (selected-window)))))
 (bind-key* (kbd "M-I") (lambda ()(interactive)(my/resize-window 4 t)))
 (bind-key* (kbd "M-U") (lambda ()(interactive)(my/resize-window -4 t)))
 (global-set-key (kbd "C-c b") (lambda ()(interactive)(async-shell-command "do_backup home" "*backup*")))
@@ -762,7 +778,6 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 (defun my/grep (arg)
   "Wrapper to grep."
   (interactive "p")
-  (print arg)
   (let ((search-term
           (if (equal major-mode 'dired-mode)
             (read-from-minibuffer "Search : ")
@@ -829,6 +844,64 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
 (global-set-key (kbd "M-s h") 'my/mark-block)
 (global-set-key (kbd "M-@") 'my/mark-block)
 (global-set-key (kbd "M-'") 'my/mark-word)
+
+(defun my/replace-spaces-with-dashes (start end)
+  "Replace all spaces with dashes in the selected region."
+  (interactive "r") ; The 'r' means this function uses the region as arguments
+  (let ((selected-text (buffer-substring start end))
+         (replacement-text))
+    (setq replacement-text (replace-regexp-in-string " " "-" selected-text))
+    (delete-region start end)
+    (insert replacement-text)))
+
+(global-set-key (kbd "M-_") #'my/replace-spaces-with-dashes)
+
+(require 'cl-lib)
+
+(defun my/collapse-space ()
+  "Collapses consecutive blank lines down to a single blank line if there's more than one, or removes a single blank line if that's all that is found."
+  (interactive)
+  (save-excursion
+    (let ((found-blank-lines 0))
+      (while (and (not (eobp)))
+        (if (looking-at "^[ ]*\n")
+          (progn
+            (setq found-blank-lines (1+ found-blank-lines))
+            (replace-match ""))
+          (if (> found-blank-lines 0)
+            (progn
+              (if (> found-blank-lines 1)
+                (insert "\n"))
+              (cl-return))
+            (forward-line)))))))
+
+(global-set-key (kbd "C-x C-o") 'my/collapse-space)
+
+(defun my/text-browser-search ()
+  "Use the selected text (or the word under the cursor) as the search term for a Google search in a web browser."
+  (interactive)
+  (let (search-term start end)
+    ;; Check if text is selected, otherwise use the word at the cursor position
+    (if (use-region-p)
+      (setq start (region-beginning)
+        end (region-end))
+      (setq start (beginning-of-thing 'word)
+        end (end-of-thing 'word)))
+    ;; Extract the search term and urlencode it
+    (setq search-term (buffer-substring-no-properties start end))
+    (setq search-term (replace-regexp-in-string "[[:space:]\n]+" "+" search-term))
+    ;; Open in an external browser
+    (browse-url (concat "https://www.startpage.com/search?q=" search-term))))
+
+(defun my/toggle-scroll-margin (&optional value)
+  (interactive "P")
+  (let ((new-value (if value
+                     value
+                     (if (= (or scroll-margin 0) 0)
+                       20
+                       0))))
+    (setq scroll-margin new-value)))
+
 #+end_src
 
 * window-positioning
@@ -920,7 +993,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
        (file+function
          "~/DCIM/content/posts--all.org"
          my-capture-top-level)
-       "* TODO %^{title} :2023:
+       "* TODO %^{title} :2024:
 :PROPERTIES:
 :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>-posts--%\\1
 :EXPORT_HUGO_SECTION: posts
@@ -934,7 +1007,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
        (file+function
          "~/DCIM/content/emacs--all.org"
          my-capture-top-level)
-       "* TODO %^{title} :emacs:2023:
+       "* TODO %^{title} :emacs:2024:
 :PROPERTIES:
 :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>-emacs--%\\1
 :EXPORT_HUGO_SECTION: emacs
@@ -948,7 +1021,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
        (file+function
          "~/DCIM/content/linux--all.org"
          my-capture-top-level)
-       "** TODO %^{title} :2023:
+       "** TODO %^{title} :2024:
 :PROPERTIES:
 :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>-linux--%\\1
 :EXPORT_HUGO_SECTION: linux
@@ -964,7 +1037,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
        (file+function
          "~/DCIM/content/art--all.org"
          my-capture-top-level)
-       "* TODO %^{title} Video :videos:painter:krita:artrage:2023:
+       "* TODO %^{title} Video :videos:painter:krita:artrage:2024:
 :PROPERTIES:
 :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>--%\\1-%\\2
 :EXPORT_HUGO_SECTION: art--videos
@@ -982,7 +1055,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
        (file+function
          "~/DCIM/content/art--all.org"
          my-capture-top-level)
-       "** TODO %^{title} :painter:krita:artrage:2023:
+       "** TODO %^{title} :painter:krita:artrage:2024:
 :PROPERTIES:
 :EXPORT_FILE_NAME: %\\1
 :EXPORT_HUGO_SECTION: art--all
@@ -1017,7 +1090,7 @@ Defines keys that I have had to unbind in various modes to facilitate a smooth w
     org-edit-src-content-indentation 0
     org-src-preserve-indentation t
     org-directory "~/DCIM/content/"
-    org-default-notes-file "~/DCIM/content/aaa--todo.org"
+    org-default-notes-file "~/DCIM/content/aab--todo.org"
     org-hide-leading-stars t
     org-reverse-note-order t
     org-log-done 'time
@@ -1111,19 +1184,17 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
   :custom
   (org-agenda-include-diary nil)
   (org-agenda-files '("~/DCIM/content/aaa--calendar.org"
-                       "~/DCIM/content/aaa--todo.org"
+                       "~/DCIM/content/aab--todo.org"
+                       "~/DCIM/content/aad--kate.org"
                        "~/DCIM/content/art--all.org"
-                       "~/DCIM/content/calendar--anniversary.org"
-                       "~/DCIM/content/calendar--repeat.org"
                        "~/DCIM/content/dad--betting.org"
                        "~/DCIM/content/emacs--all.org"
-                       "~/DCIM/content/presents--james.org"
-                       "~/DCIM/content/presents--others.org"
-                       "~/DCIM/content/kate--health.org"
                        "~/DCIM/content/kate--loss.org"
                        "~/DCIM/content/linux--all.org"
                        "~/DCIM/content/misc--subs.org"
-                       "~/DCIM/content/posts--all.org"))
+                       "~/DCIM/content/posts--all.org"
+                       "~/DCIM/content/presents--james.org"
+                       "~/DCIM/content/presents--others.org"))
   :config
   (with-eval-after-load 'org-agenda
     (unbind-key "M-m" org-agenda-mode-map)
@@ -1310,6 +1381,8 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
   :commands (dired dired-jump)
   :bind (("M-e" . dired-jump)
           (:map dired-mode-map
+            ("_" . my/dired-create-empty-file)
+            ("+" . my/dired-create-directory)
             ("C-c i" . my/image-dired-sort)
             ("C-c d" . my/dired-duplicate-file)))
   :custom
@@ -1333,6 +1406,19 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
   :config
   (dired-async-mode 1))
 
+(defun my/dired-create-directory ()
+  "Wrapper to dired-create-directory to avoid minibuffer completion"
+  (interactive)
+  (let ((search-term
+          (read-from-minibuffer "Dir : ")))
+    (dired-create-directory search-term)))
+
+(defun my/dired-create-empty-file ()
+  "Wrapper to dired-create-empty-file to avoid minibuffer completion"
+  (interactive)
+  (let ((search-term
+          (read-from-minibuffer "File : ")))
+    (dired-create-empty-file search-term)))
 #+end_src
 
 * image-dired
@@ -1360,16 +1446,16 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 
 (defun my/image-dired-sort (arg)
   "Sort images in various ways."
-  (interactive "p")
+  (interactive "P")
   ;; Use `let` to temporarily set `dired-actual-switches`
   (let ((dired-actual-switches
           (cond
             ((equal arg nil)            ; no C-u
-              "-lGghat  --ignore=*.xmp")
+              "-lGghat --ignore=*.xmp")
             ((equal arg '(4))           ; C-u
-              "-lGgha  --ignore=*.xmp")
+              "-lGgha --ignore=*.xmp")
             ((equal arg 1)              ; C-u 1
-              "-lGgha  --ignore=*.xmp"))))
+              "-lGgha --ignore=*.xmp"))))
     (let ((w (selected-window)))
       (delete-other-windows)
       (revert-buffer)
@@ -1479,8 +1565,8 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 
 (setq-default truncate-partial-width-windows 120)
 
-(set-frame-parameter nil 'alpha-background 80)
-(add-to-list 'default-frame-alist '(alpha-background . 80))
+(set-frame-parameter nil 'alpha-background 95)
+(add-to-list 'default-frame-alist '(alpha-background . 95))
 
 (set-fringe-mode '(0 . 0))
 (set-display-table-slot standard-display-table 0 ?\ )
@@ -1592,13 +1678,40 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
             (propertize " Modified " 'face
               '(:background "#ff0000" :foreground "#ffffff" :inherit bold)) "")))
 
-;; (set-face-attribute 'mode-line-active nil :height 130 :underline nil :overline nil :box nil
-;;   :background "#a7a7a7" :foreground "#000000")
-;; (set-face-attribute 'mode-line-inactive nil :height 130 :underline nil :overline nil
-;;   :background "#151515" :foreground "#cacaca")
+(set-face-attribute 'mode-line-active nil :height 130 :underline nil :overline nil :box nil
+  :background "#a7a7a7" :foreground "#000000")
+(set-face-attribute 'mode-line-inactive nil :height 130 :underline nil :overline nil
+  :background "#151515" :foreground "#cacaca")
+
+(defun my-tab-bar-number ()
+  "Return the current tab's index (number) as a string."
+  (let ((current-tab (assq 'current-tab (funcall tab-bar-tabs-function)))
+         (tabs (funcall tab-bar-tabs-function))
+         (index 1))
+    (while (and tabs (not (eq (car tabs) current-tab)))
+      (setq tabs (cdr tabs))
+      (setq index (1+ index)))
+    (format " %d " index)))
+
+(defun my-all-tabs-string ()
+  "Return a string representing all tabs with the current tab highlighted."
+  (let* ((current-tab (assq 'current-tab (funcall tab-bar-tabs-function)))
+          (tabs (funcall tab-bar-tabs-function))
+          (index 1)
+          (tabs-string ""))
+    (while tabs
+      ;; For the current tab, apply special properties. Otherwise, format normally.
+      (let ((tab-string (if (eq (car tabs) current-tab)
+                          (propertize (format " %d " index) 'face '(:inverse-video t))
+                          (format " %d " index))))
+        (setq tabs-string (concat tabs-string tab-string)))
+      (setq tabs (cdr tabs))
+      (setq index (1+ index)))
+    tabs-string))
 
 (setq-default mode-line-format
   '("%e"
+     (:eval (my-all-tabs-string))
      mode-line-modified
      (:eval
        (propertize (format "%s" (abbreviate-file-name default-directory))
@@ -1613,7 +1726,8 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
      mode-line-misc-info))
 ;; "-%-"))
 
-(setq mode-line-compact t)
+(display-time-mode -1)
+(setq mode-line-compact nil)
 #+end_src
 
 * find
@@ -1743,6 +1857,7 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
 (global-set-key (kbd "M-s c") 'wc-mode)
 (global-set-key (kbd "M-s j") 'jinx-mode)
 (global-set-key (kbd "M-s d") 'dictionary-lookup-definition)
+(global-set-key (kbd "M-s f") 'dictionary-lookup-definition)
 (global-set-key (kbd "M-s s") 'powerthesaurus-lookup-synonyms-dwim)
 (global-set-key (kbd "M-s t") 'powerthesaurus-lookup-synonyms-dwim)
 
@@ -2241,101 +2356,94 @@ echo
 ;;
 ;; -> selected-window-accent-mode
 ;;
+
 (use-package selected-window-accent-mode
-  :load-path "~/repos/selected-window-accent-mode"
+  ;; :load-path "~/repos/selected-window-accent-mode"
   ;; :vc (:fetcher github :repo "captainflasmr/selected-window-accent-mode")
-  ;; :diminish selected-window-accent-mode
+  :config (selected-window-accent-mode 1)
   :custom
   (selected-window-accent-fringe-thickness 10)
-  (selected-window-accent-percentage-darken 30)
-  (selected-window-accent-percentage-desaturate 50)
+  (selected-window-accent-percentage-darken 0)
+  (selected-window-accent-percentage-desaturate 10)
+  (selected-window-accent-smart-borders nil)
   (selected-window-accent-tab-accent t)
-  ;; (selected-window-accent-custom-color "#427900")
   (selected-window-accent-custom-color nil)
+  (selected-window-accent-custom-color "#E4B359")
   (selected-window-accent-mode-style 'subtle))
-
-(selected-window-accent-mode)
 
 (setq my/push-block-spec
   '(
-     ("~/repos/selected-window-accent-mode/CHANGELOG.org" ;; source-file
-       "~/repos/selected-window-accent-mode/README.org" ;; export-file
-       "\\* ROADMAP" ;; source-start-tag
-       "\\* Latest TBD" ;; source-end-tag
-       "* TODOs / ROADMAP\n" ;; export-start-tag
-       "\n* Testing" ;; export-end-tag
-       :ascii ;; format-spec
-       "  ")
-     ("~/repos/selected-window-accent-mode/README.org"
+     (:ascii
+       "~/repos/selected-window-accent-mode/CHANGELOG.org"
+       "~/repos/selected-window-accent-mode/README.org"
+       "\\* Whats New" "\\* ISSUES"
+       "** Whats New\n" "\n** Screenshot" "  ")
+     (:ascii
+       "~/repos/selected-window-accent-mode/CHANGELOG.org"
+       "~/repos/selected-window-accent-mode/README.org"
+       "\\* ISSUES" "\\* ROADMAP"
+       "* ISSUES\n" "\n* TODOs / ROADMAP" "  ")
+     (:ascii
+       "~/repos/selected-window-accent-mode/CHANGELOG.org"
+       "~/repos/selected-window-accent-mode/README.org"
+       "\\* ROADMAP" "\\* Versions"
+       "* TODOs / ROADMAP\n" "\n* Testing" "  ")
+     (:ascii
+       "~/repos/selected-window-accent-mode/README.org"
        "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       "\\* Summary"
-       "\\* Quick Start"
-       ";;; Commentary:\n;;\n"
-       ";\n(require"
-       :ascii
-       ";; ")
-     ("~/repos/selected-window-accent-mode/README.org"
+       "\\* Summary" "\\*\\* Whats New"
+       ";;; Commentary:\n;;\n" "\n;; Quick Start" ";; ")
+     (:ascii
+       "~/repos/selected-window-accent-mode/README.org"
        "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       "\\*\\* selected-window-accent-fringe-thickness\n"
-       "\n\*\* selected-window-accent-custom-color"
-       "defcustom selected-window-accent-fringe-thickness 6\n  \""
-       "\"\n  \:type"
-       :ascii
-       "")
-     ("~/repos/selected-window-accent-mode/README.org"
+       "\\* Quick Start" "\\* Installation"
+       ";; Quick Start\n;;\n" ";;\n(require" ";; ")
+     (:ascii
+       "~/repos/selected-window-accent-mode/README.org"
        "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       "\\*\\* selected-window-accent-custom-color\n"
-       "\n\*\* selected-window-accent-mode"
-       "defcustom selected-window-accent-custom-color nil\n  \""
-       "\"\n  \:type"
-       :ascii
-       "")
-     ("~/repos/selected-window-accent-mode/README.org"
+       "\\*\\* selected-window-accent-fringe-thickness\n" "\n\*\* selected-window-accent-custom-color"
+       "defcustom selected-window-accent-fringe-thickness 6\n  \"" "\"\n  \:type" "")
+     (:ascii
+       "~/repos/selected-window-accent-mode/README.org"
        "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       "\\*\\* selected-window-accent-mode\n"
-       "\n\*\* selected-window-accent-mode-style"
-       "defcustom selected-window-accent-mode nil\n  \""
-       "\"\n  \:type"
-       :ascii
-       "")
-     ("~/repos/selected-window-accent-mode/README.org"
+       "\\*\\* selected-window-accent-custom-color\n" "\n\*\* selected-window-accent-mode"
+       "defcustom selected-window-accent-custom-color nil\n  \"" "\"\n  \:type" "")
+     (:ascii
+       "~/repos/selected-window-accent-mode/README.org"
        "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       "\\*\\* selected-window-accent-mode-style"
-       "\n\*\* selected-window-accent-percentage-darken"
-       "defcustom selected-window-accent-mode-style \'default\n  \""
-       "\"\n  \:type"
-       :ascii
-       "")
-     ("~/repos/selected-window-accent-mode/README.org"
+       "\\*\\* selected-window-accent-mode\n" "\n\*\* selected-window-accent-mode-style"
+       "defcustom selected-window-accent-mode nil\n  \"" "\"\n  \:type" "")
+     (:ascii
+       "~/repos/selected-window-accent-mode/README.org"
        "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       "\\*\\* selected-window-accent-percentage-darken"
-       "\n\*\* selected-window-accent-percentage-desaturate"
-       "defcustom selected-window-accent-percentage-darken 20\n  \""
-       "\"\n  \:type"
-       :ascii
-       "")
-     ("~/repos/selected-window-accent-mode/README.org"
+       "\\*\\* selected-window-accent-mode-style" "\n\*\* selected-window-accent-percentage-darken"
+       "defcustom selected-window-accent-mode-style \'default\n  \"" "\"\n  \:type" "")
+     (:ascii
+       "~/repos/selected-window-accent-mode/README.org"
        "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       "\\*\\* selected-window-accent-percentage-desaturate"
-       "\n\*\* selected-window-accent-tab-accent"
-       "defcustom selected-window-accent-percentage-desaturate 20\n  \""
-       "\"\n  \:type"
-       :ascii
-       "")
-     ("~/repos/selected-window-accent-mode/README.org"
+       "\\*\\* selected-window-accent-percentage-darken" "\n\*\* selected-window-accent-percentage-desaturate"
+       "defcustom selected-window-accent-percentage-darken 20\n  \"" "\"\n  \:type" "")
+     (:ascii
+       "~/repos/selected-window-accent-mode/README.org"
        "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       "\\*\\* selected-window-accent-tab-accent"
-       "\* Minor Mode"
-       "defcustom selected-window-accent-tab-accent nil\n  \""
-       "\"\n  \:type"
-       :ascii
-       "")
-     ("~/DCIM/content/tagged--all.org" "" "" "" "" "" :hugo "")
-     ("~/DCIM/content/art--all.org" "" "" "" "" "" :hugo "")
-     ("~/DCIM/content/emacs--all.org" "" "" "" "" "" :hugo "")
-     ("~/DCIM/content/kate--blog.org" "" "" "" "" "" :hugo "")
-     ("~/DCIM/content/linux--all.org" "" "" "" "" "" :hugo "")
-     ("~/DCIM/content/posts--all.org" "" "" "" "" "" :hugo "")
+       "\\*\\* selected-window-accent-percentage-desaturate" "\n\*\* selected-window-accent-tab-accent"
+       "defcustom selected-window-accent-percentage-desaturate 20\n  \"" "\"\n  \:type" "")
+     (:ascii
+       "~/repos/selected-window-accent-mode/README.org"
+       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
+       "\\*\\* selected-window-accent-tab-accent" "\n\*\* selected-window-accent-smart-borders"
+       "defcustom selected-window-accent-tab-accent nil\n  \"" "\"\n  \:type" "")
+     (:ascii
+       "~/repos/selected-window-accent-mode/README.org"
+       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
+       "\\*\\* selected-window-accent-smart-borders" "\* Minor Mode"
+       "defcustom selected-window-accent-smart-borders nil\n  \"" "\"\n  \:type" "")
+     (:hugo "~/DCIM/content/tagged--all.org" "" "" "" "" "" "")
+     (:hugo "~/DCIM/content/art--all.org" "" "" "" "" "" "")
+     (:hugo "~/DCIM/content/emacs--all.org" "" "" "" "" "" "")
+     (:hugo "~/DCIM/content/kate--blog.org" "" "" "" "" "" "")
+     (:hugo"~/DCIM/content/linux--all.org" "" "" "" "" "" "")
+     (:hugo "~/DCIM/content/posts--all.org" "" "" "" "" "" "")
      )
   )
 
@@ -2348,13 +2456,13 @@ echo
   (interactive "p")
   (save-excursion
     (dolist (item my/push-block-spec)
-      (let* ((source-file (expand-file-name (nth 0 item)))
-              (export-file (expand-file-name (nth 1 item)))
-              (source-start-tag (nth 2 item))
-              (source-end-tag (nth 3 item))
-              (export-start-tag (nth 4 item))
-              (export-end-tag (nth 5 item))
-              (format-spec (nth 6 item))
+      (let* ((format-spec (nth 0 item))
+              (source-file (expand-file-name (nth 1 item)))
+              (export-file (expand-file-name (nth 2 item)))
+              (source-start-tag (nth 3 item))
+              (source-end-tag (nth 4 item))
+              (export-start-tag (nth 5 item))
+              (export-end-tag (nth 6 item))
               (prefix-string (nth 7 item))
               (buff-contents "")
               (in-current (string-equal (expand-file-name (buffer-file-name)) source-file)))
@@ -2440,76 +2548,40 @@ echo
 
 #+end_src
 
-* colour-shift
+* kurecolor
 
 #+begin_src elisp
 ;;
-;; -> colour-shift
+;; -> kurecolor
 ;;
-(defun colour-shift (delta type)
-  "Shift the hex text value colour by the desired delta for the defined type"
-  (save-excursion
-    ;; find the colour in the form #ff4400
-    (forward-word)
-    (search-backward-regexp "#\\([[:xdigit:]]\\{6\\}\\)" nil t)
-    (setq str (match-string-no-properties 1))
-    (setq hsl (color-rgb-to-hsl
-                (/ (float
-                     (string-to-number
-                       (substring-no-properties str 0 2) 16)) (float 255))
-                (/ (float
-                     (string-to-number
-                       (substring-no-properties str 2 4) 16)) (float 255))
-                (/ (float
-                     (string-to-number
-                       (substring-no-properties str 4 6) 16)) (float 255))))
-    (cond
-      ((= type 1) ;; value
-        (setq hslmod
-          (list (nth 0 hsl) (nth 1 hsl) (+ (nth 2 hsl) delta))))
-      ((= type 4) ;; hue C-u
-        (setq hslmod
-          (list (+ (nth 0 hsl) delta) (nth 1 hsl) (nth 2 hsl))))
-      ((= type 16) ;; saturation C-u C-u
-        (setq hslmod
-          (list (nth 0 hsl) (+ (nth 1 hsl) delta) (nth 2 hsl) delta)))
-      ((= type 64) ;; random C-u C-u C-u
-        (setq hslmod
-          (list (/ (random 256) 255.0) (/ (random 256) 255.0) (/ (random 256) 255.0))))
-      (t ;; value
-        (setq hslmod
-          (list (nth 0 hsl) (nth 1 hsl) (+ (nth 2 hsl) delta)))))
 
-    ;; normalise hsl values
-    (setq hslmod (mapcar (lambda (x) (if (> x 1.0) 1.0 (if (< x 0.0) 0.0 x))) hslmod))
-    ;; convert back to hex
-    (setq rgb
-      (color-hsl-to-rgb (nth 0 hslmod) (nth 1 hslmod) (nth 2 hslmod)))
-    (setq hex
-      (substring-no-properties(color-rgb-to-hex (nth 0 rgb) (nth 1 rgb) (nth 2 rgb) 2) 1))
-    (replace-match (format "%06x" (string-to-number hex 16)) nil nil nil 1)))
+(use-package kurecolor
+  :ensure t ; Ensure the package is installed (optional)
+  :bind (("M-<up>" . (lambda () (interactive) (kurecolor-increase-brightness-by-step 0.2)))
+          ("M-<down>" . (lambda () (interactive) (kurecolor-decrease-brightness-by-step 0.2)))
+          ("M-<prior>" . (lambda () (interactive) (kurecolor-increase-saturation-by-step 0.2)))
+          ("M-<next>" . (lambda () (interactive) (kurecolor-decrease-saturation-by-step 0.2)))
+          ("M-<left>" . (lambda () (interactive) (kurecolor-decrease-hue-by-step 0.2)))
+          ("M-<right>" . (lambda () (interactive) (kurecolor-increase-hue-by-step 0.2))))
+  :config
+  (global-set-key (kbd "M-<home>") 'my/insert-random-color-at-point))
 
-(define-minor-mode colour-shift-mode
-  "Toggle colour-shift minor mode."
-  :init-value nil
-  :lighter " CS"
-  :keymap (let ((map (make-sparse-keymap)))
-            (define-key map (kbd "M-<home>") (lambda () (interactive) (colour-shift 0.005 64)))
-            (define-key map (kbd "M-<prior>") (lambda () (interactive) (colour-shift 0.005 16)))
-            (define-key map (kbd "M-<next>") (lambda () (interactive) (colour-shift -0.005 16)))
-            (define-key map (kbd "M-<up>") (lambda () (interactive) (colour-shift 0.005 1)))
-            (define-key map (kbd "M-<down>") (lambda () (interactive) (colour-shift -0.005 1)))
-            (define-key map (kbd "M-<left>") (lambda () (interactive) (colour-shift -0.005 4)))
-            (define-key map (kbd "M-<right>") (lambda () (interactive) (colour-shift 0.005 4)))
-            map))
+(defun my/insert-random-color-at-point ()
+  "Generate a random color and insert it at the current hex color code under cursor."
+  (interactive)
+  (let* ((color (format "#%06x" (random (expt 16 6))))
+          (bounds (bounds-of-thing-at-point 'sexp))
+          (start (car bounds))
+          (end (cdr bounds)))
+    (if (and bounds (> end start))
+      (progn
+        (goto-char start)
+        (unless (looking-at "#[0-9a-fA-F]\\{6\\}")
+          (error "Not on a hex color code"))
+        (delete-region start end)
+        (insert color))
+      (error "No hex color code at point"))))
 
-(defun activate-colour-shift-mode ()
-  "Activate colour-shift-mode if rainbow-mode is active."
-  (if rainbow-mode
-    (colour-shift-mode 1)
-    (colour-shift-mode -1)))
-
-(add-hook 'rainbow-mode-hook 'activate-colour-shift-mode)
 #+end_src
 
 * shell
@@ -2540,11 +2612,8 @@ echo
   (eshell-mode . my/eshell-hook))
 
 (use-package shell
-  :config
   :hook
   (shell-mode . my/shell-hook))
-
-(global-set-key (kbd "M-T") 'ansi-term)
 #+end_src
 
 * chatGPT
@@ -2595,7 +2664,7 @@ echo
   :bind (("C-x x p" . proced)
           :map proced-mode-map
           ("f" . proced-narrow)
-          ("G" . my/proced-toggle-update))
+          ("P" . my/proced-toggle-update))
   :init
   (setq proced-auto-update-interval 1
     proced-enable-color-flag 1
@@ -2671,7 +2740,6 @@ echo
 ;; -> tab-bar
 ;;
 
-(display-time-mode 1)
 (setq display-time-day-and-date t)
 (setq display-time-interval 4)
 (setq display-time-load-average-threshold 2.0)
@@ -2684,7 +2752,7 @@ echo
 (use-package tab-bar ;; 29.1
   :ensure nil ;; Since tab-bar is built-in, no package needs to be downloaded
   :init
-  (tab-bar-mode 1) ;; 27.1
+  (tab-bar-mode -1) ;; 27.1
   (tab-bar-history-mode 1) ;; 27.1
   :custom
   (tab-bar-format '(tab-bar-format-tabs-groups
@@ -2695,9 +2763,9 @@ echo
   (tab-bar-new-button-show nil) ;; 27.1
   (tab-bar-close-button-show nil) ;; 27.1
   (tab-bar-history-limit 100) ;; 27.1
-  (tab-bar-auto-width-max '(100 20)) ;; 29.1
-  (tab-bar-tab-hints t) ;; 27.1
-  (tab-bar-tab-name-format-function #'my-tab-bar-tab-name-format) ;; 28.1
+  ;; (tab-bar-auto-width-max '(100 20)) ;; 29.1
+  ;; (tab-bar-tab-hints t) ;; 27.1
+  ;; (tab-bar-tab-name-format-function #'my-tab-bar-tab-name-format) ;; 28.1
   :config
   (defun my-tab-bar-tab-name-format (tab i)
     (propertize
@@ -2705,8 +2773,8 @@ echo
       'face (funcall tab-bar-tab-face-function tab)))
   :bind
   (
-    ("M-u" . tab-bar-switch-to-prev-tab) ;; 27.1
-    ("M-i" . tab-bar-switch-to-next-tab) ;; 27.1
+    ("M-h" . tab-bar-switch-to-prev-tab) ;; 27.1
+    ("M-l" . tab-bar-switch-to-next-tab) ;; 27.1
     ("C-x j" . tab-bar-history-back) ;; 27.1
     ("C-x k" . tab-bar-history-forward)) ;; 27.1
   )
@@ -2735,6 +2803,47 @@ echo
 ;;   (tab-bar-tab-inactive ((t (:inherit tab-bar :box (:line-width (2 . 2) :color "#575757" :style flat)))))) ;; 27.1
 
 #+end_src
+* word-count
+
+#+begin_src elisp
+;;
+;; -> word-count
+;;
+(use-package wc-mode
+  ;; :hook
+  ;; (org-mode . wc-mode)
+  :custom
+  (wc-modeline-format "WC:%tw"))
+
+(defun my-word-count-function (rstart rend)
+  "Counts words without lines containing 'DONE' and the 'PROPERTIES' and 'END:' drawers.
+Or indeed other filters as defined in the main unless"
+  (let ((count 0))
+    (save-excursion
+      (goto-char rstart)
+      ;; Loop over each line in the region
+      (while (< (point) rend)
+        (let ((line (buffer-substring-no-properties (line-beginning-position)
+                      (line-end-position))))
+          ;; Only count words if the line doesn't contain DONE or is not between PROPERTIES and END
+          ;; Or indeed other filters as defined below
+          (unless (or
+                    (string-match-p "\\* DONE" line)
+                    (string-match-p "\\* TODO" line)
+                    (string-match-p "file\:" line)
+                    (and (string-match-p ":PROPERTIES:" line) (re-search-forward ":END:" nil t))
+                    (and (string-match-p "\\#\\+begin" line) (re-search-forward "\\#\\+end" nil t))
+                    (string-match-p "\\#\\+" line)
+                    )
+            (setq count (+ count (1+ (how-many " " (line-beginning-position) (line-end-position))))))
+          ;; (setq count (+ count (length (split-string line "\\W+" t)))))
+          ;; Go to the beginning of the next line
+          (forward-line 1))))
+    count))
+
+;; Set the custom wc-mode counting function
+(setq wc-count-words-function 'my-word-count-function)
+#+end_src
 
 * development
 
@@ -2742,16 +2851,6 @@ echo
 ;;
 ;; -> development
 ;;
-(defun my/toggle-scroll-margin (&optional value)
-  (interactive "P")
-  (let ((new-value (if value
-                     value
-                     (if (= (or scroll-margin 0) 0)
-                       20
-                       0))))
-    (setq scroll-margin new-value)))
-
-(use-package lorem-ipsum)
 
 (defun subtract-weight (weight-str avg-loss)
   "Subtract AVG-LOSS pounds from WEIGHT-STR given in 'stones:pounds' format."
@@ -2795,47 +2894,6 @@ echo
     )
   (org-table-align))
 
-(use-package ox-epub)
-
-(defun my/text-browser-search ()
-  "Use the selected text (or the word under the cursor) as the search term for a Google search in a web browser."
-  (interactive)
-  (let (search-term start end)
-    ;; Check if text is selected, otherwise use the word at the cursor position
-    (if (use-region-p)
-      (setq start (region-beginning)
-        end (region-end))
-      (setq start (beginning-of-thing 'word)
-        end (end-of-thing 'word)))
-    ;; Extract the search term and urlencode it
-    (setq search-term (buffer-substring-no-properties start end))
-    (setq search-term (replace-regexp-in-string "[[:space:]\n]+" "+" search-term))
-    ;; Open in an external browser
-    (browse-url (concat "https://www.startpage.com/search?q=" search-term))))
-
-(use-package file-info)
-
-(require 'cl-lib)
-
-(defun my/collapse-space ()
-  "Collapses consecutive blank lines down to a single blank line if there's more than one, or removes a single blank line if that's all that is found."
-  (interactive)
-  (save-excursion
-    (let ((found-blank-lines 0))
-      (while (and (not (eobp)))
-        (if (looking-at "^[ ]*\n")
-          (progn
-            (setq found-blank-lines (1+ found-blank-lines))
-            (replace-match ""))
-          (if (> found-blank-lines 0)
-            (progn
-              (if (> found-blank-lines 1)
-                (insert "\n"))
-              (cl-return))
-            (forward-line)))))))
-
-(global-set-key (kbd "C-x C-o") 'my/collapse-space)
-
 (use-package project-mode-line-tag
   :config
   (project-mode-line-tag-mode 1))
@@ -2844,51 +2902,56 @@ echo
   consult-theme :preview-key '(:debounce 0.2 any)
   consult-recent-file consult-outline consult-imenu consult-history :preview-key nil)
 
-(defun my/color-name-to-hex (color-name)
-  "Convert COLOR-NAME to its hexadecimal representation."
-  (let ((rgb (color-name-to-rgb color-name)))
-    (when rgb
-      (apply #'format "#%02x%02x%02x"
-        (mapcar (lambda (x) (round (* x 255))) rgb)))))
+(defun my/next-thing (arg)
+  "Go to the next thing, meaning warning, error, grep, etc., based on ARG."
+  (interactive "p")
+  (catch 'done
+    (walk-windows
+      (lambda (win)
+        (with-selected-window win
+          (let ((buf-name (buffer-name)))
+            (condition-case err
+              (cond
+                ((string-match-p "compilation" buf-name)
+                  (funcall (if (> arg 1) #'re-search-backward #'re-search-forward) "[[:digit:]]: warning:")
+                  (compile-goto-error)
+                  (throw 'done t))
 
-;; WC[%W%w/%tw]
-(use-package wc-mode
-  ;; :hook
-  ;; (org-mode . wc-mode)
-  :custom
-  (wc-modeline-format "WC:%tw"))
+                ((string-match-p "compile-log" buf-name)
+                  (funcall (if (> arg 1) #'previous-error-no-select #'next-error-no-select))
+                  (compile-goto-error)
+                  (throw 'done t))
 
-(defun my-word-count-function (rstart rend)
-  "Counts words without lines containing 'DONE' and the 'PROPERTIES' and 'END:' drawers.
-Or indeed other filters as defined in the main unless"
-  (let ((count 0))
-    (save-excursion
-      (goto-char rstart)
-      ;; Loop over each line in the region
-      (while (< (point) rend)
-        (let ((line (buffer-substring-no-properties (line-beginning-position)
-                      (line-end-position))))
-          ;; Only count words if the line doesn't contain DONE or is not between PROPERTIES and END
-          ;; Or indeed other filters as defined below
-          (unless (or
-                    (string-match-p "\\* DONE" line)
-                    (string-match-p "\\* TODO" line)
-                    (string-match-p "file\:" line)
-                    (and (string-match-p ":PROPERTIES:" line) (re-search-forward ":END:" nil t))
-                    (and (string-match-p "\\#\\+begin" line) (re-search-forward "\\#\\+end" nil t))
-                    (string-match-p "\\#\\+" line)
-                    )
-            (setq count (+ count (1+ (how-many " " (line-beginning-position) (line-end-position))))))
-          ;; (setq count (+ count (length (split-string line "\\W+" t)))))
-          ;; Go to the beginning of the next line
-          (forward-line 1))))
-    count))
+                ((string-match-p "dead" buf-name)
+                  (funcall (if (> arg 1) #'deadgrep-backward-match #'deadgrep-forward-match))
+                  (deadgrep-visit-result-other-window)
+                  (org-show-entry)
+                  (throw 'done t))
 
-;; Set the custom wc-mode counting function
-(setq wc-count-words-function 'my-word-count-function)
+                ((string-match-p "org agenda" buf-name)
+                  (if (> arg 1)
+                    (org-agenda-previous-item 1)
+                    (org-agenda-next-item 1))
+                  (org-agenda-goto)
+                  (org-show-entry)
+                  (throw 'done t))
 
-(use-package keepass-mode)
+                ((or (string-match-p "occur" buf-name)
+                   (string-match-p "flycheck errors" buf-name))
+                  (funcall (if (> arg 1) #'previous-error #'next-error))
+                  (throw 'done t))
+                )
+              (error (message "%s" (error-message-string err)))))))
+      nil t)))
 
+(defun my/dired-delete-async ()
+  "Delete files asynchronously in Dired."
+  (interactive)
+  (if (eq delete-by-moving-to-trash t)
+    (let ((files (dired-get-marked-files)))
+      (dolist (file files)
+        (async-shell-command (format "gio trash '%s'" file))))
+    (message "Async deletion is set up only for trash. Set `delete-by-moving-to-trash` to t.")))
 #+end_src
 
 * windows-specific

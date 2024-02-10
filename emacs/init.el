@@ -663,7 +663,7 @@
   "Replace all spaces with dashes in the selected region."
   (interactive "r") ; The 'r' means this function uses the region as arguments
   (let ((selected-text (buffer-substring start end))
-        (replacement-text))
+         (replacement-text))
     (setq replacement-text (replace-regexp-in-string " " "-" selected-text))
     (delete-region start end)
     (insert replacement-text)))
@@ -1327,8 +1327,8 @@
 
 (setq-default truncate-partial-width-windows 120)
 
-(set-frame-parameter nil 'alpha-background 80)
-(add-to-list 'default-frame-alist '(alpha-background . 80))
+(set-frame-parameter nil 'alpha-background 95)
+(add-to-list 'default-frame-alist '(alpha-background . 95))
 
 (set-fringe-mode '(0 . 0))
 (set-display-table-slot standard-display-table 0 ?\ )
@@ -1435,8 +1435,8 @@
 (defun my-tab-bar-number ()
   "Return the current tab's index (number) as a string."
   (let ((current-tab (assq 'current-tab (funcall tab-bar-tabs-function)))
-        (tabs (funcall tab-bar-tabs-function))
-        (index 1))
+         (tabs (funcall tab-bar-tabs-function))
+         (index 1))
     (while (and tabs (not (eq (car tabs) current-tab)))
       (setq tabs (cdr tabs))
       (setq index (1+ index)))
@@ -1445,13 +1445,13 @@
 (defun my-all-tabs-string ()
   "Return a string representing all tabs with the current tab highlighted."
   (let* ((current-tab (assq 'current-tab (funcall tab-bar-tabs-function)))
-         (tabs (funcall tab-bar-tabs-function))
-         (index 1)
-         (tabs-string ""))
+          (tabs (funcall tab-bar-tabs-function))
+          (index 1)
+          (tabs-string ""))
     (while tabs
       ;; For the current tab, apply special properties. Otherwise, format normally.
       (let ((tab-string (if (eq (car tabs) current-tab)
-                            (propertize (format " %d " index) 'face '(:inverse-video t))
+                          (propertize (format " %d " index) 'face '(:inverse-video t))
                           (format " %d " index))))
         (setq tabs-string (concat tabs-string tab-string)))
       (setq tabs (cdr tabs))
@@ -2165,11 +2165,11 @@
 (use-package kurecolor
   :ensure t ; Ensure the package is installed (optional)
   :bind (("M-<up>" . (lambda () (interactive) (kurecolor-increase-brightness-by-step 0.2)))
-         ("M-<down>" . (lambda () (interactive) (kurecolor-decrease-brightness-by-step 0.2)))
-         ("M-<prior>" . (lambda () (interactive) (kurecolor-increase-saturation-by-step 0.2)))
-         ("M-<next>" . (lambda () (interactive) (kurecolor-decrease-saturation-by-step 0.2)))
-         ("M-<left>" . (lambda () (interactive) (kurecolor-decrease-hue-by-step 0.2)))
-         ("M-<right>" . (lambda () (interactive) (kurecolor-increase-hue-by-step 0.2))))
+          ("M-<down>" . (lambda () (interactive) (kurecolor-decrease-brightness-by-step 0.2)))
+          ("M-<prior>" . (lambda () (interactive) (kurecolor-increase-saturation-by-step 0.2)))
+          ("M-<next>" . (lambda () (interactive) (kurecolor-decrease-saturation-by-step 0.2)))
+          ("M-<left>" . (lambda () (interactive) (kurecolor-decrease-hue-by-step 0.2)))
+          ("M-<right>" . (lambda () (interactive) (kurecolor-increase-hue-by-step 0.2))))
   :config
   (global-set-key (kbd "M-<home>") 'my/insert-random-color-at-point))
 
@@ -2177,16 +2177,16 @@
   "Generate a random color and insert it at the current hex color code under cursor."
   (interactive)
   (let* ((color (format "#%06x" (random (expt 16 6))))
-         (bounds (bounds-of-thing-at-point 'sexp))
-         (start (car bounds))
-         (end (cdr bounds)))
+          (bounds (bounds-of-thing-at-point 'sexp))
+          (start (car bounds))
+          (end (cdr bounds)))
     (if (and bounds (> end start))
-        (progn
-          (goto-char start)
-          (unless (looking-at "#[0-9a-fA-F]\\{6\\}")
-            (error "Not on a hex color code"))
-          (delete-region start end)
-          (insert color))
+      (progn
+        (goto-char start)
+        (unless (looking-at "#[0-9a-fA-F]\\{6\\}")
+          (error "Not on a hex color code"))
+        (delete-region start end)
+        (insert color))
       (error "No hex color code at point"))))
 
 ;;
@@ -2475,42 +2475,42 @@ Or indeed other filters as defined in the main unless"
   (interactive "p")
   (catch 'done
     (walk-windows
-     (lambda (win)
-       (with-selected-window win
-         (let ((buf-name (buffer-name)))
-           (condition-case err
-             (cond
-               ((string-match-p "compilation" buf-name)
-                 (funcall (if (> arg 1) #'re-search-backward #'re-search-forward) "[[:digit:]]: warning:")
-                 (compile-goto-error)
-                 (throw 'done t))
-
-               ((string-match-p "compile-log" buf-name)
-                 (funcall (if (> arg 1) #'previous-error-no-select #'next-error-no-select))
+      (lambda (win)
+        (with-selected-window win
+          (let ((buf-name (buffer-name)))
+            (condition-case err
+              (cond
+                ((string-match-p "compilation" buf-name)
+                  (funcall (if (> arg 1) #'re-search-backward #'re-search-forward) "[[:digit:]]: warning:")
                   (compile-goto-error)
                   (throw 'done t))
 
-               ((string-match-p "dead" buf-name)
-                 (funcall (if (> arg 1) #'deadgrep-backward-match #'deadgrep-forward-match))
+                ((string-match-p "compile-log" buf-name)
+                  (funcall (if (> arg 1) #'previous-error-no-select #'next-error-no-select))
+                  (compile-goto-error)
+                  (throw 'done t))
+
+                ((string-match-p "dead" buf-name)
+                  (funcall (if (> arg 1) #'deadgrep-backward-match #'deadgrep-forward-match))
                   (deadgrep-visit-result-other-window)
                   (org-show-entry)
                   (throw 'done t))
 
-               ((string-match-p "org agenda" buf-name)
-                 (if (> arg 1)
-                   (org-agenda-previous-item 1)
-                   (org-agenda-next-item 1))
+                ((string-match-p "org agenda" buf-name)
+                  (if (> arg 1)
+                    (org-agenda-previous-item 1)
+                    (org-agenda-next-item 1))
                   (org-agenda-goto)
                   (org-show-entry)
                   (throw 'done t))
 
-               ((or (string-match-p "occur" buf-name)
-                  (string-match-p "flycheck errors" buf-name))
-                 (funcall (if (> arg 1) #'previous-error #'next-error))
-                 (throw 'done t))
-               )
-             (error (message "%s" (error-message-string err)))))))
-     nil t)))
+                ((or (string-match-p "occur" buf-name)
+                   (string-match-p "flycheck errors" buf-name))
+                  (funcall (if (> arg 1) #'previous-error #'next-error))
+                  (throw 'done t))
+                )
+              (error (message "%s" (error-message-string err)))))))
+      nil t)))
 
 (defun my/dired-delete-async ()
   "Delete files asynchronously in Dired."
