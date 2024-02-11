@@ -4,6 +4,11 @@
 (require 'package)
 (require 'org)
 (require 'dired-x)
+(require 's)
+(require 'org-agenda)
+(require 'emms-setup)
+(emms-all)
+(emms-default-players)
 
 ;;
 ;; -> package-archives
@@ -38,6 +43,7 @@
 ;; -> startup
 ;;
 (defun display-startup-time ()
+  "Display startup time."
   (message "Emacs startup time: %s" (emacs-init-time)))
 
 (add-hook 'emacs-startup-hook 'display-startup-time)
@@ -181,9 +187,9 @@
       (cons #'tempel-expand
         completion-at-point-functions)))
 
-  (add-hook 'conf-mode-hook 'tempel-setup-capf)
-  (add-hook 'prog-mode-hook 'tempel-setup-capf)
-  (add-hook 'text-mode-hook 'tempel-setup-capf)
+  (add-hook 'conf-mode-hook #'tempel-setup-capf)
+  (add-hook 'prog-mode-hook #'tempel-setup-capf)
+  (add-hook 'text-mode-hook #'tempel-setup-capf)
 
   ;; Optionally make the Tempel templates available to Abbrev,
   ;; either locally or globally. `expand-abbrev' is bound to C-x '.
@@ -229,83 +235,65 @@
 (define-key my-jump-keymap (kbd "4") (lambda () (interactive)(tab-select 4)))
 (define-key my-jump-keymap (kbd "5") (lambda () (interactive)(tab-select 5)))
 (define-key my-jump-keymap (kbd "6") (lambda () (interactive)(tab-select 6)))
-(define-key my-jump-keymap (kbd "a") 'emms-browse-by-album)
+(define-key my-jump-keymap (kbd "a") #'emms-browse-by-album)
 (define-key my-jump-keymap (kbd "b") (lambda () (interactive) (find-file "~/bin")))
 (define-key my-jump-keymap (kbd "c") (lambda () (interactive) (find-file "~/DCIM/Camera")))
-(define-key my-jump-keymap (kbd "d") 'find-name-dired)
+(define-key my-jump-keymap (kbd "d") #'find-name-dired)
 (define-key my-jump-keymap (kbd "e") (lambda () (interactive) (find-file "~/.config/emacs/init.el")))
 (define-key my-jump-keymap (kbd "f") 'my/find-file)
 (define-key my-jump-keymap (kbd "g") (lambda () (interactive) (find-file "~/.config")))
 (define-key my-jump-keymap (kbd "h") (lambda () (interactive) (find-file "~")))
-(define-key my-jump-keymap (kbd "i") 'tab-close)
+(define-key my-jump-keymap (kbd "i") #'tab-close)
 (define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~/DCIM/content/aab--todo.org")))
 (define-key my-jump-keymap (kbd "k") (lambda () (interactive) (find-file "~/.config/emacs/emacs--init.org")))
-(define-key my-jump-keymap (kbd "l") 'consult-recent-file)
-(define-key my-jump-keymap (kbd "m") 'customize-themes)
+(define-key my-jump-keymap (kbd "l") #'consult-recent-file)
+(define-key my-jump-keymap (kbd "m") #'customize-themes)
 (define-key my-jump-keymap (kbd "n") (lambda () (interactive) (find-file "~/nas")))
 (define-key my-jump-keymap (kbd "o") (lambda () (interactive) (tab-bar-new-tab-to -1)(tab-bar-mode 'toggle)))
-(define-key my-jump-keymap (kbd "p") 'proced)
-(define-key my-jump-keymap (kbd "q") 'cfw:open-org-calendar)
+(define-key my-jump-keymap (kbd "p") #'proced)
+(define-key my-jump-keymap (kbd "q") #'cfw:open-org-calendar)
 (define-key my-jump-keymap (kbd "r") (lambda () (interactive) (find-file "~/repos")))
 (define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
-(define-key my-jump-keymap (kbd "u") 'tab-undo)
+(define-key my-jump-keymap (kbd "u") #'tab-undo)
 (define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
-(define-key my-jump-keymap (kbd "y") 'emms)
+(define-key my-jump-keymap (kbd "y") #'emms)
 
 (defvar my-win-keymap (make-sparse-keymap))
 (global-set-key (kbd "M-m") my-win-keymap)
 
-(define-key my-win-keymap (kbd "a") 'selected-window-accent-mode)
-(define-key my-win-keymap (kbd "b") '(lambda () (interactive)(tab-bar-mode 'toggle)))
-(define-key my-win-keymap (kbd "c") 'display-fill-column-indicator-mode)
-(define-key my-win-keymap (kbd "d") 'window-divider-mode)
-(define-key my-win-keymap (kbd "e") 'whitespace-mode)
-(define-key my-win-keymap (kbd "f") 'font-lock-mode)
-(define-key my-win-keymap (kbd "g") 'my/toggle-scroll-margin)
-(define-key my-win-keymap (kbd "i") 'highlight-indent-guides-mode)
-(define-key my-win-keymap (kbd "l") 'display-line-numbers-mode)
-(define-key my-win-keymap (kbd "m") 'consult-theme)
-(define-key my-win-keymap (kbd "n") 'global-tab-line-mode)
-(define-key my-win-keymap (kbd "o") 'visual-fill-column-mode)
-(define-key my-win-keymap (kbd "p") 'variable-pitch-mode)
-(define-key my-win-keymap (kbd "q") 'toggle-menu-bar-mode-from-frame)
-(define-key my-win-keymap (kbd "r") 'org-modern-mode)
-(define-key my-win-keymap (kbd "s") 'my/toggle-internal-border-width)
-(define-key my-win-keymap (kbd "t") 'org-tidy-toggle)
-(define-key my-win-keymap (kbd "u") 'toggle-truncate-lines)
-(define-key my-win-keymap (kbd "v") 'visual-line-mode)
+(define-key my-win-keymap (kbd "a") #'selected-window-accent-mode)
+(define-key my-win-keymap (kbd "b") #'(lambda () (interactive)(tab-bar-mode 'toggle)))
+(define-key my-win-keymap (kbd "c") #'display-fill-column-indicator-mode)
+(define-key my-win-keymap (kbd "d") #'window-divider-mode)
+(define-key my-win-keymap (kbd "e") #'whitespace-mode)
+(define-key my-win-keymap (kbd "f") #'font-lock-mode)
+(define-key my-win-keymap (kbd "g") #'my/toggle-scroll-margin)
+(define-key my-win-keymap (kbd "i") #'highlight-indent-guides-mode)
+(define-key my-win-keymap (kbd "l") #'display-line-numbers-mode)
+(define-key my-win-keymap (kbd "m") #'consult-theme)
+(define-key my-win-keymap (kbd "n") #'global-tab-line-mode)
+(define-key my-win-keymap (kbd "o") #'visual-fill-column-mode)
+(define-key my-win-keymap (kbd "p") #'variable-pitch-mode)
+(define-key my-win-keymap (kbd "q") #'toggle-menu-bar-mode-from-frame)
+(define-key my-win-keymap (kbd "r") #'org-modern-mode)
+(define-key my-win-keymap (kbd "s") #'my/toggle-internal-border-width)
+(define-key my-win-keymap (kbd "t") #'org-tidy-toggle)
+(define-key my-win-keymap (kbd "u") #'toggle-truncate-lines)
+(define-key my-win-keymap (kbd "v") #'visual-line-mode)
 (define-key my-win-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
-(define-key my-win-keymap (kbd "x") 'my/change-accent-color)
-(define-key my-win-keymap (kbd "y") 'selected-window-accent--switch-selected-window-accent-style)
-
-;;
-;; -> unbinding
-;;
-(global-unset-key (kbd "C-z"))
-(global-unset-key (kbd "C-h h"))
-
-(use-package diff-mode
-  :hook
-  (diff-mode . (lambda ()
-                 (define-key diff-mode-map (kbd "M-0") nil)
-                 (define-key diff-mode-map (kbd "M-1") nil)
-                 (define-key diff-mode-map (kbd "M-2") nil)
-                 (define-key diff-mode-map (kbd "M-3") nil)
-                 (define-key diff-mode-map (kbd "M-4") nil))))
-
-(use-package magit
-  :config
-  (unbind-key "M-0" magit-mode-map)
-  (unbind-key "M-1" magit-mode-map)
-  (unbind-key "M-2" magit-mode-map)
-  (unbind-key "M-3" magit-mode-map)
-  (unbind-key "M-4" magit-mode-map))
+(define-key my-win-keymap (kbd "x") #'my/change-accent-color)
+(define-key my-win-keymap (kbd "y") #'selected-window-accent--switch-selected-window-accent-style)
 
 ;;
 ;; -> magit
 ;;
 (use-package magit
   :config
+  (unbind-key "M-0" magit-mode-map)
+  (unbind-key "M-1" magit-mode-map)
+  (unbind-key "M-2" magit-mode-map)
+  (unbind-key "M-3" magit-mode-map)
+  (unbind-key "M-4" magit-mode-map)
   (magit-add-section-hook
     'magit-status-sections-hook 'magit-insert-tracked-files nil 'append)
   :custom
@@ -333,6 +321,8 @@
        ("~/DCIM/Art/Content" . 2)
        ("~/DCIM/themes" . 2))))
 
+(global-set-key (kbd "M-s m") 'magit-status)
+
 ;;
 ;; -> emms
 ;;
@@ -359,9 +349,9 @@
   ("C-x w" . elfeed)
   (:map elfeed-search-mode-map
     ("n" . (lambda () (interactive)
-             (next-line) (call-interactively 'elfeed-search-show-entry)))
+             (forward-line 1) (call-interactively 'elfeed-search-show-entry)))
     ("p" . (lambda () (interactive)
-             (previous-line) (call-interactively 'elfeed-search-show-entry)))
+             (forward-line -1) (call-interactively 'elfeed-search-show-entry)))
     ("m" . (lambda () (interactive)
              (apply 'elfeed-search-toggle-all '(star)))))
   :custom
@@ -412,8 +402,8 @@
 ;;
 ;; -> keybinding
 ;;
+
 (global-set-key (kbd "M-m M-m") 'save-buffer)
-(global-set-key (kbd "M-s m") 'magit-status)
 (global-set-key (kbd "<f8>") (lambda ()(interactive)(my/next-thing 1)))
 (global-set-key (kbd "S-<f8>") (lambda ()(interactive)(my/next-thing 2)))
 (global-set-key (kbd "M-s e") 'my/push-block)
@@ -424,10 +414,10 @@
 (bind-key* (kbd "M-g i") 'consult-imenu)
 (global-set-key (kbd "C-c a") 'org-agenda)
 (bind-key* (kbd "M-u") (lambda()(interactive)(select-window (previous-window (selected-window)))))
-(bind-key* (kbd "M-j") (lambda()(interactive)(next-line (/ (window-height) 8))))
-(bind-key* (kbd "M-k") (lambda()(interactive)(previous-line (/ (window-height) 8))))
-(bind-key* (kbd "C-M-j") (lambda()(interactive)(next-line 1)))
-(bind-key* (kbd "C-M-k") (lambda()(interactive)(previous-line 1)))
+(bind-key* (kbd "M-j") (lambda()(interactive)(forward-line (/ (window-height) 8))))
+(bind-key* (kbd "M-k") (lambda()(interactive)(forward-line (- (/ (window-height) 8)))))
+(bind-key* (kbd "C-M-j") (lambda()(interactive)(forward-line 1)))
+(bind-key* (kbd "C-M-k") (lambda()(interactive)(forward-line -1)))
 (bind-key* (kbd "M-i") (lambda()(interactive)(select-window (next-window (selected-window)))))
 (bind-key* (kbd "M-I") (lambda ()(interactive)(my/resize-window 4 t)))
 (bind-key* (kbd "M-U") (lambda ()(interactive)(my/resize-window -4 t)))
@@ -443,6 +433,8 @@
 (global-set-key (kbd "M-;") 'my/comment-or-uncomment)
 (global-set-key (kbd "M-?") 'my/grep)
 (bind-key* (kbd "C-c ,") 'embark-act)
+(global-unset-key (kbd "C-z"))
+(global-unset-key (kbd "C-h h"))
 
 ;;
 ;; -> modes
@@ -461,7 +453,7 @@
 (show-paren-mode 1)
 (setq tooltip-mode nil)
 (transient-mark-mode 1)
-(pixel-scroll-precision-mode -1)
+;; (pixel-scroll-precision-mode 1)
 
 ;;
 ;; -> bell
@@ -532,7 +524,7 @@
 (add-hook 'calendar-mode-hook 'diary-mark-entries)
 (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
 (add-hook 'diary-mark-entries-hook 'diary-mark-included-diary-files)
-(add-hook 'next-error-hook #'org-show-all)
+(add-hook 'next-error-hook #'org-fold-show-all)
 
 ;;
 ;; -> custom-settings
@@ -551,10 +543,11 @@
 ;;
 
 (defun my/show-elfeed (buffer)
+  "Show Elfeed wrapper with BUFFER."
   (display-buffer buffer))
 
 (defun my/resize-window (delta &optional horizontal)
-  "Resize window back and forth."
+  "Resize window back and forth by DELTA and HORIZONTAL."
   (interactive)
   (cond
     ((< (nth 0 (window-edges)) 2)
@@ -564,7 +557,7 @@
       (select-window (windmove-right (selected-window))))))
 
 (defun save-macro (name)
-  "Save a macro."
+  "Save a macro by NAME."
   (interactive "SName of the macro: ")
   (kmacro-name-last-macro name)
   (find-file user-init-file)
@@ -574,7 +567,7 @@
   (newline))
 
 (defun my/comment-or-uncomment ()
-  "Comments or uncomments the current line or region."
+  "Comment or uncomment the current line or region."
   (interactive)
   (if (region-active-p)
     (comment-or-uncomment-region
@@ -590,7 +583,7 @@
     (set-selective-display (1+ (current-column)))))
 
 (defun my/grep (arg)
-  "Wrapper to grep."
+  "Wrapper to grep with ARG."
   (interactive "p")
   (let ((search-term
           (if (equal major-mode 'dired-mode)
@@ -603,8 +596,8 @@
         (deadgrep search-term "~")))))
 
 (defun my/dired-duplicate-file (arg)
-  "Duplicate a file from dired with an incremented number.
-  If ARG is provided, it sets the counter."
+  "Duplicate a file from DIRED with an incremented number.
+If ARG is provided, it sets the counter."
   (interactive "p")
   (let* ((file (dired-get-file-for-visit))
           (dir (file-name-directory file))
@@ -623,6 +616,7 @@
     (dired-revert)))
 
 (defun convert-weight (weight)
+  "Convert WEIGHT from string to pounds."
   (let* ((parts (split-string weight ":"))
           (stone (string-to-number (car parts)))
           (pounds (string-to-number (cadr parts))))
@@ -631,7 +625,7 @@
 (global-set-key (kbd "C-c w") 'file-info-show)
 
 (defun my/mark-word ()
-  "redefinition of mark-word"
+  "Redefinition of 'mark-word'."
   (interactive)
   (when (not (region-active-p))
     (backward-to-word 1))
@@ -642,7 +636,7 @@
   (setq mark-active t))
 
 (defun my/mark-block ()
-  "Marking a block of text surrounded by a newline"
+  "Marking a block of text surrounded by a newline."
   (interactive)
   (when (not (region-active-p))
     (backward-char))
@@ -660,8 +654,8 @@
 (global-set-key (kbd "M-'") 'my/mark-word)
 
 (defun my/replace-spaces-with-dashes (start end)
-  "Replace all spaces with dashes in the selected region."
-  (interactive "r") ; The 'r' means this function uses the region as arguments
+  "Replace all spaces with dashes in the selected region from START to END."
+  (interactive "r")
   (let ((selected-text (buffer-substring start end))
          (replacement-text))
     (setq replacement-text (replace-regexp-in-string " " "-" selected-text))
@@ -673,7 +667,7 @@
 (require 'cl-lib)
 
 (defun my/collapse-space ()
-  "Collapses consecutive blank lines down to a single blank line if there's more than one, or removes a single blank line if that's all that is found."
+  "Collapses consecutive blank lines down to a single blank line."
   (interactive)
   (save-excursion
     (let ((found-blank-lines 0))
@@ -692,7 +686,8 @@
 (global-set-key (kbd "C-x C-o") 'my/collapse-space)
 
 (defun my/text-browser-search ()
-  "Use the selected text (or the word under the cursor) as the search term for a Google search in a web browser."
+  "Use the selected text (or word under cursor)
+as search term for Google search in web browser."
   (interactive)
   (let (search-term start end)
     ;; Check if text is selected, otherwise use the word at the cursor position
@@ -708,6 +703,7 @@
     (browse-url (concat "https://www.startpage.com/search?q=" search-term))))
 
 (defun my/toggle-scroll-margin (&optional value)
+  "Toggle the scroll margin based on VALUE."
   (interactive "P")
   (let ((new-value (if value
                      value
@@ -927,6 +923,7 @@
   :init (global-org-modern-mode -1))
 
 (defun my/org-ql-emacs ()
+  "Test org-ql query."
   (interactive)
   (org-ql-search (org-agenda-files)
     '(and (done) (tags "2023") (tags "emacs"))
@@ -940,7 +937,7 @@
   (modify-syntax-entry ?> "." org-mode-syntax-table))
 
 (defun my/org-shrink-tables ()
-  "Shrink all tables in the current Org buffer, skipping tables inside source blocks."
+  "Shrink all tables in the Org buffer."
   (interactive)
   (save-excursion
     (let ((block-start (point-min))   ;; Initialize to the start of the buffer
@@ -1177,14 +1174,14 @@
   (dired-async-mode 1))
 
 (defun my/dired-create-directory ()
-  "Wrapper to dired-create-directory to avoid minibuffer completion"
+  "Wrapper to dired-create-directory to avoid minibuffer completion."
   (interactive)
   (let ((search-term
           (read-from-minibuffer "Dir : ")))
     (dired-create-directory search-term)))
 
 (defun my/dired-create-empty-file ()
-  "Wrapper to dired-create-empty-file to avoid minibuffer completion"
+  "Wrapper to dired-create-empty-file to avoid minibuffer completion."
   (interactive)
   (let ((search-term
           (read-from-minibuffer "File : ")))
@@ -1211,7 +1208,7 @@
      (window-width . 0.5)))
 
 (defun my/image-dired-sort (arg)
-  "Sort images in various ways."
+  "Sort images in various ways given ARG."
   (interactive "P")
   ;; Use `let` to temporarily set `dired-actual-switches`
   (let ((dired-actual-switches
@@ -1230,7 +1227,7 @@
         (select-window w)
         (dired-unmark-all-marks)
         (select-window idw)
-        (image-dired-display-thumbnail-original-image)
+        (image-dired-display-this)
         (image-dired-line-up-dynamic)))))
 
 (setq image-use-external-converter t)
@@ -1294,18 +1291,6 @@
        (lambda ()(interactive)(image-dired-forward-image)(image-dired-display-this)))
      (define-key image-dired-thumbnail-mode-map (kbd "p")
        (lambda ()(interactive)(image-dired-backward-image)(image-dired-display-this)))
-     ;; (define-key image-dired-thumbnail-mode-map (kbd "C-n")
-     ;;   (lambda ()(interactive)(image-dired-next-line)(image-dired-display-this)))
-     ;; (define-key image-dired-thumbnail-mode-map (kbd "C-p")
-     ;;   (lambda ()(interactive)(image-dired-previous-line)(image-dired-display-this)))
-     ;; (define-key image-dired-thumbnail-mode-map (kbd "C-a")
-     ;;   (lambda ()(interactive)(image-dired-move-beginning-of-line)(image-dired-display-this)))
-     ;; (define-key image-dired-thumbnail-mode-map (kbd "C-e")
-     ;;   (lambda ()(interactive)(image-dired-move-end-of-line)(image-dired-display-this)))
-     ;; (define-key image-dired-thumbnail-mode-map (kbd "M-<")
-     ;;   (lambda ()(interactive)(image-dired-beginning-of-buffer)(image-dired-display-this)))
-     ;; (define-key image-dired-thumbnail-mode-map (kbd "M->")
-     ;;   (lambda ()(interactive)(image-dired-end-of-buffer)(image-dired-display-this)))
      ))
 
 ;;
@@ -1327,8 +1312,8 @@
 
 (setq-default truncate-partial-width-windows 120)
 
-(set-frame-parameter nil 'alpha-background 95)
-(add-to-list 'default-frame-alist '(alpha-background . 95))
+(set-frame-parameter nil 'alpha-background 90)
+(add-to-list 'default-frame-alist '(alpha-background . 90))
 
 (set-fringe-mode '(0 . 0))
 (set-display-table-slot standard-display-table 0 ?\ )
@@ -1343,6 +1328,7 @@
 (defvar my/internal-border-width 10 "Default internal border width for toggling.")
 
 (defun my/toggle-internal-border-width (&optional value)
+  "Toggle internal border width given VALUE."
   (interactive "P")
   (let ((new-value (if value
                      value
@@ -1488,7 +1474,7 @@
 (setq find-ls-option (cons "-exec ls -lSh {} +" "-lSh"))
 
 (defun my/find-file ()
-  "Find file from current directory using different finds"
+  "Find file from current directory."
   (interactive)
   (let* ((file-list (split-string
                       ;; (shell-command-to-string "find -type f -printf \"$PWD/%p\\0\"") "\0" t))
@@ -1520,8 +1506,8 @@
 (setq-default deadgrep--search-case 'ignore)
 
 (defun deadgrep--arguments (search-term search-type case context)
-  "Return a list of command line arguments that we can execute in a shell
-      to obtain ripgrep results."
+  "Return a list of command line arguments that we can execute in a shell.
+To obtain ripgrep results using SEARCH-TERM SEARCH-TYPE CASE CONTEXT."
   (let (args)
     (push "--color=ansi" args)
     (push "--line-number" args)
@@ -1580,9 +1566,7 @@
 
 (global-set-key (kbd "M-s l")
   (lambda () (interactive)
-    ;; (backward-word)
     (jinx-correct)))
-;; (forward-word)))
 
 (global-set-key (kbd "M-s c") 'wc-mode)
 (global-set-key (kbd "M-s j") 'jinx-mode)
@@ -1655,7 +1639,7 @@
 (use-package yaml-mode)
 
 (add-hook 'yaml-mode-hook
-  '(lambda ()
+  #'(lambda ()
      (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
 
 (setq eldoc-echo-area-use-multiline-p nil)
@@ -1681,22 +1665,18 @@
 (setq-default ztree-diff-consider-file-permissions nil)
 (setq-default ztree-diff-show-equal-files nil)
 
+(use-package diff-mode
+  :hook
+  (diff-mode . (lambda ()
+                 (define-key diff-mode-map (kbd "M-0") nil)
+                 (define-key diff-mode-map (kbd "M-1") nil)
+                 (define-key diff-mode-map (kbd "M-2") nil)
+                 (define-key diff-mode-map (kbd "M-3") nil)
+                 (define-key diff-mode-map (kbd "M-4") nil))))
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
-(setq ediff-prepare-buffer-hook #'org-show-all)
+(setq ediff-prepare-buffer-hook #'org-fold-show-all)
 (setq-default ediff-highlight-all-diffs t)
 (setq ediff-split-window-function 'split-window-horizontally)
-(defvar my-ediff-last-windows nil)
-
-(defun my-store-pre-ediff-winconfig ()
-  "Store `current-window-configuration' in variable `my-ediff-last-windows'."
-  (setq my-ediff-last-windows (current-window-configuration)))
-
-(defun my-restore-pre-ediff-winconfig ()
-  "Restore window configuration to stored value in `my-ediff-last-windows'."
-  (set-window-configuration my-ediff-last-windows))
-
-(add-hook 'ediff-before-setup-hook #'my-store-pre-ediff-winconfig)
-(add-hook 'ediff-quit-hook #'my-restore-pre-ediff-winconfig)
 
 ;;
 ;; -> ada
@@ -1705,7 +1685,7 @@
   :vc (:fetcher github :repo "captainflasmr/old-ada-mode"))
 
 (defun my/eglot-dir-locals ()
-  "Create .dir-locals.el file for eglot ada-mode using the selected dired path."
+  "Create .dir-locals.el file for eglot ada-mode using the selected DIRED path."
   (interactive)
   (add-dir-local-variable
     'ada-mode
@@ -1716,7 +1696,7 @@
 (setq xref-auto-jump-to-first-xref t)
 
 (defun my/xref--read-identifier (prompt)
-  "Custom function to find definitions in Ada mode."
+  "Custom function to find definitions in Ada mode with PROMPT."
   (let ((def (xref-backend-identifier-at-point 'etags))
          (variations '("/t" "/k" "/f" "/p" "/b" "/s"))
          (ada-refs 'nil))
@@ -1733,6 +1713,7 @@
         (setq id (completing-read prompt ada-refs))))))
 
 (defun my/xref-find-definitions (identifier)
+  "Find Definition given IDENTIFIER."
   (interactive "p")
   (setq identifier (my/xref--read-identifier "Find definitions of: "))
   (xref-find-definitions identifier))
@@ -1772,7 +1753,7 @@
       (my/xref-find-definitions (xref-backend-identifier-at-point 'etags)))))
 
 (defun my/xref-quit-xref-marker-stack ()
-  "Quit *xref* buffer"
+  "Quit *xref* buffer."
   (interactive)
   (save-excursion
     (let ((target-window (get-buffer-window "*xref*")))
@@ -1900,7 +1881,6 @@
 (defun my/project-root ()
   "Return project root defined by user."
   (interactive)
-  "Guess the project root of the given FILE-PATH."
   (let ((root default-directory)
          (project (project-current)))
     (when project
@@ -1910,7 +1890,8 @@
 (add-to-list 'project-switch-commands '(project-dired "Dired") t)
 
 (defun my/project-create-compilation-search-path ()
-  "Populate the compilation-search-path variable with directories under project root using find"
+  "Populate the 'compilation-search-path' variable.
+With directories under project root using find."
   (interactive)
   (let ((find-command
           (concat "find " (project-root (project-current t))
@@ -1921,6 +1902,7 @@
         "\n" t))))
 
 (defun my/project-compile (arg)
+  "Bespoke project compile based on ARG."
   (interactive "p")
   (let ((default-directory (project-root (project-current t))))
     (cond ((= arg 1)
@@ -1950,7 +1932,7 @@
 ;; -> etags
 ;;
 (defun my/etags-load ()
-  "Load the TAGS file from the first it can find up the directory stack."
+  "Load TAGS file from the first it can find up the directory stack."
   (interactive)
   (let ((my-tags-file (locate-dominating-file default-directory "TAGS")))
     (when my-tags-file
@@ -1958,7 +1940,7 @@
       (visit-tags-table my-tags-file))))
 
 (defun my/etags-update ()
-  "Call external bash script to generate new etags for all languages it can find"
+  "Call external bash script to generate new etags for all languages it can find."
   (interactive)
   (async-shell-command "my-generate-etags.sh" "*etags*"))
 
@@ -2064,7 +2046,7 @@
 (setq dst-valid '(:raw :org :ascii :hugo))
 
 (defun my/push-block (&optional value)
-  "Export content from one file to another in various formats and update files accordingly."
+  "Export content from one file to another in various formats given VALUE."
   (interactive "p")
   (save-excursion
     (dolist (item my/push-block-spec)
@@ -2174,7 +2156,7 @@
   (global-set-key (kbd "M-<home>") 'my/insert-random-color-at-point))
 
 (defun my/insert-random-color-at-point ()
-  "Generate a random color and insert it at the current hex color code under cursor."
+  "Generate random color and insert at current hex color under cursor."
   (interactive)
   (let* ((color (format "#%06x" (random (expt 16 6))))
           (bounds (bounds-of-thing-at-point 'sexp))
@@ -2196,13 +2178,13 @@
 (setq shell-file-name "/bin/fish")
 
 (defun my/eshell-hook ()
-  "set up company completions to be a little more fish like"
+  "Set up company completions to be a little more fish like."
   (interactive)
   (define-key eshell-mode-map (kbd "<tab>") #'company-complete)
   (define-key eshell-hist-mode-map (kbd "M-r") #'consult-history))
 
 (defun my/shell-hook ()
-  "set up company completions to be a little more fish like"
+  "Set up company completions to be a little more fish like."
   (interactive)
   (define-key shell-mode-map (kbd "<tab>") #'company-complete)
   (define-key shell-mode-map (kbd "M-r") #'consult-history))
@@ -2260,7 +2242,7 @@
     proced-format 'medium
     proced-sort 'rss)
   (defun my/proced-toggle-update()
-    "Proced turn auto update on and off"
+    "Proced turn auto update on and off."
     (interactive)
     (if proced-auto-update-flag
       (proced-toggle-auto-update -1)
@@ -2387,9 +2369,9 @@
   :custom
   (wc-modeline-format "WC:%tw"))
 
-(defun my-word-count-function (rstart rend)
-  "Counts words without lines containing 'DONE' and the 'PROPERTIES' and 'END:' drawers.
-Or indeed other filters as defined in the main unless"
+(defun my/word-count-function (rstart rend)
+  "Counts words without lines containing 'DONE' 'PROPERTIES' 'END:' drawers.
+Or indeed other filters as defined in the main unless from RSTART and REND."
   (let ((count 0))
     (save-excursion
       (goto-char rstart)
@@ -2414,7 +2396,7 @@ Or indeed other filters as defined in the main unless"
     count))
 
 ;; Set the custom wc-mode counting function
-(setq wc-count-words-function 'my-word-count-function)
+(setq wc-count-words-function 'my/word-count-function)
 
 ;;
 ;; -> development
@@ -2432,15 +2414,16 @@ Or indeed other filters as defined in the main unless"
     (format "%d:%d" new-stones new-pounds)))         ;; Format new weight
 
 (defun extrapolate-weight-loss (num-weeks)
-  "Extrapolate weight loss for NUM-WEEKS using the last 'av/pd' value in the org-table."
+  "Extrapolate weight loss for NUM-WEEKS using 'av/pd' value in org-table."
   (interactive "p")
   (save-excursion
-    (let ((last-avg-loss 2.9)
+    (let ((last-weight)
+           (last-avg-loss 2.9)
            (last-date "")
            (week 0)
            (next-date ""))
       (print num-weeks)
-      (when (org-table-p)
+      (when (org-at-table-p)
         (goto-char (org-table-end))
         ;; Find the last date and week number
         (search-backward-regexp "|\\s-?\\([0-9]+\\)\\s-?|\\s-?<\\([0-9-]+\\)" nil t)
@@ -2481,7 +2464,8 @@ Or indeed other filters as defined in the main unless"
             (condition-case err
               (cond
                 ((string-match-p "compilation" buf-name)
-                  (funcall (if (> arg 1) #'re-search-backward #'re-search-forward) "[[:digit:]]: warning:")
+                  (funcall (if (> arg 1)
+#'re-search-backward #'re-search-forward) "[[:digit:]]: warning:")
                   (compile-goto-error)
                   (throw 'done t))
 
@@ -2493,7 +2477,7 @@ Or indeed other filters as defined in the main unless"
                 ((string-match-p "dead" buf-name)
                   (funcall (if (> arg 1) #'deadgrep-backward-match #'deadgrep-forward-match))
                   (deadgrep-visit-result-other-window)
-                  (org-show-entry)
+                  (org-fold-show-entry)
                   (throw 'done t))
 
                 ((string-match-p "org agenda" buf-name)
@@ -2501,7 +2485,7 @@ Or indeed other filters as defined in the main unless"
                     (org-agenda-previous-item 1)
                     (org-agenda-next-item 1))
                   (org-agenda-goto)
-                  (org-show-entry)
+                  (org-fold-show-entry)
                   (throw 'done t))
 
                 ((or (string-match-p "occur" buf-name)
