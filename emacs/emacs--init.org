@@ -158,7 +158,6 @@ Turn on a profiler if we would like
 (use-package gnuplot)
 (use-package ahk-mode)
 (use-package embark-consult)
-(use-package find-file-rg)
 (use-package gruvbox-theme)
 (use-package ef-themes)
 (use-package doom-themes)
@@ -277,33 +276,6 @@ Turn on a profiler if we would like
 
 * modeline-completion
 
-** bespoke
-
-#+begin_src elisp :tangle no
-;;
-;; -> modeline-completion-bespoke
-;;
-(defun find-file-vanilla ()
-  "Simple find file from current directory using the linux find command."
-  (interactive)
-  ;; (setq find-command "find -type f -printf \"$PWD/%p\\0\"")
-  ;; (setq find-command "rg --files --null")
-
-  (setq find-command "fd --absolute-path --type f -0")
-  (setq file-list
-    (mapcar
-      (lambda (path)
-        (file-relative-name path default-directory))
-      (split-string
-        (shell-command-to-string find-command)
-        "\0" t)))
-  (setq file
-    (completing-read
-      (format "Find file in %s: " (default-directory))
-      file-list))
-  (when file (find-file (expand-file-name file default-directory))))
-#+end_src
-
 ** vanilla
 
 #+begin_src elisp :tangle no
@@ -393,6 +365,7 @@ Turn on a profiler if we would like
 (define-key my-jump-keymap (kbd "n") (lambda () (interactive) (find-file "~/nas")))
 (define-key my-jump-keymap (kbd "p") #'proced)
 (define-key my-jump-keymap (kbd "q") #'cfw:open-org-calendar)
+(define-key my-jump-keymap (kbd "t") (lambda () (interactive) (find-file "~/.local/share/Trash/files")))
 (define-key my-jump-keymap (kbd "y") #'emms)
 
 (defvar my-win-keymap (make-sparse-keymap))
@@ -488,6 +461,7 @@ Turn on a profiler if we would like
   (emms-volume-amixer-card 1)
   (emms-volume-change-function 'emms-volume-pulse-change))
 #+end_src
+
 * elfeed
 
 #+begin_src elisp
@@ -1669,9 +1643,9 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
             (propertize " Modified " 'face
               '(:background "#ff0000" :foreground "#ffffff" :inherit bold)) "")))
 
-(set-face-attribute 'mode-line-active nil :height 130 :underline nil :overline nil :box nil
+(set-face-attribute 'mode-line-active nil :height 120 :underline nil :overline nil :box nil
   :background "#a7a7a7" :foreground "#000000")
-(set-face-attribute 'mode-line-inactive nil :height 130 :underline nil :overline nil
+(set-face-attribute 'mode-line-inactive nil :height 120 :underline nil :overline nil
   :background "#151515" :foreground "#cacaca")
 
 (defun my-tab-bar-number ()
@@ -1726,28 +1700,29 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 * find
 
 #+begin_src elisp
-;;
-;; -> find
-;;
-(setq find-dired-refine-function 'find-dired-sort-by-filename)
-(setq find-dired-refine-function 'nil)
-(setq find-ls-option (cons "-exec ls -lSh {} +" "-lSh"))
+  ;;
+  ;; -> find
+  ;;
 
-(defun my/find-file ()
-  "Find file from current directory."
-  (interactive)
-  (let* ((file-list (split-string
-                      ;; (shell-command-to-string "find -type f -printf \"$PWD/%p\\0\"") "\0" t))
-                      ;; (shell-command-to-string "fd --absolute-path --type f -0") "\0" t))
-                      (shell-command-to-string "rg --follow --files --null") "\0" t))
-          (metadata '((category . file)))
-          (file (completing-read (format "Find file in %s: " (abbreviate-file-name default-directory))
-                  (lambda (str pred action)
-                    (if (eq action 'metadata)
-                      `(metadata . ,metadata)
-                      (complete-with-action action file-list str pred)))
-                  nil t nil 'file-name-history)))
-    (when file (find-file (expand-file-name file)))))
+  (setq find-dired-refine-function 'find-dired-sort-by-filename)
+  (setq find-dired-refine-function 'nil)
+  (setq find-ls-option (cons "-exec ls -lSh {} +" "-lSh"))
+
+  (defun my/find-file ()
+    "Find file from current directory."
+    (interactive)
+    (let* ((file-list (split-string
+                        ;; (shell-command-to-string "find -type f -printf \"$PWD/%p\\0\"") "\0" t))
+                        ;; (shell-command-to-string "fd --absolute-path --type f -0") "\0" t))
+                        (shell-command-to-string "rg --follow --files --null") "\0" t))
+            (metadata '((category . file)))
+            (file (completing-read (format "Find file in %s: " (abbreviate-file-name default-directory))
+                    (lambda (str pred action)
+                      (if (eq action 'metadata)
+                        `(metadata . ,metadata)
+                        (complete-with-action action file-list str pred)))
+                    nil t nil 'file-name-history)))
+      (when file (find-file (expand-file-name file)))))
 
 #+end_src
 

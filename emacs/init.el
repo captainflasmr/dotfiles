@@ -85,7 +85,6 @@
 (use-package gnuplot)
 (use-package ahk-mode)
 (use-package embark-consult)
-(use-package find-file-rg)
 (use-package gruvbox-theme)
 (use-package ef-themes)
 (use-package doom-themes)
@@ -258,6 +257,7 @@
 (define-key my-jump-keymap (kbd "n") (lambda () (interactive) (find-file "~/nas")))
 (define-key my-jump-keymap (kbd "p") #'proced)
 (define-key my-jump-keymap (kbd "q") #'cfw:open-org-calendar)
+(define-key my-jump-keymap (kbd "t") (lambda () (interactive) (find-file "~/.local/share/Trash/files")))
 (define-key my-jump-keymap (kbd "y") #'emms)
 
 (defvar my-win-keymap (make-sparse-keymap))
@@ -1415,9 +1415,9 @@ as search term for Google search in web browser."
             (propertize " Modified " 'face
               '(:background "#ff0000" :foreground "#ffffff" :inherit bold)) "")))
 
-(set-face-attribute 'mode-line-active nil :height 130 :underline nil :overline nil :box nil
+(set-face-attribute 'mode-line-active nil :height 120 :underline nil :overline nil :box nil
   :background "#a7a7a7" :foreground "#000000")
-(set-face-attribute 'mode-line-inactive nil :height 130 :underline nil :overline nil
+(set-face-attribute 'mode-line-inactive nil :height 120 :underline nil :overline nil
   :background "#151515" :foreground "#cacaca")
 
 (defun my-tab-bar-number ()
@@ -1471,6 +1471,7 @@ as search term for Google search in web browser."
 ;;
 ;; -> find
 ;;
+
 (setq find-dired-refine-function 'find-dired-sort-by-filename)
 (setq find-dired-refine-function 'nil)
 (setq find-ls-option (cons "-exec ls -lSh {} +" "-lSh"))
