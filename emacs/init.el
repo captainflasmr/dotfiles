@@ -1468,29 +1468,29 @@ as search term for Google search in web browser."
 (display-time-mode -1)
 (setq mode-line-compact nil)
 
-;;
-;; -> find
-;;
+  ;;
+  ;; -> find
+  ;;
 
-(setq find-dired-refine-function 'find-dired-sort-by-filename)
-(setq find-dired-refine-function 'nil)
-(setq find-ls-option (cons "-exec ls -lSh {} +" "-lSh"))
+  (setq find-dired-refine-function 'find-dired-sort-by-filename)
+  (setq find-dired-refine-function 'nil)
+  (setq find-ls-option (cons "-exec ls -lSh {} +" "-lSh"))
 
-(defun my/find-file ()
-  "Find file from current directory."
-  (interactive)
-  (let* ((file-list (split-string
-                      ;; (shell-command-to-string "find -type f -printf \"$PWD/%p\\0\"") "\0" t))
-                      ;; (shell-command-to-string "fd --absolute-path --type f -0") "\0" t))
-                      (shell-command-to-string "rg --follow --files --null") "\0" t))
-          (metadata '((category . file)))
-          (file (completing-read (format "Find file in %s: " (abbreviate-file-name default-directory))
-                  (lambda (str pred action)
-                    (if (eq action 'metadata)
-                      `(metadata . ,metadata)
-                      (complete-with-action action file-list str pred)))
-                  nil t nil 'file-name-history)))
-    (when file (find-file (expand-file-name file)))))
+  (defun my/find-file ()
+    "Find file from current directory."
+    (interactive)
+    (let* ((file-list (split-string
+                        ;; (shell-command-to-string "find -type f -printf \"$PWD/%p\\0\"") "\0" t))
+                        ;; (shell-command-to-string "fd --absolute-path --type f -0") "\0" t))
+                        (shell-command-to-string "rg --follow --files --null") "\0" t))
+            (metadata '((category . file)))
+            (file (completing-read (format "Find file in %s: " (abbreviate-file-name default-directory))
+                    (lambda (str pred action)
+                      (if (eq action 'metadata)
+                        `(metadata . ,metadata)
+                        (complete-with-action action file-list str pred)))
+                    nil t nil 'file-name-history)))
+      (when file (find-file (expand-file-name file)))))
 
 ;;
 ;; -> grep
@@ -2507,3 +2507,68 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
       (dolist (file files)
         (async-shell-command (format "gio trash '%s'" file))))
     (message "Async deletion is set up only for trash. Set `delete-by-moving-to-trash` to t.")))
+
+(use-package csv)
+(require 'csv)
+
+(defvar payments '())
+(defvar cat-tot (make-hash-table :test 'equal))
+(setq cat-list-defines '(("kate" "kate")
+                          ("train" "train")
+                          ("paypal" "paypal")
+                          ("water" "utility")
+                          ("amaz.*" "amazon")
+                          ("deliveroo\\|justeat" "food")
+                          (".*" "other")
+                          ))
+
+(defun categorize-payment (name debit month)
+  "Categorize payment based on name, month, and accumulate totals."
+  (let* ((category-found)
+          (split-key))
+    (cl-block nil
+      (dolist (category cat-list-defines)
+        (when (string-match-p
+                (nth 0 category) name)
+          (setq category-found (nth 1 category))
+          (cl-return))))
+    (setq split-key (concat month "-" category-found))
+    (puthash split-key (+ (gethash split-key cat-tot 0) debit) cat-tot)))
+
+(defun parse-csv-file (file)
+  "Parse CSV file and store payments."
+  (with-temp-buffer
+    (insert-file-contents file)
+    (setq payments (csv-parse-buffer t))))
+
+(defun export-payments-to-org ()
+  "Export categorized payments and totals to an Org table."
+  (clrhash cat-tot)
+  (dolist (payment payments)
+    (let* ((date (cdr (nth 0 payment)))
+            (month (format-time-string "%Y-%m" (date-to-time date)))
+            (name (string-replace " " "-" (cdr (nth 4 payment))))
+            (debit (string-to-number (cdr (nth 5 payment)))))
+      (categorize-payment name debit month)))
+
+  (with-temp-buffer
+    (insert "date ")
+    (dolist (category cat-list-defines)
+      (insert (format "%s " (nth 1 category))))
+    (insert "\n")
+    (dolist (year (seq-map '(lambda (value)
+                              (format "%02d" value))
+                    (nreverse (number-sequence 2023 2023 1))))
+      (dolist (month (seq-map '(lambda (value)
+                                 (format "%02d" value))
+                       (nreverse (number-sequence 1 12 1))))
+        (insert (format "%s " (concat year "-" month)))
+        (dolist (category cat-list-defines)
+          (let* ((split-key (concat year "-" month "-" (nth 1 category))))
+            (insert (format "%.2f " (gethash split-key cat-tot 0)))))
+        (insert "\n")))
+    (write-file "payments.org")))
+
+;; Example usage
+(parse-csv-file "payments.csv")
+(export-payments-to-org)
