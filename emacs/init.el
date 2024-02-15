@@ -408,7 +408,10 @@
 (global-set-key (kbd "M-m M-m") 'save-buffer)
 (global-set-key (kbd "<f8>") (lambda ()(interactive)(my/next-thing 1)))
 (global-set-key (kbd "S-<f8>") (lambda ()(interactive)(my/next-thing 2)))
+(global-set-key (kbd "M-s v") 'org-babel-tangle)
+(global-set-key (kbd "M-s p") 'org-plot/gnuplot)
 (global-set-key (kbd "M-s e") 'my/push-block)
+(global-set-key (kbd "M-s b") '(lambda ()(interactive)(org-table-recalculate 'all)))
 (global-set-key (kbd "M-s g") 'my/text-browser-search)
 (global-set-key (kbd "M-=") 'count-words)
 (define-key minibuffer-local-map (kbd "C-c e") 'embark-collect)
@@ -2513,12 +2516,31 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
 
 (defvar payments '())
 (defvar cat-tot (make-hash-table :test 'equal))
+
 (setq cat-list-defines '(("kate" "kate")
-                          ("train" "train")
+                          ("railw\\|railway\\|selfserve\\|train" "train")
                           ("paypal" "paypal")
-                          ("water" "utility")
-                          ("amaz.*" "amazon")
-                          ("deliveroo\\|justeat" "food")
+                          ("postoffice\\|endsleigh\\|waste\\|lloyds\\|electric\\|sse\\|newsstand\\|privilege\\|pcc\\|licence\\|ovo\\|energy\\|bt\\|water" "utility")
+                          ("b365\\|races\\|bet365\\|racing" "betting")
+                          ("stakeholde\\|widows" "pension")
+                          ("nsibill\\|vines\\|ns&i\\|saver" "savings")
+                          ("streamline" "health")
+                          ("clifford" "therapy")
+                          ("daltontags\\|dyer\\|julia" "family")
+                          ("aqua" "taxi")
+                          ("specsavers\\|publishing\\|anthem\\|kindle\\|news" "reading")
+                          ("c-date\\|ptitis\\|keypmt\\|billnt\\|fee2nor\\|assistance\\|boxise\\|billkt\\|paintstor\\|iet-main\\|ffnhelp\\|shadesgrey\\|venntro\\|vtsup\\|sunpts\\|apyse\\|palchrge\\|maypmt\\|filemodedesk\\|istebrak\\|connective\\|avangate\\|stardock\\|avg\\|123\\|web\\|a2" "web")
+                          ("anchrg\\|hilsea\\|withdrawal" "atm")
+                          ("finance" "finance")
+                          ("tvplayer\\|vue\\|sky\\|netflix\\|audible\\|nowtv\\|channel\\|prime" "stream")
+                          ("google" "google")
+                          ("platinum\\|card" "card")
+                          ("top-up\\|three\\|h3g" "phone")
+                          ("24pymt\\|champo\\|costa\\|gollo\\|pumpkin\\|argos\\|the-range\\|biffa\\|moonpig\\|apple\\|itunes\\|gold\\|interflora\\|morrison\\|thortful" "shop")
+                          ("pet" "pet")
+                          ("residential\\|rent\\|yeong" "rent")
+                          ("amaz\\|amz" "amazon")
+                          ("waitrose\\|tesco\\|domino\\|deliveroo\\|just.*eat\\|just eat" "food")
                           (".*" "other")
                           ))
 
@@ -2533,6 +2555,7 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
           (setq category-found (nth 1 category))
           (cl-return))))
     (setq split-key (concat month "-" category-found))
+    (insert (format "%s %s %s %.2f\n" category-found month name debit))
     (puthash split-key (+ (gethash split-key cat-tot 0) debit) cat-tot)))
 
 (defun parse-csv-file (file)
@@ -2544,12 +2567,14 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
 (defun export-payments-to-org ()
   "Export categorized payments and totals to an Org table."
   (clrhash cat-tot)
-  (dolist (payment payments)
-    (let* ((date (cdr (nth 0 payment)))
-            (month (format-time-string "%Y-%m" (date-to-time date)))
-            (name (string-replace " " "-" (cdr (nth 4 payment))))
-            (debit (string-to-number (cdr (nth 5 payment)))))
-      (categorize-payment name debit month)))
+  (with-temp-buffer
+    (dolist (payment payments)
+      (let* ((date (cdr (nth 0 payment)))
+              (month (format-time-string "%Y-%m" (date-to-time date)))
+              (name (string-replace " " "-" (cdr (nth 4 payment))))
+              (debit (string-to-number (cdr (nth 5 payment)))))
+        (categorize-payment name debit month)))
+    (write-file "payments-all.org"))
 
   (with-temp-buffer
     (insert "date ")
@@ -2558,7 +2583,7 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
     (insert "\n")
     (dolist (year (seq-map '(lambda (value)
                               (format "%02d" value))
-                    (nreverse (number-sequence 2023 2023 1))))
+                    (nreverse (number-sequence 2016 2024 1))))
       (dolist (month (seq-map '(lambda (value)
                                  (format "%02d" value))
                        (nreverse (number-sequence 1 12 1))))
@@ -2570,5 +2595,9 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
     (write-file "payments.org")))
 
 ;; Example usage
-(parse-csv-file "payments.csv")
-(export-payments-to-org)
+;; (parse-csv-file "payments.csv")
+;; (export-payments-to-org)
+
+(use-package vertico-posframe
+  :config
+  (vertico-posframe-mode 1))
