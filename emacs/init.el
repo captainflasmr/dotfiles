@@ -161,7 +161,7 @@
 
   ;; Enable indentation+completion using the TAB key.
   ;; `completion-at-point' is often bound to M-TAB.
-  (setq tab-always-indent 'complete))
+  (setq tab-always-indent t))
 
 ;; Configure Tempel
 (use-package tempel
@@ -2198,10 +2198,13 @@ With directories under project root using find."
 (use-package eshell
   :config
   (setq eshell-scroll-to-bottom-on-input t)
+  (setq-local tab-always-indent 'complete)
   :hook
   (eshell-mode . my/eshell-hook))
 
 (use-package shell
+  :config
+  (setq-local tab-always-indent 'complete)
   :hook
   (shell-mode . my/shell-hook))
 
@@ -2545,6 +2548,8 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
      (".*" "other")
      ))
 
+(length cat-list-defines)
+
 (defun categorize-payment (name debit month)
   "Categorize payment based on name, month, and accumulate totals."
   (let* ((category-found)
@@ -2568,12 +2573,13 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
 (defun write-header-plot (year)
   ""
   (insert "-*- mode: org; eval: (visual-line-mode -1); -*-\n")
-  (insert (format "#+PLOT: title:\"%s\" ind:1 deps:(3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27) type:2d with:lines set:\"yrange [0:1000]\"\n" year)))
+  (insert (format "#+PLOT: title:\"%s\" ind:1 deps:(%s) type:2d with:lines set:\"yrange [0:1000]\"\n"
+            year (concat (mapconcat 'number-to-string (number-sequence 3 (+ (length cat-list-defines) 2)) " ")))))
 
 (defun write-footer-tblfm ()
   ""
   (insert "||\n")
-  (insert "#+TBLFM: @14=vmean(@I..@II);%.2f::$28=vsum($3..$27);%.2f"))
+  (insert (concat "#+TBLFM: @>=vmean(@I..@II);%.2f::$>=vsum($3..$" (format "%d" (+ (length cat-list-defines) 2)) ");\%.2f") ))
 
 (defun write-header ()
   ""
@@ -2640,7 +2646,31 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
         (write-footer-tblfm)
         (write-file (concat "payments-" year ".org"))
         )
+    )
+
+  ;; output payments to payments-<category>.org
+  (dolist (category cat-list-defines)
+    (with-temp-buffer
+      (insert (format "#+PLOT: title:\"%s\" ind:1 deps:(3) type:2d with:lines set:\"yrange [0:1000]\"\n" (nth 1 category)))
+      (insert "|date ")
+      (insert (format "%s\n" (nth 1 category)))
+      (let ((index 0))
+        (dolist (year (seq-map '(lambda (value)
+                                  (format "%02d" value))
+                        (nreverse (number-sequence 2016 2024 1))))
+          (dolist (month (seq-map '(lambda (value)
+                                     (format "%02d" value))
+                           (nreverse (number-sequence 1 12 1))))
+            (let* ((split-key (concat year "-" month "-" (nth 1 category))))
+              (insert (format "%d %s " index (concat year "-" month)))
+              (insert (format "%.2f\n" (gethash split-key cat-tot 0))))
+            (setq index (1+ index))
+            )
+          )
+        )
+      (write-file (concat "payments-" (nth 1 category) ".org"))
       )
+    )
 
   )
 
