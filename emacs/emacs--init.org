@@ -309,7 +309,7 @@ Turn on a profiler if we would like
   (read-buffer-completion-ignore-case t)
   (completion-ignore-case t)
   (vertico-resize nil)
-  (vertico-count 10)
+  (vertico-count 20)
   :init
   (vertico-mode))
 
@@ -344,13 +344,12 @@ Turn on a profiler if we would like
 (define-key my-jump-keymap (kbd "6") (lambda () (interactive)(tab-select 6)))
 (define-key my-jump-keymap (kbd "b") (lambda () (interactive) (find-file "~/bin")))
 (define-key my-jump-keymap (kbd "c") (lambda () (interactive) (find-file "~/DCIM/Camera")))
-(define-key my-jump-keymap (kbd "d") #'find-name-dired)
+(define-key my-jump-keymap (kbd "d") #'my/automount-open-in-dired)
 (define-key my-jump-keymap (kbd "f") 'my/find-file)
 (define-key my-jump-keymap (kbd "g") (lambda () (interactive) (find-file "~/.config")))
 (define-key my-jump-keymap (kbd "h") (lambda () (interactive) (find-file "~")))
 (define-key my-jump-keymap (kbd "i") #'tab-close)
 (define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~/DCIM/content/aab--todo.org")))
-(define-key my-jump-keymap (kbd "l") #'consult-recent-file)
 (define-key my-jump-keymap (kbd "m") #'customize-themes)
 (define-key my-jump-keymap (kbd "o") (lambda () (interactive) (tab-bar-new-tab-to -1)(tab-bar-mode 'toggle)))
 (define-key my-jump-keymap (kbd "r") (lambda () (interactive) (find-file "~/repos")))
@@ -534,7 +533,6 @@ Turn on a profiler if we would like
 ;;
 ;; -> keybinding
 ;;
-
 (global-set-key (kbd "M-m M-m") 'save-buffer)
 (global-set-key (kbd "<f8>") (lambda ()(interactive)(my/next-thing 1)))
 (global-set-key (kbd "S-<f8>") (lambda ()(interactive)(my/next-thing 2)))
@@ -545,8 +543,6 @@ Turn on a profiler if we would like
 (global-set-key (kbd "M-s g") 'my/text-browser-search)
 (global-set-key (kbd "M-=") 'count-words)
 (define-key minibuffer-local-map (kbd "C-c e") 'embark-collect)
-(bind-key* (kbd "M-g o") 'consult-outline)
-(bind-key* (kbd "M-g i") 'consult-imenu)
 (global-set-key (kbd "C-c a") 'org-agenda)
 (bind-key* (kbd "M-u") (lambda()(interactive)(select-window (previous-window (selected-window)))))
 (bind-key* (kbd "M-j") (lambda()(interactive)(forward-line (/ (window-height) 8))))
@@ -570,6 +566,20 @@ Turn on a profiler if we would like
 (bind-key* (kbd "C-c ,") 'embark-act)
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-h h"))
+
+#+end_src
+
+* consult
+
+#+begin_src elisp
+
+(bind-key* (kbd "C-x b") 'consult-buffer)
+(bind-key* (kbd "M-g o") 'consult-outline)
+(bind-key* (kbd "M-g i") 'consult-imenu)
+
+(consult-customize
+  consult-theme :preview-key '(:debounce 0.2 any)
+  consult-recent-file consult-buffer consult-outline consult-imenu consult-history :preview-key nil)
 
 #+end_src
 
@@ -698,7 +708,7 @@ Turn on a profiler if we would like
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
-  '(custom-enabled-themes '(doom-monokai-ristretto))
+  '(custom-enabled-themes '(doom-henna))
   '(warning-suppress-log-types '((frameset)))
   '(warning-suppress-types '((frameset))))
 #+end_src
@@ -1566,14 +1576,9 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
   (let ((new-color (read-color "Choose new accent color: ")))
     (setq my/accent-color new-color)
 
-    ;; Update tab-bar-tab face
-    ;; (custom-set-faces
-    ;; `(tab-bar-tab ((t (:inherit tab-bar :background ,my/accent-color :foreground "#222222" :box (:line-width (1 . 1) :color "#9c9c9c" :style flat))))))
-
     ;; Update selected-window-accent-mode custom variables
     (when (featurep 'selected-window-accent-mode)
       (setq selected-window-accent-custom-color my/accent-color)
-      ;; Update any other properties if needed...
 
       ;; Refresh the mode to apply the changes.
       (selected-window-accent-mode -1)
@@ -1703,17 +1708,18 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 * find
 
 #+begin_src elisp
-  ;;
-  ;; -> find
-  ;;
+;;
+;; -> find
+;;
 
-  (setq find-dired-refine-function 'find-dired-sort-by-filename)
-  (setq find-dired-refine-function 'nil)
-  (setq find-ls-option (cons "-exec ls -lSh {} +" "-lSh"))
+(setq find-dired-refine-function 'find-dired-sort-by-filename)
+(setq find-dired-refine-function 'nil)
+(setq find-ls-option (cons "-exec ls -lSh {} +" "-lSh"))
 
-  (defun my/find-file ()
-    "Find file from current directory."
-    (interactive)
+(defun my/find-file (arg)
+  "Find file from current directory."
+  (interactive "p")
+  (if (= arg 1)
     (let* ((file-list (split-string
                         ;; (shell-command-to-string "find -type f -printf \"$PWD/%p\\0\"") "\0" t))
                         ;; (shell-command-to-string "fd --absolute-path --type f -0") "\0" t))
@@ -1725,7 +1731,8 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
                         `(metadata . ,metadata)
                         (complete-with-action action file-list str pred)))
                     nil t nil 'file-name-history)))
-      (when file (find-file (expand-file-name file)))))
+      (when file (find-file (expand-file-name file))))
+    (call-interactively 'find-name-dired)))
 
 #+end_src
 
@@ -2869,10 +2876,6 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
   :config
   (project-mode-line-tag-mode 1))
 
-(consult-customize
-  consult-theme :preview-key '(:debounce 0.2 any)
-  consult-recent-file consult-outline consult-imenu consult-history :preview-key nil)
-
 (defun my/next-thing (arg)
   "Go to the next thing, meaning warning, error, grep, etc., based on ARG."
   (interactive "p")
@@ -3086,11 +3089,31 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
   )
 
 ;; Example usage
-(parse-csv-file "payments.csv")
-(export-payments-to-org)
+;; (parse-csv-file "payments.csv")
+;; (export-payments-to-org)
 
 (use-package vertico-posframe
   :config
   (vertico-posframe-mode 1))
+
+(defcustom automount-directory
+  (format "/run/media/%s" user-login-name)
+"Directory under which drives are
+automounted.")
+
+(defun my/automount-open-in-dired ()
+  "Open the automounted drive in Dired.
+If there is more than one, let the user
+choose."
+  (interactive)
+  (let ((dirs (directory-files automount-directory nil "^[^.]")))
+    (dired (file-name-concat
+             automount-directory
+             (cond ((null dirs)
+                     (error "No drives mounted at the moment"))
+               ((= (length dirs) 1)
+                 (car dirs))
+               (t
+                 (completing-read "Open in dired: " dirs nil t)))))))
 
 #+end_src
