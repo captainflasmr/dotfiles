@@ -253,9 +253,9 @@
 (define-key my-jump-keymap (kbd "a") #'emms-browse-by-album)
 (define-key my-jump-keymap (kbd "e") (lambda () (interactive) (find-file "~/.config/emacs/init.el")))
 (define-key my-jump-keymap (kbd "k") (lambda () (interactive) (find-file "~/.config/emacs/emacs--init.org")))
+(define-key my-jump-keymap (kbd "l") #'cfw:open-org-calendar)
 (define-key my-jump-keymap (kbd "n") (lambda () (interactive) (find-file "~/nas")))
 (define-key my-jump-keymap (kbd "p") #'proced)
-(define-key my-jump-keymap (kbd "q") #'cfw:open-org-calendar)
 (define-key my-jump-keymap (kbd "t") (lambda () (interactive) (find-file "~/.local/share/Trash/files")))
 (define-key my-jump-keymap (kbd "y") #'emms)
 
@@ -437,7 +437,7 @@
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-h h"))
 
-(bind-key* (kbd "C-x b") 'consult-buffer)
+(bind-key* (kbd "C-x b") 'my/switch-to-thing)
 (bind-key* (kbd "M-g o") 'consult-outline)
 (bind-key* (kbd "M-g i") 'consult-imenu)
 
@@ -2717,3 +2717,22 @@ choose."
                  (car dirs))
                (t
                  (completing-read "Open in dired: " dirs nil t)))))))
+
+(defun my/switch-to-thing ()
+  "Switch to a buffer, open a recent file, or jump to a bookmark from a unified interface."
+  (interactive)
+  (let* ((buffers (mapcar #'buffer-name (buffer-list)))
+         (recent-files (mapcar (lambda (f) (concat "" f)) recentf-list))
+         (bookmarks (bookmark-all-names))
+         (metadata '((category . file)))
+         (all-options (append buffers recent-files bookmarks))
+         (selection (completing-read "Switch to: "
+                                     (lambda (str pred action)
+                                       (if (eq action 'metadata)
+                                           `(metadata . ,metadata)
+                                         (complete-with-action action all-options str pred)))
+                                     nil t nil 'file-name-history)))
+    (cond
+     ((member selection buffers) (switch-to-buffer selection))
+     ((member selection bookmarks) (bookmark-jump selection))
+     (t (find-file selection)))))
