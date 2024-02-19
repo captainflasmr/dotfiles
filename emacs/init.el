@@ -2719,13 +2719,14 @@ choose."
                  (completing-read "Open in dired: " dirs nil t)))))))
 
 (defun my/switch-to-thing ()
-  "Switch to a buffer, open a recent file, or jump to a bookmark from a unified interface."
+  "Switch to a buffer, open a recent file, jump to a bookmark, or change the theme from a unified interface."
   (interactive)
   (let* ((buffers (mapcar #'buffer-name (buffer-list)))
-         (recent-files (mapcar (lambda (f) (concat "" f)) recentf-list))
+         (recent-files recentf-list)
          (bookmarks (bookmark-all-names))
+         (themes (mapcar (lambda (theme) (concat "Theme: " (symbol-name theme))) (custom-available-themes)))
          (metadata '((category . file)))
-         (all-options (append buffers recent-files bookmarks))
+         (all-options (append buffers recent-files bookmarks themes))
          (selection (completing-read "Switch to: "
                                      (lambda (str pred action)
                                        (if (eq action 'metadata)
@@ -2735,4 +2736,7 @@ choose."
     (cond
      ((member selection buffers) (switch-to-buffer selection))
      ((member selection bookmarks) (bookmark-jump selection))
+     ((string-prefix-p "Theme: " selection)
+      (let ((theme (intern (substring selection (length "Theme: ")))))
+        (load-theme theme t)))
      (t (find-file selection)))))
