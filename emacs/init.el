@@ -1647,7 +1647,7 @@ To obtain ripgrep results using SEARCH-TERM SEARCH-TYPE CASE CONTEXT."
 
 (add-hook 'yaml-mode-hook
   #'(lambda ()
-     (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+      (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
 
 (setq eldoc-echo-area-use-multiline-p nil)
 
@@ -2371,6 +2371,189 @@ With directories under project root using find."
 ;;   (tab-bar-tab-inactive ((t (:inherit tab-bar :box (:line-width (2 . 2) :color "#575757" :style flat)))))) ;; 27.1
 
 ;;
+;; -> finance
+;;
+
+(use-package csv)
+(require 'csv)
+
+(defvar payments '())
+(defvar cat-tot (make-hash-table :test 'equal))
+
+(setq cat-list-defines
+  '(("kate" "kat")
+     ("railw\\|railway\\|selfserve\\|train" "trn")
+     ("paypal" "pay")
+     ("royal-mail\\|postoffice\\|endsleigh\\|waste\\|lloyds\\|electric\\|sse\\|newsstand\\|privilege\\|pcc\\|licence\\|ovo\\|energy\\|bt\\|water" "utl")
+     ("sky-betting\\|b365\\|races\\|bet365\\|racing" "bet")
+     ("stakeholde\\|widows" "pen")
+     ("nsibill\\|vines\\|ns&i\\|saver" "sav")
+     ("streamline" "hlt")
+     ("clifford" "thr")
+     ("daltontags\\|dyer\\|julia" "fam")
+     ("uber\\|aqua" "txi")
+     ("magazine\\|specs\\|zinio\\|specsavers\\|publishing\\|anthem\\|kindle\\|news" "rdg")
+     ("escape\\|deviant\\|cleverbridge\\|reddit\\|pixel\\|boox\\|ionos\\|microsoft\\|mobile\\|backmarket\\|cartridge\\|whsmith\\|dazn\\|my-picture\\|openai\\|c-date\\|ptitis\\|keypmt\\|billnt\\|fee2nor\\|assistance\\|boxise\\|billkt\\|paintstor\\|iet-main\\|ffnhelp\\|shadesgrey\\|venntro\\|vtsup\\|sunpts\\|apyse\\|palchrge\\|maypmt\\|filemodedesk\\|istebrak\\|connective\\|avangate\\|stardock\\|avg\\|123\\|web\\|a2" "web")
+     ("anchrg\\|hilsea\\|withdrawal" "atm")
+     ("finance" "fin")
+     ("twitch\\|disney\\|box-office\\|discovery\\|tvplayer\\|vue\\|sky\\|netflix\\|audible\\|nowtv\\|channel\\|prime" "str")
+     ("google" "goo")
+     ("platinum\\|card" "crd")
+     ("top-up\\|three\\|h3g" "phn")
+     ("lockart\\|moment-house\\|yuyu\\|bushra\\|newhome\\|white-barn\\|skinnydip\\|mgs\\|river-island\\|spencer\\|lilian\\|jung\\|ikea\\|wayfair\\|neom\\|teespring\\|lick-home\\|matalan\\|devon-wick\\|united-arts\\|lush-retail\\|lisa-angel\\|sharkninja\\|fastspring\\|bonas\\|asos\\|emma\\|sofology\\|ebay\\|dunelm\\|coconut\\|semantical\\|truffle\\|nextltd\\|highland\\|little-crafts\\|papier\\|the-hut\\|new-look\\|samsung\\|astrid\\|pandora\\|waterstone\\|cultbeauty\\|24pymt\\|champo\\|costa\\|gollo\\|pumpkin\\|argos\\|the-range\\|biffa\\|moonpig\\|apple\\|itunes\\|gold\\|interflora\\|thortful" "shp")
+     ("pets\\|pet" "pet")
+     ("residential\\|rent\\|yeong" "rnt")
+     ("amaz\\|amz" "amz")
+     ("asda\\|morrison\\|sainsburys\\|waitrose\\|tesco\\|domino\\|deliveroo\\|just.*eat" "fod")
+     (".*" "o")))
+
+(length cat-list-defines)
+
+(defun categorize-payment (name debit month)
+  "Categorize payment based on name, month, and accumulate totals."
+  (let* ((category-found)
+          (split-key))
+    (cl-block nil
+      (dolist (category cat-list-defines)
+        (when (string-match-p
+                (nth 0 category) name)
+          (setq category-found (nth 1 category))
+          (cl-return))))
+    (setq split-key (concat month "-" category-found))
+    (insert (format "%s %s %s %.0f\n" category-found month name debit))
+    (puthash split-key (+ (gethash split-key cat-tot 0) debit) cat-tot)))
+
+(defun parse-csv-file (file)
+  "Parse CSV file and store payments."
+  (with-temp-buffer
+    (insert-file-contents file)
+    (setq payments (csv-parse-buffer t))))
+
+(defun write-header-plot (year)
+  ""
+  (insert "-*- mode: org; eval: (visual-line-mode -1); -*-\n")
+  (insert (format "#+PLOT: title:\"%s\" ind:1 deps:(%s) type:2d with:lines set:\"yrange [0:1000]\"\n"
+            year (concat (mapconcat 'number-to-string (number-sequence 3 (+ (length cat-list-defines) 2)) " ")))))
+
+(defun write-footer-tblfm ()
+  ""
+  (insert "||\n")
+  (insert (concat "#+TBLFM: @>=vmean(@I..@II);%.0f::$>=vsum($3..$" (format "%d" (+ (length cat-list-defines) 2)) ");\%.0f") ))
+
+(defun write-header ()
+  ""
+  (insert "|date ")
+  (dolist (category cat-list-defines)
+    (insert (format "%s " (nth 1 category))))
+  (insert " |\n"))
+
+(defun write-body (index year month)
+  ""
+  (insert (format "%d %s " index (concat year "-" month)))
+  (dolist (category cat-list-defines)
+    (let* ((split-key (concat year "-" month "-" (nth 1 category))))
+      (insert (format "%.0f " (gethash split-key cat-tot 0)))))
+  (insert " |\n"))
+
+(defun export-payments-to-org ()
+  "Export categorized payments and totals to an Org table."
+  (clrhash cat-tot)
+
+  ;; calculate all payments and output all categories to payments-all.org
+  (with-temp-buffer
+    (dolist (payment payments)
+      (let* ((date (cdr (nth 0 payment)))
+              (month (format-time-string "%Y-%m" (date-to-time date)))
+              (name (string-replace " " "-" (cdr (nth 4 payment))))
+              (debit (string-to-number (cdr (nth 5 payment)))))
+        (categorize-payment name debit month)))
+    (write-file "payments-all.org"))
+
+  ;; output entire payments table to payments.org
+  (with-temp-buffer
+    (write-header-plot 2024)
+    (write-header)
+    (let ((index 0))
+      (dolist (year (seq-map '(lambda (value)
+                                (format "%02d" value))
+                      (nreverse (number-sequence 2016 2024 1))))
+        (dolist (month (seq-map '(lambda (value)
+                                   (format "%02d" value))
+                         (nreverse (number-sequence 1 12 1))))
+          (write-body index year month)
+          (setq index (1+ index)))))
+    (write-footer-tblfm)
+    (write-file "payments.org"))
+
+  ;; output payments to payments-<year>.org
+  (dolist (year (seq-map '(lambda (value)
+                            (format "%02d" value))
+                  (nreverse (number-sequence 2016 2024 1))))
+    (with-temp-buffer
+      (write-header-plot year)
+      (write-header)
+      (let ((index 0))
+        (dolist (month (seq-map '(lambda (value)
+                                   (format "%02d" value))
+                         (nreverse (number-sequence 1 12 1))))
+          (write-body index year month)
+          (setq index (1+ index))))
+      (write-footer-tblfm)
+      (write-file (concat "payments-" year ".org"))))
+
+  ;; output payments to payments-<category>.org
+  (dolist (category cat-list-defines)
+    (with-temp-buffer
+      (insert (format "#+PLOT: title:\"%s\" ind:1 deps:(3) type:2d with:lines set:\"yrange [0:1000]\"\n" (nth 1 category)))
+      (insert "|date ")
+      (insert (format "%s\n" (nth 1 category)))
+      (let ((index 0))
+        (dolist (year (seq-map '(lambda (value)
+                                  (format "%02d" value))
+                        (nreverse (number-sequence 2016 2024 1))))
+          (dolist (month (seq-map '(lambda (value)
+                                     (format "%02d" value))
+                           (nreverse (number-sequence 1 12 1))))
+            (let* ((split-key (concat year "-" month "-" (nth 1 category))))
+              (insert (format "%d %s " index (concat year "-" month)))
+              (insert (format "%.0f\n" (gethash split-key cat-tot 0))))
+            (setq index (1+ index)))))
+      (write-file (concat "payments-" (nth 1 category) ".org")))))
+
+;; Example usage
+;; (parse-csv-file "payments.csv")
+;; (export-payments-to-org)
+
+(defun my/remove-negative-sign (input-line)
+  "Remove the negative sign from the final column of a CSV line."
+  (if (string-match "\\(.*\\),-\\([0-9.]+\\)$" input-line)
+    (replace-match "\\1,\\2" nil nil input-line)
+    input-line))
+
+(defun my/remove-negative-sign-from-buffer ()
+  "Remove the negative sign from the final column of all CSV lines in the current buffer."
+  (interactive)
+  (save-excursion  ; Preserve buffer and point position
+    (goto-char (point-min))  ; Start at the beginning of the buffer
+    (while (not (eobp))  ; While not at the end of the buffer
+      (let ((line (thing-at-point 'line t)))
+        (let ((processed-line (my/remove-negative-sign line)))
+          (progn
+            (beginning-of-line)
+            (kill-line)
+            (insert processed-line)))))))
+
+(defun my/convert-date-format ()
+  "Convert date formats from DD/MM/YYYY to YYYY-MM-DD in the current buffer."
+  (interactive)
+  (goto-char (point-min)) ; Start from the beginning of the buffer
+  (while (re-search-forward "\\([0-3][0-9]\\)/\\([0-1][0-9]\\)/\\([0-9]\\{4\\}\\)" nil t)
+    (let ((day (match-string 1))
+           (month (match-string 2))
+           (year (match-string 3)))
+      (replace-match (concat year "-" month "-" day)))))
+
+;;
 ;; -> word-count
 ;;
 (use-package wc-mode
@@ -2471,7 +2654,7 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
               (cond
                 ((string-match-p "compilation" buf-name)
                   (funcall (if (> arg 1)
-#'re-search-backward #'re-search-forward) "[[:digit:]]: warning:")
+                             #'re-search-backward #'re-search-forward) "[[:digit:]]: warning:")
                   (compile-goto-error)
                   (throw 'done t))
 
@@ -2511,177 +2694,13 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
         (async-shell-command (format "gio trash '%s'" file))))
     (message "Async deletion is set up only for trash. Set `delete-by-moving-to-trash` to t.")))
 
-(use-package csv)
-(require 'csv)
-
-(defvar payments '())
-(defvar cat-tot (make-hash-table :test 'equal))
-
-(setq cat-list-defines
-  '(("kate" "kat")
-     ("railw\\|railway\\|selfserve\\|train" "trn")
-     ("paypal" "pay")
-     ("royal-mail\\|postoffice\\|endsleigh\\|waste\\|lloyds\\|electric\\|sse\\|newsstand\\|privilege\\|pcc\\|licence\\|ovo\\|energy\\|bt\\|water" "utl")
-     ("sky-betting\\|b365\\|races\\|bet365\\|racing" "bet")
-     ("stakeholde\\|widows" "pen")
-     ("nsibill\\|vines\\|ns&i\\|saver" "sav")
-     ("streamline" "hlt")
-     ("clifford" "thr")
-     ("daltontags\\|dyer\\|julia" "fam")
-     ("uber\\|aqua" "txi")
-     ("magazine\\|specs\\|zinio\\|specsavers\\|publishing\\|anthem\\|kindle\\|news" "rdg")
-     ("escape\\|deviant\\|cleverbridge\\|reddit\\|pixel\\|boox\\|ionos\\|microsoft\\|mobile\\|backmarket\\|cartridge\\|whsmith\\|dazn\\|my-picture\\|openai\\|c-date\\|ptitis\\|keypmt\\|billnt\\|fee2nor\\|assistance\\|boxise\\|billkt\\|paintstor\\|iet-main\\|ffnhelp\\|shadesgrey\\|venntro\\|vtsup\\|sunpts\\|apyse\\|palchrge\\|maypmt\\|filemodedesk\\|istebrak\\|connective\\|avangate\\|stardock\\|avg\\|123\\|web\\|a2" "web")
-     ("anchrg\\|hilsea\\|withdrawal" "atm")
-     ("finance" "fin")
-     ("twitch\\|disney\\|box-office\\|discovery\\|tvplayer\\|vue\\|sky\\|netflix\\|audible\\|nowtv\\|channel\\|prime" "str")
-     ("google" "goo")
-     ("platinum\\|card" "crd")
-     ("top-up\\|three\\|h3g" "phn")
-     ("lockart\\|moment-house\\|yuyu\\|bushra\\|newhome\\|white-barn\\|skinnydip\\|mgs\\|river-island\\|spencer\\|lilian\\|jung\\|ikea\\|wayfair\\|neom\\|teespring\\|lick-home\\|matalan\\|devon-wick\\|united-arts\\|lush-retail\\|lisa-angel\\|sharkninja\\|fastspring\\|bonas\\|asos\\|emma\\|sofology\\|ebay\\|dunelm\\|coconut\\|semantical\\|truffle\\|nextltd\\|highland\\|little-crafts\\|papier\\|the-hut\\|new-look\\|samsung\\|astrid\\|pandora\\|waterstone\\|cultbeauty\\|24pymt\\|champo\\|costa\\|gollo\\|pumpkin\\|argos\\|the-range\\|biffa\\|moonpig\\|apple\\|itunes\\|gold\\|interflora\\|thortful" "shp")
-     ("pets\\|pet" "pet")
-     ("residential\\|rent\\|yeong" "rnt")
-     ("amaz\\|amz" "amz")
-     ("asda\\|morrison\\|sainsburys\\|waitrose\\|tesco\\|domino\\|deliveroo\\|just.*eat" "fod")
-     (".*" "o")
-     ))
-
-(length cat-list-defines)
-
-(defun categorize-payment (name debit month)
-  "Categorize payment based on name, month, and accumulate totals."
-  (let* ((category-found)
-          (split-key))
-    (cl-block nil
-      (dolist (category cat-list-defines)
-        (when (string-match-p
-                (nth 0 category) name)
-          (setq category-found (nth 1 category))
-          (cl-return))))
-    (setq split-key (concat month "-" category-found))
-    (insert (format "%s %s %s %.0f\n" category-found month name debit))
-    (puthash split-key (+ (gethash split-key cat-tot 0) debit) cat-tot)))
-
-(defun parse-csv-file (file)
-  "Parse CSV file and store payments."
-  (with-temp-buffer
-    (insert-file-contents file)
-    (setq payments (csv-parse-buffer t))))
-
-(defun write-header-plot (year)
-  ""
-  (insert "-*- mode: org; eval: (visual-line-mode -1); -*-\n")
-  (insert (format "#+PLOT: title:\"%s\" ind:1 deps:(%s) type:2d with:lines set:\"yrange [0:1000]\"\n"
-            year (concat (mapconcat 'number-to-string (number-sequence 3 (+ (length cat-list-defines) 2)) " ")))))
-
-(defun write-footer-tblfm ()
-  ""
-  (insert "||\n")
-  (insert (concat "#+TBLFM: @>=vmean(@I..@II);%.0f::$>=vsum($3..$" (format "%d" (+ (length cat-list-defines) 2)) ");\%.0f") ))
-
-(defun write-header ()
-  ""
-  (insert "|date ")
-  (dolist (category cat-list-defines)
-    (insert (format "%s " (nth 1 category))))
-  (insert " |\n"))
-
-(defun write-body (index year month)
-  ""
-  (insert (format "%d %s " index (concat year "-" month)))
-  (dolist (category cat-list-defines)
-    (let* ((split-key (concat year "-" month "-" (nth 1 category))))
-      (insert (format "%.0f " (gethash split-key cat-tot 0)))))
-  (insert " |\n"))
-
-(defun export-payments-to-org ()
-  "Export categorized payments and totals to an Org table."
-  (clrhash cat-tot)
-
-  ;; calculate all payments and output all categories to payments-all.org
-  (with-temp-buffer
-    (dolist (payment payments)
-      (let* ((date (cdr (nth 0 payment)))
-              (month (format-time-string "%Y-%m" (date-to-time date)))
-              (name (string-replace " " "-" (cdr (nth 4 payment))))
-              (debit (string-to-number (cdr (nth 5 payment)))))
-        (categorize-payment name debit month)))
-    (write-file "payments-all.org"))
-
-  ;; output entire payments table to payments.org
-  (with-temp-buffer
-    (write-header-plot 2024)
-    (write-header)
-    (let ((index 0))
-      (dolist (year (seq-map '(lambda (value)
-                                (format "%02d" value))
-                      (nreverse (number-sequence 2016 2024 1))))
-        (dolist (month (seq-map '(lambda (value)
-                                   (format "%02d" value))
-                         (nreverse (number-sequence 1 12 1))))
-          (write-body index year month)
-          (setq index (1+ index))
-          )
-        )
-      )
-    (write-footer-tblfm)
-    (write-file "payments.org")
-    )
-
-  ;; output payments to payments-<year>.org
-  (dolist (year (seq-map '(lambda (value)
-                            (format "%02d" value))
-                  (nreverse (number-sequence 2016 2024 1))))
-    (with-temp-buffer
-      (write-header-plot year)
-      (write-header)
-      (let ((index 0))
-        (dolist (month (seq-map '(lambda (value)
-                                   (format "%02d" value))
-                         (nreverse (number-sequence 1 12 1))))
-          (write-body index year month)
-          (setq index (1+ index))))
-        (write-footer-tblfm)
-        (write-file (concat "payments-" year ".org"))
-        )
-    )
-
-  ;; output payments to payments-<category>.org
-  (dolist (category cat-list-defines)
-    (with-temp-buffer
-      (insert (format "#+PLOT: title:\"%s\" ind:1 deps:(3) type:2d with:lines set:\"yrange [0:1000]\"\n" (nth 1 category)))
-      (insert "|date ")
-      (insert (format "%s\n" (nth 1 category)))
-      (let ((index 0))
-        (dolist (year (seq-map '(lambda (value)
-                                  (format "%02d" value))
-                        (nreverse (number-sequence 2016 2024 1))))
-          (dolist (month (seq-map '(lambda (value)
-                                     (format "%02d" value))
-                           (nreverse (number-sequence 1 12 1))))
-            (let* ((split-key (concat year "-" month "-" (nth 1 category))))
-              (insert (format "%d %s " index (concat year "-" month)))
-              (insert (format "%.0f\n" (gethash split-key cat-tot 0))))
-            (setq index (1+ index))
-            )
-          )
-        )
-      (write-file (concat "payments-" (nth 1 category) ".org"))
-      )
-    )
-
-  )
-
-;; Example usage
-(parse-csv-file "payments.csv")
-(export-payments-to-org)
-
 (use-package vertico-posframe
   :config
   (vertico-posframe-mode 1))
 
 (defcustom my/automount-directory
   (format "/run/media/%s" user-login-name)
-"Directory under which drives are
+  "Directory under which drives are
 automounted.")
 
 (defun my/automount-open-in-dired ()
@@ -2698,32 +2717,3 @@ choose."
                  (car dirs))
                (t
                  (completing-read "Open in dired: " dirs nil t)))))))
-
-(defun my/remove-negative-sign (input-line)
-  "Remove the negative sign from the final column of a CSV line."
-  (if (string-match "\\(.*\\),-\\([0-9.]+\\)$" input-line)
-      (replace-match "\\1,\\2" nil nil input-line)
-    input-line))
-
-(defun my/remove-negative-sign-from-buffer ()
-  "Remove the negative sign from the final column of all CSV lines in the current buffer."
-  (interactive)
-  (save-excursion  ; Preserve buffer and point position
-    (goto-char (point-min))  ; Start at the beginning of the buffer
-    (while (not (eobp))  ; While not at the end of the buffer
-      (let ((line (thing-at-point 'line t)))
-        (let ((processed-line (my/remove-negative-sign line)))
-          (progn
-            (beginning-of-line)
-            (kill-line)
-            (insert processed-line)))))))
-
-(defun my/convert-date-format ()
-  "Convert date formats from DD/MM/YYYY to YYYY-MM-DD in the current buffer."
-  (interactive)
-  (goto-char (point-min)) ; Start from the beginning of the buffer
-  (while (re-search-forward "\\([0-3][0-9]\\)/\\([0-1][0-9]\\)/\\([0-9]\\{4\\}\\)" nil t)
-    (let ((day (match-string 1))
-          (month (match-string 2))
-          (year (match-string 3)))
-      (replace-match (concat year "-" month "-" day)))))
