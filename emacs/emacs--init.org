@@ -303,15 +303,15 @@ Turn on a profiler if we would like
 ;; -> modeline-completion-advanced
 ;;
 (use-package vertico
+  :init
+  (vertico-mode)
   :custom
   (vertico-cycle t)
   (read-file-name-completion-ignore-case t)
   (read-buffer-completion-ignore-case t)
   (completion-ignore-case t)
   (vertico-resize nil)
-  (vertico-count 20)
-  :init
-  (vertico-mode))
+  (vertico-count 20))
 
 (use-package orderless
   :custom
@@ -350,6 +350,7 @@ Turn on a profiler if we would like
 (define-key my-jump-keymap (kbd "h") (lambda () (interactive) (find-file "~")))
 (define-key my-jump-keymap (kbd "i") #'tab-close)
 (define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~/DCIM/content/aab--todo.org")))
+(define-key my-jump-keymap (kbd "l") #'my/switch-to-thing)
 (define-key my-jump-keymap (kbd "m") #'customize-themes)
 (define-key my-jump-keymap (kbd "o") (lambda () (interactive) (tab-bar-new-tab-to -1)(tab-bar-mode 'toggle)))
 (define-key my-jump-keymap (kbd "r") (lambda () (interactive) (find-file "~/repos")))
@@ -361,9 +362,9 @@ Turn on a profiler if we would like
 (define-key my-jump-keymap (kbd "a") #'emms-browse-by-album)
 (define-key my-jump-keymap (kbd "e") (lambda () (interactive) (find-file "~/.config/emacs/init.el")))
 (define-key my-jump-keymap (kbd "k") (lambda () (interactive) (find-file "~/.config/emacs/emacs--init.org")))
-(define-key my-jump-keymap (kbd "l") #'cfw:open-org-calendar)
 (define-key my-jump-keymap (kbd "n") (lambda () (interactive) (find-file "~/nas")))
 (define-key my-jump-keymap (kbd "p") #'proced)
+(define-key my-jump-keymap (kbd "q") #'cfw:open-org-calendar)
 (define-key my-jump-keymap (kbd "t") (lambda () (interactive) (find-file "~/.local/share/Trash/files")))
 (define-key my-jump-keymap (kbd "y") #'emms)
 
@@ -542,16 +543,18 @@ Turn on a profiler if we would like
 (global-set-key (kbd "M-s b") '(lambda ()(interactive)(org-table-recalculate 'all)))
 (global-set-key (kbd "M-s g") 'my/text-browser-search)
 (global-set-key (kbd "M-=") 'count-words)
-(define-key minibuffer-local-map (kbd "C-c e") 'embark-collect)
+(define-key minibuffer-local-map (kbd "C-c e") #'embark-collect)
+(define-key minibuffer-local-map (kbd "M-j") #'abort-minibuffers)
+(define-key minibuffer-local-map (kbd "M-l") #'abort-minibuffers)
 (global-set-key (kbd "C-c a") 'org-agenda)
-(bind-key* (kbd "M-u") (lambda()(interactive)(select-window (previous-window (selected-window)))))
-(bind-key* (kbd "M-j") (lambda()(interactive)(forward-line (/ (window-height) 8))))
-(bind-key* (kbd "M-k") (lambda()(interactive)(forward-line (- (/ (window-height) 8)))))
-(bind-key* (kbd "C-M-j") (lambda()(interactive)(forward-line 1)))
-(bind-key* (kbd "C-M-k") (lambda()(interactive)(forward-line -1)))
-(bind-key* (kbd "M-i") (lambda()(interactive)(select-window (next-window (selected-window)))))
-(bind-key* (kbd "M-I") (lambda ()(interactive)(my/resize-window 4 t)))
-(bind-key* (kbd "M-U") (lambda ()(interactive)(my/resize-window -4 t)))
+(global-set-key (kbd "M-u") (lambda()(interactive)(select-window (previous-window (selected-window)))))
+(global-set-key (kbd "M-j") (lambda()(interactive)(forward-line (/ (window-height) 8))))
+(global-set-key (kbd "M-k") (lambda()(interactive)(forward-line (- (/ (window-height) 8)))))
+(global-set-key (kbd "C-M-j") (lambda()(interactive)(forward-line 1)))
+(global-set-key (kbd "C-M-k") (lambda()(interactive)(forward-line -1)))
+(global-set-key (kbd "M-i") (lambda()(interactive)(select-window (next-window (selected-window)))))
+(global-set-key (kbd "M-I") (lambda ()(interactive)(my/resize-window 4 t)))
+(global-set-key (kbd "M-U") (lambda ()(interactive)(my/resize-window -4 t)))
 (global-set-key (kbd "C-c b") (lambda ()(interactive)(async-shell-command "do_backup home" "*backup*")))
 (global-set-key (kbd "C-c c") 'org-capture)
 (global-set-key (kbd "C-c f") 'my/fold)
@@ -563,7 +566,7 @@ Turn on a profiler if we would like
 (global-set-key (kbd "M-3") 'split-window-horizontally)
 (global-set-key (kbd "M-;") 'my/comment-or-uncomment)
 (global-set-key (kbd "M-?") 'my/grep)
-(bind-key* (kbd "C-c ,") 'embark-act)
+(global-set-key (kbd "C-c ,") 'embark-act)
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-h h"))
 
@@ -573,9 +576,9 @@ Turn on a profiler if we would like
 
 #+begin_src elisp
 
-(bind-key* (kbd "C-x b") 'my/switch-to-thing)
-(bind-key* (kbd "M-g o") 'consult-outline)
-(bind-key* (kbd "M-g i") 'consult-imenu)
+(global-set-key (kbd "C-x b") 'my/switch-to-thing)
+(global-set-key (kbd "M-g o") 'consult-outline)
+(global-set-key (kbd "M-g i") 'consult-imenu)
 
 (consult-customize
   consult-theme :preview-key '(:debounce 0.2 any)
@@ -1716,23 +1719,29 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 (setq find-dired-refine-function 'nil)
 (setq find-ls-option (cons "-exec ls -lSh {} +" "-lSh"))
 
-(defun my/find-file (arg)
-  "Find file from current directory."
-  (interactive "p")
-  (if (= arg 1)
-    (let* ((file-list (split-string
-                        ;; (shell-command-to-string "find -type f -printf \"$PWD/%p\\0\"") "\0" t))
-                        ;; (shell-command-to-string "fd --absolute-path --type f -0") "\0" t))
-                        (shell-command-to-string "rg --follow --files --null") "\0" t))
-            (metadata '((category . file)))
-            (file (completing-read (format "Find file in %s: " (abbreviate-file-name default-directory))
-                    (lambda (str pred action)
-                      (if (eq action 'metadata)
-                        `(metadata . ,metadata)
-                        (complete-with-action action file-list str pred)))
-                    nil t nil 'file-name-history)))
-      (when file (find-file (expand-file-name file))))
-    (call-interactively 'find-name-dired)))
+(defun my/find-file ()
+  "Find file from current directory in many different ways."
+  (interactive)
+  (let* ((find-options '(("find -type f -printf \"$PWD/%p\\0\"" . :string)
+                          ("fd --absolute-path --type f -0" . :string)
+                          ("rg --follow --files --null" . :string)
+                          ("find-name-dired" . :command)))
+          (selection (completing-read "Select : " find-options))
+          (metadata '((category . file)))
+          (file-list)
+          (file))
+    (pcase (alist-get selection find-options nil nil #'string=)
+      (:command
+        (call-interactively (intern selection)))
+      (:string
+        (setq file-list (split-string (shell-command-to-string selection) "\0" t))
+        (setq file (completing-read (format "Find file in %s: " (abbreviate-file-name default-directory))
+                     (lambda (str pred action)
+                       (if (eq action 'metadata)
+                         `(metadata . ,metadata)
+                         (complete-with-action action file-list str pred)))
+                     nil t nil 'file-name-history)))
+      (when file (find-file (expand-file-name file))))))
 
 #+end_src
 
@@ -1831,7 +1840,7 @@ To obtain ripgrep results using SEARCH-TERM SEARCH-TYPE CASE CONTEXT."
     (jinx-correct)))
 
 (global-set-key (kbd "M-s c") 'wc-mode)
-(global-set-key (kbd "M-s j") 'jinx-mode)
+(global-set-key (kbd "M-s x") 'jinx-mode)
 (global-set-key (kbd "M-s d") 'dictionary-lookup-definition)
 (global-set-key (kbd "M-s f") 'dictionary-lookup-definition)
 (global-set-key (kbd "M-s s") 'powerthesaurus-lookup-synonyms-dwim)
@@ -3148,7 +3157,7 @@ choose."
          (bookmarks (bookmark-all-names))
          (themes (mapcar (lambda (theme) (concat "Theme: " (symbol-name theme))) (custom-available-themes)))
          (metadata '((category . file)))
-         (all-options (append buffers recent-files bookmarks themes))
+         (all-options (append buffers recent-files bookmarks))
          (selection (completing-read "Switch to: "
                                      (lambda (str pred action)
                                        (if (eq action 'metadata)
