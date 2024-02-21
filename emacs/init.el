@@ -241,10 +241,11 @@
 (define-key my-jump-keymap (kbd "g") (lambda () (interactive) (find-file "~/.config")))
 (define-key my-jump-keymap (kbd "h") (lambda () (interactive) (find-file "~")))
 (define-key my-jump-keymap (kbd "i") #'tab-close)
-(define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~/DCIM/content/aab--todo.org")))
-(define-key my-jump-keymap (kbd "l") #'my/switch-to-thing)
+(define-key my-jump-keymap (kbd "j") #'my/switch-to-thing)
+(define-key my-jump-keymap (kbd "l") #'cfw:open-org-calendar)
 (define-key my-jump-keymap (kbd "m") #'customize-themes)
-(define-key my-jump-keymap (kbd "o") (lambda () (interactive) (tab-bar-new-tab-to -1)(tab-bar-mode 'toggle)))
+;; (define-key my-jump-keymap (kbd "o") (lambda () (interactive) (tab-bar-new-tab-to -1)(tab-bar-mode 'toggle)))
+(define-key my-jump-keymap (kbd "o") (lambda () (interactive) (tab-bar-new-tab-to -1)))
 (define-key my-jump-keymap (kbd "r") (lambda () (interactive) (find-file "~/repos")))
 (define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
 (define-key my-jump-keymap (kbd "u") #'tab-undo)
@@ -256,7 +257,7 @@
 (define-key my-jump-keymap (kbd "k") (lambda () (interactive) (find-file "~/.config/emacs/emacs--init.org")))
 (define-key my-jump-keymap (kbd "n") (lambda () (interactive) (find-file "~/nas")))
 (define-key my-jump-keymap (kbd "p") #'proced)
-(define-key my-jump-keymap (kbd "q") #'cfw:open-org-calendar)
+(define-key my-jump-keymap (kbd "q") (lambda () (interactive) (find-file "~/DCIM/content/aab--todo.org")))
 (define-key my-jump-keymap (kbd "t") (lambda () (interactive) (find-file "~/.local/share/Trash/files")))
 (define-key my-jump-keymap (kbd "y") #'emms)
 
@@ -1350,7 +1351,7 @@ as search term for Google search in web browser."
                        0))))
     (modify-all-frames-parameters `((internal-border-width . ,new-value)))))
 
-;; (modify-all-frames-parameters `((internal-border-width . ,my/internal-border-width)))
+(modify-all-frames-parameters `((internal-border-width . ,my/internal-border-width)))
 
 (defun my/change-accent-color ()
   "Prompt for a new color and apply it as the accent color."
@@ -1978,8 +1979,8 @@ With directories under project root using find."
   (selected-window-accent-smart-borders nil)
   (selected-window-accent-tab-accent t)
   (selected-window-accent-custom-color nil)
-  (selected-window-accent-custom-color "#E4B359")
-  (selected-window-accent-mode-style 'subtle))
+  (selected-window-accent-custom-color "#3E829F")
+  (selected-window-accent-mode-style 'default))
 
 (setq my/push-block-spec
   '(
@@ -2329,7 +2330,7 @@ With directories under project root using find."
 (use-package tab-bar ;; 29.1
   :ensure nil ;; Since tab-bar is built-in, no package needs to be downloaded
   :init
-  (tab-bar-mode -1) ;; 27.1
+  (tab-bar-mode 1) ;; 27.1
   (tab-bar-history-mode 1) ;; 27.1
   :custom
   (tab-bar-format '(tab-bar-format-tabs-groups
@@ -2340,7 +2341,7 @@ With directories under project root using find."
   (tab-bar-new-button-show nil) ;; 27.1
   (tab-bar-close-button-show nil) ;; 27.1
   (tab-bar-history-limit 100) ;; 27.1
-  ;; (tab-bar-auto-width-max '(100 20)) ;; 29.1
+  (tab-bar-auto-width-max '(200 20)) ;; 29.1
   ;; (tab-bar-tab-hints t) ;; 27.1
   ;; (tab-bar-tab-name-format-function #'my-tab-bar-tab-name-format) ;; 28.1
   :config
@@ -2651,48 +2652,56 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
   :config
   (project-mode-line-tag-mode 1))
 
+(defun my/get-window-regex (regex)
+  "Find the first window displaying a buffer whose name matches the given REGEX.
+If no such window is found, return nil."
+  (let ((windows (window-list))
+        (found-window nil))
+    (dolist (window windows found-window)
+      (when (string-match-p regex (buffer-name (window-buffer window)))
+        (setq found-window window)
+        (return found-window)))))
+
 (defun my/next-thing (arg)
   "Go to the next thing, meaning warning, error, grep, etc., based on ARG."
   (interactive "p")
-  (catch 'done
-    (walk-windows
-      (lambda (win)
-        (with-selected-window win
-          (let ((buf-name (buffer-name)))
-            (condition-case err
-              (cond
-                ((string-match-p "compilation" buf-name)
-                  (funcall (if (> arg 1)
-                             #'re-search-backward #'re-search-forward) "[[:digit:]]: warning:")
-                  (compile-goto-error)
-                  (throw 'done t))
+  (let ((window))
 
-                ((string-match-p "compile-log" buf-name)
-                  (funcall (if (> arg 1) #'previous-error-no-select #'next-error-no-select))
-                  (compile-goto-error)
-                  (throw 'done t))
+    (setq window (my/get-window-regex "compilation"))
+    (when window
+      (select-window window)
+      (funcall (if (> arg 1)
+                 #'re-search-backward
+                 #'re-search-forward) "[[:digit:]]: warning:")
+      (compile-goto-error))
 
-                ((string-match-p "dead" buf-name)
-                  (funcall (if (> arg 1) #'deadgrep-backward-match #'deadgrep-forward-match))
-                  (deadgrep-visit-result-other-window)
-                  (org-fold-show-entry)
-                  (throw 'done t))
+    (setq window (my/get-window-regex "compile-log"))
+    (when window
+      (select-window window)
+      (funcall (if (> arg 1) #'previous-error-no-select #'next-error-no-select))
+      (compile-goto-error))
 
-                ((string-match-p "org agenda" buf-name)
-                  (if (> arg 1)
-                    (org-agenda-previous-item 1)
-                    (org-agenda-next-item 1))
-                  (org-agenda-goto)
-                  (org-fold-show-entry)
-                  (throw 'done t))
+    (setq window (my/get-window-regex "dead"))
+    (when window
+      (select-window window)
+      (funcall (if (> arg 1) #'deadgrep-backward-match #'deadgrep-forward-match))
+      (deadgrep-visit-result-other-window)
+      (org-fold-show-entry))
 
-                ((or (string-match-p "occur" buf-name)
-                   (string-match-p "flycheck errors" buf-name))
-                  (funcall (if (> arg 1) #'previous-error #'next-error))
-                  (throw 'done t))
-                )
-              (error (message "%s" (error-message-string err)))))))
-      nil t)))
+    (setq window (my/get-window-regex "org agenda"))
+    (when window
+      (select-window window)
+      (if (> arg 1)
+        (org-agenda-previous-item 1)
+        (org-agenda-next-item 1))
+      (org-agenda-goto)
+      (org-fold-show-entry))
+
+    (setq window (or (my/get-window-regex "occur")
+                   (my/get-window-regex "flycheck errors")))
+    (when window
+      (select-window window)
+      (funcall (if (> arg 1) #'previous-error #'next-error)))))
 
 (defun my/dired-delete-async ()
   "Delete files asynchronously in Dired."
