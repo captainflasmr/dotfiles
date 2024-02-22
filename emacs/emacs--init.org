@@ -191,8 +191,12 @@ Turn on a profiler if we would like
 (use-package embark)
 
 (use-package deadgrep
+  :config
+  (setq-default deadgrep--search-case 'ignore)
   :custom
-  (deadgrep-max-buffers 1))
+  (deadgrep-max-buffers 1)
+  (deadgrep-extra-arguments '("--no-config")))
+  ;; (deadgrep-extra-arguments '("--no-config" "--no-ignore" "--no-ignore-vcs")))
 #+end_src
 
 * completion
@@ -352,8 +356,8 @@ Turn on a profiler if we would like
 (define-key my-jump-keymap (kbd "j") #'my/switch-to-thing)
 (define-key my-jump-keymap (kbd "l") #'cfw:open-org-calendar)
 (define-key my-jump-keymap (kbd "m") #'customize-themes)
-;; (define-key my-jump-keymap (kbd "o") (lambda () (interactive) (tab-bar-new-tab-to -1)(tab-bar-mode 'toggle)))
-(define-key my-jump-keymap (kbd "o") (lambda () (interactive) (tab-bar-new-tab-to -1)))
+(define-key my-jump-keymap (kbd "o") (lambda () (interactive) (tab-bar-new-tab-to -1)(tab-bar-mode 'toggle)))
+;; (define-key my-jump-keymap (kbd "o") (lambda () (interactive) (tab-bar-new-tab-to -1)))
 (define-key my-jump-keymap (kbd "r") (lambda () (interactive) (find-file "~/repos")))
 (define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
 (define-key my-jump-keymap (kbd "u") #'tab-undo)
@@ -380,9 +384,8 @@ Turn on a profiler if we would like
 (define-key my-win-keymap (kbd "f") #'font-lock-mode)
 (define-key my-win-keymap (kbd "g") #'my/toggle-scroll-margin)
 (define-key my-win-keymap (kbd "i") #'highlight-indent-guides-mode)
-(define-key my-win-keymap (kbd "l") #'display-line-numbers-mode)
 (define-key my-win-keymap (kbd "m") #'consult-theme)
-(define-key my-win-keymap (kbd "n") #'global-tab-line-mode)
+(define-key my-win-keymap (kbd "n") #'display-line-numbers-mode)
 (define-key my-win-keymap (kbd "o") #'visual-fill-column-mode)
 (define-key my-win-keymap (kbd "p") #'variable-pitch-mode)
 (define-key my-win-keymap (kbd "q") #'toggle-menu-bar-mode-from-frame)
@@ -577,7 +580,7 @@ Turn on a profiler if we would like
 
 #+begin_src elisp
 
-(global-set-key (kbd "C-x b") 'my/switch-to-thing)
+;; (global-set-key (kbd "C-x b") 'my/switch-to-thing)
 (global-set-key (kbd "M-g o") 'consult-outline)
 (global-set-key (kbd "M-g i") 'consult-imenu)
 
@@ -1559,7 +1562,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 
 (setq-default left-margin-width 0 right-margin-width 0)
 
-(defvar my/internal-border-width 10 "Default internal border width for toggling.")
+(defvar my/internal-border-width 15 "Default internal border width for toggling.")
 
 (defun my/toggle-internal-border-width (&optional value)
   "Toggle internal border width given VALUE."
@@ -1771,60 +1774,7 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
      (dolist (file '(".cache" "*cache*" "*.iso" "*.xmp" "*.jpg" "*.mp4" "*.dll" "*.mp3"))
        (push file grep-find-ignored-files))))
 
-(setq-default deadgrep--search-case 'ignore)
-
-(defun deadgrep--arguments (search-term search-type case context)
-  "Return a list of command line arguments that we can execute in a shell.
-To obtain ripgrep results using SEARCH-TERM SEARCH-TYPE CASE CONTEXT."
-  (let (args)
-    (push "--color=ansi" args)
-    (push "--line-number" args)
-    (push "--no-heading" args)
-    (push "--no-column" args)
-    (push "--with-filename" args)
-    (push "--no-config" args)
-    ;; (push "--no-ignore" args)
-    (push "--no-ignore-vcs" args)
-
-    (cond
-      ((eq search-type 'string)
-        (push "--fixed-strings" args))
-      ((eq search-type 'words)
-        (push "--fixed-strings" args)
-        (push "--word-regexp" args))
-      ((eq search-type 'regexp))
-      (t
-        (error "Unknown search type: %s" search-type)))
-
-    (cond
-      ((eq case 'smart)
-        (push "--smart-case" args))
-      ((eq case 'sensitive)
-        (push "--case-sensitive" args))
-      ((eq case 'ignore)
-        (push "--ignore-case" args))
-      (t
-        (error "Unknown case: %s" case)))
-
-    (cond
-      ((eq deadgrep--file-type 'all))
-      ((eq (car-safe deadgrep--file-type) 'type)
-        (push (format "--type=%s" (cdr deadgrep--file-type)) args))
-      ((eq (car-safe deadgrep--file-type) 'glob)
-        (push (format "--type-add=custom:%s" (cdr deadgrep--file-type)) args)
-        (push "--type=custom" args))
-      (t
-        (error "Unknown file-type: %S" deadgrep--file-type)))
-
-    (when context
-      (push (format "--before-context=%s" (car context)) args)
-      (push (format "--after-context=%s" (cdr context)) args))
-
-    (push "--" args)
-    (push search-term args)
-    (push "." args)
-
-    (nreverse args)))
+;; (setq-default deadgrep--search-case 'ignore)
 #+end_src
 
 * spelling
@@ -2739,7 +2689,7 @@ echo
 (use-package tab-bar ;; 29.1
   :ensure nil ;; Since tab-bar is built-in, no package needs to be downloaded
   :init
-  (tab-bar-mode 1) ;; 27.1
+  (tab-bar-mode -1) ;; 27.1
   (tab-bar-history-mode 1) ;; 27.1
   :custom
   (tab-bar-format '(tab-bar-format-tabs-groups

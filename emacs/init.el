@@ -118,8 +118,12 @@
 (use-package embark)
 
 (use-package deadgrep
+  :config
+  (setq-default deadgrep--search-case 'ignore)
   :custom
-  (deadgrep-max-buffers 1))
+  (deadgrep-max-buffers 1)
+  (deadgrep-extra-arguments '("--no-config")))
+  ;; (deadgrep-extra-arguments '("--no-config" "--no-ignore" "--no-ignore-vcs")))
 
 ;;
 ;; -> completion
@@ -244,8 +248,8 @@
 (define-key my-jump-keymap (kbd "j") #'my/switch-to-thing)
 (define-key my-jump-keymap (kbd "l") #'cfw:open-org-calendar)
 (define-key my-jump-keymap (kbd "m") #'customize-themes)
-;; (define-key my-jump-keymap (kbd "o") (lambda () (interactive) (tab-bar-new-tab-to -1)(tab-bar-mode 'toggle)))
-(define-key my-jump-keymap (kbd "o") (lambda () (interactive) (tab-bar-new-tab-to -1)))
+(define-key my-jump-keymap (kbd "o") (lambda () (interactive) (tab-bar-new-tab-to -1)(tab-bar-mode 'toggle)))
+;; (define-key my-jump-keymap (kbd "o") (lambda () (interactive) (tab-bar-new-tab-to -1)))
 (define-key my-jump-keymap (kbd "r") (lambda () (interactive) (find-file "~/repos")))
 (define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
 (define-key my-jump-keymap (kbd "u") #'tab-undo)
@@ -272,9 +276,8 @@
 (define-key my-win-keymap (kbd "f") #'font-lock-mode)
 (define-key my-win-keymap (kbd "g") #'my/toggle-scroll-margin)
 (define-key my-win-keymap (kbd "i") #'highlight-indent-guides-mode)
-(define-key my-win-keymap (kbd "l") #'display-line-numbers-mode)
 (define-key my-win-keymap (kbd "m") #'consult-theme)
-(define-key my-win-keymap (kbd "n") #'global-tab-line-mode)
+(define-key my-win-keymap (kbd "n") #'display-line-numbers-mode)
 (define-key my-win-keymap (kbd "o") #'visual-fill-column-mode)
 (define-key my-win-keymap (kbd "p") #'variable-pitch-mode)
 (define-key my-win-keymap (kbd "q") #'toggle-menu-bar-mode-from-frame)
@@ -441,7 +444,7 @@
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-h h"))
 
-(global-set-key (kbd "C-x b") 'my/switch-to-thing)
+;; (global-set-key (kbd "C-x b") 'my/switch-to-thing)
 (global-set-key (kbd "M-g o") 'consult-outline)
 (global-set-key (kbd "M-g i") 'consult-imenu)
 
@@ -543,13 +546,15 @@
 ;; -> custom-settings
 ;;
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
-  '(custom-enabled-themes '(doom-henna))
-  '(warning-suppress-log-types '((frameset)))
-  '(warning-suppress-types '((frameset))))
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-enabled-themes '(doom-henna))
+ '(package-selected-packages
+    '(ztree yaml-mode wc-mode vertico-posframe vc-use-package toc-org tempel spacious-padding selected-window-accent-mode rainbow-mode project-mode-line-tag proced-narrow powerthesaurus peg package-lint ox-hugo ox-gfm ox-epub ov org-tidy org-super-agenda org-ql org-modern org-bullets orderless marginalia magit lorem-ipsum kurecolor keepass-mode kbd-mode jinx i3wm-config-mode highlight-indent-guides helm-org gruvbox-theme gpr-ts-mode gnuplot git-timemachine flycheck find-file-rg file-info esup emms embark-consult elfeed ef-themes doom-themes diredfl diminish deadgrep csv-mode csv corfu company chatgpt-shell calfw-org calfw-cal calfw all-the-icons-ibuffer all-the-icons-dired all-the-icons-completion ahk-mode ada-mode activities))
+ '(warning-suppress-log-types '((frameset)))
+ '(warning-suppress-types '((frameset))))
 
 ;;
 ;; -> defun
@@ -1109,43 +1114,52 @@ as search term for Google search in web browser."
 ;; -> custom-set-faces
 ;;
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
-  '(diredfl-date-time ((t (:foreground "#8d909b"))))
-  '(diredfl-dir-heading ((t (:foreground "#aa5555" :weight bold))))
-  '(diredfl-dir-priv ((t (:foreground "DarkRed"))))
-  '(diredfl-exec-priv ((t (:foreground "#999999"))))
-  '(diredfl-file-name ((t (:foreground "#818282"))))
-  '(diredfl-no-priv ((t nil)))
-  '(diredfl-number ((t (:foreground "#999999"))))
-  '(diredfl-read-priv ((t nil)))
-  '(diredfl-write-priv ((t nil)))
-  '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
-  '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
-  '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
-  '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
-  '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2"))))
-  '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
-  '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.1 :family "Source Code Pro"))))
-  '(org-code ((t (:inherit (shadow fixed-pitch)))))
-  '(org-modern-date-active ((t (:inherit fixed-pitch))))
-  '(org-date ((t (:inherit fixed-pitch))))
-  '(org-document-info ((t (:foreground "#8f4800"))))
-  '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
-  '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
-  '(org-link ((t (:foreground "#5555ff" :underline t))))
-  '(org-property-value ((t (:inherit fixed-pitch))) t)
-  '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
-  '(org-tag ((t (:inherit (shadow fixed-pitch) :weight regular :height 0.8))))
-  '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
-  '(indent-guide-face ((t (:background "#282828" :foreground "#666666"))))
-  '(outline-1 ((t (:weight regular))))
-  '(outline-2 ((t (:weight regular))))
-  '(widget-button ((t (:inherit fixed-pitch :weight regular))))
-  '(window-divider ((t (:foreground "black"))))
-  '(vertical-border ((t (:foreground "#000000")))))
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(diredfl-date-time ((t (:foreground "#8d909b"))))
+ '(diredfl-dir-heading ((t (:foreground "#aa5555" :weight bold))))
+ '(diredfl-dir-priv ((t (:foreground "DarkRed"))))
+ '(diredfl-exec-priv ((t (:foreground "#999999"))))
+ '(diredfl-file-name ((t (:foreground "#818282"))))
+ '(diredfl-no-priv ((t nil)))
+ '(diredfl-number ((t (:foreground "#999999"))))
+ '(diredfl-read-priv ((t nil)))
+ '(diredfl-write-priv ((t nil)))
+ '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
+ '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
+ '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
+ '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
+ '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.1 :family "Source Code Pro"))))
+ '(fixed-pitch ((t (:family "Fira Code Retina" :height 130))))
+ '(indent-guide-face ((t (:background "#282828" :foreground "#666666"))))
+ '(org-code ((t (:inherit (shadow fixed-pitch)))))
+ '(org-date ((t (:inherit fixed-pitch))))
+ '(org-document-info ((t (:foreground "#8f4800"))))
+ '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+ '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
+ '(org-link ((t (:foreground "#5555ff" :underline t))))
+ '(org-modern-date-active ((t (:inherit fixed-pitch))))
+ '(org-property-value ((t (:inherit fixed-pitch))))
+ '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+ '(org-tag ((t (:inherit (shadow fixed-pitch) :weight regular :height 0.8))))
+ '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
+ '(outline-1 ((t (:weight regular))))
+ '(outline-2 ((t (:weight regular))))
+ '(variable-pitch ((t (:family "Sans Serif" :height 140 :weight normal))))
+ '(vertical-border ((t (:foreground "#000000"))))
+ '(whitespace-missing-newline-at-eof ((t (:foreground "#666566656665"))))
+ '(whitespace-newline ((t (:foreground "#666566656665"))))
+ '(whitespace-space ((t (:foreground "#666566656665"))))
+ '(whitespace-space-after-tab ((t (:foreground "#666566656665"))))
+ '(whitespace-space-before-tab ((t (:foreground "#666566656665"))))
+ '(whitespace-tab ((t (:foreground "#666566656665"))))
+ '(whitespace-trailing ((t (:foreground "#666566656665"))))
+ '(widget-button ((t (:inherit fixed-pitch :weight regular))))
+ '(window-divider ((t (:foreground "black"))))
+ '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
+ '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2")))))
 
 (custom-theme-set-faces
   'user
@@ -1338,7 +1352,7 @@ as search term for Google search in web browser."
 
 (setq-default left-margin-width 0 right-margin-width 0)
 
-(defvar my/internal-border-width 10 "Default internal border width for toggling.")
+(defvar my/internal-border-width 15 "Default internal border width for toggling.")
 
 (defun my/toggle-internal-border-width (&optional value)
   "Toggle internal border width given VALUE."
@@ -1520,60 +1534,7 @@ as search term for Google search in web browser."
      (dolist (file '(".cache" "*cache*" "*.iso" "*.xmp" "*.jpg" "*.mp4" "*.dll" "*.mp3"))
        (push file grep-find-ignored-files))))
 
-(setq-default deadgrep--search-case 'ignore)
-
-(defun deadgrep--arguments (search-term search-type case context)
-  "Return a list of command line arguments that we can execute in a shell.
-To obtain ripgrep results using SEARCH-TERM SEARCH-TYPE CASE CONTEXT."
-  (let (args)
-    (push "--color=ansi" args)
-    (push "--line-number" args)
-    (push "--no-heading" args)
-    (push "--no-column" args)
-    (push "--with-filename" args)
-    (push "--no-config" args)
-    ;; (push "--no-ignore" args)
-    (push "--no-ignore-vcs" args)
-
-    (cond
-      ((eq search-type 'string)
-        (push "--fixed-strings" args))
-      ((eq search-type 'words)
-        (push "--fixed-strings" args)
-        (push "--word-regexp" args))
-      ((eq search-type 'regexp))
-      (t
-        (error "Unknown search type: %s" search-type)))
-
-    (cond
-      ((eq case 'smart)
-        (push "--smart-case" args))
-      ((eq case 'sensitive)
-        (push "--case-sensitive" args))
-      ((eq case 'ignore)
-        (push "--ignore-case" args))
-      (t
-        (error "Unknown case: %s" case)))
-
-    (cond
-      ((eq deadgrep--file-type 'all))
-      ((eq (car-safe deadgrep--file-type) 'type)
-        (push (format "--type=%s" (cdr deadgrep--file-type)) args))
-      ((eq (car-safe deadgrep--file-type) 'glob)
-        (push (format "--type-add=custom:%s" (cdr deadgrep--file-type)) args)
-        (push "--type=custom" args))
-      (t
-        (error "Unknown file-type: %S" deadgrep--file-type)))
-
-    (when context
-      (push (format "--before-context=%s" (car context)) args)
-      (push (format "--after-context=%s" (cdr context)) args))
-
-    (push "--" args)
-    (push search-term args)
-    (push "." args)
-
-    (nreverse args)))
+;; (setq-default deadgrep--search-case 'ignore)
 
 ;;
 ;; -> spelling
@@ -2330,7 +2291,7 @@ With directories under project root using find."
 (use-package tab-bar ;; 29.1
   :ensure nil ;; Since tab-bar is built-in, no package needs to be downloaded
   :init
-  (tab-bar-mode 1) ;; 27.1
+  (tab-bar-mode -1) ;; 27.1
   (tab-bar-history-mode 1) ;; 27.1
   :custom
   (tab-bar-format '(tab-bar-format-tabs-groups
