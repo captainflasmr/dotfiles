@@ -315,7 +315,7 @@ Turn on a profiler if we would like
   (read-buffer-completion-ignore-case t)
   (completion-ignore-case t)
   (vertico-resize nil)
-  (vertico-count 20))
+  (vertico-count 10))
 
 (use-package orderless
   :custom
@@ -340,37 +340,34 @@ Turn on a profiler if we would like
 (defvar my-jump-keymap (make-sparse-keymap))
 (global-set-key (kbd "M-o") my-jump-keymap)
 
+(define-key my-jump-keymap (kbd "-") #'tab-close)
 (define-key my-jump-keymap (kbd "1") (lambda () (interactive)(tab-select 1)))
 (define-key my-jump-keymap (kbd "2") (lambda () (interactive)(tab-select 2)))
 (define-key my-jump-keymap (kbd "3") (lambda () (interactive)(tab-select 3)))
 (define-key my-jump-keymap (kbd "4") (lambda () (interactive)(tab-select 4)))
 (define-key my-jump-keymap (kbd "5") (lambda () (interactive)(tab-select 5)))
 (define-key my-jump-keymap (kbd "6") (lambda () (interactive)(tab-select 6)))
+(define-key my-jump-keymap (kbd "=") (lambda () (interactive) (tab-bar-new-tab-to -1)(tab-bar-mode 'toggle)))
+(define-key my-jump-keymap (kbd "M-o") #'my/switch-to-thing)
+(define-key my-jump-keymap (kbd "a") #'emms-browse-by-album)
 (define-key my-jump-keymap (kbd "b") (lambda () (interactive) (find-file "~/bin")))
 (define-key my-jump-keymap (kbd "c") (lambda () (interactive) (find-file "~/DCIM/Camera")))
-(define-key my-jump-keymap (kbd "d") #'my/automount-open-in-dired)
+(define-key my-jump-keymap (kbd "e") (lambda () (interactive) (find-file "~/.config/emacs/init.el")))
 (define-key my-jump-keymap (kbd "f") 'my/find-file)
 (define-key my-jump-keymap (kbd "g") (lambda () (interactive) (find-file "~/.config")))
 (define-key my-jump-keymap (kbd "h") (lambda () (interactive) (find-file "~")))
-(define-key my-jump-keymap (kbd "i") #'tab-close)
-(define-key my-jump-keymap (kbd "j") #'my/switch-to-thing)
-(define-key my-jump-keymap (kbd "l") #'cfw:open-org-calendar)
-(define-key my-jump-keymap (kbd "m") #'customize-themes)
-(define-key my-jump-keymap (kbd "o") (lambda () (interactive) (tab-bar-new-tab-to -1)(tab-bar-mode 'toggle)))
-;; (define-key my-jump-keymap (kbd "o") (lambda () (interactive) (tab-bar-new-tab-to -1)))
-(define-key my-jump-keymap (kbd "r") (lambda () (interactive) (find-file "~/repos")))
-(define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
-(define-key my-jump-keymap (kbd "u") #'tab-undo)
-(define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
-
-;; linux keys only
-(define-key my-jump-keymap (kbd "a") #'emms-browse-by-album)
-(define-key my-jump-keymap (kbd "e") (lambda () (interactive) (find-file "~/.config/emacs/init.el")))
+(define-key my-jump-keymap (kbd "i") #'tab-bar-history-forward)
+(define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~/DCIM/content/aab--todo.org")))
 (define-key my-jump-keymap (kbd "k") (lambda () (interactive) (find-file "~/.config/emacs/emacs--init.org")))
-(define-key my-jump-keymap (kbd "n") (lambda () (interactive) (find-file "~/nas")))
+(define-key my-jump-keymap (kbd "l") #'my/switch-to-thing)
+(define-key my-jump-keymap (kbd "m") #'customize-themes)
+(define-key my-jump-keymap (kbd "o") #'my/switch-to-thing)
 (define-key my-jump-keymap (kbd "p") #'proced)
-(define-key my-jump-keymap (kbd "q") (lambda () (interactive) (find-file "~/DCIM/content/aab--todo.org")))
-(define-key my-jump-keymap (kbd "t") (lambda () (interactive) (find-file "~/.local/share/Trash/files")))
+(define-key my-jump-keymap (kbd "q") #'cfw:open-org-calendar)
+(define-key my-jump-keymap (kbd "r") 'scratch-buffer)
+(define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
+(define-key my-jump-keymap (kbd "u") #'tab-bar-history-back)
+(define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
 (define-key my-jump-keymap (kbd "y") #'emms)
 
 (defvar my-win-keymap (make-sparse-keymap))
@@ -539,17 +536,21 @@ Turn on a profiler if we would like
 ;; -> keybinding
 ;;
 (global-set-key (kbd "M-m M-m") 'save-buffer)
-(global-set-key (kbd "<f8>") (lambda ()(interactive)(my/next-thing 1)))
-(global-set-key (kbd "S-<f8>") (lambda ()(interactive)(my/next-thing 2)))
+(global-set-key (kbd "M-s [") 'beginning-of-buffer)
+(global-set-key (kbd "M-s ]") 'end-of-buffer)
 (global-set-key (kbd "M-s v") 'org-babel-tangle)
-(global-set-key (kbd "M-s p") 'org-plot/gnuplot)
+(global-set-key (kbd "M-s l") 'org-plot/gnuplot)
+(global-set-key (kbd "M-s n") #'my/next-thing)
+(global-set-key (kbd "M-s p") #'my/previous-thing)
+(global-set-key (kbd "C-x j") #'tab-bar-history-back)
+(global-set-key (kbd "C-x k") #'tab-bar-history-forward)
 (global-set-key (kbd "M-s e") 'my/push-block)
 (global-set-key (kbd "M-s b") '(lambda ()(interactive)(org-table-recalculate 'all)))
 (global-set-key (kbd "M-s g") 'my/text-browser-search)
 (global-set-key (kbd "M-=") 'count-words)
 (define-key minibuffer-local-map (kbd "C-c e") #'embark-collect)
-(define-key minibuffer-local-map (kbd "M-j") #'abort-minibuffers)
 (define-key minibuffer-local-map (kbd "M-l") #'abort-minibuffers)
+(define-key minibuffer-local-map (kbd "M-o") #'abort-minibuffers)
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "M-u") (lambda()(interactive)(select-window (previous-window (selected-window)))))
 (global-set-key (kbd "M-j") (lambda()(interactive)(forward-line (/ (window-height) 8))))
@@ -1786,12 +1787,12 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
 (use-package jinx)
 (use-package powerthesaurus)
 
-(global-set-key (kbd "M-s l")
+(global-set-key (kbd "M-s k")
   (lambda () (interactive)
     (jinx-correct)))
 
 (global-set-key (kbd "M-s c") 'wc-mode)
-(global-set-key (kbd "M-s x") 'jinx-mode)
+(global-set-key (kbd "M-s j") 'jinx-mode)
 (global-set-key (kbd "M-s d") 'dictionary-lookup-definition)
 (global-set-key (kbd "M-s f") 'dictionary-lookup-definition)
 (global-set-key (kbd "M-s s") 'powerthesaurus-lookup-synonyms-dwim)
@@ -1914,6 +1915,10 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 (use-package diff-mode
   :hook
   (diff-mode . (lambda ()
+                 (define-key diff-mode-map (kbd "M-j") nil)
+                 (define-key diff-mode-map (kbd "M-k") nil)
+                 (define-key diff-mode-map (kbd "M-h") nil)
+                 (define-key diff-mode-map (kbd "M-l") nil)
                  (define-key diff-mode-map (kbd "M-0") nil)
                  (define-key diff-mode-map (kbd "M-1") nil)
                  (define-key diff-mode-map (kbd "M-2") nil)
@@ -2662,11 +2667,15 @@ echo
 
 (defvar-keymap my/repeat-map
   :repeat t
+  "n" #'my/next-thing
+  "p" #'my/previous-thing
+  "u" #'tab-bar-history-back
+  "i" #'tab-bar-history-forward
   "j" #'tab-bar-history-back
   "k" #'tab-bar-history-forward
   "o" #'my/collapse-space)
 
-(dolist (cmd '(tab-bar-history-back tab-bar-history-forward my/collapse-space))
+(dolist (cmd '(tab-bar-history-back tab-bar-history-forward my/collapse-space my/next-thing my/previous-thing))
   (put cmd 'repeat-map 'my/repeat-map))
 #+end_src
 
@@ -2709,12 +2718,8 @@ echo
       (format " %d " i)
       'face (funcall tab-bar-tab-face-function tab)))
   :bind
-  (
-    ("M-h" . tab-bar-switch-to-prev-tab) ;; 27.1
-    ("M-l" . tab-bar-switch-to-next-tab) ;; 27.1
-    ("C-x j" . tab-bar-history-back) ;; 27.1
-    ("C-x k" . tab-bar-history-forward)) ;; 27.1
-  )
+  (("M-h" . tab-bar-switch-to-prev-tab) ;; 27.1
+    ("M-l" . tab-bar-switch-to-next-tab))) ;; 27.1
 
 ;; (use-package tab-bar ;; 27.1
 ;;   :ensure nil ;; Since tab-bar is built-in, no package needs to be downloaded
@@ -3034,38 +3039,34 @@ If no such window is found, return nil."
         (setq found-window window)
         (return found-window)))))
 
-(defun my/next-thing (arg)
-  "Go to the next thing, meaning warning, error, grep, etc., based on ARG."
-  (interactive "p")
+(defun my/previous-thing ()
+  "Go to the previous thing, meaning warning, error, grep, etc., based on ARG."
+  (interactive)
   (let ((window))
 
     (setq window (my/get-window-regex "compilation"))
     (when window
       (select-window window)
-      (funcall (if (> arg 1)
-                 #'re-search-backward
-                 #'re-search-forward) "[[:digit:]]: warning:")
+      (re-search-backward "[[:digit:]]: warning:")
       (compile-goto-error))
 
     (setq window (my/get-window-regex "compile-log"))
     (when window
       (select-window window)
-      (funcall (if (> arg 1) #'previous-error-no-select #'next-error-no-select))
+      (previous-error-no-select)
       (compile-goto-error))
 
     (setq window (my/get-window-regex "dead"))
     (when window
       (select-window window)
-      (funcall (if (> arg 1) #'deadgrep-backward-match #'deadgrep-forward-match))
+      (deadgrep-backward-match)
       (deadgrep-visit-result-other-window)
       (org-fold-show-entry))
 
     (setq window (my/get-window-regex "org agenda"))
     (when window
       (select-window window)
-      (if (> arg 1)
-        (org-agenda-previous-item 1)
-        (org-agenda-next-item 1))
+      (org-agenda-previous-item 1)
       (org-agenda-goto)
       (org-fold-show-entry))
 
@@ -3073,7 +3074,44 @@ If no such window is found, return nil."
                    (my/get-window-regex "flycheck errors")))
     (when window
       (select-window window)
-      (funcall (if (> arg 1) #'previous-error #'next-error)))))
+      (previous-error))))
+
+(defun my/next-thing ()
+  "Go to the next thing, meaning warning, error, grep, etc., based on ARG."
+  (interactive)
+  (let ((window))
+
+    (setq window (my/get-window-regex "compilation"))
+    (when window
+      (select-window window)
+      (re-search-forward "[[:digit:]]: warning:")
+      (compile-goto-error))
+
+    (setq window (my/get-window-regex "compile-log"))
+    (when window
+      (select-window window)
+      (next-error-no-select)
+      (compile-goto-error))
+
+    (setq window (my/get-window-regex "dead"))
+    (when window
+      (select-window window)
+      (deadgrep-forward-match)
+      (deadgrep-visit-result-other-window)
+      (org-fold-show-entry))
+
+    (setq window (my/get-window-regex "org agenda"))
+    (when window
+      (select-window window)
+      (org-agenda-next-item 1)
+      (org-agenda-goto)
+      (org-fold-show-entry))
+
+    (setq window (or (my/get-window-regex "occur")
+                   (my/get-window-regex "flycheck errors")))
+    (when window
+      (select-window window)
+      (next-error))))
 
 (defun my/dired-delete-async ()
   "Delete files asynchronously in Dired."
@@ -3130,5 +3168,7 @@ choose."
       (let ((theme (intern (substring selection (length "Theme: ")))))
         (load-theme theme t)))
      (t (find-file selection)))))
+
+(global-set-key (kbd "C-t") 'transpose-sexps)
 
 #+end_src
