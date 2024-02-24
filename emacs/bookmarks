@@ -1,0 +1,79 @@
+;;;; Emacs Bookmark Format Version 1;;;; -*- coding: utf-8-emacs; mode: lisp-data -*-
+;;; This format is meant to be slightly human-readable;
+;;; nevertheless, you probably don't want to edit it.
+;;; -*- End Of Bookmark File Format Version Stamp -*-
+(("image-dired"
+  (filename . "~/.config/emacs/image-dired/")
+  (front-context-string . "003cf3db27c16166")
+  (rear-context-string . "59 Jan 27 08:26 ")
+  (position . 146)
+  (last-modified 26073 3375 427391 208000))
+("emacs--all.org"
+  (filename . "~/DCIM/content/emacs--all.org")
+  (front-context-string . "-*- mode: org; f")
+  (rear-context-string)
+  (position . 1)
+  (last-modified 26072 49685 453942 10000))
+("org-refile-last-stored"
+  (filename . "~/DCIM/content/aab--todo.org")
+  (front-context-string . "** DONE wayland ")
+  (rear-context-string . "\n* 2024 [30/30]\n")
+  (position . 3246)
+  (last-modified 26072 49583 615407 927000))
+("Videos"
+  (filename . "~/Videos/")
+  (front-context-string . "  /home/jdyer/Vi")
+  (rear-context-string)
+  (position . 1)
+  (last-modified 26072 49215 616184 530000))
+("betting"
+  (filename . "~/DCIM/content/dad--betting.org")
+  (front-context-string)
+  (rear-context-string . "..@>$7=@-1$7+$6\n")
+  (position . 7519)
+  (last-modified 26071 11109 538331 406000))
+("loss"
+  (filename . "~/DCIM/content/kate--loss.org")
+  (front-context-string)
+  (rear-context-string . ")/$4)*100;%0.1f\n")
+  (position . 2684)
+  (last-modified 26071 11091 695161 20000))
+("trash"
+  (filename . "~/.local/share/Trash/files/")
+  (front-context-string . "2024-02-20-21-20")
+  (rear-context-string . "1K Feb 20 21:20 ")
+  (position . 145)
+  (last-modified 26071 10955 571937 859000))
+("nas"
+  (filename . "~/nas/")
+  (front-context-string . "Archive\n  drwxrw")
+  (rear-context-string . "0K Nov 28 18:12 ")
+  (position . 168)
+  (last-modified 26071 10938 760821 255000))
+("mnt"
+  (filename . "/run/media/jdyer/")
+  (front-context-string)
+  (rear-context-string . "8K Feb 22 09:46 ")
+  (position . 128)
+  (last-modified 26071 10721 153717 709000))
+("repos"
+  (filename . "~/repos/")
+  (front-context-string . "fd-find\n  drwxr-")
+  (rear-context-string . "66 Nov 10 15:25 ")
+  (position . 126)
+  (last-modified 26071 10641 766328 604000))
+("elpa"
+  (filename . "~/.config/emacs/elpa/")
+  (front-context-string . "activities-0.4\n ")
+  (rear-context-string . "66 Feb 10 14:12 ")
+  (position . 139)
+  (last-modified 26071 6287 595109 42000))
+("(emacs) Diary"
+  (front-context-string . "The Emacs diary ")
+  (rear-context-string . "==============\n\n")
+  (position . 1431801)
+  (last-modified 26067 34290 392374 697000)
+  (filename . "/usr/share/info/emacs")
+  (info-node . "Diary")
+  (handler . Info-bookmark-jump))
+)
