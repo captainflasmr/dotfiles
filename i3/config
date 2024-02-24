@@ -1,10 +1,10 @@
 #
 # -> visuals
 #
-gaps inner 6px
-gaps outer 0px
-gaps top -4px
-gaps bottom -4px
+gaps inner 4px
+gaps outer 4px
+gaps top 0px
+gaps bottom 0px
 
 # workspace 1 gaps outer 10
 # workspace 1 gaps inner 8
@@ -20,8 +20,8 @@ gaps bottom -4px
 default_border pixel 6px
 
 # -> class              border  backgr. text    indicator child_border
-client.focused          #000000 #0b4b55 #cccccc #946f0033   #946f0033
-client.focused_inactive #333333 #333333 #cccccc #00000099   #00000099
+client.focused          #000000 #0b4b55 #cccccc #ffffff44   #ffffff44
+client.focused_inactive #333333 #333333 #cccccc #00000044   #00000044
 client.unfocused        #333333 #222222 #cccccc #292d2e   #222222
 client.urgent           #2f343a #900000 #cccccc #900000   #900000
 client.placeholder      #000000 #0c0c0c #cccccc #000000   #0c0c0c
@@ -31,6 +31,7 @@ client.background       #aaaaaa
 #
 # -> startup
 #
+exec_always --no-startup-id sh -c 'feh --bg-scale "$(cat ~/.last_wallpaper_path)"'
 exec $HOME/bin/startup.sh
 
 #
@@ -69,13 +70,13 @@ bindsym $mod+shift+w exec wallpaper_change_kde.sh
 bindsym $mod+shift+s exec screenshot_x11.sh
 bindsym $mod+e exec thunar ~/DCIM/Camera
 bindsym $mod+i exec lxappearance
-bindsym $mod+c exec emacs
-bindsym $mod+m exec thunderbird
+bindsym $mod+m exec emacs
+bindsym $mod+b exec thunderbird
 # bindsym $mod+w exec flatpak run com.microsoft.Edge
 bindsym $mod+w exec firefox
 bindsym $mod+s exec pamac-manager
 bindsym $mod+p exec keepassxc
-bindsym $mod+g exec screen-record.sh
+bindsym $mod+r exec screen-record.sh
 
 # terminal
 bindsym $mod+return exec $term
@@ -87,7 +88,7 @@ bindsym Mod1+F4 kill
 
 # launcher
 bindsym Mod1+space exec rofi -show drun
-bindsym $mod+d exec --no-startup-id dmenu_run -fn "Mono:pixelsize=22"
+bindsym $mod+d exec --no-startup-id dmenu_run -fn "Mono:pixelsize=16"
 
 # exit
 bindsym $mod+shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
