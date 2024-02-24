@@ -116,8 +116,8 @@
     "clock": {
         // "timezone": "America/New_York",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-        "format-alt": "{:%Y-%m-%d %H:%M}",
-        "format": "{:%H:%M}",
+        "format": "{:%Y-%m-%d %H:%M}",
+        "format-alt": "{:%H:%M}",
         "min-length": 1,
         "max-length": 18,
     },
@@ -169,7 +169,7 @@
             "charging": ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
             "default": ["", "", "", "", "", "", "", "", "", ""],
         },
-        "format": "{capacity}% {icon} ",
+        "format": "{icon}  {capacity}",
         "format-charging": "  {capacity} ",
         "format-plugged": "  {capacity} ",
         "format-alt": "{time} {icon} ",
@@ -181,9 +181,9 @@
 
     "pulseaudio": {
         "scroll-step": 0.1,
-        "format": "{volume} {icon}",
+        "format": "{icon}  {volume}",
         "format-muted": "🔇 {format_source}",
-        "format-source": "{volume}% ",
+        "format-source": "% {volume}",
         "format-source-muted": "",
         "format-icons": {
             "headphone": "",
@@ -209,7 +209,8 @@
 
     "backlight": {
         "scroll-step": 8,
-        "format": "{percent} 🔅",
+        "format": "{icon} {percent}",
+        "format-icons": ["🔅"],
         "min-length": 1,
         "max-length": 6
     },
@@ -245,15 +246,13 @@
     },
 
     "custom/recorder": {
-        "format": "",
+        // "format": " ",
         "on-click": "screen-record.sh",
         "return-type": "json",
         "interval": 1,
-        "exec": "if pgrep \"^wf-recorder$\" >/dev/null; then echo '{\"class\": \"recording\"}'; else echo '{\"class\": \"ready\"}'; fi",
+        "exec": "screen-record-check-status.sh",
         "min-length": 1,
-        "max-length": 4
-
-        // "exec-if": "pgrep wf-recorder"
+        "max-length": 6,
     },
 
     "custom/screenshot": {
