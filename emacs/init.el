@@ -210,13 +210,12 @@
   (read-file-name-completion-ignore-case t)
   (read-buffer-completion-ignore-case t)
   (completion-ignore-case t)
-  (vertico-resize nil)
+  (vertico-resize t)
   (vertico-count 10))
 
 (use-package orderless
   :custom
-  (completion-styles '(basic orderless))
-  (completion-category-overrides '((file (styles basic partial-completion)))))
+  (completion-styles '(flex orderless)))
 
 (use-package marginalia
   :after vertico
@@ -252,12 +251,12 @@
 (define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~/DCIM/content/aab--todo.org")))
 (define-key my-jump-keymap (kbd "k") (lambda () (interactive) (find-file "~/.config/emacs/emacs--init.org")))
 (define-key my-jump-keymap (kbd "l") #'my/switch-to-thing)
-(define-key my-jump-keymap (kbd "m") #'customize-themes)
 (define-key my-jump-keymap (kbd "o") #'my/switch-to-thing)
 (define-key my-jump-keymap (kbd "p") #'proced)
 (define-key my-jump-keymap (kbd "q") #'cfw:open-org-calendar)
 (define-key my-jump-keymap (kbd "r") 'scratch-buffer)
 (define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
+(define-key my-jump-keymap (kbd "t") #'customize-themes)
 (define-key my-jump-keymap (kbd "u") #'tab-bar-history-back)
 (define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
 (define-key my-jump-keymap (kbd "y") #'emms)
@@ -273,14 +272,13 @@
 (define-key my-win-keymap (kbd "f") #'font-lock-mode)
 (define-key my-win-keymap (kbd "g") #'my/toggle-scroll-margin)
 (define-key my-win-keymap (kbd "i") #'highlight-indent-guides-mode)
-(define-key my-win-keymap (kbd "m") #'consult-theme)
 (define-key my-win-keymap (kbd "n") #'display-line-numbers-mode)
 (define-key my-win-keymap (kbd "o") #'visual-fill-column-mode)
 (define-key my-win-keymap (kbd "p") #'variable-pitch-mode)
 (define-key my-win-keymap (kbd "q") #'toggle-menu-bar-mode-from-frame)
 (define-key my-win-keymap (kbd "r") #'org-modern-mode)
 (define-key my-win-keymap (kbd "s") #'my/toggle-internal-border-width)
-(define-key my-win-keymap (kbd "t") #'org-tidy-toggle)
+(define-key my-win-keymap (kbd "t") #'consult-theme)
 (define-key my-win-keymap (kbd "u") #'toggle-truncate-lines)
 (define-key my-win-keymap (kbd "v") #'visual-line-mode)
 (define-key my-win-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
@@ -405,11 +403,11 @@
 ;;
 ;; -> keybinding
 ;;
-(global-set-key (kbd "M-m M-m") 'save-buffer)
+(global-set-key (kbd "M-m m") 'save-buffer)
 (global-set-key (kbd "M-s [") 'beginning-of-buffer)
 (global-set-key (kbd "M-s ]") 'end-of-buffer)
 (global-set-key (kbd "M-s v") 'org-babel-tangle)
-(global-set-key (kbd "M-s l") 'org-plot/gnuplot)
+(global-set-key (kbd "M-s l") 'eval-last-sexp)
 (global-set-key (kbd "M-s n") #'my/next-thing)
 (global-set-key (kbd "M-s p") #'my/previous-thing)
 (global-set-key (kbd "C-x j") #'tab-bar-history-back)
@@ -422,12 +420,10 @@
 (define-key minibuffer-local-map (kbd "M-l") #'abort-minibuffers)
 (define-key minibuffer-local-map (kbd "M-o") #'abort-minibuffers)
 (global-set-key (kbd "C-c a") 'org-agenda)
-(global-set-key (kbd "M-u") (lambda()(interactive)(select-window (previous-window (selected-window)))))
-(global-set-key (kbd "M-j") (lambda()(interactive)(forward-line (/ (window-height) 8))))
-(global-set-key (kbd "M-k") (lambda()(interactive)(forward-line (- (/ (window-height) 8)))))
-(global-set-key (kbd "C-M-j") (lambda()(interactive)(forward-line 1)))
-(global-set-key (kbd "C-M-k") (lambda()(interactive)(forward-line -1)))
-(global-set-key (kbd "M-i") (lambda()(interactive)(select-window (next-window (selected-window)))))
+(global-set-key (kbd "M-i") #'my/next-window)
+(global-set-key (kbd "M-u") #'my/prev-window)
+(global-set-key (kbd "M-j") #'my/next-scroll)
+(global-set-key (kbd "M-k") #'my/prev-scroll)
 (global-set-key (kbd "M-I") (lambda ()(interactive)(my/resize-window 4 t)))
 (global-set-key (kbd "M-U") (lambda ()(interactive)(my/resize-window -4 t)))
 (global-set-key (kbd "C-c b") (lambda ()(interactive)(async-shell-command "do_backup home" "*backup*")))
@@ -912,10 +908,11 @@ as search term for Google search in web browser."
     org-image-actual-width (list 50)
     org-startup-indented t
     org-todo-keywords
-    '((sequence "TODO" "DOING" "WAIT" "WATCH" "ORDR" "SENT" "|" "CANCELLED" "DONE"))
+    '((sequence "TODO" "DOING" "RPT" "WAIT" "WATCH" "ORDR" "SENT" "|" "CANCELLED" "DONE"))
     org-todo-keyword-faces
     '(("TODO" . "#ee5566")
        ("DOING" . "#5577aa")
+       ("RPT" . "#ff77aa")
        ("WAIT" . "#bb7744")
        ("WATCH" . "#bbad44")
        ("ORDR" . "#bb44ee")
@@ -1924,7 +1921,7 @@ With directories under project root using find."
 ;;
 
 (use-package selected-window-accent-mode
-  ;; :load-path "~/repos/selected-window-accent-mode"
+  :load-path "~/repos/selected-window-accent-mode"
   ;; :vc (:fetcher github :repo "captainflasmr/selected-window-accent-mode")
   :config (selected-window-accent-mode 1)
   :custom
@@ -2266,8 +2263,6 @@ With directories under project root using find."
   "p" #'my/previous-thing
   "u" #'tab-bar-history-back
   "i" #'tab-bar-history-forward
-  "j" #'tab-bar-history-back
-  "k" #'tab-bar-history-forward
   "o" #'my/collapse-space)
 
 (dolist (cmd '(tab-bar-history-back tab-bar-history-forward my/collapse-space my/next-thing my/previous-thing))
@@ -2309,8 +2304,11 @@ With directories under project root using find."
       (format " %d " i)
       'face (funcall tab-bar-tab-face-function tab)))
   :bind
-  (("M-h" . tab-bar-switch-to-prev-tab) ;; 27.1
-    ("M-l" . tab-bar-switch-to-next-tab))) ;; 27.1
+  (("M-h" . tab-bar-switch-to-prev-tab)
+    ("M-l" . tab-bar-switch-to-next-tab)
+    :repeat-map my/tab-bar-repeat-map
+    ("h" . tab-bar-switch-to-prev-tab) ;; 27.1
+    ("l" . tab-bar-switch-to-next-tab))) ;; 27.1
 
 ;; (use-package tab-bar ;; 27.1
 ;;   :ensure nil ;; Since tab-bar is built-in, no package needs to be downloaded
@@ -2748,3 +2746,59 @@ choose."
      (t (find-file selection)))))
 
 (global-set-key (kbd "C-t") 'transpose-sexps)
+
+(defun easy-repeat ()
+  "Repeat last command by typing it's last key again."
+  (unless (eq this-command 'self-insert-command)
+    (let* ((keys (recent-keys))
+	   (len (length keys))
+	   (key (unless (zerop len) (aref keys (1- len))))
+	   (key-str (when (or (integerp key) (symbolp key) (listp key))
+		      (single-key-description (event-basic-type key))))
+	   (map (make-sparse-keymap)))
+      (define-key map (kbd key-str) this-command)
+      (set-transient-map map))))
+
+;; (remove-hook 'post-command-hook 'easy-repeat)
+(add-hook 'post-command-hook 'easy-repeat)
+
+(defun my/next-scroll ()
+  (interactive)
+  ;; This sets up a transient keymap that allows the use of 'j' and 'k'
+  ;; for scrolling without repeatedly pressing 'M'.
+  (set-transient-map
+   (let ((map (make-sparse-keymap)))
+     (define-key map (kbd "j") #'my/next-scroll)
+     (define-key map (kbd "k") #'my/prev-scroll)
+     map))
+  (forward-line (/ (window-height) 8)))
+
+(defun my/prev-scroll ()
+  (interactive)
+  ;; Same transient keymap setup as in `my/next-scroll`.
+  (set-transient-map
+   (let ((map (make-sparse-keymap)))
+     (define-key map (kbd "j") #'my/next-scroll)
+     (define-key map (kbd "k") #'my/prev-scroll)
+     map))
+  (forward-line (- (/ (window-height) 8))))
+
+(defun my/next-window ()
+  (interactive)
+  (select-window (next-window))
+  ;; Set up transient keymap with 'i' for next window and 'u' for previous window.
+  (set-transient-map
+   (let ((map (make-sparse-keymap)))
+     (define-key map (kbd "i") #'my/next-window)
+     (define-key map (kbd "u") #'my/prev-window)
+     map)))
+
+(defun my/prev-window ()
+  (interactive)
+  (select-window (previous-window))
+  ;; Set up transient keymap with 'i' for next window and 'u' for previous window.
+  (set-transient-map
+   (let ((map (make-sparse-keymap)))
+     (define-key map (kbd "i") #'my/next-window)
+     (define-key map (kbd "u") #'my/prev-window)
+     map)))
