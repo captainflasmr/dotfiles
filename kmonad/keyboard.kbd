@@ -7,8 +7,15 @@
 
   ;; Set this to false to disable any command-execution in KMonad
   allow-cmd true
-)
+  )
 
-(defsrc caps ralt)
+(defsrc caps lctl lsft rsft lalt ralt lmet)
 
-(deflayer mine lctl scrlck)
+(deflayer mine
+  (sticky-key 2000 lctl)
+  (sticky-key 2000 lctl)
+  (sticky-key 2000 lsft)
+  (sticky-key 2000 rsft)
+  (sticky-key 2000 lalt)
+  scrlck
+  (sticky-key 2000 lmet))
