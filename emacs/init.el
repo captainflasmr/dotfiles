@@ -236,13 +236,14 @@
   (marginalia-mode))
 
 ;;
-;; -> navigation
+;; -> keys-navigation
 ;;
+
 (defvar my-jump-keymap (make-sparse-keymap))
 (global-set-key (kbd "M-o") my-jump-keymap)
 
 (define-key my-jump-keymap (kbd "-") #'tab-close)
-(define-key my-jump-keymap (kbd "=") (lambda () (interactive) (tab-bar-new-tab-to -1)(tab-bar-mode 'toggle)))
+(define-key my-jump-keymap (kbd "=") (lambda () (interactive) (tab-bar-new-tab-to -1)))
 (define-key my-jump-keymap (kbd "e") (lambda () (interactive) (find-file (concat user-emacs-directory "init.el"))))
 (define-key my-jump-keymap (kbd "f") 'my/find-file)
 (define-key my-jump-keymap (kbd "h") (lambda () (interactive) (find-file "~")))
@@ -252,6 +253,10 @@
 (define-key my-jump-keymap (kbd "r") 'scratch-buffer)
 (define-key my-jump-keymap (kbd "t") #'customize-themes)
 (define-key my-jump-keymap (kbd "u") #'tab-bar-history-back)
+
+;;
+;; -> keys-visual
+;;
 
 (defvar my-win-keymap (make-sparse-keymap))
 (global-set-key (kbd "M-m") my-win-keymap)
@@ -276,6 +281,10 @@
 (define-key my-win-keymap (kbd "v") #'visual-line-mode)
 (define-key my-win-keymap (kbd "x") #'my/change-accent-color)
 (define-key my-win-keymap (kbd "y") #'selected-window-accent--switch-selected-window-accent-style)
+
+;;
+;; -> keys-other
+;;
 
 (defvar my-other-keymap (make-sparse-keymap))
 (global-set-key (kbd "M-h") my-other-keymap)
@@ -547,7 +556,7 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
-  '(custom-enabled-themes '(doom-henna))
+  '(custom-enabled-themes '(doom-dracula))
   '(warning-suppress-log-types '((frameset)))
   '(warning-suppress-types '((frameset))))
 
@@ -732,6 +741,30 @@ as search term for Google search in web browser."
     (setq-default mode-line-format my/mode-line-format)
     (setq-default mode-line-format nil))
   (force-mode-line-update t))
+
+(defun my/next-scroll ()
+  (interactive)
+  (forward-line (/ (window-height) 8)))
+
+(defun my/prev-scroll ()
+  (interactive)
+  (forward-line (- (/ (window-height) 8))))
+
+(defun my/next-window ()
+  (interactive)
+  (select-window (next-window)))
+
+(defun my/prev-window ()
+  (interactive)
+  (select-window (previous-window)))
+
+(defun my/window-enlarge ()
+  (interactive)
+  (my/resize-window 4 t))
+
+(defun my/window-shrink ()
+  (interactive)
+  (my/resize-window -4 t))
 
 ;;
 ;; -> window-positioning
@@ -1003,17 +1036,8 @@ as search term for Google search in web browser."
   :custom
   (org-agenda-include-diary nil)
   (org-agenda-files '("~/DCIM/content/aaa--calendar.org"
-                       "~/DCIM/content/aab--todo.org"
-                       "~/DCIM/content/aad--kate.org"
-                       "~/DCIM/content/art--all.org"
-                       "~/DCIM/content/dad--betting.org"
-                       "~/DCIM/content/emacs--all.org"
-                       "~/DCIM/content/kate--loss.org"
-                       "~/DCIM/content/linux--all.org"
-                       "~/DCIM/content/misc--subs.org"
-                       "~/DCIM/content/posts--all.org"
-                       "~/DCIM/content/presents--james.org"
-                       "~/DCIM/content/presents--others.org"))
+                       "~/DCIM/content/aab--kate.org"
+                       "~/DCIM/content/aac--subs.org"))
   :config
   (with-eval-after-load 'org-agenda
     (unbind-key "M-m" org-agenda-mode-map)
@@ -1461,7 +1485,7 @@ as search term for Google search in web browser."
 
 (setq my/mode-line-format
   '("%e"
-     (:eval (my-all-tabs-string))
+     ;; (:eval (my-all-tabs-string))
      mode-line-modified
      (:eval
        (propertize (format "%s" (abbreviate-file-name default-directory))
@@ -2284,7 +2308,8 @@ With directories under project root using find."
 (defvar-keymap my/isearch-repeat-map
   :repeat t
   "s" #'isearch-repeat-forward
-  "r" #'isearch-repeat-backward)
+  "r" #'isearch-repeat-backward
+  "w" #'isearch-yank-word-or-char)
 
 (defvar-keymap my/simple-repeat-map
   :repeat t
@@ -2332,7 +2357,7 @@ With directories under project root using find."
 (use-package tab-bar ;; 29.1
   :ensure nil ;; Since tab-bar is built-in, no package needs to be downloaded
   :init
-  (tab-bar-mode -1) ;; 27.1
+  (tab-bar-mode 1) ;; 27.1
   (tab-bar-history-mode 1) ;; 27.1
   :custom
   (tab-bar-format '(tab-bar-format-tabs-groups
@@ -2603,6 +2628,31 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
 (setq wc-count-words-function 'my/word-count-function)
 
 ;;
+;; -> linux specific
+;;
+
+(define-key my-jump-keymap (kbd "a") #'emms-browse-by-album)
+(define-key my-jump-keymap (kbd "b") (lambda () (interactive) (find-file "~/bin")))
+(define-key my-jump-keymap (kbd "c") (lambda () (interactive) (find-file "~/DCIM/Camera")))
+(define-key my-jump-keymap (kbd "g") (lambda () (interactive) (find-file "~/.config")))
+(define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~/DCIM/content/aab--todo.org")))
+(define-key my-jump-keymap (kbd "y") #'emms)
+(define-key my-jump-keymap (kbd "q") #'cfw:open-org-calendar)
+(define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
+(define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
+
+(setq diary-file "~/DCIM/content/diary.org")
+
+(custom-theme-set-faces
+  'user
+  '(variable-pitch ((t (:family "Sans Serif" :height 140 :weight normal))))
+  '(fixed-pitch ((t ( :family "Fira Code Retina" :height 130)))))
+
+(setq font-general "Monospace 12")
+(set-frame-font font-general nil t)
+(add-to-list 'default-frame-alist `(font . ,font-general))
+
+;;
 ;; -> development
 ;;
 
@@ -2768,51 +2818,8 @@ If no such window is found, return nil."
 
 (global-set-key (kbd "C-t") 'transpose-sexps)
 
-(defun my/next-scroll ()
-  (interactive)
-  (forward-line (/ (window-height) 8)))
+(setq org-icalendar-use-deadline
+  '(event-if-not-todo event-if-todo event-if-todo-not-done todo-due))
 
-(defun my/prev-scroll ()
-  (interactive)
-  (forward-line (- (/ (window-height) 8))))
-
-(defun my/next-window ()
-  (interactive)
-  (select-window (next-window)))
-
-(defun my/prev-window ()
-  (interactive)
-  (select-window (previous-window)))
-
-(defun my/window-enlarge ()
-  (interactive)
-  (my/resize-window 4 t))
-
-(defun my/window-shrink ()
-  (interactive)
-  (my/resize-window -4 t))
-
-;;
-;; -> linux specific
-;;
-
-(define-key my-jump-keymap (kbd "a") #'emms-browse-by-album)
-(define-key my-jump-keymap (kbd "b") (lambda () (interactive) (find-file "~/bin")))
-(define-key my-jump-keymap (kbd "c") (lambda () (interactive) (find-file "~/DCIM/Camera")))
-(define-key my-jump-keymap (kbd "g") (lambda () (interactive) (find-file "~/.config")))
-(define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~/DCIM/content/aab--todo.org")))
-(define-key my-jump-keymap (kbd "y") #'emms)
-(define-key my-jump-keymap (kbd "q") #'cfw:open-org-calendar)
-(define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
-(define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
-
-(setq diary-file "~/DCIM/content/diary.org")
-
-(custom-theme-set-faces
-  'user
-  '(variable-pitch ((t (:family "Sans Serif" :height 140 :weight normal))))
-  '(fixed-pitch ((t ( :family "Fira Code Retina" :height 130)))))
-
-(setq font-general "Monospace 12")
-(set-frame-font font-general nil t)
-(add-to-list 'default-frame-alist `(font . ,font-general))
+(setq org-icalendar-use-scheduled
+  '(event-if-not-todo event-if-todo event-if-todo-not-done todo-start))
