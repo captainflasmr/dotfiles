@@ -211,7 +211,17 @@
   (read-buffer-completion-ignore-case t)
   (completion-ignore-case t)
   (vertico-resize t)
-  (vertico-count 10))
+  (vertico-count 10)
+  :bind (:map vertico-map
+          ("C-n" . vertico-next)
+          ("C-p" . vertico-previous)
+          :repeat-map my/vertico-repeat-map
+          ("n" . vertico-next)
+          ("p" . vertico-previous)))
+
+(use-package vertico-posframe
+  :config
+  (vertico-posframe-mode 1))
 
 (use-package orderless
   :custom
@@ -239,7 +249,6 @@
 (define-key my-jump-keymap (kbd "5") (lambda () (interactive)(tab-select 5)))
 (define-key my-jump-keymap (kbd "6") (lambda () (interactive)(tab-select 6)))
 (define-key my-jump-keymap (kbd "=") (lambda () (interactive) (tab-bar-new-tab-to -1)(tab-bar-mode 'toggle)))
-(define-key my-jump-keymap (kbd "M-o") #'my/switch-to-thing)
 (define-key my-jump-keymap (kbd "a") #'emms-browse-by-album)
 (define-key my-jump-keymap (kbd "b") (lambda () (interactive) (find-file "~/bin")))
 (define-key my-jump-keymap (kbd "c") (lambda () (interactive) (find-file "~/DCIM/Camera")))
@@ -250,8 +259,6 @@
 (define-key my-jump-keymap (kbd "i") #'tab-bar-history-forward)
 (define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~/DCIM/content/aab--todo.org")))
 (define-key my-jump-keymap (kbd "k") (lambda () (interactive) (find-file "~/.config/emacs/emacs--init.org")))
-(define-key my-jump-keymap (kbd "l") #'my/switch-to-thing)
-(define-key my-jump-keymap (kbd "o") #'my/switch-to-thing)
 (define-key my-jump-keymap (kbd "p") #'proced)
 (define-key my-jump-keymap (kbd "q") #'cfw:open-org-calendar)
 (define-key my-jump-keymap (kbd "r") 'scratch-buffer)
@@ -272,6 +279,7 @@
 (define-key my-win-keymap (kbd "f") #'font-lock-mode)
 (define-key my-win-keymap (kbd "g") #'my/toggle-scroll-margin)
 (define-key my-win-keymap (kbd "i") #'highlight-indent-guides-mode)
+(define-key my-win-keymap (kbd "m") #'my/toggle-mode-line)
 (define-key my-win-keymap (kbd "n") #'display-line-numbers-mode)
 (define-key my-win-keymap (kbd "o") #'visual-fill-column-mode)
 (define-key my-win-keymap (kbd "p") #'variable-pitch-mode)
@@ -284,6 +292,11 @@
 (define-key my-win-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
 (define-key my-win-keymap (kbd "x") #'my/change-accent-color)
 (define-key my-win-keymap (kbd "y") #'selected-window-accent--switch-selected-window-accent-style)
+
+(defvar my-other-keymap (make-sparse-keymap))
+(global-set-key (kbd "M-h") my-other-keymap)
+(define-key my-other-keymap (kbd "l") #'eval-last-sexp)
+(define-key my-other-keymap (kbd "f") #'eval-defun)
 
 ;;
 ;; -> magit
@@ -403,13 +416,17 @@
 ;;
 ;; -> keybinding
 ;;
-(global-set-key (kbd "M-m m") 'save-buffer)
+(global-set-key (kbd "M-6") (lambda ()(interactive)(insert "[")))
+(global-set-key (kbd "M-7") (lambda ()(interactive)(insert "]")))
+(global-set-key (kbd "M-l") #'my/switch-to-thing)
+(global-set-key (kbd "M-s l") 'save-buffer)
+(global-set-key (kbd "M-s s") 'save-buffer)
+(global-set-key (kbd "M-s p") 'org-plot/gnuplot)
 (global-set-key (kbd "M-s [") 'beginning-of-buffer)
 (global-set-key (kbd "M-s ]") 'end-of-buffer)
 (global-set-key (kbd "M-s v") 'org-babel-tangle)
-(global-set-key (kbd "M-s l") 'eval-last-sexp)
-(global-set-key (kbd "M-s n") #'my/next-thing)
-(global-set-key (kbd "M-s p") #'my/previous-thing)
+(global-set-key (kbd "M-g n") #'my/next-thing)
+(global-set-key (kbd "M-g p") #'my/previous-thing)
 (global-set-key (kbd "C-x j") #'tab-bar-history-back)
 (global-set-key (kbd "C-x k") #'tab-bar-history-forward)
 (global-set-key (kbd "M-s e") 'my/push-block)
@@ -418,14 +435,13 @@
 (global-set-key (kbd "M-=") 'count-words)
 (define-key minibuffer-local-map (kbd "C-c e") #'embark-collect)
 (define-key minibuffer-local-map (kbd "M-l") #'abort-minibuffers)
-(define-key minibuffer-local-map (kbd "M-o") #'abort-minibuffers)
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "M-i") #'my/next-window)
 (global-set-key (kbd "M-u") #'my/prev-window)
 (global-set-key (kbd "M-j") #'my/next-scroll)
 (global-set-key (kbd "M-k") #'my/prev-scroll)
-(global-set-key (kbd "M-I") (lambda ()(interactive)(my/resize-window 4 t)))
-(global-set-key (kbd "M-U") (lambda ()(interactive)(my/resize-window -4 t)))
+(global-set-key (kbd "C-x ]") #'my/window-enlarge)
+(global-set-key (kbd "C-x [") #'my/window-shrink)
 (global-set-key (kbd "C-c b") (lambda ()(interactive)(async-shell-command "do_backup home" "*backup*")))
 (global-set-key (kbd "C-c c") 'org-capture)
 (global-set-key (kbd "C-c f") 'my/fold)
@@ -436,7 +452,7 @@
 (global-set-key (kbd "M-2") 'split-window-vertically)
 (global-set-key (kbd "M-3") 'split-window-horizontally)
 (global-set-key (kbd "M-;") 'my/comment-or-uncomment)
-(global-set-key (kbd "M-?") 'my/grep)
+(global-set-key (kbd "M-8") 'my/grep)
 (global-set-key (kbd "C-c ,") 'embark-act)
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-h h"))
@@ -543,13 +559,15 @@
 ;; -> custom-settings
 ;;
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
-  '(custom-enabled-themes '(doom-henna))
-  '(warning-suppress-log-types '((frameset)))
-  '(warning-suppress-types '((frameset))))
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-enabled-themes '(doom-henna))
+ '(package-selected-packages
+    '(ztree yaml-mode wc-mode vertico-posframe vc-use-package toc-org tempel spacious-padding selected-window-accent-mode rainbow-mode project-mode-line-tag proced-narrow powerthesaurus peg package-lint ox-hugo ox-gfm ox-epub ov org-tidy org-super-agenda org-ql org-modern org-bullets orderless marginalia magit lorem-ipsum kurecolor keepass-mode kbd-mode jinx i3wm-config-mode highlight-indent-guides helm-org gruvbox-theme gpr-ts-mode gnuplot git-timemachine flycheck find-file-rg file-info esup emms embark-consult elfeed ef-themes doom-themes diredfl diminish deadgrep csv-mode csv corfu company chatgpt-shell calfw-org calfw-cal calfw all-the-icons-ibuffer all-the-icons-dired all-the-icons-completion ahk-mode ada-mode activities))
+ '(warning-suppress-log-types '((frameset)))
+ '(warning-suppress-types '((frameset))))
 
 ;;
 ;; -> defun
@@ -724,6 +742,14 @@ as search term for Google search in web browser."
                        20
                        0))))
     (setq scroll-margin new-value)))
+
+(defun my/toggle-mode-line ()
+  "Toggle the visibility of the mode-line by checking its current state."
+  (interactive)
+  (if (eq mode-line-format nil)
+    (setq-default mode-line-format my/mode-line-format)
+    (setq-default mode-line-format nil))
+  (force-mode-line-update t))
 
 ;;
 ;; -> window-positioning
@@ -912,7 +938,7 @@ as search term for Google search in web browser."
     org-todo-keyword-faces
     '(("TODO" . "#ee5566")
        ("DOING" . "#5577aa")
-       ("RPT" . "#ff77aa")
+       ("RPT" . "#CCCC00")
        ("WAIT" . "#bb7744")
        ("WATCH" . "#bbad44")
        ("ORDR" . "#bb44ee")
@@ -929,7 +955,16 @@ as search term for Google search in web browser."
     ("M-J" . org-shiftleft)
     ("M-K" . org-shiftright)
     ("M-[" . org-metaleft)
-    ("M-]" . org-metaright)))
+    ("M-]" . org-metaright)
+    :repeat-map my/org-mode-repeat-map
+    ("n" . org-metadown)
+    ("p" . org-metaup)
+    ("N" . org-shiftdown)
+    ("P" . org-shiftup)
+    ("J" . org-shiftleft)
+    ("K" . org-shiftright)
+    ("[" . org-metaleft)
+    ("]" . org-metaright)))
 
 (use-package org-tidy)
 
@@ -1110,43 +1145,52 @@ as search term for Google search in web browser."
 ;; -> custom-set-faces
 ;;
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
-  '(diredfl-date-time ((t (:foreground "#8d909b"))))
-  '(diredfl-dir-heading ((t (:foreground "#aa5555" :weight bold))))
-  '(diredfl-dir-priv ((t (:foreground "DarkRed"))))
-  '(diredfl-exec-priv ((t (:foreground "#999999"))))
-  '(diredfl-file-name ((t (:foreground "#818282"))))
-  '(diredfl-no-priv ((t nil)))
-  '(diredfl-number ((t (:foreground "#999999"))))
-  '(diredfl-read-priv ((t nil)))
-  '(diredfl-write-priv ((t nil)))
-  '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
-  '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
-  '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
-  '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
-  '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2"))))
-  '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
-  '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.1 :family "Source Code Pro"))))
-  '(org-code ((t (:inherit (shadow fixed-pitch)))))
-  '(org-modern-date-active ((t (:inherit fixed-pitch))))
-  '(org-date ((t (:inherit fixed-pitch))))
-  '(org-document-info ((t (:foreground "#8f4800"))))
-  '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
-  '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
-  '(org-link ((t (:foreground "#5555ff" :underline t))))
-  '(org-property-value ((t (:inherit fixed-pitch))) t)
-  '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
-  '(org-tag ((t (:inherit (shadow fixed-pitch) :weight regular :height 0.8))))
-  '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
-  '(indent-guide-face ((t (:background "#282828" :foreground "#666666"))))
-  '(outline-1 ((t (:weight regular))))
-  '(outline-2 ((t (:weight regular))))
-  '(widget-button ((t (:inherit fixed-pitch :weight regular))))
-  '(window-divider ((t (:foreground "black"))))
-  '(vertical-border ((t (:foreground "#000000")))))
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(diredfl-date-time ((t (:foreground "#8d909b"))))
+ '(diredfl-dir-heading ((t (:foreground "#aa5555" :weight bold))))
+ '(diredfl-dir-priv ((t (:foreground "DarkRed"))))
+ '(diredfl-exec-priv ((t (:foreground "#999999"))))
+ '(diredfl-file-name ((t (:foreground "#818282"))))
+ '(diredfl-no-priv ((t nil)))
+ '(diredfl-number ((t (:foreground "#999999"))))
+ '(diredfl-read-priv ((t nil)))
+ '(diredfl-write-priv ((t nil)))
+ '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
+ '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
+ '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
+ '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
+ '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.1 :family "Source Code Pro"))))
+ '(fixed-pitch ((t (:family "Fira Code Retina" :height 130))))
+ '(indent-guide-face ((t (:background "#282828" :foreground "#666666"))))
+ '(org-code ((t (:inherit (shadow fixed-pitch)))))
+ '(org-date ((t (:inherit fixed-pitch))))
+ '(org-document-info ((t (:foreground "#8f4800"))))
+ '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+ '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
+ '(org-link ((t (:foreground "#5555ff" :underline t))))
+ '(org-modern-date-active ((t (:inherit fixed-pitch))))
+ '(org-property-value ((t (:inherit fixed-pitch))))
+ '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+ '(org-tag ((t (:inherit (shadow fixed-pitch) :weight regular :height 0.8))))
+ '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
+ '(outline-1 ((t (:weight regular))))
+ '(outline-2 ((t (:weight regular))))
+ '(variable-pitch ((t (:family "Sans Serif" :height 140 :weight normal))))
+ '(vertical-border ((t (:foreground "#000000"))))
+ '(whitespace-missing-newline-at-eof ((t (:foreground "#666566656665"))))
+ '(whitespace-newline ((t (:foreground "#666566656665"))))
+ '(whitespace-space ((t (:foreground "#666566656665"))))
+ '(whitespace-space-after-tab ((t (:foreground "#666566656665"))))
+ '(whitespace-space-before-tab ((t (:foreground "#666566656665"))))
+ '(whitespace-tab ((t (:foreground "#666566656665"))))
+ '(whitespace-trailing ((t (:foreground "#666566656665"))))
+ '(widget-button ((t (:inherit fixed-pitch :weight regular))))
+ '(window-divider ((t (:foreground "black"))))
+ '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
+ '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2")))))
 
 (custom-theme-set-faces
   'user
@@ -1453,7 +1497,7 @@ as search term for Google search in web browser."
       (setq index (1+ index)))
     tabs-string))
 
-(setq-default mode-line-format
+(setq my/mode-line-format
   '("%e"
      (:eval (my-all-tabs-string))
      mode-line-modified
@@ -1468,12 +1512,14 @@ as search term for Google search in web browser."
          (propertize (format "%s " (buffer-name)))
          " "))
      mode-line-position
-     mode-line-modes
+     ;; mode-line-modes
      mode-line-misc-info))
 ;; "-%-"))
 
+(setq-default mode-line-format my/mode-line-format)
+
 (display-time-mode -1)
-(setq mode-line-compact nil)
+(setq mode-line-compact t)
 
 ;;
 ;; -> find
@@ -1537,7 +1583,6 @@ as search term for Google search in web browser."
 (global-set-key (kbd "M-s j") 'jinx-mode)
 (global-set-key (kbd "M-s d") 'dictionary-lookup-definition)
 (global-set-key (kbd "M-s f") 'dictionary-lookup-definition)
-(global-set-key (kbd "M-s s") 'powerthesaurus-lookup-synonyms-dwim)
 (global-set-key (kbd "M-s t") 'powerthesaurus-lookup-synonyms-dwim)
 
 (setq ispell-local-dictionary "en_GB")
@@ -2255,18 +2300,52 @@ With directories under project root using find."
 ;;
 ;; -> repeat
 ;;
+
 (repeat-mode 1)
 
-(defvar-keymap my/repeat-map
+(defvar-keymap my/tab-bar
   :repeat t
-  "n" #'my/next-thing
-  "p" #'my/previous-thing
-  "u" #'tab-bar-history-back
-  "i" #'tab-bar-history-forward
-  "o" #'my/collapse-space)
+  "j" #'tab-bar-history-back
+  "k" #'tab-bar-history-forward)
 
-(dolist (cmd '(tab-bar-history-back tab-bar-history-forward my/collapse-space my/next-thing my/previous-thing))
-  (put cmd 'repeat-map 'my/repeat-map))
+(defvar-keymap my/move-repeat-map
+  :repeat t
+  "j" #'my/next-scroll
+  "k" #'my/prev-scroll
+  "f" #'forward-char
+  "b" #'backward-char
+  "n" #'next-line
+  "v" #'scroll-up-command
+  "c" #'scroll-down-command
+  "p" #'previous-line
+  "u" #'my/prev-window
+  "i" #'my/next-window)
+
+(defvar-keymap my/isearch-repeat-map
+  :repeat t
+  "s" #'isearch-repeat-forward
+  "r" #'isearch-repeat-backward)
+
+(defvar-keymap my/simple-repeat-map
+  :repeat t
+  "/" #'undo
+  "k" #'kill-line
+  "b" #'backward-word
+  "f" #'forward-word)
+
+(defvar-keymap my/delete-repeat-map
+  :repeat t
+  "k" #'org-kill-line
+  "d" #'kill-word
+  "DEL" #'backward-kill-word)
+
+(defvar-keymap my/window-repeat-map
+  :repeat t
+  "]" #'my/window-enlarge
+  "[" #'my/window-shrink)
+
+(setq repeat-echo-function 'ignore)
+(setq repeat-exit-key "l")
 
 ;;
 ;; -> tab-bar
@@ -2304,11 +2383,11 @@ With directories under project root using find."
       (format " %d " i)
       'face (funcall tab-bar-tab-face-function tab)))
   :bind
-  (("M-h" . tab-bar-switch-to-prev-tab)
-    ("M-l" . tab-bar-switch-to-next-tab)
+  (("[" . tab-bar-switch-to-prev-tab)
+    ("]" . tab-bar-switch-to-next-tab)
     :repeat-map my/tab-bar-repeat-map
-    ("h" . tab-bar-switch-to-prev-tab) ;; 27.1
-    ("l" . tab-bar-switch-to-next-tab))) ;; 27.1
+    ("[" . tab-bar-switch-to-prev-tab)
+    ("]" . tab-bar-switch-to-next-tab)))
 
 ;; (use-package tab-bar ;; 27.1
 ;;   :ensure nil ;; Since tab-bar is built-in, no package needs to be downloaded
@@ -2601,10 +2680,6 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
     )
   (org-table-align))
 
-(use-package project-mode-line-tag
-  :config
-  (project-mode-line-tag-mode 1))
-
 (defun my/get-window-regex (regex)
   "Find the first window displaying a buffer whose name matches the given REGEX.
 If no such window is found, return nil."
@@ -2698,33 +2773,10 @@ If no such window is found, return nil."
         (async-shell-command (format "gio trash '%s'" file))))
     (message "Async deletion is set up only for trash. Set `delete-by-moving-to-trash` to t.")))
 
-(use-package vertico-posframe
-  :config
-  (vertico-posframe-mode 1))
-
-(defcustom my/automount-directory
-  (format "/run/media/%s" user-login-name)
-  "Directory under which drives are
-automounted.")
-
-(defun my/automount-open-in-dired ()
-  "Open the automounted drive in Dired.
-If there is more than one, let the user
-choose."
-  (interactive)
-  (let ((dirs (directory-files my/automount-directory nil "^[^.]")))
-    (dired (file-name-concat
-             my/automount-directory
-             (cond ((null dirs)
-                     (error "No drives mounted at the moment"))
-               ((= (length dirs) 1)
-                 (car dirs))
-               (t
-                 (completing-read "Open in dired: " dirs nil t)))))))
-
 (defun my/switch-to-thing ()
   "Switch to a buffer, open a recent file, jump to a bookmark, or change the theme from a unified interface."
   (interactive)
+  ;; (keyboard-quit)
   (let* ((buffers (mapcar #'buffer-name (buffer-list)))
          (recent-files recentf-list)
          (bookmarks (bookmark-all-names))
@@ -2747,58 +2799,26 @@ choose."
 
 (global-set-key (kbd "C-t") 'transpose-sexps)
 
-(defun easy-repeat ()
-  "Repeat last command by typing it's last key again."
-  (unless (eq this-command 'self-insert-command)
-    (let* ((keys (recent-keys))
-	   (len (length keys))
-	   (key (unless (zerop len) (aref keys (1- len))))
-	   (key-str (when (or (integerp key) (symbolp key) (listp key))
-		      (single-key-description (event-basic-type key))))
-	   (map (make-sparse-keymap)))
-      (define-key map (kbd key-str) this-command)
-      (set-transient-map map))))
-
-;; (remove-hook 'post-command-hook 'easy-repeat)
-(add-hook 'post-command-hook 'easy-repeat)
-
 (defun my/next-scroll ()
   (interactive)
-  ;; This sets up a transient keymap that allows the use of 'j' and 'k'
-  ;; for scrolling without repeatedly pressing 'M'.
-  (set-transient-map
-   (let ((map (make-sparse-keymap)))
-     (define-key map (kbd "j") #'my/next-scroll)
-     (define-key map (kbd "k") #'my/prev-scroll)
-     map))
   (forward-line (/ (window-height) 8)))
 
 (defun my/prev-scroll ()
   (interactive)
-  ;; Same transient keymap setup as in `my/next-scroll`.
-  (set-transient-map
-   (let ((map (make-sparse-keymap)))
-     (define-key map (kbd "j") #'my/next-scroll)
-     (define-key map (kbd "k") #'my/prev-scroll)
-     map))
   (forward-line (- (/ (window-height) 8))))
 
 (defun my/next-window ()
   (interactive)
-  (select-window (next-window))
-  ;; Set up transient keymap with 'i' for next window and 'u' for previous window.
-  (set-transient-map
-   (let ((map (make-sparse-keymap)))
-     (define-key map (kbd "i") #'my/next-window)
-     (define-key map (kbd "u") #'my/prev-window)
-     map)))
+  (select-window (next-window)))
 
 (defun my/prev-window ()
   (interactive)
-  (select-window (previous-window))
-  ;; Set up transient keymap with 'i' for next window and 'u' for previous window.
-  (set-transient-map
-   (let ((map (make-sparse-keymap)))
-     (define-key map (kbd "i") #'my/next-window)
-     (define-key map (kbd "u") #'my/prev-window)
-     map)))
+  (select-window (previous-window)))
+
+(defun my/window-enlarge ()
+  (interactive)
+  (my/resize-window 4 t))
+
+(defun my/window-shrink ()
+  (interactive)
+  (my/resize-window -4 t))
