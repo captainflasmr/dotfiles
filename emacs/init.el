@@ -242,31 +242,16 @@
 (global-set-key (kbd "M-o") my-jump-keymap)
 
 (define-key my-jump-keymap (kbd "-") #'tab-close)
-(define-key my-jump-keymap (kbd "1") (lambda () (interactive)(tab-select 1)))
-(define-key my-jump-keymap (kbd "2") (lambda () (interactive)(tab-select 2)))
-(define-key my-jump-keymap (kbd "3") (lambda () (interactive)(tab-select 3)))
-(define-key my-jump-keymap (kbd "4") (lambda () (interactive)(tab-select 4)))
-(define-key my-jump-keymap (kbd "5") (lambda () (interactive)(tab-select 5)))
-(define-key my-jump-keymap (kbd "6") (lambda () (interactive)(tab-select 6)))
 (define-key my-jump-keymap (kbd "=") (lambda () (interactive) (tab-bar-new-tab-to -1)(tab-bar-mode 'toggle)))
-(define-key my-jump-keymap (kbd "a") #'emms-browse-by-album)
-(define-key my-jump-keymap (kbd "b") (lambda () (interactive) (find-file "~/bin")))
-(define-key my-jump-keymap (kbd "c") (lambda () (interactive) (find-file "~/DCIM/Camera")))
-(define-key my-jump-keymap (kbd "e") (lambda () (interactive) (find-file "~/.config/emacs/init.el")))
+(define-key my-jump-keymap (kbd "e") (lambda () (interactive) (find-file (concat user-emacs-directory "init.el"))))
 (define-key my-jump-keymap (kbd "f") 'my/find-file)
-(define-key my-jump-keymap (kbd "g") (lambda () (interactive) (find-file "~/.config")))
 (define-key my-jump-keymap (kbd "h") (lambda () (interactive) (find-file "~")))
 (define-key my-jump-keymap (kbd "i") #'tab-bar-history-forward)
-(define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~/DCIM/content/aab--todo.org")))
-(define-key my-jump-keymap (kbd "k") (lambda () (interactive) (find-file "~/.config/emacs/emacs--init.org")))
+(define-key my-jump-keymap (kbd "k") (lambda () (interactive) (find-file (concat user-emacs-directory "emacs--init.org"))))
 (define-key my-jump-keymap (kbd "p") #'proced)
-(define-key my-jump-keymap (kbd "q") #'cfw:open-org-calendar)
 (define-key my-jump-keymap (kbd "r") 'scratch-buffer)
-(define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
 (define-key my-jump-keymap (kbd "t") #'customize-themes)
 (define-key my-jump-keymap (kbd "u") #'tab-bar-history-back)
-(define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
-(define-key my-jump-keymap (kbd "y") #'emms)
 
 (defvar my-win-keymap (make-sparse-keymap))
 (global-set-key (kbd "M-m") my-win-keymap)
@@ -289,7 +274,6 @@
 (define-key my-win-keymap (kbd "t") #'consult-theme)
 (define-key my-win-keymap (kbd "u") #'toggle-truncate-lines)
 (define-key my-win-keymap (kbd "v") #'visual-line-mode)
-(define-key my-win-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
 (define-key my-win-keymap (kbd "x") #'my/change-accent-color)
 (define-key my-win-keymap (kbd "y") #'selected-window-accent--switch-selected-window-accent-style)
 
@@ -297,6 +281,7 @@
 (global-set-key (kbd "M-h") my-other-keymap)
 (define-key my-other-keymap (kbd "l") #'eval-last-sexp)
 (define-key my-other-keymap (kbd "f") #'eval-defun)
+(define-key my-other-keymap (kbd "e") #'view-echo-area-messages)
 
 ;;
 ;; -> magit
@@ -523,7 +508,6 @@
 (setq reb-re-syntax 'string)
 (setq truncate-lines t)
 (setq suggest-key-bindings nil)
-(setq diary-file "~/DCIM/content/diary.org")
 
 ;;
 ;; -> confirm
@@ -559,15 +543,13 @@
 ;; -> custom-settings
 ;;
 (custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-enabled-themes '(doom-henna))
- '(package-selected-packages
-    '(ztree yaml-mode wc-mode vertico-posframe vc-use-package toc-org tempel spacious-padding selected-window-accent-mode rainbow-mode project-mode-line-tag proced-narrow powerthesaurus peg package-lint ox-hugo ox-gfm ox-epub ov org-tidy org-super-agenda org-ql org-modern org-bullets orderless marginalia magit lorem-ipsum kurecolor keepass-mode kbd-mode jinx i3wm-config-mode highlight-indent-guides helm-org gruvbox-theme gpr-ts-mode gnuplot git-timemachine flycheck find-file-rg file-info esup emms embark-consult elfeed ef-themes doom-themes diredfl diminish deadgrep csv-mode csv corfu company chatgpt-shell calfw-org calfw-cal calfw all-the-icons-ibuffer all-the-icons-dired all-the-icons-completion ahk-mode ada-mode activities))
- '(warning-suppress-log-types '((frameset)))
- '(warning-suppress-types '((frameset))))
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+  '(custom-enabled-themes '(doom-henna))
+  '(warning-suppress-log-types '((frameset)))
+  '(warning-suppress-types '((frameset))))
 
 ;;
 ;; -> defun
@@ -938,7 +920,7 @@ as search term for Google search in web browser."
     org-todo-keyword-faces
     '(("TODO" . "#ee5566")
        ("DOING" . "#5577aa")
-       ("RPT" . "#CCCC00")
+       ("RPT" . "#cccc00")
        ("WAIT" . "#bb7744")
        ("WATCH" . "#bbad44")
        ("ORDR" . "#bb44ee")
@@ -1129,73 +1111,53 @@ as search term for Google search in web browser."
 ;; (setq font-general "Noto Sans Mono 14")
 ;; (setq font-general "MesloLGS Nerd Font Mono 11")
 ;; (setq font-general "Source Code Pro 12")
-(setq font-general "Monospace 12")
 ;; (setq font-general "Source Code Pro Light 14")
 ;; (setq font-general "Nimbus Mono PS 14")
 ;; (setq font-general "MesloLGS Nerd Font Mono 14")
 ;; (setq font-general "Droid Sans Mono 12")
 ;; (setq font-general "Hack Nerd Font Mono 13")
 
-(set-frame-font font-general nil t)
-
-;; the set-frame-font doesn't seem to work in server / client mode
-(add-to-list 'default-frame-alist `(font . ,font-general))
-
 ;;
 ;; -> custom-set-faces
 ;;
 (custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(diredfl-date-time ((t (:foreground "#8d909b"))))
- '(diredfl-dir-heading ((t (:foreground "#aa5555" :weight bold))))
- '(diredfl-dir-priv ((t (:foreground "DarkRed"))))
- '(diredfl-exec-priv ((t (:foreground "#999999"))))
- '(diredfl-file-name ((t (:foreground "#818282"))))
- '(diredfl-no-priv ((t nil)))
- '(diredfl-number ((t (:foreground "#999999"))))
- '(diredfl-read-priv ((t nil)))
- '(diredfl-write-priv ((t nil)))
- '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
- '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
- '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
- '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
- '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.1 :family "Source Code Pro"))))
- '(fixed-pitch ((t (:family "Fira Code Retina" :height 130))))
- '(indent-guide-face ((t (:background "#282828" :foreground "#666666"))))
- '(org-code ((t (:inherit (shadow fixed-pitch)))))
- '(org-date ((t (:inherit fixed-pitch))))
- '(org-document-info ((t (:foreground "#8f4800"))))
- '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
- '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
- '(org-link ((t (:foreground "#5555ff" :underline t))))
- '(org-modern-date-active ((t (:inherit fixed-pitch))))
- '(org-property-value ((t (:inherit fixed-pitch))))
- '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
- '(org-tag ((t (:inherit (shadow fixed-pitch) :weight regular :height 0.8))))
- '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
- '(outline-1 ((t (:weight regular))))
- '(outline-2 ((t (:weight regular))))
- '(variable-pitch ((t (:family "Sans Serif" :height 140 :weight normal))))
- '(vertical-border ((t (:foreground "#000000"))))
- '(whitespace-missing-newline-at-eof ((t (:foreground "#666566656665"))))
- '(whitespace-newline ((t (:foreground "#666566656665"))))
- '(whitespace-space ((t (:foreground "#666566656665"))))
- '(whitespace-space-after-tab ((t (:foreground "#666566656665"))))
- '(whitespace-space-before-tab ((t (:foreground "#666566656665"))))
- '(whitespace-tab ((t (:foreground "#666566656665"))))
- '(whitespace-trailing ((t (:foreground "#666566656665"))))
- '(widget-button ((t (:inherit fixed-pitch :weight regular))))
- '(window-divider ((t (:foreground "black"))))
- '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
- '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2")))))
-
-(custom-theme-set-faces
-  'user
-  '(variable-pitch ((t (:family "Sans Serif" :height 140 :weight normal))))
-  '(fixed-pitch ((t ( :family "Fira Code Retina" :height 130)))))
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+  '(diredfl-date-time ((t (:foreground "#8d909b"))))
+  '(diredfl-dir-heading ((t (:foreground "#aa5555" :weight bold))))
+  '(diredfl-dir-priv ((t (:foreground "DarkRed"))))
+  '(diredfl-exec-priv ((t (:foreground "#999999"))))
+  '(diredfl-file-name ((t (:foreground "#818282"))))
+  '(diredfl-no-priv ((t nil)))
+  '(diredfl-number ((t (:foreground "#999999"))))
+  '(diredfl-read-priv ((t nil)))
+  '(diredfl-write-priv ((t nil)))
+  '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
+  '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
+  '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
+  '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
+  '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2"))))
+  '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
+  '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.1 :family "Source Code Pro"))))
+  '(org-code ((t (:inherit (shadow fixed-pitch)))))
+  '(org-modern-date-active ((t (:inherit fixed-pitch))))
+  '(org-date ((t (:inherit fixed-pitch))))
+  '(org-document-info ((t (:foreground "#8f4800"))))
+  '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+  '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
+  '(org-link ((t (:foreground "#5555ff" :underline t))))
+  '(org-property-value ((t (:inherit fixed-pitch))) t)
+  '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+  '(org-tag ((t (:inherit (shadow fixed-pitch) :weight regular :height 0.8))))
+  '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
+  '(indent-guide-face ((t (:background "#282828" :foreground "#666666"))))
+  '(outline-1 ((t (:weight regular))))
+  '(outline-2 ((t (:weight regular))))
+  '(widget-button ((t (:inherit fixed-pitch :weight regular))))
+  '(window-divider ((t (:foreground "black"))))
+  '(vertical-border ((t (:foreground "#000000")))))
 
 ;;
 ;; -> dired
@@ -1370,8 +1332,8 @@ as search term for Google search in web browser."
 
 (setq-default truncate-partial-width-windows 120)
 
-(set-frame-parameter nil 'alpha-background 90)
-(add-to-list 'default-frame-alist '(alpha-background . 90))
+(set-frame-parameter nil 'alpha-background 95)
+(add-to-list 'default-frame-alist '(alpha-background . 95))
 
 (set-fringe-mode '(0 . 0))
 (set-display-table-slot standard-display-table 0 ?\ )
@@ -1502,11 +1464,9 @@ as search term for Google search in web browser."
      (:eval (my-all-tabs-string))
      mode-line-modified
      (:eval
-       (propertize (format "%s" (abbreviate-file-name default-directory))))
-     (:eval
-       (when (or (eq major-mode 'image-mode)
-               (eq major-mode 'image-dired-image-mode))
-         (process-lines  "identify"  "-format"  "[%m %wx%h %b]" (buffer-file-name))))
+       (propertize (format "%s" (abbreviate-file-name default-directory))
+         'face '(:inherit bold))
+       )
      (:eval
        (if (not (equal major-mode 'dired-mode))
          (propertize (format "%s " (buffer-name)))
@@ -2344,6 +2304,15 @@ With directories under project root using find."
   "]" #'my/window-enlarge
   "[" #'my/window-shrink)
 
+(defvar-keymap my/expand-repeat-map
+  :repeat t
+  "/" #'hippie-expand)
+
+(defvar-keymap my/next-repeat-map
+  :repeat t
+  "n" #'my/next-thing
+  "p" #'my/previous-thing)
+
 (setq repeat-echo-function 'ignore)
 (setq repeat-exit-key "l")
 
@@ -2688,7 +2657,7 @@ If no such window is found, return nil."
     (dolist (window windows found-window)
       (when (string-match-p regex (buffer-name (window-buffer window)))
         (setq found-window window)
-        (return found-window)))))
+        (cl-return found-window)))))
 
 (defun my/previous-thing ()
   "Go to the previous thing, meaning warning, error, grep, etc., based on ARG."
@@ -2822,3 +2791,28 @@ If no such window is found, return nil."
 (defun my/window-shrink ()
   (interactive)
   (my/resize-window -4 t))
+
+;;
+;; -> linux specific
+;;
+
+(define-key my-jump-keymap (kbd "a") #'emms-browse-by-album)
+(define-key my-jump-keymap (kbd "b") (lambda () (interactive) (find-file "~/bin")))
+(define-key my-jump-keymap (kbd "c") (lambda () (interactive) (find-file "~/DCIM/Camera")))
+(define-key my-jump-keymap (kbd "g") (lambda () (interactive) (find-file "~/.config")))
+(define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~/DCIM/content/aab--todo.org")))
+(define-key my-jump-keymap (kbd "y") #'emms)
+(define-key my-jump-keymap (kbd "q") #'cfw:open-org-calendar)
+(define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
+(define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
+
+(setq diary-file "~/DCIM/content/diary.org")
+
+(custom-theme-set-faces
+  'user
+  '(variable-pitch ((t (:family "Sans Serif" :height 140 :weight normal))))
+  '(fixed-pitch ((t ( :family "Fira Code Retina" :height 130)))))
+
+(setq font-general "Monospace 12")
+(set-frame-font font-general nil t)
+(add-to-list 'default-frame-alist `(font . ,font-general))
