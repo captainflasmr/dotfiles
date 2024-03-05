@@ -211,7 +211,7 @@
   (read-buffer-completion-ignore-case t)
   (completion-ignore-case t)
   (vertico-resize t)
-  (vertico-count 10)
+  (vertico-count 20)
   :bind (:map vertico-map
           ("C-n" . vertico-next)
           ("C-p" . vertico-previous)
@@ -245,12 +245,13 @@
 (define-key my-jump-keymap (kbd "-") #'tab-close)
 (define-key my-jump-keymap (kbd "=") (lambda () (interactive) (tab-bar-new-tab-to -1)))
 (define-key my-jump-keymap (kbd "e") (lambda () (interactive) (find-file (concat user-emacs-directory "init.el"))))
-(define-key my-jump-keymap (kbd "f") 'my/find-file)
+(define-key my-jump-keymap (kbd "f") #'my/find-file)
 (define-key my-jump-keymap (kbd "h") (lambda () (interactive) (find-file "~")))
 (define-key my-jump-keymap (kbd "i") #'tab-bar-history-forward)
 (define-key my-jump-keymap (kbd "k") (lambda () (interactive) (find-file (concat user-emacs-directory "emacs--init.org"))))
+(define-key my-jump-keymap (kbd "o") #'my/switch-to-thing)
 (define-key my-jump-keymap (kbd "p") #'proced)
-(define-key my-jump-keymap (kbd "r") 'scratch-buffer)
+(define-key my-jump-keymap (kbd "r") #'scratch-buffer)
 (define-key my-jump-keymap (kbd "t") #'customize-themes)
 (define-key my-jump-keymap (kbd "u") #'tab-bar-history-back)
 
@@ -269,6 +270,7 @@
 (define-key my-win-keymap (kbd "f") #'font-lock-mode)
 (define-key my-win-keymap (kbd "g") #'my/toggle-scroll-margin)
 (define-key my-win-keymap (kbd "i") #'highlight-indent-guides-mode)
+(define-key my-win-keymap (kbd "h") #'hl-line-mode)
 (define-key my-win-keymap (kbd "m") #'my/toggle-mode-line)
 (define-key my-win-keymap (kbd "n") #'display-line-numbers-mode)
 (define-key my-win-keymap (kbd "o") #'visual-fill-column-mode)
@@ -287,7 +289,7 @@
 ;;
 
 (defvar my-other-keymap (make-sparse-keymap))
-(global-set-key (kbd "M-h") my-other-keymap)
+(global-set-key (kbd "M-u") my-other-keymap)
 (define-key my-other-keymap (kbd "l") #'eval-last-sexp)
 (define-key my-other-keymap (kbd "f") #'eval-defun)
 (define-key my-other-keymap (kbd "e") #'view-echo-area-messages)
@@ -410,9 +412,10 @@
 ;;
 ;; -> keybinding
 ;;
+(global-set-key (kbd "C-=") '(lambda ()(interactive)(text-scale-adjust 1)))
+(global-set-key (kbd "C--") '(lambda ()(interactive)(text-scale-adjust -1)))
 (global-set-key (kbd "M-6") (lambda ()(interactive)(insert "[")))
 (global-set-key (kbd "M-7") (lambda ()(interactive)(insert "]")))
-(global-set-key (kbd "M-l") #'my/switch-to-thing)
 (global-set-key (kbd "M-s l") 'save-buffer)
 (global-set-key (kbd "M-s s") 'save-buffer)
 (global-set-key (kbd "M-s p") 'org-plot/gnuplot)
@@ -428,10 +431,10 @@
 (global-set-key (kbd "M-s g") 'my/text-browser-search)
 (global-set-key (kbd "M-=") 'count-words)
 (define-key minibuffer-local-map (kbd "C-c e") #'embark-collect)
-(define-key minibuffer-local-map (kbd "M-l") #'abort-minibuffers)
+(define-key minibuffer-local-map (kbd "M-o") #'abort-minibuffers)
 (global-set-key (kbd "C-c a") 'org-agenda)
-(global-set-key (kbd "M-i") #'my/next-window)
-(global-set-key (kbd "M-u") #'my/prev-window)
+(global-set-key (kbd "M-h") #'my/prev-window)
+(global-set-key (kbd "M-l") #'my/next-window)
 (global-set-key (kbd "M-j") #'my/next-scroll)
 (global-set-key (kbd "M-k") #'my/prev-scroll)
 (global-set-key (kbd "C-x ]") #'my/window-enlarge)
@@ -734,14 +737,6 @@ as search term for Google search in web browser."
                        0))))
     (setq scroll-margin new-value)))
 
-(defun my/toggle-mode-line ()
-  "Toggle the visibility of the mode-line by checking its current state."
-  (interactive)
-  (if (eq mode-line-format nil)
-    (setq-default mode-line-format my/mode-line-format)
-    (setq-default mode-line-format nil))
-  (force-mode-line-update t))
-
 (defun my/next-scroll ()
   (interactive)
   (forward-line (/ (window-height) 8)))
@@ -939,7 +934,7 @@ as search term for Google search in web browser."
     org-edit-src-content-indentation 0
     org-src-preserve-indentation t
     org-directory "~/DCIM/content/"
-    org-default-notes-file "~/DCIM/content/aab--todo.org"
+    org-default-notes-file "~/DCIM/content/aad--todo.org"
     org-hide-leading-stars t
     org-reverse-note-order t
     org-log-done 'time
@@ -1344,7 +1339,6 @@ as search term for Google search in web browser."
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 
-(setq frame-title-format "%f")
 (setq inhibit-startup-screen t)
 
 ;; (add-hook 'text-mode-hook #'visual-line-mode)
@@ -1369,7 +1363,7 @@ as search term for Google search in web browser."
 
 (setq-default left-margin-width 0 right-margin-width 0)
 
-(defvar my/internal-border-width 15 "Default internal border width for toggling.")
+(defvar my/internal-border-width 5 "Default internal border width for toggling.")
 
 (defun my/toggle-internal-border-width (&optional value)
   "Toggle internal border width given VALUE."
@@ -1449,7 +1443,7 @@ as search term for Google search in web browser."
 ;;
 (setq-default mode-line-modified
   '(:eval (if (and (buffer-file-name) (buffer-modified-p))
-            (propertize " Modified " 'face
+            (propertize "** MODIFIED " 'face
               '(:background "#ff0000" :foreground "#ffffff" :inherit bold)) "")))
 
 (set-face-attribute 'mode-line-active nil :height 120 :underline nil :overline nil :box nil
@@ -1496,11 +1490,24 @@ as search term for Google search in web browser."
          (propertize (format "%s " (buffer-name)))
          " "))
      mode-line-position
-     ;; mode-line-modes
+     mode-line-modes
      mode-line-misc-info))
 ;; "-%-"))
 
 (setq-default mode-line-format my/mode-line-format)
+(setq frame-title-format "%f")
+
+(defun my/toggle-mode-line ()
+  "Toggle the visibility of the mode-line by checking its current state."
+  (interactive)
+  (if (eq mode-line-format nil)
+    (progn
+      (setq-default mode-line-format my/mode-line-format)
+      (setq frame-title-format "%f"))
+    (progn
+      (setq-default mode-line-format nil)
+      (setq frame-title-format my/mode-line-format)))
+  (force-mode-line-update t))
 
 (display-time-mode -1)
 (setq mode-line-compact t)
@@ -1955,8 +1962,8 @@ With directories under project root using find."
   :config (selected-window-accent-mode 1)
   :custom
   (selected-window-accent-fringe-thickness 10)
-  (selected-window-accent-percentage-darken 0)
-  (selected-window-accent-percentage-desaturate 10)
+  (selected-window-accent-percentage-darken 20)
+  (selected-window-accent-percentage-desaturate 30)
   (selected-window-accent-smart-borders nil)
   (selected-window-accent-tab-accent t)
   (selected-window-accent-custom-color nil)
@@ -2219,6 +2226,7 @@ With directories under project root using find."
 (use-package calfw-cal)
 
 (setq calendar-holidays nil)
+(setq calendar-week-start-day 1)
 
 (setq cfw:org-capture-template
   '("c" "Calendar" plain
@@ -2294,16 +2302,18 @@ With directories under project root using find."
 
 (defvar-keymap my/move-repeat-map
   :repeat t
-  "j" #'my/next-scroll
-  "k" #'my/prev-scroll
-  "f" #'forward-char
   "b" #'backward-char
-  "n" #'next-line
-  "v" #'scroll-up-command
   "c" #'scroll-down-command
+  "d" #'scroll-up-command
+  "f" #'forward-char
+  "h" #'my/prev-window
+  "k" #'my/prev-scroll
+  "l" #'my/next-window
+  "n" #'next-line
   "p" #'previous-line
-  "u" #'my/prev-window
-  "i" #'my/next-window)
+  "u" #'scroll-down-command
+  "v" #'scroll-up-command
+  "j" #'my/next-scroll)
 
 (defvar-keymap my/isearch-repeat-map
   :repeat t
@@ -2339,7 +2349,7 @@ With directories under project root using find."
   "p" #'my/previous-thing)
 
 (setq repeat-echo-function 'ignore)
-(setq repeat-exit-key "l")
+(setq repeat-exit-key "g")
 
 ;;
 ;; -> tab-bar
@@ -2635,7 +2645,7 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
 (define-key my-jump-keymap (kbd "b") (lambda () (interactive) (find-file "~/bin")))
 (define-key my-jump-keymap (kbd "c") (lambda () (interactive) (find-file "~/DCIM/Camera")))
 (define-key my-jump-keymap (kbd "g") (lambda () (interactive) (find-file "~/.config")))
-(define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~/DCIM/content/aab--todo.org")))
+(define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~/DCIM/content/aad--todo.org")))
 (define-key my-jump-keymap (kbd "y") #'emms)
 (define-key my-jump-keymap (kbd "q") #'cfw:open-org-calendar)
 (define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
@@ -2795,26 +2805,24 @@ If no such window is found, return nil."
 (defun my/switch-to-thing ()
   "Switch to a buffer, open a recent file, jump to a bookmark, or change the theme from a unified interface."
   (interactive)
-  ;; (keyboard-quit)
   (let* ((buffers (mapcar #'buffer-name (buffer-list)))
          (recent-files recentf-list)
          (bookmarks (bookmark-all-names))
-         (themes (mapcar (lambda (theme) (concat "Theme: " (symbol-name theme))) (custom-available-themes)))
-         (metadata '((category . file)))
-         (all-options (append buffers recent-files bookmarks))
+         (themes (custom-available-themes))
+         (all-options (append buffers recent-files bookmarks
+                              (mapcar (lambda (theme) (concat "Theme: " (symbol-name theme))) themes)))
          (selection (completing-read "Switch to: "
                                      (lambda (str pred action)
                                        (if (eq action 'metadata)
-                                           `(metadata . ,metadata)
+                                           '(metadata . ((category . file)))
                                          (complete-with-action action all-options str pred)))
                                      nil t nil 'file-name-history)))
-    (cond
-     ((member selection buffers) (switch-to-buffer selection))
-     ((member selection bookmarks) (bookmark-jump selection))
-     ((string-prefix-p "Theme: " selection)
-      (let ((theme (intern (substring selection (length "Theme: ")))))
-        (load-theme theme t)))
-     (t (find-file selection)))))
+    (pcase selection
+      ((pred (lambda (sel) (member sel buffers))) (switch-to-buffer selection))
+      ((pred (lambda (sel) (member sel bookmarks))) (bookmark-jump selection))
+      ((pred (lambda (sel) (string-prefix-p "Theme: " sel)))
+       (load-theme (intern (substring selection (length "Theme: "))) t))
+      (_ (find-file selection)))))
 
 (global-set-key (kbd "C-t") 'transpose-sexps)
 
