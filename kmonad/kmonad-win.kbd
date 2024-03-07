@@ -1,0 +1,16 @@
+(defcfg
+  input (low-level-hook)
+  output (send-event-sink)
+  fallthrough true
+  )
+
+(defsrc caps lctl lsft rsft lalt ralt lmet)
+
+(deflayer mine
+  (around-next lctl)
+  (around-next lctl)
+  (around-next lsft)
+  (around-next rsft)
+  (around-next lalt)
+  scrlck
+  (around-next lmet))
