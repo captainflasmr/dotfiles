@@ -31,7 +31,6 @@ client.background       #aaaaaa
 #
 # -> startup
 #
-exec_always --no-startup-id sh -c 'feh --bg-scale "$(cat ~/.last_wallpaper_path)"'
 exec $HOME/bin/startup.sh
 
 #
@@ -62,20 +61,16 @@ bindsym XF86MonBrightnessDown exec brightnessctl set 2%-
 #
 # -> Key bindings
 #
-bindsym $mod+shift+p exec kcolorchooser
-bindsym $mod+shift+w exec wallpaper_change_kde.sh
+bindsym $mod+p exec kcolorchooser
+bindsym $mod+w exec wallpaper_change.sh
 
 # programs
 #bindsym $mod+space exec nwg-drawer -c 7 -is 70 -spacing 23
-bindsym $mod+shift+s exec screenshot_x11.sh
+bindsym $mod+s exec screenshot.sh
 bindsym $mod+e exec thunar ~/DCIM/Camera
-bindsym $mod+i exec lxappearance
 bindsym $mod+m exec emacs
 bindsym $mod+b exec thunderbird
-# bindsym $mod+w exec flatpak run com.microsoft.Edge
-bindsym $mod+w exec firefox
-bindsym $mod+s exec pamac-manager
-bindsym $mod+p exec keepassxc
+bindsym $mod+x exec firefox
 bindsym $mod+r exec screen-record.sh
 
 # terminal
@@ -83,7 +78,7 @@ bindsym $mod+return exec $term
 bindsym control+Mod1+t exec $term
 
 # kill
-bindsym $mod+shift+q kill
+bindsym $mod+q kill
 bindsym Mod1+F4 kill
 
 # launcher
@@ -104,7 +99,6 @@ bindsym $mod+Left focus left
 bindsym $mod+Right focus right
 bindsym $mod+Up focus up
 bindsym $mod+Down focus down
-# bindsym $mod+o focus left
 
 bindsym $mod+Shift+$left move left
 bindsym $mod+Shift+$down move down
@@ -118,8 +112,8 @@ bindsym $mod+Shift+Right move right
 #
 # -> Workspaces
 #
-bindsym control+Mod1+l workspace next
-bindsym control+Mod1+h workspace prev
+bindsym $mod+bracketleft workspace prev
+bindsym $mod+bracketright workspace next
 
 bindsym $mod+1 workspace number 1
 bindsym $mod+2 workspace number 2
@@ -144,7 +138,7 @@ bindsym $mod+f fullscreen
 #
 # -> reload
 #
-bindsym $mod+shift+c reload
+bindsym $mod+c reload
 # bindsym $mod+shift+r reload
 
 #
