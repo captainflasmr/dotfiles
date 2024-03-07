@@ -51,21 +51,18 @@
 ;;
 ;; -> package-local
 ;;
-(use-package fd-find
-  :load-path "~/repos/fd-find")
+(when (file-exists-p "~/repos/fd-find")
+  (use-package fd-find
+    :load-path "~/repos/fd-find"))
 
 ;;
-;; -> package-remote
+;; -> profile
 ;;
-;; will be able to remove the following package-vc-install as of emacs 30
-;; as this will be built-in
-(unless (package-installed-p 'vc-use-package)
-  (package-vc-install "https://github.com/slotThe/vc-use-package"))
-
-;; now use-package has the :vc keyword!
-(use-package org-ql
-  :defer t
-  :vc (:fetcher github :repo "alphapapa/org-ql"))
+(use-package esup
+  :ensure t
+  :config (setq esup-depth 0)
+  ;; To use MELPA Stable use ":pin melpa-stable",
+  :pin melpa)
 
 ;;
 ;; -> use-package
@@ -297,41 +294,42 @@
 ;;
 ;; -> magit
 ;;
-(use-package magit
-  :config
-  (unbind-key "M-0" magit-mode-map)
-  (unbind-key "M-1" magit-mode-map)
-  (unbind-key "M-2" magit-mode-map)
-  (unbind-key "M-3" magit-mode-map)
-  (unbind-key "M-4" magit-mode-map)
-  (magit-add-section-hook
-    'magit-status-sections-hook 'magit-insert-tracked-files nil 'append)
-  :custom
-  (magit-section-initial-visibility-alist (quote ((untracked . hide))))
-  (magit-repolist-column-flag-alist
-    '((magit-untracked-files . "N")
-       (magit-unstaged-files . "U")
-       (magit-staged-files . "S")))
-  (magit-repolist-columns
-    '(("Name" 25 magit-repolist-column-ident nil)
-       ("" 3 magit-repolist-column-flag)
-       ("Version" 25 magit-repolist-column-version
-         ((:sort magit-repolist-version<)))
-       ("B<U" 3 magit-repolist-column-unpulled-from-upstream
-         ((:right-align t)
-           (:sort <)))
-       ("B>U" 3 magit-repolist-column-unpushed-to-upstream
-         ((:right-align t)
-           (:sort <)))
-       ("Path" 99 magit-repolist-column-path nil)))
-  (magit-repository-directories
-    '(("~/.config" . 0)
-       ("~/repos" . 2)
-       ("~/bin" . 1)
-       ("~/DCIM/Art/Content" . 2)
-       ("~/DCIM/themes" . 2))))
+(when (executable-find "git")
+  (use-package magit
+    :config
+    (unbind-key "M-0" magit-mode-map)
+    (unbind-key "M-1" magit-mode-map)
+    (unbind-key "M-2" magit-mode-map)
+    (unbind-key "M-3" magit-mode-map)
+    (unbind-key "M-4" magit-mode-map)
+    (magit-add-section-hook
+      'magit-status-sections-hook 'magit-insert-tracked-files nil 'append)
+    :custom
+    (magit-section-initial-visibility-alist (quote ((untracked . hide))))
+    (magit-repolist-column-flag-alist
+      '((magit-untracked-files . "N")
+         (magit-unstaged-files . "U")
+         (magit-staged-files . "S")))
+    (magit-repolist-columns
+      '(("Name" 25 magit-repolist-column-ident nil)
+         ("" 3 magit-repolist-column-flag)
+         ("Version" 25 magit-repolist-column-version
+           ((:sort magit-repolist-version<)))
+         ("B<U" 3 magit-repolist-column-unpulled-from-upstream
+           ((:right-align t)
+             (:sort <)))
+         ("B>U" 3 magit-repolist-column-unpushed-to-upstream
+           ((:right-align t)
+             (:sort <)))
+         ("Path" 99 magit-repolist-column-path nil)))
+    (magit-repository-directories
+      '(("~/.config" . 0)
+         ("~/repos" . 2)
+         ("~/bin" . 1)
+         ("~/DCIM/Art/Content" . 2)
+         ("~/DCIM/themes" . 2)))))
 
-(global-set-key (kbd "M-s m") 'magit-status)
+  (global-set-key (kbd "M-s m") 'magit-status)
 
 ;;
 ;; -> emms
@@ -1065,58 +1063,60 @@ as search term for Google search in web browser."
 ;;
 ;; -> dwim
 ;;
-(defvar my/dwim-convert-commands
-  '("ConvertNoSpace" "AudioConvert" "AudioInfo" "AudioNormalise"
-     "AudioTrimSilence" "PictureAutoColour" "PictureConvert"
-     "PictureCrush" "PictureFrompdf" "PictureInfo" "PictureMontage"
-     "PictureOrganise" "PictureCrop" "PictureRotateFlip"
-     "PictureRotateLeft" "PictureRotateRight" "PictureScale"
-     "PictureUpscale" "PictureGetText" "PictureOrientation"
-     "PictureUpdateToCreateDate" "VideoConcat" "VideoConvert"
-     "VideoCut" "VideoDouble" "VideoExtractAudio" "VideoExtractFrames"
-     "VideoFilter" "VideoFromFrames" "VideoInfo" "VideoRemoveAudio"
-     "VideoReplaceVideoAudio" "VideoRescale" "VideoReverse"
-     "VideoRotate" "VideoRotateLeft" "VideoRotateRight" "VideoShrink"
-     "VideoSlowDown" "VideoSpeedUp" "VideoZoom" "WhatsAppConvert"
-     "PictureCorrect" "Picture2pdf" "PictureTag" "PictureTagRename"
-     "OtherTagDate")
-  "List of commands for dwim-convert.")
+(when (file-exists-p "/home/jdyer/.config/emacs/category-list-uniq.txt")
+  (progn
+    (defvar my/dwim-convert-commands
+      '("ConvertNoSpace" "AudioConvert" "AudioInfo" "AudioNormalise"
+         "AudioTrimSilence" "PictureAutoColour" "PictureConvert"
+         "PictureCrush" "PictureFrompdf" "PictureInfo" "PictureMontage"
+         "PictureOrganise" "PictureCrop" "PictureRotateFlip"
+         "PictureRotateLeft" "PictureRotateRight" "PictureScale"
+         "PictureUpscale" "PictureGetText" "PictureOrientation"
+         "PictureUpdateToCreateDate" "VideoConcat" "VideoConvert"
+         "VideoCut" "VideoDouble" "VideoExtractAudio" "VideoExtractFrames"
+         "VideoFilter" "VideoFromFrames" "VideoInfo" "VideoRemoveAudio"
+         "VideoReplaceVideoAudio" "VideoRescale" "VideoReverse"
+         "VideoRotate" "VideoRotateLeft" "VideoRotateRight" "VideoShrink"
+         "VideoSlowDown" "VideoSpeedUp" "VideoZoom" "WhatsAppConvert"
+         "PictureCorrect" "Picture2pdf" "PictureTag" "PictureTagRename"
+         "OtherTagDate")
+      "List of commands for dwim-convert.")
 
-(defun my/read-lines (file-path)
-  "Return a list of lines of a file at FILE-PATH."
-  (with-temp-buffer
-    (insert-file-contents file-path)
-    (split-string (buffer-string) "\n" t)))
+    (defun my/read-lines (file-path)
+      "Return a list of lines of a file at FILE-PATH."
+      (with-temp-buffer
+        (insert-file-contents file-path)
+        (split-string (buffer-string) "\n" t)))
 
-(defun my/dwim-convert-generic (command)
-  "Execute a dwim-shell-command-on-marked-files with the given COMMAND."
-  ;; Define the path to the unique text file.
-  (let* ((unique-text-file "/home/jdyer/.config/emacs/category-list-uniq.txt")
-          ;; Initialize user-selection to nil.
-          (user-selection nil)
-          ;; Get the list of marked files.
-          (files (dired-get-marked-files nil current-prefix-arg))
-          ;; Command with appended files.
-          (command-and-files (concat command " " (mapconcat 'identity files " "))))
-    ;; Check if the command is PictureTag and get user selection if it is.
-    (when (string= command "PictureTag")
-      (setq user-selection (completing-read "Choose an option: "
-                             (my/read-lines unique-text-file)
-                             nil t)))
-    ;; Add user-selection to the command-and-files if not nil.
-    (async-shell-command (if user-selection
-                           (concat command " " user-selection " " (mapconcat 'identity files " "))
-                           (concat command " " (mapconcat 'identity files " ")))
-      "*convert*")))
+    (defun my/dwim-convert-generic (command)
+      "Execute a dwim-shell-command-on-marked-files with the given COMMAND."
+      ;; Define the path to the unique text file.
+      (let* ((unique-text-file "/home/jdyer/.config/emacs/category-list-uniq.txt")
+              ;; Initialize user-selection to nil.
+              (user-selection nil)
+              ;; Get the list of marked files.
+              (files (dired-get-marked-files nil current-prefix-arg))
+              ;; Command with appended files.
+              (command-and-files (concat command " " (mapconcat 'identity files " "))))
+        ;; Check if the command is PictureTag and get user selection if it is.
+        (when (string= command "PictureTag")
+          (setq user-selection (completing-read "Choose an option: "
+                                 (my/read-lines unique-text-file)
+                                 nil t)))
+        ;; Add user-selection to the command-and-files if not nil.
+        (async-shell-command (if user-selection
+                               (concat command " " user-selection " " (mapconcat 'identity files " "))
+                               (concat command " " (mapconcat 'identity files " ")))
+          "*convert*")))
 
-(defun my/dwim-convert-with-selection ()
-  "Prompt user to choose command and execute dwim-shell-command-on-marked-files."
-  (interactive)
-  (let ((chosen-command (completing-read "Choose command: "
-                          my/dwim-convert-commands)))
-    (my/dwim-convert-generic chosen-command)))
+    (defun my/dwim-convert-with-selection ()
+      "Prompt user to choose command and execute dwim-shell-command-on-marked-files."
+      (interactive)
+      (let ((chosen-command (completing-read "Choose command: "
+                              my/dwim-convert-commands)))
+        (my/dwim-convert-generic chosen-command)))
 
-(global-set-key (kbd "C-c v") 'my/dwim-convert-with-selection)
+    (global-set-key (kbd "C-c v") 'my/dwim-convert-with-selection)))
 
 ;;
 ;; -> scroll
@@ -1686,9 +1686,6 @@ as search term for Google search in web browser."
 ;;
 ;; -> ada
 ;;
-(use-package ada-mode
-  :vc (:fetcher github :repo "captainflasmr/old-ada-mode"))
-
 (defun my/eglot-dir-locals ()
   "Create .dir-locals.el file for eglot ada-mode using the selected DIRED path."
   (interactive)
@@ -1786,8 +1783,9 @@ as search term for Google search in web browser."
       (my/xref-quit-xref-marker-stack)
       (xref-go-back))))
 
-(define-key ada-mode-map (kbd "M-.") 'my/ada-find-definitions)
-(define-key ada-mode-map (kbd "M-,") 'my/ada-find-definition-pop)
+(with-eval-after-load 'ada-mode
+  (define-key ada-mode-map (kbd "M-.") 'my/ada-find-definitions)
+  (define-key ada-mode-map (kbd "M-,") 'my/ada-find-definition-pop))
 
 ;;
 ;; -> treesitter
@@ -1944,10 +1942,11 @@ With directories under project root using find."
       (message "Loading tags file: %s" my-tags-file)
       (visit-tags-table my-tags-file))))
 
-(defun my/etags-update ()
-  "Call external bash script to generate new etags for all languages it can find."
-  (interactive)
-  (async-shell-command "my-generate-etags.sh" "*etags*"))
+(when (executable-find "my-generate-etags.sh")
+  (defun my/etags-update ()
+    "Call external bash script to generate new etags for all languages it can find."
+    (interactive)
+    (async-shell-command "my-generate-etags.sh" "*etags*")))
 
 ;; (global-set-key (kbd "C-x p l") 'my/etags-load)
 ;; (global-set-key (kbd "C-x p u") 'my/etags-update)
@@ -1957,7 +1956,7 @@ With directories under project root using find."
 ;;
 
 (use-package selected-window-accent-mode
-  :load-path "~/repos/selected-window-accent-mode"
+  ;; :load-path "~/repos/selected-window-accent-mode"
   ;; :vc (:fetcher github :repo "captainflasmr/selected-window-accent-mode")
   :config (selected-window-accent-mode 1)
   :custom
@@ -2179,8 +2178,18 @@ With directories under project root using find."
 ;;
 ;; -> shell
 ;;
-(setq explicit-shell-file-name "/usr/bin/fish")
-(setq shell-file-name "/bin/fish")
+(when (file-exists-p "/usr/bin/fish")
+  (setq explicit-shell-file-name "/usr/bin/fish"))
+
+(when (file-exists-p "/bin/fish")
+  (setq shell-file-name "/bin/fish")
+
+  (use-package chatgpt-shell
+  :ensure t
+  :custom
+  ((chatgpt-shell-openai-key
+     (lambda ()
+       (auth-source-pass-get 'secret "openai-key"))))))
 
 (defun my/eshell-hook ()
   "Set up company completions to be a little more fish like."
@@ -2206,16 +2215,6 @@ With directories under project root using find."
   (setq-local tab-always-indent 'complete)
   :hook
   (shell-mode . my/shell-hook))
-
-;;
-;; -> chatGPT
-;;
-(use-package chatgpt-shell
-  :ensure t
-  :custom
-  ((chatgpt-shell-openai-key
-     (lambda ()
-       (auth-source-pass-get 'secret "openai-key")))))
 
 ;;
 ;; -> calendar
@@ -2638,29 +2637,50 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
 (setq wc-count-words-function 'my/word-count-function)
 
 ;;
+;; -> windows-specific
+;;
+(when (eq system-type 'windows-nt)
+  (setq home-dir "c:/users/jimbo")
+  (let ((xPaths
+          '("c:/GnuWin32/bin"
+             "c:/GNAT/2021/bin")))
+    (setenv "PATH" (mapconcat 'identity xPaths ";"))
+    (setq exec-path (append xPaths (list "." exec-directory))))
+
+  (custom-theme-set-faces
+    'user
+    '(variable-pitch ((t (:family "Monospace" :height 150 :weight normal))))
+    '(fixed-pitch ((t ( :family "Monospace" :height 140)))))
+
+  (setq font-general "Monospace 14")
+  (set-frame-font font-general nil t)
+  (add-to-list 'default-frame-alist `(font . ,font-general)))
+
+;;
 ;; -> linux specific
 ;;
 
-(define-key my-jump-keymap (kbd "a") #'emms-browse-by-album)
-(define-key my-jump-keymap (kbd "b") (lambda () (interactive) (find-file "~/bin")))
-(define-key my-jump-keymap (kbd "c") (lambda () (interactive) (find-file "~/DCIM/Camera")))
-(define-key my-jump-keymap (kbd "g") (lambda () (interactive) (find-file "~/.config")))
-(define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~/DCIM/content/aad--todo.org")))
-(define-key my-jump-keymap (kbd "y") #'emms)
-(define-key my-jump-keymap (kbd "q") #'cfw:open-org-calendar)
-(define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
-(define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
+(when (eq system-type 'gnu/linux)
+  (define-key my-jump-keymap (kbd "a") #'emms-browse-by-album)
+  (define-key my-jump-keymap (kbd "b") (lambda () (interactive) (find-file "~/bin")))
+  (define-key my-jump-keymap (kbd "c") (lambda () (interactive) (find-file "~/DCIM/Camera")))
+  (define-key my-jump-keymap (kbd "g") (lambda () (interactive) (find-file "~/.config")))
+  (define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~/DCIM/content/aad--todo.org")))
+  (define-key my-jump-keymap (kbd "y") #'emms)
+  (define-key my-jump-keymap (kbd "q") #'cfw:open-org-calendar)
+  (define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
+  (define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
 
-(setq diary-file "~/DCIM/content/diary.org")
+  (setq diary-file "~/DCIM/content/diary.org")
 
-(custom-theme-set-faces
-  'user
-  '(variable-pitch ((t (:family "Sans Serif" :height 140 :weight normal))))
-  '(fixed-pitch ((t ( :family "Fira Code Retina" :height 130)))))
+  (custom-theme-set-faces
+    'user
+    '(variable-pitch ((t (:family "Sans Serif" :height 140 :weight normal))))
+    '(fixed-pitch ((t ( :family "Fira Code Retina" :height 130)))))
 
-(setq font-general "Monospace 12")
-(set-frame-font font-general nil t)
-(add-to-list 'default-frame-alist `(font . ,font-general))
+  (setq font-general "Monospace 12")
+  (set-frame-font font-general nil t)
+  (add-to-list 'default-frame-alist `(font . ,font-general)))
 
 ;;
 ;; -> development
