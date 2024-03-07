@@ -95,30 +95,36 @@ Garbage collection
 
 * package-local
 
-#+begin_src elisp :tangle no
+#+begin_src elisp
 ;;
 ;; -> package-local
 ;;
-(use-package fd-find
-  :load-path "~/repos/fd-find")
+(when (file-exists-p "~/repos/fd-find")
+  (use-package fd-find
+    :load-path "~/repos/fd-find"))
 
 #+end_src
 
-* package-remote
+* fetchers
 
 #+begin_src elisp :tangle no
 ;;
-;; -> package-remote
+;; -> fetchers
 ;;
-;; will be able to remove the following package-vc-install as of emacs 30
-;; as this will be built-in
-(unless (package-installed-p 'vc-use-package)
-  (package-vc-install "https://github.com/slotThe/vc-use-package"))
 
-;; now use-package has the :vc keyword!
-(use-package org-ql
-  :defer t
-  :vc (:fetcher github :repo "alphapapa/org-ql"))
+(when (eq system-type 'gnu/linux)
+  ;; will be able to remove the following package-vc-install as of emacs 30
+  ;; as this will be built-in
+  (unless (package-installed-p 'vc-use-package)
+    (package-vc-install "https://github.com/slotThe/vc-use-package"))
+
+  ;; now use-package has the :vc keyword!
+  (use-package org-ql
+    :defer t
+    :vc (:fetcher github :repo "alphapapa/org-ql"))
+
+  (use-package ada-mode
+    :vc (:fetcher github :repo "captainflasmr/old-ada-mode")))
 
 #+end_src
 
@@ -126,7 +132,7 @@ Garbage collection
 
 Turn on a profiler if we would like
 
-#+begin_src elisp :tangle no
+#+begin_src elisp
 ;;
 ;; -> profile
 ;;
@@ -315,7 +321,7 @@ Turn on a profiler if we would like
   (read-buffer-completion-ignore-case t)
   (completion-ignore-case t)
   (vertico-resize t)
-  (vertico-count 10)
+  (vertico-count 20)
   :bind (:map vertico-map
           ("C-n" . vertico-next)
           ("C-p" . vertico-previous)
@@ -340,26 +346,37 @@ Turn on a profiler if we would like
   (marginalia-mode))
 #+end_src
 
-* navigation
+* keys-navigation
 
 #+begin_src elisp
 ;;
-;; -> navigation
+;; -> keys-navigation
 ;;
+
 (defvar my-jump-keymap (make-sparse-keymap))
 (global-set-key (kbd "M-o") my-jump-keymap)
 
 (define-key my-jump-keymap (kbd "-") #'tab-close)
-(define-key my-jump-keymap (kbd "=") (lambda () (interactive) (tab-bar-new-tab-to -1)(tab-bar-mode 'toggle)))
+(define-key my-jump-keymap (kbd "=") (lambda () (interactive) (tab-bar-new-tab-to -1)))
 (define-key my-jump-keymap (kbd "e") (lambda () (interactive) (find-file (concat user-emacs-directory "init.el"))))
-(define-key my-jump-keymap (kbd "f") 'my/find-file)
+(define-key my-jump-keymap (kbd "f") #'my/find-file)
 (define-key my-jump-keymap (kbd "h") (lambda () (interactive) (find-file "~")))
 (define-key my-jump-keymap (kbd "i") #'tab-bar-history-forward)
 (define-key my-jump-keymap (kbd "k") (lambda () (interactive) (find-file (concat user-emacs-directory "emacs--init.org"))))
+(define-key my-jump-keymap (kbd "o") #'my/switch-to-thing)
 (define-key my-jump-keymap (kbd "p") #'proced)
-(define-key my-jump-keymap (kbd "r") 'scratch-buffer)
+(define-key my-jump-keymap (kbd "r") #'scratch-buffer)
 (define-key my-jump-keymap (kbd "t") #'customize-themes)
 (define-key my-jump-keymap (kbd "u") #'tab-bar-history-back)
+
+#+end_src
+
+* keys-visual
+
+#+begin_src elisp
+;;
+;; -> keys-visual
+;;
 
 (defvar my-win-keymap (make-sparse-keymap))
 (global-set-key (kbd "M-m") my-win-keymap)
@@ -372,6 +389,7 @@ Turn on a profiler if we would like
 (define-key my-win-keymap (kbd "f") #'font-lock-mode)
 (define-key my-win-keymap (kbd "g") #'my/toggle-scroll-margin)
 (define-key my-win-keymap (kbd "i") #'highlight-indent-guides-mode)
+(define-key my-win-keymap (kbd "h") #'hl-line-mode)
 (define-key my-win-keymap (kbd "m") #'my/toggle-mode-line)
 (define-key my-win-keymap (kbd "n") #'display-line-numbers-mode)
 (define-key my-win-keymap (kbd "o") #'visual-fill-column-mode)
@@ -385,8 +403,17 @@ Turn on a profiler if we would like
 (define-key my-win-keymap (kbd "x") #'my/change-accent-color)
 (define-key my-win-keymap (kbd "y") #'selected-window-accent--switch-selected-window-accent-style)
 
+#+end_src
+
+* keys-other
+
+#+begin_src elisp
+;;
+;; -> keys-other
+;;
+
 (defvar my-other-keymap (make-sparse-keymap))
-(global-set-key (kbd "M-h") my-other-keymap)
+(global-set-key (kbd "M-u") my-other-keymap)
 (define-key my-other-keymap (kbd "l") #'eval-last-sexp)
 (define-key my-other-keymap (kbd "f") #'eval-defun)
 (define-key my-other-keymap (kbd "e") #'view-echo-area-messages)
@@ -395,45 +422,46 @@ Turn on a profiler if we would like
 
 * magit
 
-#+begin_src elisp :tangle no
+#+begin_src elisp
 ;;
 ;; -> magit
 ;;
-(use-package magit
-  :config
-  (unbind-key "M-0" magit-mode-map)
-  (unbind-key "M-1" magit-mode-map)
-  (unbind-key "M-2" magit-mode-map)
-  (unbind-key "M-3" magit-mode-map)
-  (unbind-key "M-4" magit-mode-map)
-  (magit-add-section-hook
-    'magit-status-sections-hook 'magit-insert-tracked-files nil 'append)
-  :custom
-  (magit-section-initial-visibility-alist (quote ((untracked . hide))))
-  (magit-repolist-column-flag-alist
-    '((magit-untracked-files . "N")
-       (magit-unstaged-files . "U")
-       (magit-staged-files . "S")))
-  (magit-repolist-columns
-    '(("Name" 25 magit-repolist-column-ident nil)
-       ("" 3 magit-repolist-column-flag)
-       ("Version" 25 magit-repolist-column-version
-         ((:sort magit-repolist-version<)))
-       ("B<U" 3 magit-repolist-column-unpulled-from-upstream
-         ((:right-align t)
-           (:sort <)))
-       ("B>U" 3 magit-repolist-column-unpushed-to-upstream
-         ((:right-align t)
-           (:sort <)))
-       ("Path" 99 magit-repolist-column-path nil)))
-  (magit-repository-directories
-    '(("~/.config" . 0)
-       ("~/repos" . 2)
-       ("~/bin" . 1)
-       ("~/DCIM/Art/Content" . 2)
-       ("~/DCIM/themes" . 2))))
+(when (executable-find "git")
+  (use-package magit
+    :config
+    (unbind-key "M-0" magit-mode-map)
+    (unbind-key "M-1" magit-mode-map)
+    (unbind-key "M-2" magit-mode-map)
+    (unbind-key "M-3" magit-mode-map)
+    (unbind-key "M-4" magit-mode-map)
+    (magit-add-section-hook
+      'magit-status-sections-hook 'magit-insert-tracked-files nil 'append)
+    :custom
+    (magit-section-initial-visibility-alist (quote ((untracked . hide))))
+    (magit-repolist-column-flag-alist
+      '((magit-untracked-files . "N")
+         (magit-unstaged-files . "U")
+         (magit-staged-files . "S")))
+    (magit-repolist-columns
+      '(("Name" 25 magit-repolist-column-ident nil)
+         ("" 3 magit-repolist-column-flag)
+         ("Version" 25 magit-repolist-column-version
+           ((:sort magit-repolist-version<)))
+         ("B<U" 3 magit-repolist-column-unpulled-from-upstream
+           ((:right-align t)
+             (:sort <)))
+         ("B>U" 3 magit-repolist-column-unpushed-to-upstream
+           ((:right-align t)
+             (:sort <)))
+         ("Path" 99 magit-repolist-column-path nil)))
+    (magit-repository-directories
+      '(("~/.config" . 0)
+         ("~/repos" . 2)
+         ("~/bin" . 1)
+         ("~/DCIM/Art/Content" . 2)
+         ("~/DCIM/themes" . 2)))))
 
-(global-set-key (kbd "M-s m") 'magit-status)
+  (global-set-key (kbd "M-s m") 'magit-status)
 
 #+end_src
 
@@ -531,9 +559,10 @@ Turn on a profiler if we would like
 ;;
 ;; -> keybinding
 ;;
+(global-set-key (kbd "C-=") '(lambda ()(interactive)(text-scale-adjust 1)))
+(global-set-key (kbd "C--") '(lambda ()(interactive)(text-scale-adjust -1)))
 (global-set-key (kbd "M-6") (lambda ()(interactive)(insert "[")))
 (global-set-key (kbd "M-7") (lambda ()(interactive)(insert "]")))
-(global-set-key (kbd "M-l") #'my/switch-to-thing)
 (global-set-key (kbd "M-s l") 'save-buffer)
 (global-set-key (kbd "M-s s") 'save-buffer)
 (global-set-key (kbd "M-s p") 'org-plot/gnuplot)
@@ -549,10 +578,10 @@ Turn on a profiler if we would like
 (global-set-key (kbd "M-s g") 'my/text-browser-search)
 (global-set-key (kbd "M-=") 'count-words)
 (define-key minibuffer-local-map (kbd "C-c e") #'embark-collect)
-(define-key minibuffer-local-map (kbd "M-l") #'abort-minibuffers)
+(define-key minibuffer-local-map (kbd "M-o") #'abort-minibuffers)
 (global-set-key (kbd "C-c a") 'org-agenda)
-(global-set-key (kbd "M-i") #'my/next-window)
-(global-set-key (kbd "M-u") #'my/prev-window)
+(global-set-key (kbd "M-h") #'my/prev-window)
+(global-set-key (kbd "M-l") #'my/next-window)
 (global-set-key (kbd "M-j") #'my/next-scroll)
 (global-set-key (kbd "M-k") #'my/prev-scroll)
 (global-set-key (kbd "C-x ]") #'my/window-enlarge)
@@ -712,7 +741,7 @@ Turn on a profiler if we would like
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
-  '(custom-enabled-themes '(doom-henna))
+  '(custom-enabled-themes '(doom-dracula))
   '(warning-suppress-log-types '((frameset)))
   '(warning-suppress-types '((frameset))))
 #+end_src
@@ -894,13 +923,29 @@ as search term for Google search in web browser."
                        0))))
     (setq scroll-margin new-value)))
 
-(defun my/toggle-mode-line ()
-  "Toggle the visibility of the mode-line by checking its current state."
+(defun my/next-scroll ()
   (interactive)
-  (if (eq mode-line-format nil)
-    (setq-default mode-line-format my/mode-line-format)
-    (setq-default mode-line-format nil))
-  (force-mode-line-update t))
+  (forward-line (/ (window-height) 8)))
+
+(defun my/prev-scroll ()
+  (interactive)
+  (forward-line (- (/ (window-height) 8))))
+
+(defun my/next-window ()
+  (interactive)
+  (select-window (next-window)))
+
+(defun my/prev-window ()
+  (interactive)
+  (select-window (previous-window)))
+
+(defun my/window-enlarge ()
+  (interactive)
+  (my/resize-window 4 t))
+
+(defun my/window-shrink ()
+  (interactive)
+  (my/resize-window -4 t))
 
 #+end_src
 
@@ -951,7 +996,7 @@ as search term for Google search in web browser."
 
 * org-capture
 
-#+begin_src elisp :tangle no
+#+begin_src elisp
 ;;
 ;; -> org-capture
 ;;
@@ -1090,7 +1135,7 @@ as search term for Google search in web browser."
     org-edit-src-content-indentation 0
     org-src-preserve-indentation t
     org-directory "~/DCIM/content/"
-    org-default-notes-file "~/DCIM/content/aab--todo.org"
+    org-default-notes-file "~/DCIM/content/aad--todo.org"
     org-hide-leading-stars t
     org-reverse-note-order t
     org-log-done 'time
@@ -1186,7 +1231,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 
 * org-agenda
 
-#+begin_src elisp :tangle no
+#+begin_src elisp
 ;;
 ;; -> org-agenda
 ;;
@@ -1195,17 +1240,8 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
   :custom
   (org-agenda-include-diary nil)
   (org-agenda-files '("~/DCIM/content/aaa--calendar.org"
-                       "~/DCIM/content/aab--todo.org"
-                       "~/DCIM/content/aad--kate.org"
-                       "~/DCIM/content/art--all.org"
-                       "~/DCIM/content/dad--betting.org"
-                       "~/DCIM/content/emacs--all.org"
-                       "~/DCIM/content/kate--loss.org"
-                       "~/DCIM/content/linux--all.org"
-                       "~/DCIM/content/misc--subs.org"
-                       "~/DCIM/content/posts--all.org"
-                       "~/DCIM/content/presents--james.org"
-                       "~/DCIM/content/presents--others.org"))
+                       "~/DCIM/content/aab--kate.org"
+                       "~/DCIM/content/aac--subs.org"))
   :config
   (with-eval-after-load 'org-agenda
     (unbind-key "M-m" org-agenda-mode-map)
@@ -1239,62 +1275,65 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 
 * dwim
 
-#+begin_src elisp :tangle no
+#+begin_src elisp
 ;;
 ;; -> dwim
 ;;
-(defvar my/dwim-convert-commands
-  '("ConvertNoSpace" "AudioConvert" "AudioInfo" "AudioNormalise"
-     "AudioTrimSilence" "PictureAutoColour" "PictureConvert"
-     "PictureCrush" "PictureFrompdf" "PictureInfo" "PictureMontage"
-     "PictureOrganise" "PictureCrop" "PictureRotateFlip"
-     "PictureRotateLeft" "PictureRotateRight" "PictureScale"
-     "PictureUpscale" "PictureGetText" "PictureOrientation"
-     "PictureUpdateToCreateDate" "VideoConcat" "VideoConvert"
-     "VideoCut" "VideoDouble" "VideoExtractAudio" "VideoExtractFrames"
-     "VideoFilter" "VideoFromFrames" "VideoInfo" "VideoRemoveAudio"
-     "VideoReplaceVideoAudio" "VideoRescale" "VideoReverse"
-     "VideoRotate" "VideoRotateLeft" "VideoRotateRight" "VideoShrink"
-     "VideoSlowDown" "VideoSpeedUp" "VideoZoom" "WhatsAppConvert"
-     "PictureCorrect" "Picture2pdf" "PictureTag" "PictureTagRename"
-     "OtherTagDate")
-  "List of commands for dwim-convert.")
+(when (file-exists-p "/home/jdyer/.config/emacs/category-list-uniq.txt")
+  (progn
+    (defvar my/dwim-convert-commands
+      '("ConvertNoSpace" "AudioConvert" "AudioInfo" "AudioNormalise"
+         "AudioTrimSilence" "PictureAutoColour" "PictureConvert"
+         "PictureCrush" "PictureFrompdf" "PictureInfo" "PictureMontage"
+         "PictureOrganise" "PictureCrop" "PictureRotateFlip"
+         "PictureRotateLeft" "PictureRotateRight" "PictureScale"
+         "PictureUpscale" "PictureGetText" "PictureOrientation"
+         "PictureUpdateToCreateDate" "VideoConcat" "VideoConvert"
+         "VideoCut" "VideoDouble" "VideoExtractAudio" "VideoExtractFrames"
+         "VideoFilter" "VideoFromFrames" "VideoInfo" "VideoRemoveAudio"
+         "VideoReplaceVideoAudio" "VideoRescale" "VideoReverse"
+         "VideoRotate" "VideoRotateLeft" "VideoRotateRight" "VideoShrink"
+         "VideoSlowDown" "VideoSpeedUp" "VideoZoom" "WhatsAppConvert"
+         "PictureCorrect" "Picture2pdf" "PictureTag" "PictureTagRename"
+         "OtherTagDate")
+      "List of commands for dwim-convert.")
 
-(defun my/read-lines (file-path)
-  "Return a list of lines of a file at FILE-PATH."
-  (with-temp-buffer
-    (insert-file-contents file-path)
-    (split-string (buffer-string) "\n" t)))
+    (defun my/read-lines (file-path)
+      "Return a list of lines of a file at FILE-PATH."
+      (with-temp-buffer
+        (insert-file-contents file-path)
+        (split-string (buffer-string) "\n" t)))
 
-(defun my/dwim-convert-generic (command)
-  "Execute a dwim-shell-command-on-marked-files with the given COMMAND."
-  ;; Define the path to the unique text file.
-  (let* ((unique-text-file "/home/jdyer/.config/emacs/category-list-uniq.txt")
-          ;; Initialize user-selection to nil.
-          (user-selection nil)
-          ;; Get the list of marked files.
-          (files (dired-get-marked-files nil current-prefix-arg))
-          ;; Command with appended files.
-          (command-and-files (concat command " " (mapconcat 'identity files " "))))
-    ;; Check if the command is PictureTag and get user selection if it is.
-    (when (string= command "PictureTag")
-      (setq user-selection (completing-read "Choose an option: "
-                             (my/read-lines unique-text-file)
-                             nil t)))
-    ;; Add user-selection to the command-and-files if not nil.
-    (async-shell-command (if user-selection
-                           (concat command " " user-selection " " (mapconcat 'identity files " "))
-                           (concat command " " (mapconcat 'identity files " ")))
-      "*convert*")))
+    (defun my/dwim-convert-generic (command)
+      "Execute a dwim-shell-command-on-marked-files with the given COMMAND."
+      ;; Define the path to the unique text file.
+      (let* ((unique-text-file "/home/jdyer/.config/emacs/category-list-uniq.txt")
+              ;; Initialize user-selection to nil.
+              (user-selection nil)
+              ;; Get the list of marked files.
+              (files (dired-get-marked-files nil current-prefix-arg))
+              ;; Command with appended files.
+              (command-and-files (concat command " " (mapconcat 'identity files " "))))
+        ;; Check if the command is PictureTag and get user selection if it is.
+        (when (string= command "PictureTag")
+          (setq user-selection (completing-read "Choose an option: "
+                                 (my/read-lines unique-text-file)
+                                 nil t)))
+        ;; Add user-selection to the command-and-files if not nil.
+        (async-shell-command (if user-selection
+                               (concat command " " user-selection " " (mapconcat 'identity files " "))
+                               (concat command " " (mapconcat 'identity files " ")))
+          "*convert*")))
 
-(defun my/dwim-convert-with-selection ()
-  "Prompt user to choose command and execute dwim-shell-command-on-marked-files."
-  (interactive)
-  (let ((chosen-command (completing-read "Choose command: "
-                          my/dwim-convert-commands)))
-    (my/dwim-convert-generic chosen-command)))
+    (defun my/dwim-convert-with-selection ()
+      "Prompt user to choose command and execute dwim-shell-command-on-marked-files."
+      (interactive)
+      (let ((chosen-command (completing-read "Choose command: "
+                              my/dwim-convert-commands)))
+        (my/dwim-convert-generic chosen-command)))
 
-(global-set-key (kbd "C-c v") 'my/dwim-convert-with-selection)
+    (global-set-key (kbd "C-c v") 'my/dwim-convert-with-selection)))
+
 #+end_src
 
 * scroll
@@ -1424,7 +1463,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 
 * image-dired
 
-#+begin_src elisp :tangle no
+#+begin_src elisp
 ;;
 ;; -> image-dired
 ;;
@@ -1542,7 +1581,6 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 
-(setq frame-title-format "%f")
 (setq inhibit-startup-screen t)
 
 ;; (add-hook 'text-mode-hook #'visual-line-mode)
@@ -1567,7 +1605,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 
 (setq-default left-margin-width 0 right-margin-width 0)
 
-(defvar my/internal-border-width 15 "Default internal border width for toggling.")
+(defvar my/internal-border-width 5 "Default internal border width for toggling.")
 
 (defun my/toggle-internal-border-width (&optional value)
   "Toggle internal border width given VALUE."
@@ -1660,7 +1698,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ;;
 (setq-default mode-line-modified
   '(:eval (if (and (buffer-file-name) (buffer-modified-p))
-            (propertize " Modified " 'face
+            (propertize "** MODIFIED " 'face
               '(:background "#ff0000" :foreground "#ffffff" :inherit bold)) "")))
 
 (set-face-attribute 'mode-line-active nil :height 120 :underline nil :overline nil :box nil
@@ -1696,7 +1734,7 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 
 (setq my/mode-line-format
   '("%e"
-     (:eval (my-all-tabs-string))
+     ;; (:eval (my-all-tabs-string))
      mode-line-modified
      (:eval
        (propertize (format "%s" (abbreviate-file-name default-directory))
@@ -1707,11 +1745,24 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
          (propertize (format "%s " (buffer-name)))
          " "))
      mode-line-position
-     ;; mode-line-modes
+     mode-line-modes
      mode-line-misc-info))
 ;; "-%-"))
 
 (setq-default mode-line-format my/mode-line-format)
+(setq frame-title-format "%f")
+
+(defun my/toggle-mode-line ()
+  "Toggle the visibility of the mode-line by checking its current state."
+  (interactive)
+  (if (eq mode-line-format nil)
+    (progn
+      (setq-default mode-line-format my/mode-line-format)
+      (setq frame-title-format "%f"))
+    (progn
+      (setq-default mode-line-format nil)
+      (setq frame-title-format my/mode-line-format)))
+  (force-mode-line-update t))
 
 (display-time-mode -1)
 (setq mode-line-compact t)
@@ -1810,7 +1861,7 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
 
 * gdb
 
-#+begin_src elisp :tangle no
+#+begin_src elisp
 ;;
 ;; -> gdb
 ;;
@@ -1824,7 +1875,7 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
 
 * compilation
 
-#+begin_src elisp :tangle no
+#+begin_src elisp
 ;;
 ;; -> compilation
 ;;
@@ -1935,13 +1986,10 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 
 * ada
 
-#+begin_src elisp :tangle no
+#+begin_src elisp
 ;;
 ;; -> ada
 ;;
-(use-package ada-mode
-  :vc (:fetcher github :repo "captainflasmr/old-ada-mode"))
-
 (defun my/eglot-dir-locals ()
   "Create .dir-locals.el file for eglot ada-mode using the selected DIRED path."
   (interactive)
@@ -2039,13 +2087,14 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
       (my/xref-quit-xref-marker-stack)
       (xref-go-back))))
 
-(define-key ada-mode-map (kbd "M-.") 'my/ada-find-definitions)
-(define-key ada-mode-map (kbd "M-,") 'my/ada-find-definition-pop)
+(with-eval-after-load 'ada-mode
+  (define-key ada-mode-map (kbd "M-.") 'my/ada-find-definitions)
+  (define-key ada-mode-map (kbd "M-,") 'my/ada-find-definition-pop))
 #+end_src
 
 * treesitter
 
-#+begin_src elisp :tangle no
+#+begin_src elisp
 ;;
 ;; -> treesitter
 ;;
@@ -2144,7 +2193,7 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 
 * project
 
-#+begin_src elisp :tangle no
+#+begin_src elisp
 ;;
 ;; -> project
 ;;
@@ -2271,7 +2320,7 @@ echo "Finished!"
 echo
 #+end_src
 
-#+begin_src elisp :tangle no
+#+begin_src elisp
 ;;
 ;; -> etags
 ;;
@@ -2283,10 +2332,11 @@ echo
       (message "Loading tags file: %s" my-tags-file)
       (visit-tags-table my-tags-file))))
 
-(defun my/etags-update ()
-  "Call external bash script to generate new etags for all languages it can find."
-  (interactive)
-  (async-shell-command "my-generate-etags.sh" "*etags*"))
+(when (executable-find "my-generate-etags.sh")
+  (defun my/etags-update ()
+    "Call external bash script to generate new etags for all languages it can find."
+    (interactive)
+    (async-shell-command "my-generate-etags.sh" "*etags*")))
 
 ;; (global-set-key (kbd "C-x p l") 'my/etags-load)
 ;; (global-set-key (kbd "C-x p u") 'my/etags-update)
@@ -2294,7 +2344,7 @@ echo
 
 * selected-window-accent-mode
 
-#+begin_src elisp :tangle no
+#+begin_src elisp
 ;;
 ;; -> selected-window-accent-mode
 ;;
@@ -2305,8 +2355,8 @@ echo
   :config (selected-window-accent-mode 1)
   :custom
   (selected-window-accent-fringe-thickness 10)
-  (selected-window-accent-percentage-darken 0)
-  (selected-window-accent-percentage-desaturate 10)
+  (selected-window-accent-percentage-darken 20)
+  (selected-window-accent-percentage-desaturate 30)
   (selected-window-accent-smart-borders nil)
   (selected-window-accent-tab-accent t)
   (selected-window-accent-custom-color nil)
@@ -2528,12 +2578,22 @@ echo
 
 * shell
 
-#+begin_src elisp :tangle no
+#+begin_src elisp
 ;;
 ;; -> shell
 ;;
-(setq explicit-shell-file-name "/usr/bin/fish")
-(setq shell-file-name "/bin/fish")
+(when (file-exists-p "/usr/bin/fish")
+  (setq explicit-shell-file-name "/usr/bin/fish"))
+
+(when (file-exists-p "/bin/fish")
+  (setq shell-file-name "/bin/fish")
+
+  (use-package chatgpt-shell
+  :ensure t
+  :custom
+  ((chatgpt-shell-openai-key
+     (lambda ()
+       (auth-source-pass-get 'secret "openai-key"))))))
 
 (defun my/eshell-hook ()
   "Set up company completions to be a little more fish like."
@@ -2561,23 +2621,9 @@ echo
   (shell-mode . my/shell-hook))
 #+end_src
 
-* chatGPT
-
-#+begin_src elisp :tangle no
-;;
-;; -> chatGPT
-;;
-(use-package chatgpt-shell
-  :ensure t
-  :custom
-  ((chatgpt-shell-openai-key
-     (lambda ()
-       (auth-source-pass-get 'secret "openai-key")))))
-#+end_src
-
 * calendar
 
-#+begin_src elisp :tangle no
+#+begin_src elisp
 ;;
 ;; -> calendar
 ;;
@@ -2587,6 +2633,7 @@ echo
 (use-package calfw-cal)
 
 (setq calendar-holidays nil)
+(setq calendar-week-start-day 1)
 
 (setq cfw:org-capture-template
   '("c" "Calendar" plain
@@ -2600,7 +2647,7 @@ echo
 
 * proced
 
-#+begin_src elisp :tangle no
+#+begin_src elisp
 ;;
 ;; —> proced
 ;;
@@ -2637,7 +2684,7 @@ echo
 
 * all-the-icons
 
-#+begin_src elisp :tangle no
+#+begin_src elisp
 ;;
 ;; -> all-the-icons
 ;;
@@ -2676,21 +2723,24 @@ echo
 
 (defvar-keymap my/move-repeat-map
   :repeat t
-  "j" #'my/next-scroll
-  "k" #'my/prev-scroll
-  "f" #'forward-char
   "b" #'backward-char
-  "n" #'next-line
-  "v" #'scroll-up-command
   "c" #'scroll-down-command
+  "d" #'scroll-up-command
+  "f" #'forward-char
+  "h" #'my/prev-window
+  "k" #'my/prev-scroll
+  "l" #'my/next-window
+  "n" #'next-line
   "p" #'previous-line
-  "u" #'my/prev-window
-  "i" #'my/next-window)
+  "u" #'scroll-down-command
+  "v" #'scroll-up-command
+  "j" #'my/next-scroll)
 
 (defvar-keymap my/isearch-repeat-map
   :repeat t
   "s" #'isearch-repeat-forward
-  "r" #'isearch-repeat-backward)
+  "r" #'isearch-repeat-backward
+  "w" #'isearch-yank-word-or-char)
 
 (defvar-keymap my/simple-repeat-map
   :repeat t
@@ -2720,7 +2770,7 @@ echo
   "p" #'my/previous-thing)
 
 (setq repeat-echo-function 'ignore)
-(setq repeat-exit-key "l")
+(setq repeat-exit-key "g")
 
 #+end_src
 
@@ -2743,7 +2793,7 @@ echo
 (use-package tab-bar ;; 29.1
   :ensure nil ;; Since tab-bar is built-in, no package needs to be downloaded
   :init
-  (tab-bar-mode -1) ;; 27.1
+  (tab-bar-mode 1) ;; 27.1
   (tab-bar-history-mode 1) ;; 27.1
   :custom
   (tab-bar-format '(tab-bar-format-tabs-groups
@@ -3023,6 +3073,61 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
 (setq wc-count-words-function 'my/word-count-function)
 #+end_src
 
+* windows specific
+
+#+begin_src elisp
+;;
+;; -> windows-specific
+;;
+(when (eq system-type 'windows-nt)
+  (setq home-dir "c:/users/jimbo")
+  (let ((xPaths
+          '("c:/GnuWin32/bin"
+             "c:/GNAT/2021/bin")))
+    (setenv "PATH" (mapconcat 'identity xPaths ";"))
+    (setq exec-path (append xPaths (list "." exec-directory))))
+
+  (custom-theme-set-faces
+    'user
+    '(variable-pitch ((t (:family "Monospace" :height 150 :weight normal))))
+    '(fixed-pitch ((t ( :family "Monospace" :height 140)))))
+
+  (setq font-general "Monospace 14")
+  (set-frame-font font-general nil t)
+  (add-to-list 'default-frame-alist `(font . ,font-general)))
+
+#+end_src
+
+* linux specific
+
+#+begin_src elisp
+;;
+;; -> linux specific
+;;
+
+(when (eq system-type 'gnu/linux)
+  (define-key my-jump-keymap (kbd "a") #'emms-browse-by-album)
+  (define-key my-jump-keymap (kbd "b") (lambda () (interactive) (find-file "~/bin")))
+  (define-key my-jump-keymap (kbd "c") (lambda () (interactive) (find-file "~/DCIM/Camera")))
+  (define-key my-jump-keymap (kbd "g") (lambda () (interactive) (find-file "~/.config")))
+  (define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~/DCIM/content/aad--todo.org")))
+  (define-key my-jump-keymap (kbd "y") #'emms)
+  (define-key my-jump-keymap (kbd "q") #'cfw:open-org-calendar)
+  (define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
+  (define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
+
+  (setq diary-file "~/DCIM/content/diary.org")
+
+  (custom-theme-set-faces
+    'user
+    '(variable-pitch ((t (:family "Sans Serif" :height 140 :weight normal))))
+    '(fixed-pitch ((t ( :family "Fira Code Retina" :height 130)))))
+
+  (setq font-general "Monospace 12")
+  (set-frame-font font-general nil t)
+  (add-to-list 'default-frame-alist `(font . ,font-general)))
+
+#+end_src
 * development
 
 #+begin_src elisp
@@ -3169,105 +3274,31 @@ If no such window is found, return nil."
 (defun my/switch-to-thing ()
   "Switch to a buffer, open a recent file, jump to a bookmark, or change the theme from a unified interface."
   (interactive)
-  ;; (keyboard-quit)
   (let* ((buffers (mapcar #'buffer-name (buffer-list)))
          (recent-files recentf-list)
          (bookmarks (bookmark-all-names))
-         (themes (mapcar (lambda (theme) (concat "Theme: " (symbol-name theme))) (custom-available-themes)))
-         (metadata '((category . file)))
-         (all-options (append buffers recent-files bookmarks))
+         (themes (custom-available-themes))
+         (all-options (append buffers recent-files bookmarks
+                              (mapcar (lambda (theme) (concat "Theme: " (symbol-name theme))) themes)))
          (selection (completing-read "Switch to: "
                                      (lambda (str pred action)
                                        (if (eq action 'metadata)
-                                           `(metadata . ,metadata)
+                                           '(metadata . ((category . file)))
                                          (complete-with-action action all-options str pred)))
                                      nil t nil 'file-name-history)))
-    (cond
-     ((member selection buffers) (switch-to-buffer selection))
-     ((member selection bookmarks) (bookmark-jump selection))
-     ((string-prefix-p "Theme: " selection)
-      (let ((theme (intern (substring selection (length "Theme: ")))))
-        (load-theme theme t)))
-     (t (find-file selection)))))
+    (pcase selection
+      ((pred (lambda (sel) (member sel buffers))) (switch-to-buffer selection))
+      ((pred (lambda (sel) (member sel bookmarks))) (bookmark-jump selection))
+      ((pred (lambda (sel) (string-prefix-p "Theme: " sel)))
+       (load-theme (intern (substring selection (length "Theme: "))) t))
+      (_ (find-file selection)))))
 
 (global-set-key (kbd "C-t") 'transpose-sexps)
 
-(defun my/next-scroll ()
-  (interactive)
-  (forward-line (/ (window-height) 8)))
+(setq org-icalendar-use-deadline
+  '(event-if-not-todo event-if-todo event-if-todo-not-done todo-due))
 
-(defun my/prev-scroll ()
-  (interactive)
-  (forward-line (- (/ (window-height) 8))))
-
-(defun my/next-window ()
-  (interactive)
-  (select-window (next-window)))
-
-(defun my/prev-window ()
-  (interactive)
-  (select-window (previous-window)))
-
-(defun my/window-enlarge ()
-  (interactive)
-  (my/resize-window 4 t))
-
-(defun my/window-shrink ()
-  (interactive)
-  (my/resize-window -4 t))
-
-#+end_src
-
-* windows specific
-
-#+begin_src elisp
-;;
-;; -> windows-specific
-;;
-(setq home-dir "c:/users/jimbo")
-(let ((xPaths
-        '("c:/GnuWin32/bin"
-           "c:/GNAT/2021/bin")))
-  (setenv "PATH" (mapconcat 'identity xPaths ";"))
-  (setq exec-path (append xPaths (list "." exec-directory))))
-
-(custom-theme-set-faces
-  'user
-  '(variable-pitch ((t (:family "Monospace" :height 150 :weight normal))))
-  '(fixed-pitch ((t ( :family "Monospace" :height 140)))))
-
-(setq font-general "Monospace 14")
-(set-frame-font font-general nil t)
-(add-to-list 'default-frame-alist `(font . ,font-general))
-
-#+end_src
-
-* linux specific
-
-#+begin_src elisp :tangle no
-;;
-;; -> linux specific
-;;
-
-(define-key my-jump-keymap (kbd "a") #'emms-browse-by-album)
-(define-key my-jump-keymap (kbd "b") (lambda () (interactive) (find-file "~/bin")))
-(define-key my-jump-keymap (kbd "c") (lambda () (interactive) (find-file "~/DCIM/Camera")))
-(define-key my-jump-keymap (kbd "g") (lambda () (interactive) (find-file "~/.config")))
-(define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~/DCIM/content/aab--todo.org")))
-(define-key my-jump-keymap (kbd "y") #'emms)
-(define-key my-jump-keymap (kbd "q") #'cfw:open-org-calendar)
-(define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
-(define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
-
-(setq diary-file "~/DCIM/content/diary.org")
-
-(custom-theme-set-faces
-  'user
-  '(variable-pitch ((t (:family "Sans Serif" :height 140 :weight normal))))
-  '(fixed-pitch ((t ( :family "Fira Code Retina" :height 130)))))
-
-(setq font-general "Monospace 12")
-(set-frame-font font-general nil t)
-(add-to-list 'default-frame-alist `(font . ,font-general))
+(setq org-icalendar-use-scheduled
+  '(event-if-not-todo event-if-todo event-if-todo-not-done todo-start))
 
 #+end_src
