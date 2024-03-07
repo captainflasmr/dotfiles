@@ -1,10 +1,10 @@
 #
 # -> visuals
 #
-gaps inner 6px
-gaps outer 0px
+gaps inner 4px
+gaps outer 4px
 gaps top 0px
-gaps bottom -4px
+gaps bottom 0px
 
 # workspace 1 gaps outer 10
 # workspace 1 gaps inner 8
@@ -15,13 +15,13 @@ gaps bottom -4px
 # workspace 4 gaps outer 10
 # workspace 4 gaps inner 8
 
-workspace number 1
+# workspace number 1
 
-default_border pixel 4px
+default_border pixel 6px
 
 # -> class              border  backgr. text    indicator child_border
-client.focused          #000000 #0b4b55 #cccccc #946f0033   #946f0033
-client.focused_inactive #333333 #333333 #cccccc #00000099   #00000099
+client.focused          #000000 #0b4b55 #cccccc #ffffff44   #ffffff44
+client.focused_inactive #333333 #333333 #cccccc #00000044   #00000044
 client.unfocused        #333333 #222222 #cccccc #292d2e   #222222
 client.urgent           #2f343a #900000 #cccccc #900000   #900000
 client.placeholder      #000000 #0c0c0c #cccccc #000000   #0c0c0c
@@ -61,29 +61,24 @@ bindsym XF86MonBrightnessDown exec brightnessctl set 2%-
 #
 # -> Key bindings
 #
-bindsym $mod+shift+p exec wl-color-picker
-bindsym $mod+shift+w exec wallpaper_change_sway.sh
+bindsym $mod+p exec wl-color-picker
+bindsym $mod+w exec wallpaper_change.sh
 
 # programs
-bindsym $mod+space exec nwg-drawer -c 7 -is 70 -spacing 23
-bindsym $mod+shift+s exec screenshot_wayland.sh
-bindsym $mod+shift+r exec screenshot_wayland_001.sh
+#bindsym $mod+space exec nwg-drawer -c 7 -is 70 -spacing 23
+bindsym $mod+s exec screenshot.sh
 bindsym $mod+e exec thunar ~/DCIM/Camera
-bindsym $mod+i exec nwg-look
-bindsym $mod+c exec emacs
-bindsym $mod+m exec thunderbird
-# bindsym $mod+w exec flatpak run com.microsoft.Edge
-bindsym $mod+w exec firefox
-bindsym $mod+s exec pamac-manager
-bindsym $mod+p exec keepassxc
-bindsym $mod+g exec screen-record.sh
+bindsym $mod+m exec emacs
+bindsym $mod+b exec thunderbird
+bindsym $mod+x exec firefox
+bindsym $mod+r exec screen-record.sh
 
 # terminal
 bindsym $mod+return exec $term
 bindsym control+Mod1+t exec $term
 
 # kill
-bindsym $mod+shift+q kill
+bindsym $mod+q kill
 bindsym Mod1+F4 kill
 
 # launcher
@@ -92,9 +87,6 @@ bindsym $mod+d exec --no-startup-id dmenu_run -fn "Mono:pixelsize=16"
 
 # exit
 bindsym $mod+shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
-
-# Single Windows key to call up top level menu
-# bindsym --release Super_L exec nwg-drawer -c 7 -is 70 -spacing 23
 
 #
 # -> Moving around
@@ -107,7 +99,6 @@ bindsym $mod+Left focus left
 bindsym $mod+Right focus right
 bindsym $mod+Up focus up
 bindsym $mod+Down focus down
-# bindsym $mod+o focus left
 
 bindsym $mod+Shift+$left move left
 bindsym $mod+Shift+$down move down
@@ -121,8 +112,8 @@ bindsym $mod+Shift+Right move right
 #
 # -> Workspaces
 #
-bindsym control+Mod1+l workspace next
-bindsym control+Mod1+h workspace prev
+bindsym $mod+bracketleft workspace prev
+bindsym $mod+bracketright workspace next
 
 bindsym $mod+1 workspace number 1
 bindsym $mod+2 workspace number 2
@@ -147,7 +138,7 @@ bindsym $mod+f fullscreen
 #
 # -> reload
 #
-bindsym $mod+shift+c reload
+bindsym $mod+c reload
 # bindsym $mod+shift+r reload
 
 #
@@ -272,9 +263,9 @@ exec swayidle -w \
 #
 # -> swayfx
 #
-corner_radius 20
+corner_radius 15
 blur enable
-blur_passes 8
+blur_passes 2
 blur_radius 4
 shadows enable
 shadow_blur_radius 5
