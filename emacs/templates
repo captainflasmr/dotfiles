@@ -1,29 +1,30 @@
 fundamental-mode ;; Available everywhere
 
-(jda (format-time-string "<%Y-%m-%d>"))
-(jdT (format-time-string "%Y%m%d%H%M%S"))
-(jdt (format-time-string "%Y%m%d"))
-(jdq "\"" \r "\"")
+(zda (format-time-string "<%Y-%m-%d>"))
+(zdT (format-time-string "%Y%m%d%H%M%S"))
+(zdt (format-time-string "%Y%m%d"))
+(zdq "\"" \r "\"")
+(z9 "[")
+(z0 "]")
 
 org-mode
 
-(jds "#+begin_src " q n r "#+end_src" n)
-(jdi "#+attr_org: :width 300px" n "#+attr_html: :width 100%")
-(jde "#+attr_org: :width 300px" n "#+attr_html: :class emacs-img")
-(jdo "---" n "#+TOC: headlines 1 local" n "---")
-(jdq "#+begin_quote " q n r "#+end_quote" n)
+(zdi "#+attr_org: :width 300px" n "#+attr_html: :width 100%")
+(zde "#+attr_org: :width 300px" n "#+attr_html: :class emacs-img")
+(zdo "---" n "#+TOC: headlines 1 local" n "---")
+(zdm "*=" \r "=*")
 
 sh-mode
-(jdd n "echo \"poop: " q "\"" n)
+(zdd n "echo \"poop: " q "\"" n)
 
 emacs-lisp-mode
-(jdd n "(message \"poop: " q "\"\)" n)
+(zdd n "(message \"poop: " q "\"\)" n)
 
 ada-mode
-(jdd n> "Ada.Text_Io.Put_Line \( \"poop: " q "\"\);" n)
+(zdd n> "Ada.Text_Io.Put_Line \( \"poop: " q "\"\);" n)
 
 c++-mode
-(jdd n> "std::cout << \"poop: " q "\" << std::endl;" n)
+(zdd n> "std::cout << \"poop: " q "\" << std::endl;" n)
 
 c-mode
-(jdd n> "fprintf(stderr, \"poop: " q "\"\);" n)
+(zdd n> "fprintf(stderr, \"poop: " q "\"\);" n)
