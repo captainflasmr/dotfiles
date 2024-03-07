@@ -1,5 +1,5 @@
 -*- mode: org; fill-column: 80; eval: (display-fill-column-indicator-mode 1); -*-
-#+title: Linux Emacs Configuration
+#+title: Emacs Configuration
 #+options: toc:nil author:t title:t
 #+property: header-args :tangle ~/.config/emacs/init.el
 #+startup: overview
@@ -19,12 +19,6 @@ The avoiding a flash of light at startup is a very minor thing but nice to not g
 (setq mode-line-format nil)
 (set-face-attribute 'default nil :background "#222222" :foreground "#ffffff")
 (set-face-attribute 'mode-line nil :background "#222222" :foreground "#ffffff" :box 'unspecified)
-#+end_src
-
-Garbage collection
-
-#+begin_src elisp :tangle ~/.config/emacs/early-init.el
-;; (setq gc-cons-threshold (* 20 1024 1024)) ; Set to 20MB
 #+end_src
 
 * requires

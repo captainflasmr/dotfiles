@@ -7,5 +7,3 @@
 (setq mode-line-format nil)
 (set-face-attribute 'default nil :background "#222222" :foreground "#ffffff")
 (set-face-attribute 'mode-line nil :background "#222222" :foreground "#ffffff" :box 'unspecified)
-
-;; (setq gc-cons-threshold (* 20 1024 1024)) ; Set to 20MB
