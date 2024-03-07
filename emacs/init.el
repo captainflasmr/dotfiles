@@ -412,8 +412,8 @@
 ;;
 (global-set-key (kbd "C-=") '(lambda ()(interactive)(text-scale-adjust 1)))
 (global-set-key (kbd "C--") '(lambda ()(interactive)(text-scale-adjust -1)))
-(global-set-key (kbd "M-6") (lambda ()(interactive)(insert "[")))
-(global-set-key (kbd "M-7") (lambda ()(interactive)(insert "]")))
+(global-set-key (kbd "M-7") (lambda ()(interactive)(insert "[")))
+(global-set-key (kbd "M-8") (lambda ()(interactive)(insert "]")))
 (global-set-key (kbd "M-s l") 'save-buffer)
 (global-set-key (kbd "M-s s") 'save-buffer)
 (global-set-key (kbd "M-s p") 'org-plot/gnuplot)
@@ -447,7 +447,7 @@
 (global-set-key (kbd "M-2") 'split-window-vertically)
 (global-set-key (kbd "M-3") 'split-window-horizontally)
 (global-set-key (kbd "M-;") 'my/comment-or-uncomment)
-(global-set-key (kbd "M-8") 'my/grep)
+(global-set-key (kbd "M-9") 'my/grep)
 (global-set-key (kbd "C-c ,") 'embark-act)
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-h h"))
@@ -942,11 +942,12 @@ as search term for Google search in web browser."
     org-image-actual-width (list 50)
     org-startup-indented t
     org-todo-keywords
-    '((sequence "TODO" "DOING" "RPT" "WAIT" "WATCH" "ORDR" "SENT" "|" "CANCELLED" "DONE"))
+    '((sequence "TODO" "DOING" "RPT" "CANCELLING" "WAIT" "WATCH" "ORDR" "SENT" "|" "CANCELLED" "DONE"))
     org-todo-keyword-faces
     '(("TODO" . "#ee5566")
        ("DOING" . "#5577aa")
        ("RPT" . "#cccc00")
+       ("CANCELLING" . "#ccccff")
        ("WAIT" . "#bb7744")
        ("WATCH" . "#bbad44")
        ("ORDR" . "#bb44ee")
@@ -2851,3 +2852,27 @@ If no such window is found, return nil."
 
 (setq org-icalendar-use-scheduled
   '(event-if-not-todo event-if-todo event-if-todo-not-done todo-start))
+
+(defun my/calc-subscription-cost ()
+  (interactive)
+  (let ((sum 0))
+    (save-excursion
+      (goto-char (point-min))
+      ;; Search for the numeric pattern.
+      (while (re-search-forward "\\([0-9]+\\.[0-9]+\\)" nil t)
+        ;; Check if the current line does not contain "DONE"
+        (unless (save-excursion
+                  (beginning-of-line)
+                  (re-search-forward "DONE" (line-end-position) t))
+          ;; If "DONE" is not found on the line, process the number.
+          (let ((amount (string-to-number (substring-no-properties (match-string 1)))))
+            (setq sum (+ sum amount))
+            (message "Adding: %.2f, Total: %.2f" amount sum)))))
+    (message "Total: %.2f" sum)))
+
+(defun my/clear-recentf-list ()
+  "Clears the recentf list."
+  (interactive)
+  (setq recentf-list nil)
+  (recentf-save-list)
+  (message "Cleared recent files list"))
