@@ -1,18 +1,8 @@
 ;;
-;; -> requires
-;;
-(require 'package)
-(require 'org)
-(require 'dired-x)
-(require 's)
-(require 'org-agenda)
-(require 'emms-setup)
-(emms-all)
-(emms-default-players)
-
-;;
 ;; -> package-archives
 ;;
+(require 'package)
+
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                           ("elpa" . "https://elpa.gnu.org/packages/")
                           ("org" . "https://orgmode.org/elpa/")))
@@ -33,6 +23,13 @@
   use-package-expand-minimally nil
   use-package-compute-statistics t
   debug-on-error nil)
+
+;;
+;; -> requires
+;;
+(require 'org)
+(require 'dired-x)
+(require 'org-agenda)
 
 ;;
 ;; -> top-level-variables
@@ -343,11 +340,14 @@
   ("S-<return>" . emms-next)
   ("C-M-<return>" . emms-random)
   :custom
+  (emms-default-players)
   (emms-player-list '(emms-player-vlc))
   (emms-browser-covers 'emms-browser-cache-thumbnail-async)
   (emms-source-file-default-directory "~/MyMusicLibrary")
   (emms-volume-amixer-card 1)
   (emms-volume-change-function 'emms-volume-pulse-change))
+
+(require 'emms-setup)
 
 ;;
 ;; -> elfeed
