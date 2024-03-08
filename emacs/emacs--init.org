@@ -21,28 +21,14 @@ The avoiding a flash of light at startup is a very minor thing but nice to not g
 (set-face-attribute 'mode-line nil :background "#222222" :foreground "#ffffff" :box 'unspecified)
 #+end_src
 
-* requires
-
-#+begin_src elisp
-;;
-;; -> requires
-;;
-(require 'package)
-(require 'org)
-(require 'dired-x)
-(require 's)
-(require 'org-agenda)
-(require 'emms-setup)
-(emms-all)
-(emms-default-players)
-#+end_src
-
 * package-archives
 
 #+begin_src elisp
 ;;
 ;; -> package-archives
 ;;
+(require 'package)
+
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                           ("elpa" . "https://elpa.gnu.org/packages/")
                           ("org" . "https://orgmode.org/elpa/")))
@@ -63,6 +49,17 @@ The avoiding a flash of light at startup is a very minor thing but nice to not g
   use-package-expand-minimally nil
   use-package-compute-statistics t
   debug-on-error nil)
+#+end_src
+
+* requires
+
+#+begin_src elisp
+;;
+;; -> requires
+;;
+(require 'org)
+(require 'dired-x)
+(require 'org-agenda)
 #+end_src
 
 * top-level-variables
@@ -474,11 +471,15 @@ Turn on a profiler if we would like
   ("S-<return>" . emms-next)
   ("C-M-<return>" . emms-random)
   :custom
+  (emms-default-players)
   (emms-player-list '(emms-player-vlc))
   (emms-browser-covers 'emms-browser-cache-thumbnail-async)
   (emms-source-file-default-directory "~/MyMusicLibrary")
   (emms-volume-amixer-card 1)
   (emms-volume-change-function 'emms-volume-pulse-change))
+
+(require 'emms-setup)
+
 #+end_src
 
 * elfeed
