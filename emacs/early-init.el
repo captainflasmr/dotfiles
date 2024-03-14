@@ -1,6 +1,7 @@
 ;;
 ;; -> early-init
 ;;
+
 (setq package-enable-at-startup t)
 
 ;; avaid default theme flash of light when starting up

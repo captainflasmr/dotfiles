@@ -1,6 +1,7 @@
 ;;
 ;; -> package-archives
 ;;
+
 (require 'package)
 
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
@@ -27,6 +28,7 @@
 ;;
 ;; -> requires
 ;;
+
 (require 'org)
 (require 'dired-x)
 (require 'org-agenda)
@@ -34,11 +36,13 @@
 ;;
 ;; -> top-level-variables
 ;;
+
 (setq my/accent-color "#821a00")
 
 ;;
 ;; -> startup
 ;;
+
 (defun display-startup-time ()
   "Display startup time."
   (message "Emacs startup time: %s" (emacs-init-time)))
@@ -48,6 +52,7 @@
 ;;
 ;; -> package-local
 ;;
+
 (when (file-exists-p "~/repos/fd-find")
   (use-package fd-find
     :load-path "~/repos/fd-find"))
@@ -74,12 +79,12 @@
     :vc (:fetcher github :repo "kmonad/kbd-mode")
     :custom
     (kbd-mode-kill-kmonad "pkill -9 kmonad")
-    (kbd-mode-start-kmonad "kmonad ~/.config/kmonad/keyboard.kbd"))
-)
+    (kbd-mode-start-kmonad "kmonad ~/.config/kmonad/keyboard.kbd")))
 
 ;;
 ;; -> profile
 ;;
+
 (use-package esup
   :ensure t
   :config (setq esup-depth 0)
@@ -89,6 +94,7 @@
 ;;
 ;; -> use-package
 ;;
+
 (use-package lorem-ipsum)
 (use-package ox-epub)
 (use-package file-info)
@@ -142,11 +148,12 @@
   :custom
   (deadgrep-max-buffers 1)
   (deadgrep-extra-arguments '("--no-config")))
-  ;; (deadgrep-extra-arguments '("--no-config" "--no-ignore" "--no-ignore-vcs")))
+;; (deadgrep-extra-arguments '("--no-config" "--no-ignore" "--no-ignore-vcs")))
 
 ;;
 ;; -> completion
 ;;
+
 (use-package corfu
   ;; Optional customizations
   :custom
@@ -171,7 +178,6 @@
   ;; (global-corfu-mode)
   )
 
-;; A few more useful configurations...
 (use-package emacs
   :init
   ;; TAB cycle if there are only few candidates
@@ -186,7 +192,6 @@
   ;; `completion-at-point' is often bound to M-TAB.
   (setq tab-always-indent t))
 
-;; Configure Tempel
 (use-package tempel
   ;; Require trigger prefix before template name when completing.
   ;; :custom
@@ -221,6 +226,7 @@
 ;;
 ;; -> modeline-completion-advanced
 ;;
+
 (use-package vertico
   :init
   (vertico-mode 1)
@@ -327,6 +333,7 @@
 ;;
 ;; -> magit
 ;;
+
 (when (executable-find "git")
   (use-package magit
     :config
@@ -362,11 +369,12 @@
          ("~/DCIM/Art/Content" . 2)
          ("~/DCIM/themes" . 2)))))
 
-  (global-set-key (kbd "M-s m") 'magit-status)
+(global-set-key (kbd "M-s m") 'magit-status)
 
 ;;
 ;; -> emms
 ;;
+
 (use-package emms
   :init (emms-all)
   :hook
@@ -388,6 +396,7 @@
 ;;
 ;; -> elfeed
 ;;
+
 (use-package elfeed
   :bind
   ("C-x w" . elfeed)
@@ -433,6 +442,7 @@
 ;;
 ;; -> expansion
 ;;
+
 (setq-default abbrev-mode t)
 
 (global-set-key (kbd "M-/") 'hippie-expand)
@@ -446,6 +456,7 @@
 ;;
 ;; -> keybinding
 ;;
+
 (global-set-key (kbd "C-=") '(lambda ()(interactive)(text-scale-adjust 1)))
 (global-set-key (kbd "C--") '(lambda ()(interactive)(text-scale-adjust -1)))
 (global-set-key (kbd "M-s l") 'save-buffer)
@@ -499,6 +510,7 @@
 ;;
 ;; -> modes
 ;;
+
 (global-font-lock-mode 1)
 (savehist-mode 1)
 (global-ede-mode t)
@@ -518,12 +530,14 @@
 ;;
 ;; -> bell
 ;;
+
 (setq visible-bell t)
 (setq ring-bell-function 'ignore)
 
 ;;
 ;; -> setqs
 ;;
+
 (setq fit-window-to-buffer-horizontally t)
 (setq case-fold-search t)
 (setq custom-safe-themes t)
@@ -558,6 +572,7 @@
 ;;
 ;; -> confirm
 ;;
+
 (defalias 'yes-or-no-p 'y-or-n-p)
 (setq confirm-kill-emacs 'y-or-n-p)
 (setq confirm-kill-processes nil)
@@ -567,6 +582,7 @@
 ;;
 ;; -> backups
 ;;
+
 (setq make-backup-files 1)
 (setq backup-directory-alist '(("." . "~/backup"))
   backup-by-copying t    ; Don't delink hardlinks
@@ -578,6 +594,7 @@
 ;;
 ;; -> hooks
 ;;
+
 (add-hook 'before-save-hook 'time-stamp)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (add-hook 'calendar-mode-hook 'diary-mark-entries)
@@ -588,6 +605,7 @@
 ;;
 ;; -> custom-settings
 ;;
+
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
@@ -717,9 +735,9 @@ If ARG is provided, it sets the counter."
 With a prefix argument (C-u), replaces dashes with spaces instead."
   (interactive "r\nP") ; "\nP" captures the prefix argument
   (let* ((selected-text (buffer-substring start end))
-         (replacement-text (if reverse
-                               (replace-regexp-in-string "-" " " selected-text)
-                             (replace-regexp-in-string " " "-" selected-text))))
+          (replacement-text (if reverse
+                              (replace-regexp-in-string "-" " " selected-text)
+                              (replace-regexp-in-string " " "-" selected-text))))
     (delete-region start end)
     (insert replacement-text)))
 
@@ -852,6 +870,7 @@ as search term for Google search in web browser."
 ;;
 ;; -> org-capture
 ;;
+
 (setq bookmark-fringe-mark nil)
 
 (defun my-capture-top-level ()
@@ -970,6 +989,7 @@ as search term for Google search in web browser."
 ;;
 ;; -> org
 ;;
+
 (use-package org
   :defer t
   :hook
@@ -1114,6 +1134,7 @@ as search term for Google search in web browser."
 ;;
 ;; -> dwim
 ;;
+
 (when (file-exists-p "/home/jdyer/.config/emacs/category-list-uniq.txt")
   (progn
     (defvar my/dwim-convert-commands
@@ -1141,20 +1162,14 @@ as search term for Google search in web browser."
 
     (defun my/dwim-convert-generic (command)
       "Execute a dwim-shell-command-on-marked-files with the given COMMAND."
-      ;; Define the path to the unique text file.
       (let* ((unique-text-file "/home/jdyer/.config/emacs/category-list-uniq.txt")
-              ;; Initialize user-selection to nil.
               (user-selection nil)
-              ;; Get the list of marked files.
               (files (dired-get-marked-files nil current-prefix-arg))
-              ;; Command with appended files.
               (command-and-files (concat command " " (mapconcat 'identity files " "))))
-        ;; Check if the command is PictureTag and get user selection if it is.
         (when (string= command "PictureTag")
           (setq user-selection (completing-read "Choose an option: "
                                  (my/read-lines unique-text-file)
                                  nil t)))
-        ;; Add user-selection to the command-and-files if not nil.
         (async-shell-command (if user-selection
                                (concat command " " user-selection " " (mapconcat 'identity files " "))
                                (concat command " " (mapconcat 'identity files " ")))
@@ -1172,12 +1187,14 @@ as search term for Google search in web browser."
 ;;
 ;; -> scroll
 ;;
+
 (setq scroll-margin 20)
 (setq scroll-preserve-screen-position t)
 
 ;;
 ;; -> font
 ;;
+
 ;; (setq font-general "Noto Sans Mono 14")
 ;; (setq font-general "MesloLGS Nerd Font Mono 11")
 ;; (setq font-general "Source Code Pro 12")
@@ -1190,6 +1207,7 @@ as search term for Google search in web browser."
 ;;
 ;; -> custom-set-faces
 ;;
+
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
@@ -1232,6 +1250,7 @@ as search term for Google search in web browser."
 ;;
 ;; -> dired
 ;;
+
 (use-package dired
   :ensure nil
   :diminish dired-async-mode
@@ -1280,6 +1299,7 @@ as search term for Google search in web browser."
 ;;
 ;; -> image-dired
 ;;
+
 (require 'image-mode)
 (require 'image-dired)
 
@@ -1386,6 +1406,7 @@ as search term for Google search in web browser."
 ;;
 ;; -> visuals
 ;;
+
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
@@ -1449,6 +1470,7 @@ as search term for Google search in web browser."
 ;;
 ;; -> imenu
 ;;
+
 (defun my-imenu-create-index ()
   "Create an index using definitions starting with ';; ->'."
   (let ((index-alist '())
@@ -1484,6 +1506,7 @@ as search term for Google search in web browser."
 ;;
 ;; -> recentf
 ;;
+
 (recentf-mode 1)
 
 (setq recentf-max-menu-items 200)
@@ -1492,6 +1515,7 @@ as search term for Google search in web browser."
 ;;
 ;; -> modeline
 ;;
+
 (setq-default mode-line-modified
   '(:eval (if (and (buffer-file-name) (buffer-modified-p))
             (propertize "** MODIFIED " 'face
@@ -1598,6 +1622,7 @@ as search term for Google search in web browser."
 ;;
 ;; -> grep
 ;;
+
 (require 'grep)
 
 (eval-after-load 'grep
@@ -1614,6 +1639,7 @@ as search term for Google search in web browser."
 ;;
 ;; -> spelling
 ;;
+
 (use-package jinx)
 (use-package powerthesaurus)
 
@@ -1635,6 +1661,7 @@ as search term for Google search in web browser."
 ;;
 ;; -> gdb
 ;;
+
 (setq gdb-display-io-nopopup 1)
 (setq gdb-many-windows t)
 
@@ -1645,6 +1672,7 @@ as search term for Google search in web browser."
 ;;
 ;; -> compilation
 ;;
+
 (setq compilation-always-kill t)
 (setq compilation-context-lines 3)
 (setq compilation-scroll-output nil)
@@ -1658,6 +1686,7 @@ as search term for Google search in web browser."
 ;;
 ;; -> auto-mode-alist
 ;;
+
 (add-to-list 'auto-mode-alist '("\\.org_archive\\'" . org-mode))
 (add-to-list 'auto-mode-alist '("config.rasi\\'" . js-json-mode))
 (add-to-list 'auto-mode-alist '("theme.rasi\\'" . css-mode))
@@ -1675,6 +1704,7 @@ as search term for Google search in web browser."
 ;;
 ;; -> programming
 ;;
+
 (use-package eglot)
 
 ;; (define-key company-active-map (kbd "<tab>") 'company-complete-selection)
@@ -1701,6 +1731,7 @@ as search term for Google search in web browser."
 ;;
 ;; -> diff
 ;;
+
 (use-package ztree)
 
 (setq-default ztree-diff-filter-list
@@ -1736,6 +1767,7 @@ as search term for Google search in web browser."
 ;;
 ;; -> ada
 ;;
+
 (defun my/eglot-dir-locals ()
   "Create .dir-locals.el file for eglot ada-mode using the selected DIRED path."
   (interactive)
@@ -1884,7 +1916,7 @@ as search term for Google search in web browser."
 ;;
 ;; -> whitespace
 ;;
-;; Define the whitespace style.
+
 (setq-default whitespace-style
   '(face spaces empty tabs newline trailing space-mark tab-mark
      newline-mark tab-width indentation::space))
@@ -1931,6 +1963,7 @@ as search term for Google search in web browser."
 ;;
 ;; -> project
 ;;
+
 (defun my/project-root ()
   "Return project root defined by user."
   (interactive)
@@ -1972,6 +2005,7 @@ With directories under project root using find."
 ;;
 ;; -> indentation
 ;;
+
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 3)
 (setq-default lisp-indent-offset 2)
@@ -1984,6 +2018,7 @@ With directories under project root using find."
 ;;
 ;; -> etags
 ;;
+
 (defun my/etags-load ()
   "Load TAGS file from the first it can find up the directory stack."
   (interactive)
@@ -2018,6 +2053,10 @@ With directories under project root using find."
   (selected-window-accent-custom-color nil)
   ;; (selected-window-accent-custom-color "#3E829F")
   (selected-window-accent-mode-style 'default))
+
+;;
+;; -> push-block
+;;
 
 (setq my/push-block-spec
   '(
@@ -2228,6 +2267,7 @@ With directories under project root using find."
 ;;
 ;; -> shell
 ;;
+
 (when (file-exists-p "/usr/bin/fish")
   (setq explicit-shell-file-name "/usr/bin/fish"))
 
@@ -2235,11 +2275,11 @@ With directories under project root using find."
   (setq shell-file-name "/bin/fish")
 
   (use-package chatgpt-shell
-  :ensure t
-  :custom
-  ((chatgpt-shell-openai-key
-     (lambda ()
-       (auth-source-pass-get 'secret "openai-key"))))))
+    :ensure t
+    :custom
+    ((chatgpt-shell-openai-key
+       (lambda ()
+         (auth-source-pass-get 'secret "openai-key"))))))
 
 (defun my/eshell-hook ()
   "Set up company completions to be a little more fish like."
@@ -2320,6 +2360,7 @@ With directories under project root using find."
 ;;
 ;; -> all-the-icons
 ;;
+
 (use-package all-the-icons-ibuffer
   :ensure t
   :hook
@@ -2337,6 +2378,29 @@ With directories under project root using find."
   all-the-icons-dired-mode
   :hook
   (dired-mode . all-the-icons-dired-mode))
+
+;;
+;; -> repeat
+;;
+
+(defun my/repeat-thing (func)
+  "Call FUNC and set up a sparse keymap for repeating actions."
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "n") (lambda () (interactive) (my/repeat-thing #'my/next-thing)))
+    (define-key map (kbd "p") (lambda () (interactive) (my/repeat-thing #'my/previous-thing)))
+    (define-key map (kbd "j") (lambda () (interactive) (my/repeat-thing #'tab-bar-history-back)))
+    (define-key map (kbd "k") (lambda () (interactive) (my/repeat-thing #'tab-bar-history-forward)))
+    (define-key map (kbd "u") (lambda () (interactive) (my/repeat-thing #'my/window-shrink)))
+    (define-key map (kbd "i") (lambda () (interactive) (my/repeat-thing #'my/window-enlarge)))
+    (funcall func)
+    (set-transient-map map t)))
+
+(global-set-key (kbd "M-g n") (lambda () (interactive) (my/repeat-thing #'my/next-thing)))
+(global-set-key (kbd "M-g p") (lambda () (interactive) (my/repeat-thing #'my/previous-thing)))
+(global-set-key (kbd "C-x j") (lambda () (interactive) (my/repeat-thing #'tab-bar-history-back)))
+(global-set-key (kbd "C-x k") (lambda () (interactive) (my/repeat-thing #'tab-bar-history-forward)))
+(global-set-key (kbd "C-x u") (lambda () (interactive) (my/repeat-thing #'my/window-enlarge)))
+(global-set-key (kbd "C-x i") (lambda () (interactive) (my/repeat-thing #'my/window-shrink)))
 
 ;;
 ;; -> tab-bar
@@ -2589,6 +2653,7 @@ With directories under project root using find."
 ;;
 ;; -> word-count
 ;;
+
 (use-package wc-mode
   ;; :hook
   ;; (org-mode . wc-mode)
@@ -2627,6 +2692,7 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
 ;;
 ;; -> windows-specific
 ;;
+
 (when (eq system-type 'windows-nt)
   (setq home-dir "c:/users/jimbo")
   (let ((xPaths
@@ -2721,7 +2787,7 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
   "Find the first window displaying a buffer whose name matches the given REGEX.
 If no such window is found, return nil."
   (let ((windows (window-list))
-        (found-window nil))
+         (found-window nil))
     (dolist (window windows found-window)
       (when (string-match-p regex (buffer-name (window-buffer window)))
         (setq found-window window)
@@ -2828,22 +2894,22 @@ If no such window is found, return nil."
   "Switch to a buffer, open a recent file, jump to a bookmark, or change the theme from a unified interface."
   (interactive)
   (let* ((buffers (mapcar #'buffer-name (buffer-list)))
-         (recent-files recentf-list)
-         (bookmarks (bookmark-all-names))
-         (themes (custom-available-themes))
-         (all-options (append buffers recent-files bookmarks
-                              (mapcar (lambda (theme) (concat "Theme: " (symbol-name theme))) themes)))
-         (selection (completing-read "Switch to: "
-                                     (lambda (str pred action)
-                                       (if (eq action 'metadata)
-                                           '(metadata . ((category . file)))
-                                         (complete-with-action action all-options str pred)))
-                                     nil t nil 'file-name-history)))
+          (recent-files recentf-list)
+          (bookmarks (bookmark-all-names))
+          (themes (custom-available-themes))
+          (all-options (append buffers recent-files bookmarks
+                         (mapcar (lambda (theme) (concat "Theme: " (symbol-name theme))) themes)))
+          (selection (completing-read "Switch to: "
+                       (lambda (str pred action)
+                         (if (eq action 'metadata)
+                           '(metadata . ((category . file)))
+                           (complete-with-action action all-options str pred)))
+                       nil t nil 'file-name-history)))
     (pcase selection
       ((pred (lambda (sel) (member sel buffers))) (switch-to-buffer selection))
       ((pred (lambda (sel) (member sel bookmarks))) (bookmark-jump selection))
       ((pred (lambda (sel) (string-prefix-p "Theme: " sel)))
-       (load-theme (intern (substring selection (length "Theme: "))) t))
+        (load-theme (intern (substring selection (length "Theme: "))) t))
       (_ (find-file selection)))))
 
 (global-set-key (kbd "C-t") 'transpose-sexps)
@@ -2893,25 +2959,6 @@ If no such window is found, return nil."
 (global-set-key (kbd "M-s ,") 'my/mark-line)
 
 (if (and (fboundp 'native-comp-available-p)
-       (native-comp-available-p))
+      (native-comp-available-p))
   (message "Native compilation is available")
-(message "Native complation is *not* available"))
-
-(defun my/repeat-thing (func)
-  "Call FUNC and set up a sparse keymap for repeating actions."
-  (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "n") (lambda () (interactive) (my/repeat-thing #'my/next-thing)))
-    (define-key map (kbd "p") (lambda () (interactive) (my/repeat-thing #'my/previous-thing)))
-    (define-key map (kbd "j") (lambda () (interactive) (my/repeat-thing #'tab-bar-history-back)))
-    (define-key map (kbd "k") (lambda () (interactive) (my/repeat-thing #'tab-bar-history-forward)))
-    (define-key map (kbd "u") (lambda () (interactive) (my/repeat-thing #'my/window-shrink)))
-    (define-key map (kbd "i") (lambda () (interactive) (my/repeat-thing #'my/window-enlarge)))
-    (funcall func)
-    (set-transient-map map t)))
-
-(global-set-key (kbd "M-g n") (lambda () (interactive) (my/repeat-thing #'my/next-thing)))
-(global-set-key (kbd "M-g p") (lambda () (interactive) (my/repeat-thing #'my/previous-thing)))
-(global-set-key (kbd "C-x j") (lambda ()(interactive)(my/repeat-thing #'tab-bar-history-back)))
-(global-set-key (kbd "C-x k") (lambda ()(interactive)(my/repeat-thing #'tab-bar-history-forward)))
-(global-set-key (kbd "C-x u") (lambda ()(interactive)(my/repeat-thing #'my/window-enlarge)))
-(global-set-key (kbd "C-x i") (lambda ()(interactive)(my/repeat-thing #'my/window-shrink)))
+  (message "Native complation is *not* available"))

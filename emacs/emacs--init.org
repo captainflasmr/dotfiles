@@ -7,26 +7,31 @@
 
 * early-init
 
-The avoiding a flash of light at startup is a very minor thing but nice to not get blinded when first running up especially in a dark environment.  Adapted from early-init.el from Prot's emacs config
+This block sets up Emacs to avoid a flash of the default theme upon startup, helping prevent a sudden bright screen especially in dark environments.
 
 #+begin_src elisp :tangle ~/.config/emacs/early-init.el
 ;;
 ;; -> early-init
 ;;
+
 (setq package-enable-at-startup t)
 
 ;; avaid default theme flash of light when starting up
 (setq mode-line-format nil)
 (set-face-attribute 'default nil :background "#222222" :foreground "#ffffff")
 (set-face-attribute 'mode-line nil :background "#222222" :foreground "#ffffff" :box 'unspecified)
+
 #+end_src
 
 * package-archives
+
+Configures the package management system by specifying preferred package archives including MELPA, ELPA, and Org. It ensures `use-package` is installed and enables stricter loading behaviour for newer files.
 
 #+begin_src elisp
 ;;
 ;; -> package-archives
 ;;
+
 (require 'package)
 
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
@@ -49,47 +54,63 @@ The avoiding a flash of light at startup is a very minor thing but nice to not g
   use-package-expand-minimally nil
   use-package-compute-statistics t
   debug-on-error nil)
+
 #+end_src
 
 * requires
+
+Ensures essential packages like `org`, `dired-x`, and `org-agenda` are loaded at startup.
 
 #+begin_src elisp
 ;;
 ;; -> requires
 ;;
+
 (require 'org)
 (require 'dired-x)
 (require 'org-agenda)
+
 #+end_src
 
 * top-level-variables
+
+Defines global variables, e.g., an accent color used across various custom themes or UI elements.
 
 #+begin_src elisp
 ;;
 ;; -> top-level-variables
 ;;
+
 (setq my/accent-color "#821a00")
+
 #+end_src
 
 * startup
+
+Displays Emacs's startup time in the message buffer as soon as Emacs finishes initializing.
 
 #+begin_src elisp
 ;;
 ;; -> startup
 ;;
+
 (defun display-startup-time ()
   "Display startup time."
   (message "Emacs startup time: %s" (emacs-init-time)))
 
 (add-hook 'emacs-startup-hook 'display-startup-time)
+
 #+end_src
 
 * package-local
+
+Displays Emacs's startup time in the message buffer as soon as Emacs finishes initializing.
 
 #+begin_src elisp
 ;;
 ;; -> package-local
 ;;
+
 (when (file-exists-p "~/repos/fd-find")
   (use-package fd-find
     :load-path "~/repos/fd-find"))
@@ -97,6 +118,8 @@ The avoiding a flash of light at startup is a very minor thing but nice to not g
 #+end_src
 
 * fetchers
+
+Uses newer features in Emacs 29+ to directly install packages from version control sources like GitHub, showcasing integration with `org-ql`, `ada-mode`, and others.
 
 #+begin_src elisp
 ;;
@@ -121,31 +144,36 @@ The avoiding a flash of light at startup is a very minor thing but nice to not g
     :vc (:fetcher github :repo "kmonad/kbd-mode")
     :custom
     (kbd-mode-kill-kmonad "pkill -9 kmonad")
-    (kbd-mode-start-kmonad "kmonad ~/.config/kmonad/keyboard.kbd"))
-)
+    (kbd-mode-start-kmonad "kmonad ~/.config/kmonad/keyboard.kbd")))
+
 #+end_src
 
 * profiler
 
-Turn on a profiler if we would like
+Enables the `esup` package for profiling Emacs's startup time to help diagnose slow startup issues.
 
 #+begin_src elisp
 ;;
 ;; -> profile
 ;;
+
 (use-package esup
   :ensure t
   :config (setq esup-depth 0)
   ;; To use MELPA Stable use ":pin melpa-stable",
   :pin melpa)
+
 #+end_src
 
 * use-package
+
+Demonstrates the use of `use-package` to neatly organize package configuration and lazy loading, improving startup times and making the configuration more readable.
 
 #+begin_src elisp
 ;;
 ;; -> use-package
 ;;
+
 (use-package lorem-ipsum)
 (use-package ox-epub)
 (use-package file-info)
@@ -199,15 +227,19 @@ Turn on a profiler if we would like
   :custom
   (deadgrep-max-buffers 1)
   (deadgrep-extra-arguments '("--no-config")))
-  ;; (deadgrep-extra-arguments '("--no-config" "--no-ignore" "--no-ignore-vcs")))
+;; (deadgrep-extra-arguments '("--no-config" "--no-ignore" "--no-ignore-vcs")))
+
 #+end_src
 
 * completion
+
+Configures `corfu` for autocompletion, setting up preferences like cycling through candidates and setting up hooks for enabling it in shell modes.
 
 #+begin_src elisp
 ;;
 ;; -> completion
 ;;
+
 (use-package corfu
   ;; Optional customizations
   :custom
@@ -232,7 +264,6 @@ Turn on a profiler if we would like
   ;; (global-corfu-mode)
   )
 
-;; A few more useful configurations...
 (use-package emacs
   :init
   ;; TAB cycle if there are only few candidates
@@ -247,7 +278,6 @@ Turn on a profiler if we would like
   ;; `completion-at-point' is often bound to M-TAB.
   (setq tab-always-indent t))
 
-;; Configure Tempel
 (use-package tempel
   ;; Require trigger prefix before template name when completing.
   ;; :custom
@@ -283,12 +313,15 @@ Turn on a profiler if we would like
 
 * modeline-completion
 
+Setup for both vanilla and advanced modeline completion styles, including configuration for `vertico` and enhancements with `marginalia`, `orderless`, and other completion assisting packages.
+
 ** vanilla
 
 #+begin_src elisp :tangle no
 ;;
 ;; -> modeline-completion-vanilla
 ;;
+
 (defun fido-style ()
   "fido-style completion."
   (interactive)
@@ -301,6 +334,7 @@ Turn on a profiler if we would like
   (fido-mode 1)
   (fido-vertical-mode 1))
 (fido-style)
+
 #+end_src
 
 ** advanced
@@ -309,6 +343,7 @@ Turn on a profiler if we would like
 ;;
 ;; -> modeline-completion-advanced
 ;;
+
 (use-package vertico
   :init
   (vertico-mode 1)
@@ -354,9 +389,13 @@ Turn on a profiler if we would like
     '(marginalia-annotators-heavy marginalia-annotators-light nil))
   :init
   (marginalia-mode))
+
 #+end_src
 
+
 * keys-navigation
+
+Defines custom keybindings for navigating through files and Emacs features like tabs, dired, and scratch buffers.
 
 #+begin_src elisp
 ;;
@@ -380,6 +419,8 @@ Turn on a profiler if we would like
 #+end_src
 
 * keys-visual
+
+Sets up keybindings for quickly toggling visual features like font, theme, line numbers, and other window displays.
 
 #+begin_src elisp
 ;;
@@ -415,6 +456,8 @@ Turn on a profiler if we would like
 
 * keys-other
 
+Configures a sparse keymap for miscellaneous actions like evaluating expressions and capturing content with Org mode.
+
 #+begin_src elisp
 ;;
 ;; -> keys-other
@@ -430,10 +473,13 @@ Turn on a profiler if we would like
 
 * magit
 
+Configures `magit` for Git integration, adjusting interface preferences and repository directories for easy access to version control features.
+
 #+begin_src elisp
 ;;
 ;; -> magit
 ;;
+
 (when (executable-find "git")
   (use-package magit
     :config
@@ -469,16 +515,19 @@ Turn on a profiler if we would like
          ("~/DCIM/Art/Content" . 2)
          ("~/DCIM/themes" . 2)))))
 
-  (global-set-key (kbd "M-s m") 'magit-status)
+(global-set-key (kbd "M-s m") 'magit-status)
 
 #+end_src
 
 * emms
 
+Setup for the Emacs Multimedia System (EMMS) for managing and playing media files within Emacs.
+
 #+begin_src elisp
 ;;
 ;; -> emms
 ;;
+
 (use-package emms
   :init (emms-all)
   :hook
@@ -501,10 +550,13 @@ Turn on a profiler if we would like
 
 * elfeed
 
+Configures `elfeed` for RSS/Atom feed reading, showcasing customization of feed sources and display settings.
+
 #+begin_src elisp
 ;;
 ;; -> elfeed
 ;;
+
 (use-package elfeed
   :bind
   ("C-x w" . elfeed)
@@ -546,14 +598,18 @@ Turn on a profiler if we would like
     (set-face-attribute 'variable-pitch (selected-frame)
       :font (font-spec :family "Source Code Pro" :size 16))
     (setq elfeed-show-entry-switch #'my/show-elfeed)))
+
 #+end_src
 
 * expansion
+
+Enables and configures word expansion functionalities likened to text snippet expansion and auto-completion within Emacs.
 
 #+begin_src elisp
 ;;
 ;; -> expansion
 ;;
+
 (setq-default abbrev-mode t)
 
 (global-set-key (kbd "M-/") 'hippie-expand)
@@ -563,14 +619,18 @@ Turn on a profiler if we would like
      try-expand-all-abbrevs try-expand-dabbrev
      try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill
      try-complete-lisp-symbol-partially try-complete-lisp-symbol))
+
 #+end_src
 
 * keybinding
+
+Demonstrates a broad set of global keybindings for common actions like saving buffers, controlling text scale, and navigating large documents.
 
 #+begin_src elisp
 ;;
 ;; -> keybinding
 ;;
+
 (global-set-key (kbd "C-=") '(lambda ()(interactive)(text-scale-adjust 1)))
 (global-set-key (kbd "C--") '(lambda ()(interactive)(text-scale-adjust -1)))
 (global-set-key (kbd "M-s l") 'save-buffer)
@@ -617,6 +677,8 @@ Turn on a profiler if we would like
 
 * consult
 
+Integrates `consult` for enhanced search and navigation within Emacs, providing shortcuts and configuration for more efficient workflows.
+
 #+begin_src elisp
 
 ;; (global-set-key (kbd "C-x b") 'my/switch-to-thing)
@@ -631,10 +693,13 @@ Turn on a profiler if we would like
 
 * modes
 
+Turns on various modes like `global-font-lock-mode` for syntax highlighting and `show-paren-mode` for matching parenthesis visualization, and configures preferences for a wide array of basic behaviours and visual indicators.
+
 #+begin_src elisp
 ;;
 ;; -> modes
 ;;
+
 (global-font-lock-mode 1)
 (savehist-mode 1)
 (global-ede-mode t)
@@ -650,24 +715,32 @@ Turn on a profiler if we would like
 (setq tooltip-mode nil)
 (transient-mark-mode 1)
 ;; (pixel-scroll-precision-mode 1)
+
 #+end_src
 
 * bell
+
+Suppresses the auditory bell function in Emacs and opts for a visible bell or completely ignores bell triggers, improving the user interface experience during invalid operations.
 
 #+begin_src elisp
 ;;
 ;; -> bell
 ;;
+
 (setq visible-bell t)
 (setq ring-bell-function 'ignore)
+
 #+end_src
 
 * setqs
+
+This broad category includes a wide range of `setq` configurations that modify the behaviour of Emacs's core features — from file handling to search behaviours, reinforcing the customizability of Emacs.
 
 #+begin_src elisp
 ;;
 ;; -> setqs
 ;;
+
 (setq fit-window-to-buffer-horizontally t)
 (setq case-fold-search t)
 (setq custom-safe-themes t)
@@ -698,27 +771,35 @@ Turn on a profiler if we would like
 (setq reb-re-syntax 'string)
 (setq truncate-lines t)
 (setq suggest-key-bindings nil)
+
 #+end_src
 
 * confirm
+
+Configures aliases and settings for reducing the need for confirmations in repetitive tasks, streamlining user workflows.
 
 #+begin_src elisp
 ;;
 ;; -> confirm
 ;;
+
 (defalias 'yes-or-no-p 'y-or-n-p)
 (setq confirm-kill-emacs 'y-or-n-p)
 (setq confirm-kill-processes nil)
 (setq confirm-nonexistent-file-or-buffer nil)
 (set-buffer-modified-p nil)
+
 #+end_src
 
 * backups
+
+Adjusts Emacs's file backup settings for a better experience, specifying backup file locations and policies to prevent data loss while keeping the working directory clean.
 
 #+begin_src elisp
 ;;
 ;; -> backups
 ;;
+
 (setq make-backup-files 1)
 (setq backup-directory-alist '(("." . "~/backup"))
   backup-by-copying t    ; Don't delink hardlinks
@@ -726,28 +807,36 @@ Turn on a profiler if we would like
   delete-old-versions t  ; Automatically delete excess backups
   kept-new-versions 10   ; how many of the newest versions to keep
   kept-old-versions 5)    ; and how many of the old
+
 #+end_src
 
 * hooks
+
+Demonstrates the use of hooks for automatically executing code upon entering specific modes or conditions, like automatically enabling certain formats or functionalities.
 
 #+begin_src elisp
 ;;
 ;; -> hooks
 ;;
+
 (add-hook 'before-save-hook 'time-stamp)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (add-hook 'calendar-mode-hook 'diary-mark-entries)
 (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
 (add-hook 'diary-mark-entries-hook 'diary-mark-included-diary-files)
 (add-hook 'next-error-hook #'org-fold-show-all)
+
 #+end_src
 
 * custom-settings
+
+Places for `custom-set-variables` and `custom-set-faces` used by Emacs's customization system to record user preferences set through the graphical customize interface.
 
 #+begin_src elisp
 ;;
 ;; -> custom-settings
 ;;
+
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
@@ -756,9 +845,12 @@ Turn on a profiler if we would like
   '(custom-enabled-themes '(doom-dracula))
   '(warning-suppress-log-types '((frameset)))
   '(warning-suppress-types '((frameset))))
+
 #+end_src
 
 * defun
+
+Defines a suite of custom functions to extend Emacs's functionality tailored to specific tasks or personal preferences, showcasing the extensibility of Emacs with Lisp programming.
 
 #+begin_src elisp
 ;;
@@ -881,9 +973,9 @@ If ARG is provided, it sets the counter."
 With a prefix argument (C-u), replaces dashes with spaces instead."
   (interactive "r\nP") ; "\nP" captures the prefix argument
   (let* ((selected-text (buffer-substring start end))
-         (replacement-text (if reverse
-                               (replace-regexp-in-string "-" " " selected-text)
-                             (replace-regexp-in-string " " "-" selected-text))))
+          (replacement-text (if reverse
+                              (replace-regexp-in-string "-" " " selected-text)
+                              (replace-regexp-in-string " " "-" selected-text))))
     (delete-region start end)
     (insert replacement-text)))
 
@@ -965,6 +1057,8 @@ as search term for Google search in web browser."
 
 * window-positioning
 
+Configures rules and behaviours for display-buffer functions to control how new buffers are shown, whether in existing windows or new splits, enhancing window management in Emacs.
+
 #+begin_src elisp
 ;;
 ;; -> window-positioning
@@ -1022,10 +1116,13 @@ as search term for Google search in web browser."
 
 * org-capture
 
+Customizes Org Capture templates for quickly capturing notes, tasks, and other items with predefined templates, optimizing personal organization and productivity workflows.
+
 #+begin_src elisp
 ;;
 ;; -> org-capture
 ;;
+
 (setq bookmark-fringe-mark nil)
 
 (defun my-capture-top-level ()
@@ -1145,10 +1242,13 @@ as search term for Google search in web browser."
 
 * org
 
+Extends and customizes Org mode for document structuring, note-taking, and project management, highlighting customization options for exporting, appearance, and functionality enhancements.
+
 #+begin_src elisp
 ;;
 ;; -> org
 ;;
+
 (use-package org
   :defer t
   :hook
@@ -1217,11 +1317,13 @@ as search term for Google search in web browser."
     :title "Emacs-related project tasks"
     :sort '(date priority todo)
     :super-groups '((:auto-parent t))))
+
 #+end_src
 
 Disables the parenthesis matching to < and > only in org mode as it is causing matching problems when using org literate files.
 
 #+begin_src elisp
+
 (defun org-syntax-table-modify ()
   "Modify `org-mode-syntax-table' for the current org buffer."
   (modify-syntax-entry ?< "." org-mode-syntax-table)
@@ -1254,9 +1356,12 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 (add-hook 'org-mode-hook #'org-syntax-table-modify)
 ;; (remove-hook 'org-mode-hook #'org-syntax-table-modify)
 ;; (remove-hook 'org-mode-hook #'my/org-shrink-tables)
+
 #+end_src
 
 * org-agenda
+
+Customizes the Org Agenda for a personalized task management and calendar view, adjusting settings for diary integration and custom agenda views to fit specific planning needs.
 
 #+begin_src elisp
 ;;
@@ -1302,10 +1407,13 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 
 * dwim
 
+Demonstrates "Do What I Mean" functionalities custom to Emacs, streamlining operations like conversion, searching, and executing context-aware actions.
+
 #+begin_src elisp
 ;;
 ;; -> dwim
 ;;
+
 (when (file-exists-p "/home/jdyer/.config/emacs/category-list-uniq.txt")
   (progn
     (defvar my/dwim-convert-commands
@@ -1333,20 +1441,14 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 
     (defun my/dwim-convert-generic (command)
       "Execute a dwim-shell-command-on-marked-files with the given COMMAND."
-      ;; Define the path to the unique text file.
       (let* ((unique-text-file "/home/jdyer/.config/emacs/category-list-uniq.txt")
-              ;; Initialize user-selection to nil.
               (user-selection nil)
-              ;; Get the list of marked files.
               (files (dired-get-marked-files nil current-prefix-arg))
-              ;; Command with appended files.
               (command-and-files (concat command " " (mapconcat 'identity files " "))))
-        ;; Check if the command is PictureTag and get user selection if it is.
         (when (string= command "PictureTag")
           (setq user-selection (completing-read "Choose an option: "
                                  (my/read-lines unique-text-file)
                                  nil t)))
-        ;; Add user-selection to the command-and-files if not nil.
         (async-shell-command (if user-selection
                                (concat command " " user-selection " " (mapconcat 'identity files " "))
                                (concat command " " (mapconcat 'identity files " ")))
@@ -1365,20 +1467,27 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 
 * scroll
 
+Adjusts scrolling behaviours and settings for a smoother navigation experience within buffer contents.
+
 #+begin_src elisp
 ;;
 ;; -> scroll
 ;;
+
 (setq scroll-margin 20)
 (setq scroll-preserve-screen-position t)
+
 #+end_src
 
 * font
+
+Configures font settings for different text styles and sets up preferred fonts for a personalized and visually comfortable editing environment.
 
 #+begin_src elisp
 ;;
 ;; -> font
 ;;
+
 ;; (setq font-general "Noto Sans Mono 14")
 ;; (setq font-general "MesloLGS Nerd Font Mono 11")
 ;; (setq font-general "Source Code Pro 12")
@@ -1387,14 +1496,18 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 ;; (setq font-general "MesloLGS Nerd Font Mono 14")
 ;; (setq font-general "Droid Sans Mono 12")
 ;; (setq font-general "Hack Nerd Font Mono 13")
+
 #+end_src
 
 * custom-set-faces
+
+Applies customizations to text appearance through face settings, allowing for detailed control over Emacs's visual presentation of text across different contexts.
 
 #+begin_src elisp
 ;;
 ;; -> custom-set-faces
 ;;
+
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
@@ -1438,10 +1551,13 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 
 * dired
 
+Enhances Dired, the directory editor, with additional functionalities like async deletion, improving file management workflows within Emacs.
+
 #+begin_src elisp
 ;;
 ;; -> dired
 ;;
+
 (use-package dired
   :ensure nil
   :diminish dired-async-mode
@@ -1486,14 +1602,18 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
   (let ((search-term
           (read-from-minibuffer "File : ")))
     (dired-create-empty-file search-term)))
+
 #+end_src
 
 * image-dired
+
+Customizes the behaviour and appearance of Image-Dired, the image management extension of Dired, streamlining the browsing and manipulation of image files.
 
 #+begin_src elisp
 ;;
 ;; -> image-dired
 ;;
+
 (require 'image-mode)
 (require 'image-dired)
 
@@ -1596,14 +1716,18 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
      (define-key image-dired-thumbnail-mode-map (kbd "p")
        (lambda ()(interactive)(image-dired-backward-image)(image-dired-display-this)))
      ))
+
 #+end_src
 
 * visuals
+
+Configures various visual aspects of Emacs, including menu bar, toolbar, and scroll bar visibility, as well as window transparency and edge padding for a cleaner and more focused editing environment.
 
 #+begin_src elisp
 ;;
 ;; -> visuals
 ;;
+
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
@@ -1668,10 +1792,13 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 
 * imenu
 
+Customizes the Imenu index-building functionality for improved navigation within structured documents or source code, demonstrating regex-based configurations for specific file types.
+
 #+begin_src elisp
 ;;
 ;; -> imenu
 ;;
+
 (defun my-imenu-create-index ()
   "Create an index using definitions starting with ';; ->'."
   (let ((index-alist '())
@@ -1703,26 +1830,34 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
     (setq imenu-generic-expression
       '((nil "^#[[:space:]]+-> \\(.*\\)$" 1)))
     (imenu-add-menubar-index)))
+
 #+end_src
 
 * recentf
+
+Optimizes the handling of recently opened files list, tweaking preferences for the number of items shown and integration points for quick access to recent files.
 
 #+begin_src elisp
 ;;
 ;; -> recentf
 ;;
+
 (recentf-mode 1)
 
 (setq recentf-max-menu-items 200)
 (setq recentf-max-saved-items 200)
+
 #+end_src
 
 * modeline
+
+Customizes the modeline for displaying active modes, buffer names, or other context-sensitive information, improving the feedback and control available at a glance.
 
 #+begin_src elisp
 ;;
 ;; -> modeline
 ;;
+
 (setq-default mode-line-modified
   '(:eval (if (and (buffer-file-name) (buffer-modified-p))
             (propertize "** MODIFIED " 'face
@@ -1793,9 +1928,12 @@ Disables the parenthesis matching to < and > only in org mode as it is causing m
 
 (display-time-mode -1)
 (setq mode-line-compact nil)
+
 #+end_src
 
 * find
+
+Highlights customization for the Find and Grep tools within Emacs, including appearance, behaviour, and integration points fostering efficient content search and navigation.
 
 #+begin_src elisp
 ;;
@@ -1846,6 +1984,7 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
 ;;
 ;; -> grep
 ;;
+
 (require 'grep)
 
 (eval-after-load 'grep
@@ -1862,10 +2001,13 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
 
 * spelling
 
+Configures spell checking tools and dictionaries, integrating external tools like `aspell` or `hunspell`, and interfaces for checking and correcting spelling within documents.
+
 #+begin_src elisp
 ;;
 ;; -> spelling
 ;;
+
 (use-package jinx)
 (use-package powerthesaurus)
 
@@ -1883,28 +2025,36 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
 (setq dictionary-default-dictionary "*")
 (setq dictionary-server "dict.org")
 (setq dictionary-use-single-buffer t)
+
 #+end_src
 
 * gdb
+
+Sets up GDB, the GNU Debugger, integration for debugging within Emacs, tweaking interface elements and keybindings for a more convenient debugging workflow.
 
 #+begin_src elisp
 ;;
 ;; -> gdb
 ;;
+
 (setq gdb-display-io-nopopup 1)
 (setq gdb-many-windows t)
 
 (global-set-key (kbd "<f9>") 'gud-break)
 (global-set-key (kbd "<f10>") 'gud-next)
 (global-set-key (kbd "<f11>") 'gud-step)
+
 #+end_src
 
 * compilation
+
+Customizes the Compilation mode for handling output from external commands, adjusting styles, behaviours, and filtering for an improved feedback loop during code build or script execution.
 
 #+begin_src elisp
 ;;
 ;; -> compilation
 ;;
+
 (setq compilation-always-kill t)
 (setq compilation-context-lines 3)
 (setq compilation-scroll-output nil)
@@ -1912,6 +2062,7 @@ I also don't want ripgrep/deadgrep to respect version control files (including .
 (setq compilation-skip-threshold 2)
 
 (global-set-key (kbd "<f5>") 'my/project-compile)
+
 #+end_src
 
 Dynamically populate the compilation-search-path whenever a compilation takes place, might have problems with large directory structures but haven't fully tested yet!
@@ -1922,10 +2073,13 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 
 * auto-mode-alist
 
+Maps file extensions to specific Emacs modes, enabling automatic mode activation based on file type for a seamless editing experience across different languages and content types.
+
 #+begin_src elisp
 ;;
 ;; -> auto-mode-alist
 ;;
+
 (add-to-list 'auto-mode-alist '("\\.org_archive\\'" . org-mode))
 (add-to-list 'auto-mode-alist '("config.rasi\\'" . js-json-mode))
 (add-to-list 'auto-mode-alist '("theme.rasi\\'" . css-mode))
@@ -1939,14 +2093,18 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 (add-to-list 'auto-mode-alist '("/sway/config\\'" . i3wm-config-mode))
 (cl-loop for ext in '("\\.gpr$" "\\.ada$" "\\.ads$" "\\.adb$")
   do (add-to-list 'auto-mode-alist (cons ext 'ada-mode)))
+
 #+end_src
 
 * programming
+
+Sets up configurations and tool integrations for a productive programming environment, from auto-completion and syntax checking to language-specific settings and server integrations.
 
 #+begin_src elisp
 ;;
 ;; -> programming
 ;;
+
 (use-package eglot)
 
 ;; (define-key company-active-map (kbd "<tab>") 'company-complete-selection)
@@ -1969,14 +2127,18 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 
 (use-package flycheck)
 (use-package package-lint)
+
 #+end_src
 
 * diff
+
+Customizes the appearance and behaviour of diff and merge tools within Emacs, adjusting styles for better readability and control over version control diffs and conflict resolution.
 
 #+begin_src elisp
 ;;
 ;; -> diff
 ;;
+
 (use-package ztree)
 
 (setq-default ztree-diff-filter-list
@@ -2008,14 +2170,18 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 (setq ediff-prepare-buffer-hook #'org-fold-show-all)
 (setq-default ediff-highlight-all-diffs t)
 (setq ediff-split-window-function 'split-window-horizontally)
+
 #+end_src
 
 * ada
+
+Sets up a development environment for the Ada programming language, demonstrating integration options for modern and legacy tooling, and creating a productive configuration for Ada development.
 
 #+begin_src elisp
 ;;
 ;; -> ada
 ;;
+
 (defun my/eglot-dir-locals ()
   "Create .dir-locals.el file for eglot ada-mode using the selected DIRED path."
   (interactive)
@@ -2116,9 +2282,12 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 (with-eval-after-load 'ada-mode
   (define-key ada-mode-map (kbd "M-.") 'my/ada-find-definitions)
   (define-key ada-mode-map (kbd "M-,") 'my/ada-find-definition-pop))
+
 #+end_src
 
 * treesitter
+
+Integrates Tree-sitter, a modern parsing tool, for improved syntax highlighting and text analysis in supported languages, showcasing Emacs Tree-sitter support and language-specific configurations.
 
 #+begin_src elisp
 ;;
@@ -2164,15 +2333,18 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
      ;;      (css-mode . css-ts-mode)
      ;;      (python-mode . python-ts-mode)
      ))
+
 #+end_src
 
 * whitespace
+
+Highlights customization options for visualizing and managing whitespace in buffers, demonstrating configurations for displaying spaces, tabs, and line endings.
 
 #+begin_src elisp
 ;;
 ;; -> whitespace
 ;;
-;; Define the whitespace style.
+
 (setq-default whitespace-style
   '(face spaces empty tabs newline trailing space-mark tab-mark
      newline-mark tab-width indentation::space))
@@ -2215,14 +2387,18 @@ Dynamically populate the compilation-search-path whenever a compilation takes pl
 ;; Set whitespace actions.
 (setq-default whitespace-action
   '(cleanup auto-cleanup))
+
 #+end_src
 
 * project
+
+Customizes Emacs's project management features for handling multiple projects, demonstrating configurations for project discovery, switching, and build command integration.
 
 #+begin_src elisp
 ;;
 ;; -> project
 ;;
+
 (defun my/project-root ()
   "Return project root defined by user."
   (interactive)
@@ -2260,14 +2436,18 @@ With directories under project root using find."
 (setq project-vc-extra-root-markers '(".project"))
 
 (global-set-key (kbd "C-x p c") 'my/project-compile)
+
 #+end_src
 
 * indentation
+
+Defining very specific indentation and highlight guides
 
 #+begin_src elisp
 ;;
 ;; -> indentation
 ;;
+
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 3)
 (setq-default lisp-indent-offset 2)
@@ -2276,6 +2456,7 @@ With directories under project root using find."
 
 (use-package highlight-indent-guides
   :custom (highlight-indent-guides-method 'character))
+
 #+end_src
 
 * etags
@@ -2350,6 +2531,7 @@ echo
 ;;
 ;; -> etags
 ;;
+
 (defun my/etags-load ()
   "Load TAGS file from the first it can find up the directory stack."
   (interactive)
@@ -2366,9 +2548,12 @@ echo
 
 ;; (global-set-key (kbd "C-x p l") 'my/etags-load)
 ;; (global-set-key (kbd "C-x p u") 'my/etags-update)
+
 #+end_src
 
 * selected-window-accent-mode
+
+The Selected Window Accent Mode is an Emacs package designed to visually distinguish the currently selected window by applying a unique accent color to its fringes, mode line, header line, and margins.
 
 #+begin_src elisp
 ;;
@@ -2388,6 +2573,17 @@ echo
   (selected-window-accent-custom-color nil)
   ;; (selected-window-accent-custom-color "#3E829F")
   (selected-window-accent-mode-style 'default))
+
+#+end_src
+
+* push-block
+
+The code below allows text from between two delineating markers to be transported to another location, typically a file.
+
+#+begin_src elisp
+;;
+;; -> push-block
+;;
 
 (setq my/push-block-spec
   '(
@@ -2568,6 +2764,8 @@ echo
 
 * kurecolor
 
+Sets up Kurecolor, a color manipulation tool, integrating it within Emacs for efficiently tweaking color values in stylesheets, theme files, or other color-related contexts.
+
 #+begin_src elisp
 ;;
 ;; -> kurecolor
@@ -2604,10 +2802,13 @@ echo
 
 * shell
 
+Demonstrates customizations for shell integration within Emacs, optimizing settings for shell modes, command history, and shorthand functions for frequent shell-related tasks.
+
 #+begin_src elisp
 ;;
 ;; -> shell
 ;;
+
 (when (file-exists-p "/usr/bin/fish")
   (setq explicit-shell-file-name "/usr/bin/fish"))
 
@@ -2615,11 +2816,11 @@ echo
   (setq shell-file-name "/bin/fish")
 
   (use-package chatgpt-shell
-  :ensure t
-  :custom
-  ((chatgpt-shell-openai-key
-     (lambda ()
-       (auth-source-pass-get 'secret "openai-key"))))))
+    :ensure t
+    :custom
+    ((chatgpt-shell-openai-key
+       (lambda ()
+         (auth-source-pass-get 'secret "openai-key"))))))
 
 (defun my/eshell-hook ()
   "Set up company completions to be a little more fish like."
@@ -2645,9 +2846,12 @@ echo
   (setq-local tab-always-indent 'complete)
   :hook
   (shell-mode . my/shell-hook))
+
 #+end_src
 
 * calendar
+
+Enhances Emacs's calendar functionalities with additional packages and configurations, highlighting integration with Org mode and customization options for calendar views and event handling.
 
 #+begin_src elisp
 ;;
@@ -2672,6 +2876,8 @@ echo
 #+end_src
 
 * proced
+
+Customizes Proced, the process editor, adjusting its appearance, behaviour, and providing filter and sorting options for a clearer overview of system processes.
 
 #+begin_src elisp
 ;;
@@ -2710,10 +2916,13 @@ echo
 
 * all-the-icons
 
+Integrates the all-the-icons package for enhancing Emacs with iconography, demonstrating configurations for Dired mode, buffer listings, and completion frameworks.
+
 #+begin_src elisp
 ;;
 ;; -> all-the-icons
 ;;
+
 (use-package all-the-icons-ibuffer
   :ensure t
   :hook
@@ -2731,76 +2940,42 @@ echo
   all-the-icons-dired-mode
   :hook
   (dired-mode . all-the-icons-dired-mode))
+
 #+end_src
 
 * repeat
 
-#+begin_src elisp :tangle no
+I have for the moment decided that repeat-mode is not yet for me, I am currently using sticky keys in conjunction with sparse keymap creation.
+
+#+begin_src elisp
 ;;
 ;; -> repeat
 ;;
 
-(repeat-mode -1)
+(defun my/repeat-thing (func)
+  "Call FUNC and set up a sparse keymap for repeating actions."
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "n") (lambda () (interactive) (my/repeat-thing #'my/next-thing)))
+    (define-key map (kbd "p") (lambda () (interactive) (my/repeat-thing #'my/previous-thing)))
+    (define-key map (kbd "j") (lambda () (interactive) (my/repeat-thing #'tab-bar-history-back)))
+    (define-key map (kbd "k") (lambda () (interactive) (my/repeat-thing #'tab-bar-history-forward)))
+    (define-key map (kbd "u") (lambda () (interactive) (my/repeat-thing #'my/window-shrink)))
+    (define-key map (kbd "i") (lambda () (interactive) (my/repeat-thing #'my/window-enlarge)))
+    (funcall func)
+    (set-transient-map map t)))
 
-(defvar-keymap my/tab-bar
-  :repeat t
-  "j" #'tab-bar-history-back
-  "k" #'tab-bar-history-forward)
-
-(defvar-keymap my/move-repeat-map
-  :repeat t
-  "b" #'backward-char
-  "c" #'scroll-down-command
-  "d" #'scroll-up-command
-  "f" #'forward-char
-  "h" #'my/prev-window
-  "k" #'my/prev-scroll
-  "l" #'my/next-window
-  "n" #'next-line
-  "p" #'previous-line
-  "u" #'scroll-down-command
-  "v" #'scroll-up-command
-  "j" #'my/next-scroll)
-
-(defvar-keymap my/isearch-repeat-map
-  :repeat t
-  "s" #'isearch-repeat-forward
-  "r" #'isearch-repeat-backward
-  "w" #'isearch-yank-word-or-char)
-
-(defvar-keymap my/simple-repeat-map
-  :repeat t
-  "/" #'undo
-  "k" #'kill-line
-  "b" #'backward-word
-  "f" #'forward-word)
-
-(defvar-keymap my/delete-repeat-map
-  :repeat t
-  "k" #'org-kill-line
-  "d" #'kill-word
-  "DEL" #'backward-kill-word)
-
-(defvar-keymap my/window-repeat-map
-  :repeat t
-  "]" #'my/window-enlarge
-  "[" #'my/window-shrink)
-
-(defvar-keymap my/expand-repeat-map
-  :repeat t
-  "/" #'hippie-expand)
-
-(defvar-keymap my/next-repeat-map
-  :repeat t
-  "n" #'my/next-thing
-  "p" #'my/previous-thing)
-
-(setq repeat-echo-function 'ignore)
-(setq repeat-exit-key "g")
+(global-set-key (kbd "M-g n") (lambda () (interactive) (my/repeat-thing #'my/next-thing)))
+(global-set-key (kbd "M-g p") (lambda () (interactive) (my/repeat-thing #'my/previous-thing)))
+(global-set-key (kbd "C-x j") (lambda () (interactive) (my/repeat-thing #'tab-bar-history-back)))
+(global-set-key (kbd "C-x k") (lambda () (interactive) (my/repeat-thing #'tab-bar-history-forward)))
+(global-set-key (kbd "C-x u") (lambda () (interactive) (my/repeat-thing #'my/window-enlarge)))
+(global-set-key (kbd "C-x i") (lambda () (interactive) (my/repeat-thing #'my/window-shrink)))
 
 #+end_src
 
 * tab-bar
+
+Details configurations for Emacs's tab bar, showcasing customizations for tab behaviour, appearance, and integration points for keyboard navigation and tab management.
 
 #+begin_src elisp
 ;;
@@ -2871,6 +3046,8 @@ echo
 #+end_src
 
 * finance
+
+Shares custom Lisp functions for managing financial data within Emacs, demonstrating parsing, categorization, and projection of financial transactions and budgets.
 
 #+begin_src elisp
 ;;
@@ -3055,14 +3232,18 @@ echo
            (month (match-string 2))
            (year (match-string 3)))
       (replace-match (concat year "-" month "-" day)))))
+
 #+end_src
 
 * word-count
+
+Configures word count functionality, demonstrating custom word counting strategies for specific document sections or content types, optimizing for tasks like writing and documentation.
 
 #+begin_src elisp
 ;;
 ;; -> word-count
 ;;
+
 (use-package wc-mode
   ;; :hook
   ;; (org-mode . wc-mode)
@@ -3097,14 +3278,18 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
 
 ;; Set the custom wc-mode counting function
 (setq wc-count-words-function 'my/word-count-function)
+
 #+end_src
 
 * windows specific
+
+Curates configurations specific to the Windows operating system, adjusting paths, fonts, and environment variables for optimal use of Emacs on Windows.
 
 #+begin_src elisp
 ;;
 ;; -> windows-specific
 ;;
+
 (when (eq system-type 'windows-nt)
   (setq home-dir "c:/users/jimbo")
   (let ((xPaths
@@ -3125,6 +3310,8 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
 #+end_src
 
 * linux specific
+
+Curates configurations specific to Linux, making adjustments for paths, fonts, and system integrations ensuring Emacs is well integrated with the Linux desktop environment.
 
 #+begin_src elisp
 ;;
@@ -3154,7 +3341,10 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
   (add-to-list 'default-frame-alist `(font . ,font-general)))
 
 #+end_src
+
 * development
+
+Shares miscellaneous development tools, tips, and functions, showcasing the versatility and extensibility of Emacs for a wide range of development tasks and personal workflows.
 
 #+begin_src elisp
 ;;
@@ -3208,7 +3398,7 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
   "Find the first window displaying a buffer whose name matches the given REGEX.
 If no such window is found, return nil."
   (let ((windows (window-list))
-        (found-window nil))
+         (found-window nil))
     (dolist (window windows found-window)
       (when (string-match-p regex (buffer-name (window-buffer window)))
         (setq found-window window)
@@ -3315,22 +3505,22 @@ If no such window is found, return nil."
   "Switch to a buffer, open a recent file, jump to a bookmark, or change the theme from a unified interface."
   (interactive)
   (let* ((buffers (mapcar #'buffer-name (buffer-list)))
-         (recent-files recentf-list)
-         (bookmarks (bookmark-all-names))
-         (themes (custom-available-themes))
-         (all-options (append buffers recent-files bookmarks
-                              (mapcar (lambda (theme) (concat "Theme: " (symbol-name theme))) themes)))
-         (selection (completing-read "Switch to: "
-                                     (lambda (str pred action)
-                                       (if (eq action 'metadata)
-                                           '(metadata . ((category . file)))
-                                         (complete-with-action action all-options str pred)))
-                                     nil t nil 'file-name-history)))
+          (recent-files recentf-list)
+          (bookmarks (bookmark-all-names))
+          (themes (custom-available-themes))
+          (all-options (append buffers recent-files bookmarks
+                         (mapcar (lambda (theme) (concat "Theme: " (symbol-name theme))) themes)))
+          (selection (completing-read "Switch to: "
+                       (lambda (str pred action)
+                         (if (eq action 'metadata)
+                           '(metadata . ((category . file)))
+                           (complete-with-action action all-options str pred)))
+                       nil t nil 'file-name-history)))
     (pcase selection
       ((pred (lambda (sel) (member sel buffers))) (switch-to-buffer selection))
       ((pred (lambda (sel) (member sel bookmarks))) (bookmark-jump selection))
       ((pred (lambda (sel) (string-prefix-p "Theme: " sel)))
-       (load-theme (intern (substring selection (length "Theme: "))) t))
+        (load-theme (intern (substring selection (length "Theme: "))) t))
       (_ (find-file selection)))))
 
 (global-set-key (kbd "C-t") 'transpose-sexps)
@@ -3380,27 +3570,8 @@ If no such window is found, return nil."
 (global-set-key (kbd "M-s ,") 'my/mark-line)
 
 (if (and (fboundp 'native-comp-available-p)
-       (native-comp-available-p))
+      (native-comp-available-p))
   (message "Native compilation is available")
-(message "Native complation is *not* available"))
-
-(defun my/repeat-thing (func)
-  "Call FUNC and set up a sparse keymap for repeating actions."
-  (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "n") (lambda () (interactive) (my/repeat-thing #'my/next-thing)))
-    (define-key map (kbd "p") (lambda () (interactive) (my/repeat-thing #'my/previous-thing)))
-    (define-key map (kbd "j") (lambda () (interactive) (my/repeat-thing #'tab-bar-history-back)))
-    (define-key map (kbd "k") (lambda () (interactive) (my/repeat-thing #'tab-bar-history-forward)))
-    (define-key map (kbd "u") (lambda () (interactive) (my/repeat-thing #'my/window-shrink)))
-    (define-key map (kbd "i") (lambda () (interactive) (my/repeat-thing #'my/window-enlarge)))
-    (funcall func)
-    (set-transient-map map t)))
-
-(global-set-key (kbd "M-g n") (lambda () (interactive) (my/repeat-thing #'my/next-thing)))
-(global-set-key (kbd "M-g p") (lambda () (interactive) (my/repeat-thing #'my/previous-thing)))
-(global-set-key (kbd "C-x j") (lambda ()(interactive)(my/repeat-thing #'tab-bar-history-back)))
-(global-set-key (kbd "C-x k") (lambda ()(interactive)(my/repeat-thing #'tab-bar-history-forward)))
-(global-set-key (kbd "C-x u") (lambda ()(interactive)(my/repeat-thing #'my/window-enlarge)))
-(global-set-key (kbd "C-x i") (lambda ()(interactive)(my/repeat-thing #'my/window-shrink)))
+  (message "Native complation is *not* available"))
 
 #+end_src
