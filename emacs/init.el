@@ -53,6 +53,31 @@
     :load-path "~/repos/fd-find"))
 
 ;;
+;; -> fetchers
+;;
+
+(when (version<= "29.0" emacs-version)
+  ;; will be able to remove the following package-vc-install as of emacs 30
+  ;; as this will be built-in
+  (unless (package-installed-p 'vc-use-package)
+    (package-vc-install "https://github.com/slotThe/vc-use-package"))
+
+  ;; now use-package has the :vc keyword!
+  (use-package org-ql
+    :defer t
+    :vc (:fetcher github :repo "alphapapa/org-ql"))
+
+  (use-package ada-mode
+    :vc (:fetcher github :repo "captainflasmr/old-ada-mode"))
+
+  (use-package kbd-mode
+    :vc (:fetcher github :repo "kmonad/kbd-mode")
+    :custom
+    (kbd-mode-kill-kmonad "pkill -9 kmonad")
+    (kbd-mode-start-kmonad "kmonad ~/.config/kmonad/keyboard.kbd"))
+)
+
+;;
 ;; -> profile
 ;;
 (use-package esup
@@ -198,13 +223,26 @@
 ;;
 (use-package vertico
   :init
-  (vertico-mode)
+  (vertico-mode 1)
+  (vertico-multiform-mode 1)
+  :config
+  (setq vertico-multiform-commands
+    '((consult-line buffer)
+       (consult-line-thing-at-point buffer)
+       (consult-recent-file buffer)
+       (consult-mode-command buffer)
+       (consult-complex-command buffer)
+       (embark-bindings buffer)
+       (consult-locate buffer)
+       (consult-project-buffer buffer)
+       (consult-ripgrep buffer)
+       (consult-fd buffer)))
   :custom
   (vertico-cycle t)
   (read-file-name-completion-ignore-case t)
   (read-buffer-completion-ignore-case t)
   (completion-ignore-case t)
-  (vertico-resize t)
+  (vertico-resize nil)
   (vertico-count 20)
   :bind (:map vertico-map
           ("C-n" . vertico-next)
@@ -215,7 +253,7 @@
 
 (use-package vertico-posframe
   :config
-  (vertico-posframe-mode 1))
+  (vertico-posframe-mode -1))
 
 (use-package orderless
   :custom
@@ -237,17 +275,15 @@
 (global-set-key (kbd "M-o") my-jump-keymap)
 
 (define-key my-jump-keymap (kbd "-") #'tab-close)
-(define-key my-jump-keymap (kbd "=") (lambda () (interactive) (tab-bar-new-tab-to -1)))
+(define-key my-jump-keymap (kbd "=") (lambda () (interactive) (tab-bar-new-tab-to -1)(tab-bar-mode 'toggle)))
 (define-key my-jump-keymap (kbd "e") (lambda () (interactive) (find-file (concat user-emacs-directory "init.el"))))
 (define-key my-jump-keymap (kbd "f") #'my/find-file)
 (define-key my-jump-keymap (kbd "h") (lambda () (interactive) (find-file "~")))
-(define-key my-jump-keymap (kbd "i") #'tab-bar-history-forward)
 (define-key my-jump-keymap (kbd "k") (lambda () (interactive) (find-file (concat user-emacs-directory "emacs--init.org"))))
 (define-key my-jump-keymap (kbd "o") #'my/switch-to-thing)
 (define-key my-jump-keymap (kbd "p") #'proced)
 (define-key my-jump-keymap (kbd "r") #'scratch-buffer)
 (define-key my-jump-keymap (kbd "t") #'customize-themes)
-(define-key my-jump-keymap (kbd "u") #'tab-bar-history-back)
 
 ;;
 ;; -> keys-visual
@@ -283,10 +319,10 @@
 ;;
 
 (defvar my-other-keymap (make-sparse-keymap))
-(global-set-key (kbd "M-u") my-other-keymap)
-(define-key my-other-keymap (kbd "l") #'eval-last-sexp)
-(define-key my-other-keymap (kbd "f") #'eval-defun)
-(define-key my-other-keymap (kbd "e") #'view-echo-area-messages)
+(global-set-key (kbd "M-r") my-other-keymap)
+
+(global-set-key (kbd "M-s d") #'eval-last-sexp)
+(global-set-key (kbd "M-s f") #'eval-defun)
 
 ;;
 ;; -> magit
@@ -412,18 +448,12 @@
 ;;
 (global-set-key (kbd "C-=") '(lambda ()(interactive)(text-scale-adjust 1)))
 (global-set-key (kbd "C--") '(lambda ()(interactive)(text-scale-adjust -1)))
-(global-set-key (kbd "M-7") (lambda ()(interactive)(insert "[")))
-(global-set-key (kbd "M-8") (lambda ()(interactive)(insert "]")))
 (global-set-key (kbd "M-s l") 'save-buffer)
 (global-set-key (kbd "M-s s") 'save-buffer)
 (global-set-key (kbd "M-s p") 'org-plot/gnuplot)
 (global-set-key (kbd "M-s [") 'beginning-of-buffer)
 (global-set-key (kbd "M-s ]") 'end-of-buffer)
 (global-set-key (kbd "M-s v") 'org-babel-tangle)
-(global-set-key (kbd "M-g n") #'my/next-thing)
-(global-set-key (kbd "M-g p") #'my/previous-thing)
-(global-set-key (kbd "C-x j") #'tab-bar-history-back)
-(global-set-key (kbd "C-x k") #'tab-bar-history-forward)
 (global-set-key (kbd "M-s e") 'my/push-block)
 (global-set-key (kbd "M-s b") '(lambda ()(interactive)(org-table-recalculate 'all)))
 (global-set-key (kbd "M-s g") 'my/text-browser-search)
@@ -435,8 +465,14 @@
 (global-set-key (kbd "M-l") #'my/next-window)
 (global-set-key (kbd "M-j") #'my/next-scroll)
 (global-set-key (kbd "M-k") #'my/prev-scroll)
-(global-set-key (kbd "C-x ]") #'my/window-enlarge)
-(global-set-key (kbd "C-x [") #'my/window-shrink)
+(bind-key* (kbd "M-n") #'next-line)
+(bind-key* (kbd "M-p") #'previous-line)
+(bind-key* (kbd "M-J") #'scroll-up-command)
+(bind-key* (kbd "M-K") #'scroll-down-command)
+(bind-key* (kbd "M-[") #'beginning-of-buffer)
+(bind-key* (kbd "M-]") #'end-of-buffer)
+(global-set-key (kbd "M-I") #'my/window-enlarge)
+(global-set-key (kbd "M-U") #'my/window-shrink)
 (global-set-key (kbd "C-c b") (lambda ()(interactive)(async-shell-command "do_backup home" "*backup*")))
 (global-set-key (kbd "C-c c") 'org-capture)
 (global-set-key (kbd "C-c f") 'my/fold)
@@ -676,16 +712,18 @@ If ARG is provided, it sets the counter."
 (global-set-key (kbd "M-@") 'my/mark-block)
 (global-set-key (kbd "M-'") 'my/mark-word)
 
-(defun my/replace-spaces-with-dashes (start end)
-  "Replace all spaces with dashes in the selected region from START to END."
-  (interactive "r")
-  (let ((selected-text (buffer-substring start end))
-         (replacement-text))
-    (setq replacement-text (replace-regexp-in-string " " "-" selected-text))
+(defun my/replace-spaces-with-dashes-or-vice-versa (start end &optional reverse)
+  "Replace all spaces with dashes or dashes with spaces in the selected region from START to END.
+With a prefix argument (C-u), replaces dashes with spaces instead."
+  (interactive "r\nP") ; "\nP" captures the prefix argument
+  (let* ((selected-text (buffer-substring start end))
+         (replacement-text (if reverse
+                               (replace-regexp-in-string "-" " " selected-text)
+                             (replace-regexp-in-string " " "-" selected-text))))
     (delete-region start end)
     (insert replacement-text)))
 
-(global-set-key (kbd "M-_") #'my/replace-spaces-with-dashes)
+(global-set-key (kbd "M-_") #'my/replace-spaces-with-dashes-or-vice-versa)
 
 (require 'cl-lib)
 
@@ -771,6 +809,10 @@ as search term for Google search in web browser."
      (allow-no-window . t)))
 
 (add-to-list 'display-buffer-alist
+  '("\\*kmonad" display-buffer-no-window
+     (allow-no-window . t)))
+
+(add-to-list 'display-buffer-alist
   '("\\*Proced" display-buffer-same-window))
 
 (add-to-list 'display-buffer-alist
@@ -793,6 +835,14 @@ as search term for Google search in web browser."
      (direction . leftmost)
      (dedicated . t)
      (window-width . 0.3)
+     (inhibit-same-window . t)))
+
+(add-to-list 'display-buffer-alist
+  '("consult-ripgrep"
+     (display-buffer-reuse-window display-buffer-in-direction)
+     (direction . leftmost)
+     (dedicated . t)
+     (window-width . 0.33)
      (inhibit-same-window . t)))
 
 (add-to-list 'display-buffer-alist
@@ -1480,7 +1530,7 @@ as search term for Google search in web browser."
 
 (setq my/mode-line-format
   '("%e"
-     ;; (:eval (my-all-tabs-string))
+     (:eval (my-all-tabs-string))
      mode-line-modified
      (:eval
        (propertize (format "%s" (abbreviate-file-name default-directory))
@@ -1511,7 +1561,7 @@ as search term for Google search in web browser."
   (force-mode-line-update t))
 
 (display-time-mode -1)
-(setq mode-line-compact t)
+(setq mode-line-compact nil)
 
 ;;
 ;; -> find
@@ -1573,7 +1623,6 @@ as search term for Google search in web browser."
 
 (global-set-key (kbd "M-s c") 'wc-mode)
 (global-set-key (kbd "M-s j") 'jinx-mode)
-(global-set-key (kbd "M-s d") 'dictionary-lookup-definition)
 (global-set-key (kbd "M-s f") 'dictionary-lookup-definition)
 (global-set-key (kbd "M-s t") 'powerthesaurus-lookup-synonyms-dwim)
 
@@ -1967,7 +2016,7 @@ With directories under project root using find."
   (selected-window-accent-smart-borders nil)
   (selected-window-accent-tab-accent t)
   (selected-window-accent-custom-color nil)
-  (selected-window-accent-custom-color "#3E829F")
+  ;; (selected-window-accent-custom-color "#3E829F")
   (selected-window-accent-mode-style 'default))
 
 (setq my/push-block-spec
@@ -2290,68 +2339,6 @@ With directories under project root using find."
   (dired-mode . all-the-icons-dired-mode))
 
 ;;
-;; -> repeat
-;;
-
-(repeat-mode 1)
-
-(defvar-keymap my/tab-bar
-  :repeat t
-  "j" #'tab-bar-history-back
-  "k" #'tab-bar-history-forward)
-
-(defvar-keymap my/move-repeat-map
-  :repeat t
-  "b" #'backward-char
-  "c" #'scroll-down-command
-  "d" #'scroll-up-command
-  "f" #'forward-char
-  "h" #'my/prev-window
-  "k" #'my/prev-scroll
-  "l" #'my/next-window
-  "n" #'next-line
-  "p" #'previous-line
-  "u" #'scroll-down-command
-  "v" #'scroll-up-command
-  "j" #'my/next-scroll)
-
-(defvar-keymap my/isearch-repeat-map
-  :repeat t
-  "s" #'isearch-repeat-forward
-  "r" #'isearch-repeat-backward
-  "w" #'isearch-yank-word-or-char)
-
-(defvar-keymap my/simple-repeat-map
-  :repeat t
-  "/" #'undo
-  "k" #'kill-line
-  "b" #'backward-word
-  "f" #'forward-word)
-
-(defvar-keymap my/delete-repeat-map
-  :repeat t
-  "k" #'org-kill-line
-  "d" #'kill-word
-  "DEL" #'backward-kill-word)
-
-(defvar-keymap my/window-repeat-map
-  :repeat t
-  "]" #'my/window-enlarge
-  "[" #'my/window-shrink)
-
-(defvar-keymap my/expand-repeat-map
-  :repeat t
-  "/" #'hippie-expand)
-
-(defvar-keymap my/next-repeat-map
-  :repeat t
-  "n" #'my/next-thing
-  "p" #'my/previous-thing)
-
-(setq repeat-echo-function 'ignore)
-(setq repeat-exit-key "g")
-
-;;
 ;; -> tab-bar
 ;;
 
@@ -2387,11 +2374,11 @@ With directories under project root using find."
       (format " %d " i)
       'face (funcall tab-bar-tab-face-function tab)))
   :bind
-  (("[" . tab-bar-switch-to-prev-tab)
-    ("]" . tab-bar-switch-to-next-tab)
+  (("M-u" . tab-bar-switch-to-prev-tab)
+    ("M-i" . tab-bar-switch-to-next-tab)
     :repeat-map my/tab-bar-repeat-map
-    ("[" . tab-bar-switch-to-prev-tab)
-    ("]" . tab-bar-switch-to-next-tab)))
+    ("u" . tab-bar-switch-to-prev-tab)
+    ("i" . tab-bar-switch-to-next-tab)))
 
 ;; (use-package tab-bar ;; 27.1
 ;;   :ensure nil ;; Since tab-bar is built-in, no package needs to be downloaded
@@ -2771,6 +2758,13 @@ If no such window is found, return nil."
       (org-agenda-goto)
       (org-fold-show-entry))
 
+    (setq window (my/get-window-regex "consult-ripgrep"))
+    (when window
+      (select-window window)
+      (backward-button 1)
+      (push-button)
+      (org-fold-show-entry))
+
     (setq window (or (my/get-window-regex "occur")
                    (my/get-window-regex "flycheck errors")))
     (when window
@@ -2806,6 +2800,13 @@ If no such window is found, return nil."
       (select-window window)
       (org-agenda-next-item 1)
       (org-agenda-goto)
+      (org-fold-show-entry))
+
+    (setq window (my/get-window-regex "consult-ripgrep"))
+    (when window
+      (select-window window)
+      (forward-button 1)
+      (push-button)
       (org-fold-show-entry))
 
     (setq window (or (my/get-window-regex "occur")
@@ -2876,3 +2877,41 @@ If no such window is found, return nil."
   (setq recentf-list nil)
   (recentf-save-list)
   (message "Cleared recent files list"))
+
+(bind-key* (kbd "C-c <left>") #'windmove-left)
+(bind-key* (kbd "C-c <right>") #'windmove-right)
+(bind-key* (kbd "C-c <up>") #'windmove-up)
+(bind-key* (kbd "C-c <down>") #'windmove-down)
+
+(defun my/mark-line ()
+  "Mark whole line."
+  (interactive)
+  (move-beginning-of-line 1)
+  (set-mark (point))
+  (end-of-line))
+
+(global-set-key (kbd "M-s ,") 'my/mark-line)
+
+(if (and (fboundp 'native-comp-available-p)
+       (native-comp-available-p))
+  (message "Native compilation is available")
+(message "Native complation is *not* available"))
+
+(defun my/repeat-thing (func)
+  "Call FUNC and set up a sparse keymap for repeating actions."
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "n") (lambda () (interactive) (my/repeat-thing #'my/next-thing)))
+    (define-key map (kbd "p") (lambda () (interactive) (my/repeat-thing #'my/previous-thing)))
+    (define-key map (kbd "j") (lambda () (interactive) (my/repeat-thing #'tab-bar-history-back)))
+    (define-key map (kbd "k") (lambda () (interactive) (my/repeat-thing #'tab-bar-history-forward)))
+    (define-key map (kbd "u") (lambda () (interactive) (my/repeat-thing #'my/window-shrink)))
+    (define-key map (kbd "i") (lambda () (interactive) (my/repeat-thing #'my/window-enlarge)))
+    (funcall func)
+    (set-transient-map map t)))
+
+(global-set-key (kbd "M-g n") (lambda () (interactive) (my/repeat-thing #'my/next-thing)))
+(global-set-key (kbd "M-g p") (lambda () (interactive) (my/repeat-thing #'my/previous-thing)))
+(global-set-key (kbd "C-x j") (lambda ()(interactive)(my/repeat-thing #'tab-bar-history-back)))
+(global-set-key (kbd "C-x k") (lambda ()(interactive)(my/repeat-thing #'tab-bar-history-forward)))
+(global-set-key (kbd "C-x u") (lambda ()(interactive)(my/repeat-thing #'my/window-enlarge)))
+(global-set-key (kbd "C-x i") (lambda ()(interactive)(my/repeat-thing #'my/window-shrink)))
