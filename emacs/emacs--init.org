@@ -121,6 +121,10 @@ Displays Emacs's startup time in the message buffer as soon as Emacs finishes in
 
 Uses newer features in Emacs 29+ to directly install packages from version control sources like GitHub, showcasing integration with `org-ql`, `ada-mode`, and others.
 
+Note that the ada-mode mentioned here is the original ada-mode that was included by default in Emacs before AdaCore began developing a related mode. I have forked this original version to preserve it.
+
+kbd-mode has a very useful feature that reload the kbd configuration for testing.
+
 #+begin_src elisp
 ;;
 ;; -> fetchers
@@ -152,7 +156,7 @@ Uses newer features in Emacs 29+ to directly install packages from version contr
 
 Enables the `esup` package for profiling Emacs's startup time to help diagnose slow startup issues.
 
-#+begin_src elisp
+#+begin_src elisp :tangle no
 ;;
 ;; -> profile
 ;;
@@ -173,12 +177,9 @@ Demonstrates the use of `use-package` to neatly organize package configuration a
 ;;
 ;; -> use-package
 ;;
-
+(use-package free-keys)
 (use-package lorem-ipsum)
-(use-package ox-epub)
 (use-package file-info)
-(use-package keepass-mode)
-(use-package ox-gfm)
 (use-package async)
 (use-package diminish)
 (use-package diredfl
@@ -243,26 +244,17 @@ Configures `corfu` for autocompletion, setting up preferences like cycling throu
 (use-package corfu
   ;; Optional customizations
   :custom
-  (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-  (corfu-auto t)                 ;; Enable auto completion
-  (corfu-separator ?\s)          ;; Orderless field separator
-  (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
-  (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
-  (corfu-preview-current nil)    ;; Disable current candidate preview
-  (corfu-preselect 'prompt)      ;; Preselect the prompt
-  (corfu-on-exact-match nil)     ;; Configure handling of exact matches
-  (corfu-scroll-margin 5)        ;; Use scroll margin
-
-  ;; Enable Corfu only for certain modes.
+  (corfu-cycle t)
+  (corfu-auto t)
+  (corfu-separator ?\s)
+  (corfu-quit-at-boundary nil)
+  (corfu-quit-no-match nil)
+  (corfu-preview-current nil)
+  (corfu-preselect 'first)
+  (corfu-on-exact-match nil)
+  (corfu-scroll-margin 5)
   :hook ((shell-mode . corfu-mode)
-          (eshell-mode . corfu-mode))
-
-  ;; Recommended: Enable Corfu globally.  This is recommended since Dabbrev can
-  ;; be used globally (M-/).  See also the customization variable
-  ;; `global-corfu-modes' to exclude certain modes.
-  ;; :init
-  ;; (global-corfu-mode)
-  )
+          (eshell-mode . corfu-mode)))
 
 (use-package emacs
   :init
@@ -279,23 +271,12 @@ Configures `corfu` for autocompletion, setting up preferences like cycling throu
   (setq tab-always-indent t))
 
 (use-package tempel
-  ;; Require trigger prefix before template name when completing.
-  ;; :custom
-  ;; (tempel-trigger-prefix "<")
   :diminish tempel-abbrev-mode global-tempel-abbrev-mode abbrev-mode
   :bind (("M-+" . tempel-complete) ;; Alternative tempel-expand
           ("M-*" . tempel-insert))
 
   :init
-  ;; Setup completion at point
   (defun tempel-setup-capf ()
-    ;; Add the Tempel Capf to `completion-at-point-functions'.
-    ;; `tempel-expand' only triggers on exact matches. Alternatively use
-    ;; `tempel-complete' if you want to see all matches, but then you
-    ;; should also configure `tempel-trigger-prefix', such that Tempel
-    ;; does not trigger too often when you don't expect it. NOTE: We add
-    ;; `tempel-expand' *before* the main programming mode Capf, such
-    ;; that it will be tried first.
     (setq-local completion-at-point-functions
       (cons #'tempel-expand
         completion-at-point-functions)))
@@ -303,10 +284,6 @@ Configures `corfu` for autocompletion, setting up preferences like cycling throu
   (add-hook 'conf-mode-hook #'tempel-setup-capf)
   (add-hook 'prog-mode-hook #'tempel-setup-capf)
   (add-hook 'text-mode-hook #'tempel-setup-capf)
-
-  ;; Optionally make the Tempel templates available to Abbrev,
-  ;; either locally or globally. `expand-abbrev' is bound to C-x '.
-  ;; (add-hook 'prog-mode-hook #'tempel-abbrev-mode)
   (global-tempel-abbrev-mode))
 
 #+end_src
@@ -366,17 +343,13 @@ Setup for both vanilla and advanced modeline completion styles, including config
   (read-buffer-completion-ignore-case t)
   (completion-ignore-case t)
   (vertico-resize nil)
-  (vertico-count 20)
+  (vertico-count 10)
   :bind (:map vertico-map
           ("C-n" . vertico-next)
           ("C-p" . vertico-previous)
           :repeat-map my/vertico-repeat-map
           ("n" . vertico-next)
           ("p" . vertico-previous)))
-
-(use-package vertico-posframe
-  :config
-  (vertico-posframe-mode -1))
 
 (use-package orderless
   :custom
@@ -392,10 +365,11 @@ Setup for both vanilla and advanced modeline completion styles, including config
 
 #+end_src
 
-
 * keys-navigation
 
 Defines custom keybindings for navigating through files and Emacs features like tabs, dired, and scratch buffers.
+
+To reduce wrist RSI I am using the left meta thumb key as much as possible.
 
 #+begin_src elisp
 ;;
@@ -458,6 +432,8 @@ Sets up keybindings for quickly toggling visual features like font, theme, line 
 
 Configures a sparse keymap for miscellaneous actions like evaluating expressions and capturing content with Org mode.
 
+This section is a bit experimental while I continue to work out a nice hand comfort layout.
+
 #+begin_src elisp
 ;;
 ;; -> keys-other
@@ -466,14 +442,17 @@ Configures a sparse keymap for miscellaneous actions like evaluating expressions
 (defvar my-other-keymap (make-sparse-keymap))
 (global-set-key (kbd "M-r") my-other-keymap)
 
-(global-set-key (kbd "M-s d") #'eval-last-sexp)
-(global-set-key (kbd "M-s f") #'eval-defun)
+(global-set-key (kbd "M-s f") #'eval-last-sexp)
+(global-set-key (kbd "M-s d") #'eval-defun)
+(global-set-key (kbd "M-s q") #'dired-toggle-read-only)
 
 #+end_src
 
 * magit
 
 Configures `magit` for Git integration, adjusting interface preferences and repository directories for easy access to version control features.
+
+Note that due to my window split bindings with numeric keys I have unbound those in magit, but I don't use those keys anyway.
 
 #+begin_src elisp
 ;;
@@ -482,6 +461,7 @@ Configures `magit` for Git integration, adjusting interface preferences and repo
 
 (when (executable-find "git")
   (use-package magit
+    :defer 5
     :config
     (unbind-key "M-0" magit-mode-map)
     (unbind-key "M-1" magit-mode-map)
@@ -529,7 +509,8 @@ Setup for the Emacs Multimedia System (EMMS) for managing and playing media file
 ;;
 
 (use-package emms
-  :init (emms-all)
+  :init
+  (emms-all)
   :hook
   (emms-browser-mode . turn-on-follow-mode)
   (emms-browser-mode . hl-line-mode)
@@ -544,7 +525,7 @@ Setup for the Emacs Multimedia System (EMMS) for managing and playing media file
   (emms-volume-amixer-card 1)
   (emms-volume-change-function 'emms-volume-pulse-change))
 
-(require 'emms-setup)
+;; (require 'emms-setup)
 
 #+end_src
 
@@ -593,6 +574,10 @@ Configures `elfeed` for RSS/Atom feed reading, showcasing customization of feed 
        "http://www.masteringemacs.org/feed/"
        "https://jao.io/blog/rss.xml")))
 
+(defun my/show-elfeed (buffer)
+  "Show Elfeed wrapper with BUFFER."
+  (display-buffer buffer))
+
 (setq elfeed-show-mode-hook
   (lambda ()
     (set-face-attribute 'variable-pitch (selected-frame)
@@ -604,6 +589,8 @@ Configures `elfeed` for RSS/Atom feed reading, showcasing customization of feed 
 * expansion
 
 Enables and configures word expansion functionalities likened to text snippet expansion and auto-completion within Emacs.
+
+Although I am using hippie-expand I am using it pretty much in a simply dabbrev type of manner.
 
 #+begin_src elisp
 ;;
@@ -626,16 +613,24 @@ Enables and configures word expansion functionalities likened to text snippet ex
 
 Demonstrates a broad set of global keybindings for common actions like saving buffers, controlling text scale, and navigating large documents.
 
+Note that occasionally I use the use-package related bind-key for a set all modes keybinding
+
 #+begin_src elisp
 ;;
 ;; -> keybinding
 ;;
 
+(global-set-key (kbd "C-x C-o") 'my/collapse-space)
+(global-set-key (kbd "M-_") #'my/replace-spaces-with-dashes-or-vice-versa)
+(global-set-key (kbd "M-s h") 'my/mark-block)
+(global-set-key (kbd "M-@") 'my/mark-block)
+(global-set-key (kbd "M-'") 'my/mark-word)
+(global-set-key (kbd "M-s s") 'save-buffer)
 (global-set-key (kbd "C-=") '(lambda ()(interactive)(text-scale-adjust 1)))
 (global-set-key (kbd "C--") '(lambda ()(interactive)(text-scale-adjust -1)))
 (global-set-key (kbd "M-s l") 'save-buffer)
 (global-set-key (kbd "M-s s") 'save-buffer)
-(global-set-key (kbd "M-s p") 'org-plot/gnuplot)
+(global-set-key (kbd "M-s a") 'org-plot/gnuplot)
 (global-set-key (kbd "M-s [") 'beginning-of-buffer)
 (global-set-key (kbd "M-s ]") 'end-of-buffer)
 (global-set-key (kbd "M-s v") 'org-babel-tangle)
@@ -643,7 +638,7 @@ Demonstrates a broad set of global keybindings for common actions like saving bu
 (global-set-key (kbd "M-s b") '(lambda ()(interactive)(org-table-recalculate 'all)))
 (global-set-key (kbd "M-s g") 'my/text-browser-search)
 (global-set-key (kbd "M-=") 'count-words)
-(define-key minibuffer-local-map (kbd "C-c e") #'embark-collect)
+(define-key minibuffer-local-map (kbd "C-c e") #'embark-export)
 (define-key minibuffer-local-map (kbd "M-o") #'abort-minibuffers)
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "M-h") #'my/prev-window)
@@ -670,6 +665,7 @@ Demonstrates a broad set of global keybindings for common actions like saving bu
 (global-set-key (kbd "M-;") 'my/comment-or-uncomment)
 (global-set-key (kbd "M-9") 'my/grep)
 (global-set-key (kbd "C-c ,") 'embark-act)
+(global-set-key (kbd "M-s ,") 'my/mark-line)
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-h h"))
 
@@ -678,6 +674,8 @@ Demonstrates a broad set of global keybindings for common actions like saving bu
 * consult
 
 Integrates `consult` for enhanced search and navigation within Emacs, providing shortcuts and configuration for more efficient workflows.
+
+I only really use the consult preview mechanism for themes and otherwise turn it off.
 
 #+begin_src elisp
 
@@ -857,10 +855,6 @@ Defines a suite of custom functions to extend Emacs's functionality tailored to 
 ;; -> defun
 ;;
 
-(defun my/show-elfeed (buffer)
-  "Show Elfeed wrapper with BUFFER."
-  (display-buffer buffer))
-
 (defun my/resize-window (delta &optional horizontal)
   "Resize window back and forth by DELTA and HORIZONTAL."
   (interactive)
@@ -937,8 +931,6 @@ If ARG is provided, it sets the counter."
           (pounds (string-to-number (cadr parts))))
     (+ (* stone 14) pounds)))
 
-(global-set-key (kbd "C-c w") 'file-info-show)
-
 (defun my/mark-word ()
   "Redefinition of 'mark-word'."
   (interactive)
@@ -949,6 +941,13 @@ If ARG is provided, it sets the counter."
     (push-mark))
   (forward-word)
   (setq mark-active t))
+
+(defun my/mark-line ()
+  "Mark whole line."
+  (interactive)
+  (beginning-of-line)
+  (push-mark (point) nil t)
+  (end-of-line))
 
 (defun my/mark-block ()
   "Marking a block of text surrounded by a newline."
@@ -964,10 +963,6 @@ If ARG is provided, it sets the counter."
   (skip-chars-backward " \n\t")
   (setq mark-active t))
 
-(global-set-key (kbd "M-s h") 'my/mark-block)
-(global-set-key (kbd "M-@") 'my/mark-block)
-(global-set-key (kbd "M-'") 'my/mark-word)
-
 (defun my/replace-spaces-with-dashes-or-vice-versa (start end &optional reverse)
   "Replace all spaces with dashes or dashes with spaces in the selected region from START to END.
 With a prefix argument (C-u), replaces dashes with spaces instead."
@@ -978,8 +973,6 @@ With a prefix argument (C-u), replaces dashes with spaces instead."
                               (replace-regexp-in-string " " "-" selected-text))))
     (delete-region start end)
     (insert replacement-text)))
-
-(global-set-key (kbd "M-_") #'my/replace-spaces-with-dashes-or-vice-versa)
 
 (require 'cl-lib)
 
@@ -999,8 +992,6 @@ With a prefix argument (C-u), replaces dashes with spaces instead."
                 (insert "\n"))
               (cl-return))
             (forward-line)))))))
-
-(global-set-key (kbd "C-x C-o") 'my/collapse-space)
 
 (defun my/text-browser-search ()
   "Use the selected text (or word under cursor)
@@ -1028,6 +1019,13 @@ as search term for Google search in web browser."
                        20
                        0))))
     (setq scroll-margin new-value)))
+
+(defun my/clear-recentf-list ()
+  "Clears the recentf list."
+  (interactive)
+  (setq recentf-list nil)
+  (recentf-save-list)
+  (message "Cleared recent files list"))
 
 (defun my/next-scroll ()
   (interactive)
@@ -1887,7 +1885,7 @@ Customizes the modeline for displaying active modes, buffer names, or other cont
     (while tabs
       ;; For the current tab, apply special properties. Otherwise, format normally.
       (let ((tab-string (if (eq (car tabs) current-tab)
-                          (propertize (format " %d " index) 'face '(:inverse-video t))
+                          (propertize (format " %d " index) 'face '(:inverse-video t :box (:line-width (4 . 2) :style flat)))
                           (format " %d " index))))
         (setq tabs-string (concat tabs-string tab-string)))
       (setq tabs (cdr tabs))
@@ -2017,7 +2015,7 @@ Configures spell checking tools and dictionaries, integrating external tools lik
 
 (global-set-key (kbd "M-s c") 'wc-mode)
 (global-set-key (kbd "M-s j") 'jinx-mode)
-(global-set-key (kbd "M-s f") 'dictionary-lookup-definition)
+(global-set-key (kbd "M-s i") 'dictionary-lookup-definition)
 (global-set-key (kbd "M-s t") 'powerthesaurus-lookup-synonyms-dwim)
 
 (setq ispell-local-dictionary "en_GB")
@@ -2085,7 +2083,6 @@ Maps file extensions to specific Emacs modes, enabling automatic mode activation
 (add-to-list 'auto-mode-alist '("theme.rasi\\'" . css-mode))
 (add-to-list 'auto-mode-alist '("waybar/config\\'" . js-json-mode))
 (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
-(add-to-list 'auto-mode-alist '("\\.gpr\\'" . gpr-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.toml\\'" . toml-ts-mode))
 (add-to-list 'auto-mode-alist '("CMakeLists.txt\\'" . cmake-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.org_archive\\'" . org-mode))
@@ -2105,7 +2102,8 @@ Sets up configurations and tool integrations for a productive programming enviro
 ;; -> programming
 ;;
 
-(use-package eglot)
+(use-package eglot
+  :defer 5)
 
 ;; (define-key company-active-map (kbd "<tab>") 'company-complete-selection)
 
@@ -2126,7 +2124,8 @@ Sets up configurations and tool integrations for a productive programming enviro
 (setq eldoc-echo-area-use-multiline-p nil)
 
 (use-package flycheck)
-(use-package package-lint)
+(use-package package-lint
+  :defer 5)
 
 #+end_src
 
@@ -2316,9 +2315,6 @@ Integrates Tree-sitter, a modern parsing tool, for improved syntax highlighting 
 
 ;; (mapc #'treesit-install-language-grammar
 ;;      (mapcar #'car treesit-language-source-alist))
-
-;;  (use-package ada-ts-mode)
-(use-package gpr-ts-mode)
 
 (setq major-mode-remap-alist
   '( ;;      (ada-mode . ada-ts-mode)
@@ -2816,7 +2812,7 @@ Demonstrates customizations for shell integration within Emacs, optimizing setti
   (setq shell-file-name "/bin/fish")
 
   (use-package chatgpt-shell
-    :ensure t
+    :defer 5
     :custom
     ((chatgpt-shell-openai-key
        (lambda ()
@@ -2964,6 +2960,8 @@ I have for the moment decided that repeat-mode is not yet for me, I am currently
     (funcall func)
     (set-transient-map map t)))
 
+(global-set-key (kbd "M-s n") (lambda () (interactive) (my/repeat-thing #'my/next-thing)))
+(global-set-key (kbd "M-s p") (lambda () (interactive) (my/repeat-thing #'my/previous-thing)))
 (global-set-key (kbd "M-g n") (lambda () (interactive) (my/repeat-thing #'my/next-thing)))
 (global-set-key (kbd "M-g p") (lambda () (interactive) (my/repeat-thing #'my/previous-thing)))
 (global-set-key (kbd "C-x j") (lambda () (interactive) (my/repeat-thing #'tab-bar-history-back)))
@@ -2994,7 +2992,7 @@ Details configurations for Emacs's tab bar, showcasing customizations for tab be
 (use-package tab-bar ;; 29.1
   :ensure nil ;; Since tab-bar is built-in, no package needs to be downloaded
   :init
-  (tab-bar-mode 1) ;; 27.1
+  (tab-bar-mode -1) ;; 27.1
   (tab-bar-history-mode 1) ;; 27.1
   :custom
   (tab-bar-format '(tab-bar-format-tabs-groups
@@ -3548,30 +3546,56 @@ If no such window is found, return nil."
             (message "Adding: %.2f, Total: %.2f" amount sum)))))
     (message "Total: %.2f" sum)))
 
-(defun my/clear-recentf-list ()
-  "Clears the recentf list."
-  (interactive)
-  (setq recentf-list nil)
-  (recentf-save-list)
-  (message "Cleared recent files list"))
-
 (bind-key* (kbd "C-c <left>") #'windmove-left)
 (bind-key* (kbd "C-c <right>") #'windmove-right)
 (bind-key* (kbd "C-c <up>") #'windmove-up)
 (bind-key* (kbd "C-c <down>") #'windmove-down)
 
-(defun my/mark-line ()
-  "Mark whole line."
-  (interactive)
-  (move-beginning-of-line 1)
-  (set-mark (point))
-  (end-of-line))
-
-(global-set-key (kbd "M-s ,") 'my/mark-line)
-
 (if (and (fboundp 'native-comp-available-p)
       (native-comp-available-p))
   (message "Native compilation is available")
   (message "Native complation is *not* available"))
+
+(add-hook 'chatgpt-shell-mode-hook 'visual-line-mode)
+
+;; Add extensions
+(use-package cape
+  ;; Bind dedicated completion commands
+  ;; Alternative prefix keys: C-c p, M-p, M-+, ...
+  :bind (("C-c p p" . completion-at-point) ;; capf
+	 ("C-c p t" . complete-tag)        ;; etags
+	 ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
+	 ("C-c p h" . cape-history)
+	 ("C-c p f" . cape-file)
+	 ("C-c p k" . cape-keyword)
+	 ("C-c p s" . cape-elisp-symbol)
+	 ("C-c p e" . cape-elisp-block)
+	 ("C-c p a" . cape-abbrev)
+	 ("C-c p l" . cape-line)
+	 ("C-c p w" . cape-dict)
+	 ("C-c p :" . cape-emoji)
+	 ("C-c p \\" . cape-tex)
+	 ("C-c p _" . cape-tex)
+	 ("C-c p ^" . cape-tex)
+	 ("C-c p &" . cape-sgml)
+	 ("C-c p r" . cape-rfc1345))
+  :init
+  ;; Add to the global default value of `completion-at-point-functions' which is
+  ;; used by `completion-at-point'.  The order of the functions matters, the
+  ;; first function returning a result wins.  Note that the list of buffer-local
+  ;; completion functions takes precedence over the global list.
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-elisp-block)
+  ;;(add-to-list 'completion-at-point-functions #'cape-history)
+  ;;(add-to-list 'completion-at-point-functions #'cape-keyword)
+  ;;(add-to-list 'completion-at-point-functions #'cape-tex)
+  ;;(add-to-list 'completion-at-point-functions #'cape-sgml)
+  ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
+  ;;(add-to-list 'completion-at-point-functions #'cape-abbrev)
+  ;;(add-to-list 'completion-at-point-functions #'cape-dict)
+  ;;(add-to-list 'completion-at-point-functions #'cape-elisp-symbol)
+  ;;(add-to-list 'completion-at-point-functions #'cape-line)
+)
 
 #+end_src
