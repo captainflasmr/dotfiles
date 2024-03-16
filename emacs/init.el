@@ -264,8 +264,8 @@
 (define-key my-win-keymap (kbd "e") #'whitespace-mode)
 (define-key my-win-keymap (kbd "f") #'font-lock-mode)
 (define-key my-win-keymap (kbd "g") #'my/toggle-scroll-margin)
-(define-key my-win-keymap (kbd "i") #'highlight-indent-guides-mode)
 (define-key my-win-keymap (kbd "h") #'hl-line-mode)
+(define-key my-win-keymap (kbd "i") #'highlight-indent-guides-mode)
 (define-key my-win-keymap (kbd "m") #'my/toggle-mode-line)
 (define-key my-win-keymap (kbd "n") #'display-line-numbers-mode)
 (define-key my-win-keymap (kbd "o") #'visual-fill-column-mode)
@@ -276,8 +276,10 @@
 (define-key my-win-keymap (kbd "t") #'consult-theme)
 (define-key my-win-keymap (kbd "u") #'toggle-truncate-lines)
 (define-key my-win-keymap (kbd "v") #'visual-line-mode)
+(define-key my-win-keymap (kbd "w") #'org-table-expand)
 (define-key my-win-keymap (kbd "x") #'my/change-accent-color)
 (define-key my-win-keymap (kbd "y") #'selected-window-accent--switch-selected-window-accent-style)
+(define-key my-win-keymap (kbd "z") #'org-table-shrink)
 
 ;;
 ;; -> keys-other
@@ -423,31 +425,31 @@
 ;; -> keybinding
 ;;
 
-(global-set-key (kbd "C-x C-o") 'my/collapse-space)
+(global-set-key (kbd "C-x C-o") #'my/collapse-space)
 (global-set-key (kbd "M-_") #'my/replace-spaces-with-dashes-or-vice-versa)
-(global-set-key (kbd "M-s h") 'my/mark-block)
-(global-set-key (kbd "M-@") 'my/mark-block)
-(global-set-key (kbd "M-'") 'my/mark-word)
-(global-set-key (kbd "M-s s") 'save-buffer)
-(global-set-key (kbd "C-=") '(lambda ()(interactive)(text-scale-adjust 1)))
-(global-set-key (kbd "C--") '(lambda ()(interactive)(text-scale-adjust -1)))
-(global-set-key (kbd "M-s l") 'save-buffer)
-(global-set-key (kbd "M-s s") 'save-buffer)
-(global-set-key (kbd "M-s a") 'org-plot/gnuplot)
-(global-set-key (kbd "M-s [") 'beginning-of-buffer)
-(global-set-key (kbd "M-s ]") 'end-of-buffer)
-(global-set-key (kbd "M-s v") 'org-babel-tangle)
-(global-set-key (kbd "M-s e") 'my/push-block)
-(global-set-key (kbd "M-s b") '(lambda ()(interactive)(org-table-recalculate 'all)))
-(global-set-key (kbd "M-s g") 'my/text-browser-search)
-(global-set-key (kbd "M-=") 'count-words)
+(global-set-key (kbd "M-s h") #'my/mark-block)
+(global-set-key (kbd "M-@") #'my/mark-block)
+(global-set-key (kbd "M-'") #'my/mark-word)
+(global-set-key (kbd "M-s s") #'save-buffer)
+(global-set-key (kbd "C-=") #'(lambda ()(interactive)(text-scale-adjust 1)))
+(global-set-key (kbd "C--") #'(lambda ()(interactive)(text-scale-adjust -1)))
+(global-set-key (kbd "M-s l") #'save-buffer)
+(global-set-key (kbd "M-s s") #'save-buffer)
+(global-set-key (kbd "M-s a") #'org-plot/gnuplot)
+(global-set-key (kbd "M-s [") #'beginning-of-buffer)
+(global-set-key (kbd "M-s ]") #'end-of-buffer)
+(global-set-key (kbd "M-s v") #'org-babel-tangle)
+(global-set-key (kbd "M-s e") #'my/push-block)
+(global-set-key (kbd "M-s b") #'(lambda ()(interactive)(org-table-recalculate 'all)))
+(global-set-key (kbd "M-s g") #'my/text-browser-search)
+(global-set-key (kbd "M-=") #'count-words)
 (define-key minibuffer-local-map (kbd "C-c e") #'embark-export)
 (define-key minibuffer-local-map (kbd "M-o") #'abort-minibuffers)
-(global-set-key (kbd "C-c a") 'org-agenda)
-(global-set-key (kbd "M-h") #'my/prev-window)
-(global-set-key (kbd "M-l") #'my/next-window)
-(global-set-key (kbd "M-j") #'my/next-scroll)
-(global-set-key (kbd "M-k") #'my/prev-scroll)
+(global-set-key (kbd "C-c a") #'org-agenda)
+(global-set-key (kbd "M-h") #'(lambda ()(interactive)(select-window (previous-window))))
+(global-set-key (kbd "M-l") #'(lambda ()(interactive)(select-window (next-window))))
+(global-set-key (kbd "M-j") #'(lambda ()(interactive)(forward-line (/ (window-height) 8))))
+(global-set-key (kbd "M-k") #'(lambda ()(interactive)(forward-line (- (/ (window-height) 8)))))
 (bind-key* (kbd "M-n") #'next-line)
 (bind-key* (kbd "M-p") #'previous-line)
 (bind-key* (kbd "M-J") #'scroll-up-command)
@@ -456,19 +458,19 @@
 (bind-key* (kbd "M-]") #'end-of-buffer)
 (global-set-key (kbd "M-I") #'my/window-enlarge)
 (global-set-key (kbd "M-U") #'my/window-shrink)
-(global-set-key (kbd "C-c b") (lambda ()(interactive)(async-shell-command "do_backup home" "*backup*")))
-(global-set-key (kbd "C-c c") 'org-capture)
-(global-set-key (kbd "C-c f") 'my/fold)
-(global-set-key (kbd "C-x C-b") 'ibuffer)
-(global-set-key (kbd "C-x l") 'scroll-lock-mode)
-(global-set-key (kbd "M-0") 'delete-window)
-(global-set-key (kbd "M-1") 'delete-other-windows)
-(global-set-key (kbd "M-2") 'split-window-vertically)
-(global-set-key (kbd "M-3") 'split-window-horizontally)
-(global-set-key (kbd "M-;") 'my/comment-or-uncomment)
-(global-set-key (kbd "M-9") 'my/grep)
-(global-set-key (kbd "C-c ,") 'embark-act)
-(global-set-key (kbd "M-s ,") 'my/mark-line)
+(global-set-key (kbd "C-c b") #'(lambda ()(interactive)(async-shell-command "do_backup home" "*backup*")))
+(global-set-key (kbd "C-c c") #'org-capture)
+(global-set-key (kbd "C-c f") #'my/fold)
+(global-set-key (kbd "C-x C-b") #'ibuffer)
+(global-set-key (kbd "C-x l") #'scroll-lock-mode)
+(global-set-key (kbd "M-0") #'delete-window)
+(global-set-key (kbd "M-1") #'delete-other-windows)
+(global-set-key (kbd "M-2") #'split-window-vertically)
+(global-set-key (kbd "M-3") #'split-window-horizontally)
+(global-set-key (kbd "M-;") #'my/comment-or-uncomment)
+(global-set-key (kbd "M-9") #'my/grep)
+(global-set-key (kbd "C-c ,") #'embark-act)
+(global-set-key (kbd "M-s ,") #'my/mark-line)
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-h h"))
 
@@ -701,8 +703,7 @@ If ARG is provided, it sets the counter."
   (setq mark-active t))
 
 (defun my/replace-spaces-with-dashes-or-vice-versa (start end &optional reverse)
-  "Replace all spaces with dashes or dashes with spaces in the selected region from START to END.
-With a prefix argument (C-u), replaces dashes with spaces instead."
+  "Replace all spaces with dashes or dashes with spaces START to END in REVERSE."
   (interactive "r\nP") ; "\nP" captures the prefix argument
   (let* ((selected-text (buffer-substring start end))
           (replacement-text (if reverse
@@ -764,27 +765,13 @@ as search term for Google search in web browser."
   (recentf-save-list)
   (message "Cleared recent files list"))
 
-(defun my/next-scroll ()
-  (interactive)
-  (forward-line (/ (window-height) 8)))
-
-(defun my/prev-scroll ()
-  (interactive)
-  (forward-line (- (/ (window-height) 8))))
-
-(defun my/next-window ()
-  (interactive)
-  (select-window (next-window)))
-
-(defun my/prev-window ()
-  (interactive)
-  (select-window (previous-window)))
-
 (defun my/window-enlarge ()
+  "Enlarges window."
   (interactive)
   (my/resize-window 4 t))
 
 (defun my/window-shrink ()
+  "Shrinks window."
   (interactive)
   (my/resize-window -4 t))
 
@@ -985,13 +972,11 @@ as search term for Google search in web browser."
     org-image-actual-width (list 50)
     org-startup-indented t
     org-todo-keywords
-    '((sequence "TODO" "DOING" "RPT" "CANCELLING" "WAIT" "WATCH" "ORDR" "SENT" "|" "CANCELLED" "DONE"))
+    '((sequence "TODO" "DOING" "RPT" "WATCH" "ORDR" "SENT" "|" "CANCELLED" "DONE"))
     org-todo-keyword-faces
     '(("TODO" . "#ee5566")
        ("DOING" . "#5577aa")
        ("RPT" . "#cccc00")
-       ("CANCELLING" . "#ccccff")
-       ("WAIT" . "#bb7744")
        ("WATCH" . "#bbad44")
        ("ORDR" . "#bb44ee")
        ("SENT" . "#bb44ee")
@@ -1072,9 +1057,11 @@ as search term for Google search in web browser."
 (use-package org
   :custom
   (org-agenda-include-diary nil)
+  (org-agenda-show-all-dates nil)
   (org-agenda-files '("~/DCIM/content/aaa--calendar.org"
                        "~/DCIM/content/aab--kate.org"
-                       "~/DCIM/content/aac--subs.org"))
+                       "~/DCIM/content/aac--subs.org"
+                       "~/DCIM/content/aag--rpt.org"))
   :config
   (with-eval-after-load 'org-agenda
     (unbind-key "M-m" org-agenda-mode-map)
@@ -2500,25 +2487,25 @@ With directories under project root using find."
     (setq payments (csv-parse-buffer t))))
 
 (defun write-header-plot (year)
-  ""
+  "Generate a plot header for YEAR."
   (insert "-*- mode: org; eval: (visual-line-mode -1); -*-\n")
   (insert (format "#+PLOT: title:\"%s\" ind:1 deps:(%s) type:2d with:lines set:\"yrange [0:1000]\"\n"
             year (concat (mapconcat 'number-to-string (number-sequence 3 (+ (length cat-list-defines) 2)) " ")))))
 
 (defun write-footer-tblfm ()
-  ""
+  "Generate a plot footer."
   (insert "||\n")
   (insert (concat "#+TBLFM: @>=vmean(@I..@II);%.0f::$>=vsum($3..$" (format "%d" (+ (length cat-list-defines) 2)) ");\%.0f") ))
 
 (defun write-header ()
-  ""
+  "Write table header."
   (insert "|date ")
   (dolist (category cat-list-defines)
     (insert (format "%s " (nth 1 category))))
   (insert " |\n"))
 
 (defun write-body (index year month)
-  ""
+  "Write table body."
   (insert (format "%d %s " index (concat year "-" month)))
   (dolist (category cat-list-defines)
     (let* ((split-key (concat year "-" month "-" (nth 1 category))))
@@ -2528,7 +2515,6 @@ With directories under project root using find."
 (defun export-payments-to-org ()
   "Export categorized payments and totals to an Org table."
   (clrhash cat-tot)
-
   ;; calculate all payments and output all categories to payments-all.org
   (with-temp-buffer
     (dolist (payment payments)
@@ -2692,6 +2678,7 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
   (define-key my-jump-keymap (kbd "b") (lambda () (interactive) (find-file "~/bin")))
   (define-key my-jump-keymap (kbd "c") (lambda () (interactive) (find-file "~/DCIM/Camera")))
   (define-key my-jump-keymap (kbd "g") (lambda () (interactive) (find-file "~/.config")))
+  (define-key my-jump-keymap (kbd "i") #'chatgpt-shell)
   (define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~/DCIM/content/aad--todo.org")))
   (define-key my-jump-keymap (kbd "y") #'emms)
   (define-key my-jump-keymap (kbd "q") #'cfw:open-org-calendar)
@@ -2864,7 +2851,8 @@ If no such window is found, return nil."
     (message "Async deletion is set up only for trash. Set `delete-by-moving-to-trash` to t.")))
 
 (defun my/switch-to-thing ()
-  "Switch to a buffer, open a recent file, jump to a bookmark, or change the theme from a unified interface."
+  "Switch to a buffer, open a recent file, jump to a bookmark,
+or change the theme from a unified interface."
   (interactive)
   (let* ((buffers (mapcar #'buffer-name (buffer-list)))
           (recent-files recentf-list)
@@ -2961,3 +2949,5 @@ If no such window is found, return nil."
   ;;(add-to-list 'completion-at-point-functions #'cape-elisp-symbol)
   ;;(add-to-list 'completion-at-point-functions #'cape-line)
 )
+
+(setq native-comp-async-report-warnings-errors nil)
