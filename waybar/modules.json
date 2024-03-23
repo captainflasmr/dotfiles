@@ -1,3 +1,4 @@
+
 {
     "sway/workspaces": {
         "disable-scroll": true,
@@ -22,20 +23,26 @@
 
     "custom/emacs": {
         // "format": "ε",
-        "format": "",
-        // "format": "👾",
-        // "format": "🔮",
-        // "format": "🟣",
+        // "format": "",
+        "format": "✏️",
         "on-click": "emacs",
         "min-length": 2,
         "max-length": 2,
         "tooltip": false
     },
 
+    "custom/krita": {
+        "format": "🎨",
+        "on-click": "krita",
+        "min-length": 2,
+        "max-length": 2,
+        "tooltip": false
+    },
+
     "custom/browser": {
-        // "format": "🌎",
+        "format": "🌎",
         // "format": "🌐",
-        "format": "",
+        // "format": "",
         // "on-click": "flatpak run com.microsoft.Edge",
         "on-click": "firefox",
         "min-length": 2,
@@ -44,8 +51,8 @@
     },
 
     "custom/files": {
-        // "format": "🗂️",
-        "format": "",
+        "format": "🗂️",
+        // "format": "",
         "on-click": "thunar ~/DCIM/Camera",
         "min-length": 2,
         "max-length": 2,
@@ -53,8 +60,8 @@
     },
 
     "custom/terminal": {
-        // "format": "🖥️",
-        "format": "",
+        "format": "⬛",
+        // "format": "",
         // "format": "",
         "on-click": "gnome-terminal",
         "min-length": 2,
@@ -91,7 +98,7 @@
     },
 
     "custom/power": {
-        "format":"⏻ ",
+        "format":"⏏️",
         "on-click": "nwg-bar",
         "tooltip": false,
         "min-length": 1,
@@ -99,7 +106,7 @@
     },
 
     "custom/launcher": {
-    	  "format":"",
+    	  "format":"🚀️",
     	  "on-click": "exec nwg-drawer -c 7 -is 70 -spacing 23",
     	  "tooltip": false,
         "min-length": 2,
@@ -116,8 +123,8 @@
     "clock": {
         // "timezone": "America/New_York",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-        "format": "{:%Y-%m-%d %H:%M}",
-        "format-alt": "{:%H:%M}",
+        "format-alt": "{:%Y-%m-%d %H:%M}",
+        "format": "{:%H:%M}",
         "min-length": 1,
         "max-length": 18,
     },
@@ -143,8 +150,9 @@
         "critical-threshold": 90,
         // "format-critical": "{temperatureC}°C {icon}",
         // "format": "{temperatureC}°C {icon}",
-        "format": "{temperatureC} {icon}",
-        "format-icons": ["❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "⛅", "⛅", "⛅", "🌞", "🌞", "🌞", "🔥"],
+        "format": "{icon} {temperatureC}",
+        // "format-icons": ["❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "⛅", "⛅", "⛅", "🌞", "🌞", "🌞", "🔥"],
+        "format-icons": ["❄️", "❄️", "❄️", "❄️", "❄️", "❄️", "❄️", "❄️", "❄️", "❄️", "❄️", "❄️", "❄️", "⛅", "⛅", "⛅", "🌞", "🌞", "🌞", "🔥"],
         "min-length": 4,
         "max-length": 10,
         "interval" : 4,
@@ -170,8 +178,8 @@
             "default": ["", "", "", "", "", "", "", "", "", ""],
         },
         "format": "{icon}  {capacity}",
-        "format-charging": "  {capacity} ",
-        "format-plugged": "  {capacity} ",
+        "format-charging": "🔌 {capacity}",
+        "format-plugged": "🔌 {capacity}",
         "format-alt": "{time} {icon} ",
         "format-full": "",
         "min-length": 3,
@@ -181,7 +189,7 @@
 
     "pulseaudio": {
         "scroll-step": 0.1,
-        "format": "{icon}  {volume}",
+        "format": "{icon} {volume}",
         "format-muted": "🔇 {format_source}",
         "format-source": "% {volume}",
         "format-source-muted": "",
@@ -192,7 +200,8 @@
             "phone": "",
             "portable": "",
             "car": "",
-            "default": ["", "", ""]
+            // "default": ["", "", ""]
+            "default": ["🔈", "🔉", "🔊"]
         },
         "on-click": "pavucontrol",
         "min-length": 1,
@@ -237,8 +246,8 @@
     "idle_inhibitor": {
 	     "format": "{icon}",
 	     "format-icons": {
-		      "activated": "",
-		      "deactivated": ""
+		      "activated": "☕",
+		      "deactivated": "😴"
 	     },
         "min-length": 3,
         "max-length": 6,
@@ -257,10 +266,27 @@
 
     "custom/screenshot": {
         // "format": "📷",
-        "format": "󰄀",
+        "format": "😎",
         "on-click": "screenshot_wayland_001.sh",
         "min-length": 2,
         "max-length": 2,
         "tooltip": false
+    },
+
+    "custom/caps_lock": {
+        "exec": "led-monitor.sh --caps",
+        "interval": 1,
+        "return-type": "json"
+    },
+    "custom/num_lock": {
+        "exec": "led-monitor.sh --num",
+        "interval": 1,
+        "return-type": "json"
+    },
+    "custom/scroll_lock": {
+        "exec": "led-monitor.sh --scroll",
+        "interval": 1,
+        "return-type": "json"
     }
+
 }
