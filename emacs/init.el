@@ -245,6 +245,7 @@
 (define-key my-jump-keymap (kbd "f") #'my/find-file)
 (define-key my-jump-keymap (kbd "h") (lambda () (interactive) (find-file "~")))
 (define-key my-jump-keymap (kbd "k") (lambda () (interactive) (find-file (concat user-emacs-directory "emacs--init.org"))))
+(define-key my-jump-keymap (kbd "m") #'magit-list-repositories)
 (define-key my-jump-keymap (kbd "o") #'my/switch-to-thing)
 (define-key my-jump-keymap (kbd "p") #'proced)
 (define-key my-jump-keymap (kbd "r") #'scratch-buffer)
@@ -288,6 +289,7 @@
 (defvar my-other-keymap (make-sparse-keymap))
 (global-set-key (kbd "M-r") my-other-keymap)
 
+(global-set-key (kbd "M-s r") #'isearch-forward)
 (global-set-key (kbd "M-s f") #'eval-last-sexp)
 (global-set-key (kbd "M-s d") #'eval-defun)
 (global-set-key (kbd "M-s q") #'dired-toggle-read-only)
@@ -434,10 +436,11 @@
 (global-set-key (kbd "C-=") #'(lambda ()(interactive)(text-scale-adjust 1)))
 (global-set-key (kbd "C--") #'(lambda ()(interactive)(text-scale-adjust -1)))
 (global-set-key (kbd "M-s l") #'save-buffer)
-(global-set-key (kbd "M-s s") #'save-buffer)
 (global-set-key (kbd "M-s a") #'org-plot/gnuplot)
 (global-set-key (kbd "M-s [") #'beginning-of-buffer)
 (global-set-key (kbd "M-s ]") #'end-of-buffer)
+(global-set-key (kbd "M-s M-[") #'beginning-of-buffer)
+(global-set-key (kbd "M-s M-]") #'end-of-buffer)
 (global-set-key (kbd "M-s v") #'org-babel-tangle)
 (global-set-key (kbd "M-s e") #'my/push-block)
 (global-set-key (kbd "M-s b") #'(lambda ()(interactive)(org-table-recalculate 'all)))
@@ -446,16 +449,16 @@
 (define-key minibuffer-local-map (kbd "C-c e") #'embark-export)
 (define-key minibuffer-local-map (kbd "M-o") #'abort-minibuffers)
 (global-set-key (kbd "C-c a") #'org-agenda)
-(global-set-key (kbd "M-h") #'(lambda ()(interactive)(select-window (previous-window))))
-(global-set-key (kbd "M-l") #'(lambda ()(interactive)(select-window (next-window))))
-(global-set-key (kbd "M-j") #'(lambda ()(interactive)(forward-line (/ (window-height) 8))))
-(global-set-key (kbd "M-k") #'(lambda ()(interactive)(forward-line (- (/ (window-height) 8)))))
-(bind-key* (kbd "M-n") #'next-line)
-(bind-key* (kbd "M-p") #'previous-line)
-(bind-key* (kbd "M-J") #'scroll-up-command)
-(bind-key* (kbd "M-K") #'scroll-down-command)
-(bind-key* (kbd "M-[") #'beginning-of-buffer)
-(bind-key* (kbd "M-]") #'end-of-buffer)
+;; (global-set-key (kbd "M-h") #'(lambda ()(interactive)(select-window (previous-window))))
+;; (global-set-key (kbd "M-l") #'(lambda ()(interactive)(select-window (next-window))))
+(bind-key* (kbd "M-j") #'next-line)
+(bind-key* (kbd "M-k") #'previous-line)
+(bind-key* (kbd "M-h") #'backward-char)
+(global-set-key (kbd "M-p") #'(lambda ()(interactive)(forward-line (- (/ (window-height) 8)))))
+(global-set-key (kbd "M-n") #'(lambda ()(interactive)(forward-line (/ (window-height) 8))))
+(bind-key* (kbd "M-l") #'forward-char)
+(bind-key* (kbd "M-]") #'(lambda ()(interactive)(scroll-up-command (/ (window-height) 4))))
+(bind-key* (kbd "M-[") #'(lambda ()(interactive)(scroll-down-command (/ (window-height) 4))))
 (global-set-key (kbd "M-I") #'my/window-enlarge)
 (global-set-key (kbd "M-U") #'my/window-shrink)
 (global-set-key (kbd "C-c b") #'(lambda ()(interactive)(async-shell-command "do_backup home" "*backup*")))
@@ -467,7 +470,7 @@
 (global-set-key (kbd "M-1") #'delete-other-windows)
 (global-set-key (kbd "M-2") #'split-window-vertically)
 (global-set-key (kbd "M-3") #'split-window-horizontally)
-(global-set-key (kbd "M-;") #'my/comment-or-uncomment)
+(global-set-key (kbd "M-'") #'my/comment-or-uncomment)
 (global-set-key (kbd "M-9") #'my/grep)
 (global-set-key (kbd "C-c ,") #'embark-act)
 (global-set-key (kbd "M-s ,") #'my/mark-line)
@@ -962,7 +965,7 @@ as search term for Google search in web browser."
     org-edit-src-content-indentation 0
     org-src-preserve-indentation t
     org-directory "~/DCIM/content/"
-    org-default-notes-file "~/DCIM/content/aad--todo.org"
+    org-default-notes-file "~/DCIM/content/aab--todo.org"
     org-hide-leading-stars t
     org-reverse-note-order t
     org-log-done 'time
@@ -1059,9 +1062,11 @@ as search term for Google search in web browser."
   (org-agenda-include-diary nil)
   (org-agenda-show-all-dates nil)
   (org-agenda-files '("~/DCIM/content/aaa--calendar.org"
-                       "~/DCIM/content/aab--kate.org"
-                       "~/DCIM/content/aac--subs.org"
-                       "~/DCIM/content/aag--rpt.org"))
+                       "~/DCIM/content/aae--rpt.org"
+                       "~/DCIM/content/aaf--kate.org"
+                       "~/DCIM/content/aag--bank-hol.org"
+                       "~/DCIM/content/aah--subs.org"
+                       ))
   :config
   (with-eval-after-load 'org-agenda
     (unbind-key "M-m" org-agenda-mode-map)
@@ -1095,7 +1100,7 @@ as search term for Google search in web browser."
 ;; -> dwim
 ;;
 
-(when (file-exists-p "/home/jdyer/.config/emacs/category-list-uniq.txt")
+(when (file-exists-p "/home/jdyer/bin/category-list-uniq.txt")
   (progn
     (defvar my/dwim-convert-commands
       '("ConvertNoSpace" "AudioConvert" "AudioInfo" "AudioNormalise"
@@ -1122,7 +1127,7 @@ as search term for Google search in web browser."
 
     (defun my/dwim-convert-generic (command)
       "Execute a dwim-shell-command-on-marked-files with the given COMMAND."
-      (let* ((unique-text-file "/home/jdyer/.config/emacs/category-list-uniq.txt")
+      (let* ((unique-text-file "/home/jdyer/bin/category-list-uniq.txt")
               (user-selection nil)
               (files (dired-get-marked-files nil current-prefix-arg))
               (command-and-files (concat command " " (mapconcat 'identity files " "))))
@@ -1147,8 +1152,8 @@ as search term for Google search in web browser."
 ;;
 ;; -> scroll
 ;;
-
-(setq scroll-margin 20)
+(setq scroll-conservatively 999)
+(setq scroll-margin 10)
 (setq scroll-preserve-screen-position t)
 
 ;;
@@ -1205,6 +1210,7 @@ as search term for Google search in web browser."
   '(outline-2 ((t (:weight regular))))
   '(widget-button ((t (:inherit fixed-pitch :weight regular))))
   '(window-divider ((t (:foreground "black"))))
+  '(aw-leading-char-face ((t (:inherit (fixed-pitch) :weight regular :inverse-video t :height 1.0))))
   '(vertical-border ((t (:foreground "#000000")))))
 
 ;;
@@ -1217,6 +1223,9 @@ as search term for Google search in web browser."
   :commands (dired dired-jump)
   :bind (("M-e" . dired-jump)
           (:map dired-mode-map
+            ("j" . dired-next-line)
+            ("k" . dired-previous-line)
+            ("-" . dired-jump)
             ("_" . my/dired-create-empty-file)
             ("+" . my/dired-create-directory)
             ("C-c i" . my/image-dired-sort)
@@ -1382,8 +1391,8 @@ as search term for Google search in web browser."
 
 (setq-default truncate-partial-width-windows 120)
 
-(set-frame-parameter nil 'alpha-background 95)
-(add-to-list 'default-frame-alist '(alpha-background . 95))
+(set-frame-parameter nil 'alpha-background 70)
+(add-to-list 'default-frame-alist '(alpha-background . 70))
 
 (set-fringe-mode '(0 . 0))
 (set-display-table-slot standard-display-table 0 ?\ )
@@ -1505,7 +1514,7 @@ as search term for Google search in web browser."
     (while tabs
       ;; For the current tab, apply special properties. Otherwise, format normally.
       (let ((tab-string (if (eq (car tabs) current-tab)
-                          (propertize (format " %d " index) 'face '(:inverse-video t :box (:line-width (4 . 2) :style flat)))
+                          (propertize (format " %d " index) 'face '(:inverse-video t :box (:line-width (1 . 1) :style flat)))
                           (format " %d " index))))
         (setq tabs-string (concat tabs-string tab-string)))
       (setq tabs (cdr tabs))
@@ -1544,7 +1553,7 @@ as search term for Google search in web browser."
       (setq frame-title-format my/mode-line-format)))
   (force-mode-line-update t))
 
-(display-time-mode -1)
+(display-time-mode 1)
 (setq mode-line-compact nil)
 
 ;;
@@ -2008,8 +2017,8 @@ With directories under project root using find."
   (selected-window-accent-percentage-desaturate 30)
   (selected-window-accent-smart-borders nil)
   (selected-window-accent-tab-accent t)
-  (selected-window-accent-custom-color nil)
-  ;; (selected-window-accent-custom-color "#3E829F")
+  ;; (selected-window-accent-custom-color nil)
+  (selected-window-accent-custom-color "#da8163")
   (selected-window-accent-mode-style 'default))
 
 ;;
@@ -2689,7 +2698,7 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
 
   (custom-theme-set-faces
     'user
-    '(variable-pitch ((t (:family "Sans Serif" :height 140 :weight normal))))
+    '(variable-pitch ((t (:family "Sans Serif" :height 120 :weight normal))))
     '(fixed-pitch ((t ( :family "Fira Code Retina" :height 130)))))
 
   (setq font-general "Monospace 12")
@@ -2915,22 +2924,22 @@ or change the theme from a unified interface."
   ;; Bind dedicated completion commands
   ;; Alternative prefix keys: C-c p, M-p, M-+, ...
   :bind (("C-c p p" . completion-at-point) ;; capf
-	 ("C-c p t" . complete-tag)        ;; etags
-	 ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
-	 ("C-c p h" . cape-history)
-	 ("C-c p f" . cape-file)
-	 ("C-c p k" . cape-keyword)
-	 ("C-c p s" . cape-elisp-symbol)
-	 ("C-c p e" . cape-elisp-block)
-	 ("C-c p a" . cape-abbrev)
-	 ("C-c p l" . cape-line)
-	 ("C-c p w" . cape-dict)
-	 ("C-c p :" . cape-emoji)
-	 ("C-c p \\" . cape-tex)
-	 ("C-c p _" . cape-tex)
-	 ("C-c p ^" . cape-tex)
-	 ("C-c p &" . cape-sgml)
-	 ("C-c p r" . cape-rfc1345))
+	       ("C-c p t" . complete-tag)        ;; etags
+	       ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
+	       ("C-c p h" . cape-history)
+	       ("C-c p f" . cape-file)
+	       ("C-c p k" . cape-keyword)
+	       ("C-c p s" . cape-elisp-symbol)
+	       ("C-c p e" . cape-elisp-block)
+	       ("C-c p a" . cape-abbrev)
+	       ("C-c p l" . cape-line)
+	       ("C-c p w" . cape-dict)
+	       ("C-c p :" . cape-emoji)
+	       ("C-c p \\" . cape-tex)
+	       ("C-c p _" . cape-tex)
+	       ("C-c p ^" . cape-tex)
+	       ("C-c p &" . cape-sgml)
+	       ("C-c p r" . cape-rfc1345))
   :init
   ;; Add to the global default value of `completion-at-point-functions' which is
   ;; used by `completion-at-point'.  The order of the functions matters, the
@@ -2948,6 +2957,29 @@ or change the theme from a unified interface."
   ;;(add-to-list 'completion-at-point-functions #'cape-dict)
   ;;(add-to-list 'completion-at-point-functions #'cape-elisp-symbol)
   ;;(add-to-list 'completion-at-point-functions #'cape-line)
-)
+  )
 
 (setq native-comp-async-report-warnings-errors nil)
+
+(use-package org-transclusion)
+
+(use-package avy
+  :bind
+  (("M-;" . avy-goto-char-2)))
+  ;; (("M-;" . avy-goto-char-timer)))
+
+(use-package ace-window
+  :config
+  (setq aw-keys '(?j ?k ?l ?\; ?a ?s ?d ?f))
+  (setq aw-background nil)
+  :bind
+  ("M-a" . ace-window))
+
+;; (use-package god-mode)
+
+;; (global-set-key (kbd "<escape>") #'god-local-mode)
+
+;; (defun my-god-mode-update-cursor-type ()
+;;   (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
+
+;; (add-hook 'post-command-hook #'my-god-mode-update-cursor-type)
