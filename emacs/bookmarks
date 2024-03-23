@@ -2,7 +2,69 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(("image-dired"
+(("emacs"
+  (filename . "~/DCIM/content/emacs--all.org")
+  (front-context-string . "monad-sway-kbd-m")
+  (rear-context-string . "linux:\n\n* TODO k")
+  (position . 453)
+  (last-modified 26102 48463 16389 734000))
+("2024"
+  (filename . "~/Photos/2024/")
+  (front-context-string . "202401\n  drwxr-x")
+  (rear-context-string . "1K Jan 26 12:23 ")
+  (position . 132)
+  (last-modified 26101 33188 220586 453000))
+("manual"
+  (front-context-string . "\nThe Emacs Edito")
+  (rear-context-string . "rib,  Up: (dir)\n")
+  (position . 1127)
+  (last-modified 26101 31221 399425 338000)
+  (filename . "/usr/share/info/emacs")
+  (info-node . "Top")
+  (handler . Info-bookmark-jump))
+("source"
+  (filename . "~/DCIM/content/source_code.org")
+  (front-context-string . "* battery-drain\n")
+  (rear-context-string . "\n#+draft: true\n\n")
+  (position . 114)
+  (last-modified 26101 30914 936306 270000))
+("publish"
+  (filename . "~/publish/")
+  (front-context-string . ".gitignore\n  drw")
+  (rear-context-string . "06 Jul 16  2023 ")
+  (position . 128)
+  (last-modified 26099 9504 480573 569000))
+("sway"
+  (filename . "~/.config/sway/config.d/")
+  (front-context-string)
+  (rear-context-string . "7K Mar 12 21:43 ")
+  (position . 142)
+  (last-modified 26099 6945 32028 835000))
+("waybar"
+  (filename . "~/.config/waybar/")
+  (front-context-string . "config\n  -rw-r--")
+  (rear-context-string . "98 Mar  7 16:29 ")
+  (position . 135)
+  (last-modified 26098 51067 679560 908000))
+("Downloads"
+  (filename . "~/Downloads/")
+  (front-context-string . "kmonad-0.3.0-win")
+  (rear-context-string . "2M Mar  7 16:32 ")
+  (position . 130)
+  (last-modified 26089 60461 220435 142000))
+("org-capture-last-stored"
+  (filename . "~/DCIM/content/emacs--all.org")
+  (front-context-string . "* TODO Waybar-Sw")
+  (rear-context-string . "@emacs:@linux:\n\n")
+  (position . 445)
+  (last-modified 26110 47728 722013 751000))
+("backup"
+  (filename . "~/backup/")
+  (front-context-string . "!home!jdyer!1.or")
+  (rear-context-string . " 2 Feb  2 07:02 ")
+  (position . 127)
+  (last-modified 26086 15186 913243 316000))
+("image-dired"
   (filename . "~/.config/emacs/image-dired/")
   (front-context-string . "003cf3db27c16166")
   (rear-context-string . "59 Jan 27 08:26 ")
@@ -15,11 +77,11 @@
   (position . 1)
   (last-modified 26072 49685 453942 10000))
 ("org-refile-last-stored"
-  (filename . "~/DCIM/content/aab--todo.org")
-  (front-context-string . "** DONE wayland ")
+  (filename . "~/DCIM/content/aad--todo.org")
+  (front-context-string . "** DONE sway key")
   (rear-context-string . "\n* 2024 [30/30]\n")
-  (position . 3246)
-  (last-modified 26072 49583 615407 927000))
+  (position . 2589)
+  (last-modified 26110 63357 216909 986000))
 ("Videos"
   (filename . "~/Videos/")
   (front-context-string . "  /home/jdyer/Vi")
