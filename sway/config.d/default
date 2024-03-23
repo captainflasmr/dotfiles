@@ -4,7 +4,7 @@
 gaps inner 10px
 gaps outer 5px
 gaps top 0px
-gaps bottom 0px
+gaps bottom -8px
 
 default_border pixel 6px
 
@@ -19,14 +19,14 @@ client.background       #aaaaaa
 # swayfx
 corner_radius 15
 blur enable
-blur_passes 2
+blur_passes 8
 blur_radius 4
 shadows enable
 shadow_blur_radius 5
 shadow_color #000000ff
 # default_dim_inactive 0
-layer_effects "waybar" blur enable; shadows disable;
-titlebar_separator enable
+layer_effects "waybar" blur enable; shadows enable;
+# titlebar_separator enable
 
 #
 # -> startup
@@ -63,7 +63,7 @@ bindsym $mod+s exec screenshot.sh
 bindsym $mod+e exec thunar ~/DCIM/Camera
 bindsym $mod+m exec emacs
 bindsym $mod+b exec thunderbird
-bindsym $mod+x exec firefox
+bindsym $mod+n exec firefox
 bindsym $mod+r exec screen-record.sh
 bindsym $mod+return exec $term
 bindsym control+Mod1+t exec $term
@@ -220,15 +220,12 @@ input type:touchpad {
    pointer_accel 0.7
 }
 
-input type:touch {
-   events enabled
-}
-
 input type:keyboard {
    # events enabled
    # xkb_layout gb
-   xkb_file $HOME/.config/sway/keymap_with_locked_modifiers_sway.xkb
-   # xkb_file $HOME/.config/keymap_with_locked_modifiers.xkb
+   repeat_delay 300
+   repeat_rate 50
+   xkb_file $HOME/.config/keymap_with_locked_modifiers.xkb
    # xkb_options ctrl:nocaps
 }
 
