@@ -20,9 +20,6 @@ client.background       #aaaaaa
 # -> startup
 #
 exec $HOME/bin/startup.sh
-exec --no-startup-id xkbcomp $HOME/.config/keymap_with_locked_modifiers.xkb $DISPLAY
-# exec_always --no-startup-id /home/jdyer/bin/keymap-sticky-generate.sh
-# exec_always --no-startup-id /home/jdyer/bin/keymap-load.sh
 
 #
 # -> global
@@ -54,9 +51,9 @@ bindsym $mod+s exec screenshot.sh
 bindsym $mod+e exec thunar ~/DCIM/Camera
 bindsym $mod+m exec emacs
 bindsym $mod+b exec thunderbird
-bindsym $mod+x exec firefox
+bindsym $mod+n exec firefox
 bindsym $mod+r exec screen-record.sh
-bindsym $mod+return exec $term
+bindsym $mod+Return exec $term
 bindsym control+Mod1+t exec $term
 bindsym $mod+q kill
 bindsym Mod1+F4 kill
