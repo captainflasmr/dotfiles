@@ -61,7 +61,7 @@
 ;; -> fetchers
 ;;
 
-(when (version<= "29.0" emacs-version)
+(when (and (version<= "29.0" emacs-version) (executable-find "git"))
   ;; will be able to remove the following package-vc-install as of emacs 30
   ;; as this will be built-in
   (unless (package-installed-p 'vc-use-package)
@@ -86,7 +86,9 @@
 ;;
 (use-package free-keys)
 (use-package lorem-ipsum)
-(use-package file-info)
+(use-package file-info
+  :bind
+  (("C-c w" . file-info-show)))
 (use-package async)
 (use-package diminish)
 (use-package diredfl
@@ -240,7 +242,8 @@
 (global-set-key (kbd "M-o") my-jump-keymap)
 
 (define-key my-jump-keymap (kbd "-") #'tab-close)
-(define-key my-jump-keymap (kbd "=") (lambda () (interactive) (tab-bar-new-tab-to -1)(tab-bar-mode 'toggle)))
+;; (define-key my-jump-keymap (kbd "=") (lambda () (interactive) (tab-bar-new-tab-to -1)(tab-bar-mode 'toggle)))
+(define-key my-jump-keymap (kbd "=") (lambda () (interactive) (tab-bar-new-tab-to -1)))
 (define-key my-jump-keymap (kbd "e") (lambda () (interactive) (find-file (concat user-emacs-directory "init.el"))))
 (define-key my-jump-keymap (kbd "f") #'my/find-file)
 (define-key my-jump-keymap (kbd "h") (lambda () (interactive) (find-file "~")))
@@ -250,6 +253,7 @@
 (define-key my-jump-keymap (kbd "p") #'proced)
 (define-key my-jump-keymap (kbd "r") #'scratch-buffer)
 (define-key my-jump-keymap (kbd "t") #'customize-themes)
+(define-key my-jump-keymap (kbd "z") #'list-packages)
 
 ;;
 ;; -> keys-visual
@@ -466,10 +470,10 @@
 (global-set-key (kbd "C-c f") #'my/fold)
 (global-set-key (kbd "C-x C-b") #'ibuffer)
 (global-set-key (kbd "C-x l") #'scroll-lock-mode)
-(global-set-key (kbd "M-0") #'delete-window)
-(global-set-key (kbd "M-1") #'delete-other-windows)
-(global-set-key (kbd "M-2") #'split-window-vertically)
-(global-set-key (kbd "M-3") #'split-window-horizontally)
+;; (global-set-key (kbd "M-0") #'delete-window)
+;; (global-set-key (kbd "M-1") #'delete-other-windows)
+;; (global-set-key (kbd "M-2") #'split-window-vertically)
+;; (global-set-key (kbd "M-3") #'split-window-horizontally)
 (global-set-key (kbd "M-'") #'my/comment-or-uncomment)
 (global-set-key (kbd "M-9") #'my/grep)
 (global-set-key (kbd "C-c ,") #'embark-act)
@@ -710,8 +714,8 @@ If ARG is provided, it sets the counter."
   (interactive "r\nP") ; "\nP" captures the prefix argument
   (let* ((selected-text (buffer-substring start end))
           (replacement-text (if reverse
-                              (replace-regexp-in-string "-" " " selected-text)
-                              (replace-regexp-in-string " " "-" selected-text))))
+                              (replace-regexp-in-string " " "-" selected-text)
+                              (replace-regexp-in-string "-" " " selected-text))))
     (delete-region start end)
     (insert replacement-text)))
 
@@ -974,13 +978,12 @@ as search term for Google search in web browser."
     org-hugo-base-dir "~/DCIM"
     org-image-actual-width (list 50)
     org-startup-indented t
+    org-return-follows-link t
     org-todo-keywords
-    '((sequence "TODO" "DOING" "RPT" "WATCH" "ORDR" "SENT" "|" "CANCELLED" "DONE"))
+    '((sequence "TODO" "DOING" "ORDR" "SENT" "|" "CANCELLED" "DONE"))
     org-todo-keyword-faces
     '(("TODO" . "#ee5566")
        ("DOING" . "#5577aa")
-       ("RPT" . "#cccc00")
-       ("WATCH" . "#bbad44")
        ("ORDR" . "#bb44ee")
        ("SENT" . "#bb44ee")
        ("CANCELLED" . "#426b3e")
@@ -1210,7 +1213,7 @@ as search term for Google search in web browser."
   '(outline-2 ((t (:weight regular))))
   '(widget-button ((t (:inherit fixed-pitch :weight regular))))
   '(window-divider ((t (:foreground "black"))))
-  '(aw-leading-char-face ((t (:inherit (fixed-pitch) :weight regular :inverse-video t :height 1.0))))
+  '(aw-leading-char-face ((t (:inherit (fixed-pitch) :background "#000000" :foreground "#ffffff" :height 1.0))))
   '(vertical-border ((t (:foreground "#000000")))))
 
 ;;
@@ -1391,8 +1394,8 @@ as search term for Google search in web browser."
 
 (setq-default truncate-partial-width-windows 120)
 
-(set-frame-parameter nil 'alpha-background 70)
-(add-to-list 'default-frame-alist '(alpha-background . 70))
+(set-frame-parameter nil 'alpha-background 80)
+(add-to-list 'default-frame-alist '(alpha-background . 80))
 
 (set-fringe-mode '(0 . 0))
 (set-display-table-slot standard-display-table 0 ?\ )
@@ -2012,14 +2015,14 @@ With directories under project root using find."
   ;; :vc (:fetcher github :repo "captainflasmr/selected-window-accent-mode")
   :config (selected-window-accent-mode 1)
   :custom
-  (selected-window-accent-fringe-thickness 10)
+  (selected-window-accent-fringe-thickness 8)
   (selected-window-accent-percentage-darken 20)
   (selected-window-accent-percentage-desaturate 30)
   (selected-window-accent-smart-borders nil)
   (selected-window-accent-tab-accent t)
-  ;; (selected-window-accent-custom-color nil)
-  (selected-window-accent-custom-color "#da8163")
-  (selected-window-accent-mode-style 'default))
+  (selected-window-accent-custom-color nil)
+  ;; (selected-window-accent-custom-color "#da8163")
+  (selected-window-accent-mode-style 'subtle))
 
 ;;
 ;; -> push-block
@@ -2187,18 +2190,8 @@ With directories under project root using find."
                     ;; insert transformed input
                     (insert buff-contents)
                     ;; write to file
-                    (write-region (point-min)(point-max) export-file))
-                  ) ;; save-excursion
-                ) ;; pcase format-spec
-              ) ;; progn if dst-valid
-            (message (format "Invalid format-spec %s not in %s" format-spec dst-valid))
-            ) ;; if mdemq
-          ;; (message (format "%s %s not processed" source-file export-file))
-          ) ;; end if in-current value
-        ) ;; let
-      ) ;; dolist
-    ) ;; save-excursion
-  ) ;; defun
+                    (write-region (point-min)(point-max) export-file)))))
+            (message (format "Invalid format-spec %s not in %s" format-spec dst-valid))))))))
 
 ;;
 ;; -> kurecolor
@@ -2387,7 +2380,7 @@ With directories under project root using find."
 (use-package tab-bar ;; 29.1
   :ensure nil ;; Since tab-bar is built-in, no package needs to be downloaded
   :init
-  (tab-bar-mode -1) ;; 27.1
+  (tab-bar-mode 1) ;; 27.1
   (tab-bar-history-mode 1) ;; 27.1
   :custom
   (tab-bar-format '(tab-bar-format-tabs-groups
@@ -2688,7 +2681,7 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
   (define-key my-jump-keymap (kbd "c") (lambda () (interactive) (find-file "~/DCIM/Camera")))
   (define-key my-jump-keymap (kbd "g") (lambda () (interactive) (find-file "~/.config")))
   (define-key my-jump-keymap (kbd "i") #'chatgpt-shell)
-  (define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~/DCIM/content/aad--todo.org")))
+  (define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~/DCIM/content/aab--todo.org")))
   (define-key my-jump-keymap (kbd "y") #'emms)
   (define-key my-jump-keymap (kbd "q") #'cfw:open-org-calendar)
   (define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
@@ -2912,6 +2905,11 @@ or change the theme from a unified interface."
 (bind-key* (kbd "C-c <up>") #'windmove-up)
 (bind-key* (kbd "C-c <down>") #'windmove-down)
 
+(bind-key* (kbd "C-c h") #'windmove-left)
+(bind-key* (kbd "C-c l") #'windmove-right)
+(bind-key* (kbd "C-c k") #'windmove-up)
+(bind-key* (kbd "C-c j") #'windmove-down)
+
 (if (and (fboundp 'native-comp-available-p)
       (native-comp-available-p))
   (message "Native compilation is available")
@@ -2975,6 +2973,24 @@ or change the theme from a unified interface."
   :bind
   ("M-a" . ace-window))
 
+(bind-key* (kbd "M-a h") #'windmove-left)
+(bind-key* (kbd "M-a l") #'windmove-right)
+(bind-key* (kbd "M-a k") #'windmove-up)
+(bind-key* (kbd "M-a j") #'windmove-down)
+(bind-key* (kbd "M-a 0") #'delete-window)
+(bind-key* (kbd "M-a q") #'delete-window)
+(bind-key* (kbd "M-a 1") #'delete-other-windows)
+(bind-key* (kbd "M-a o") #'delete-other-windows)
+(bind-key* (kbd "M-a 2") #'split-window-vertically)
+(bind-key* (kbd "M-a 3") #'split-window-horizontally)
+(bind-key* (kbd "M-a s") #'split-window-vertically)
+(bind-key* (kbd "M-a v") #'split-window-horizontally)
+
+(bind-key* (kbd "M-a M-h") #'windmove-left)
+(bind-key* (kbd "M-a M-l") #'windmove-right)
+(bind-key* (kbd "M-a M-k") #'windmove-up)
+(bind-key* (kbd "M-a M-j") #'windmove-down)
+
 ;; (use-package god-mode)
 
 ;; (global-set-key (kbd "<escape>") #'god-local-mode)
@@ -2983,3 +2999,10 @@ or change the theme from a unified interface."
 ;;   (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
 
 ;; (add-hook 'post-command-hook #'my-god-mode-update-cursor-type)
+
+(use-package keycast
+  :init
+  (keycast-tab-bar-mode -1))
+
+(global-set-key (kbd "M-0") #'my/switch-to-thing)
+(define-key minibuffer-local-map (kbd "M-0") #'abort-minibuffers)

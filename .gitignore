@@ -16,6 +16,7 @@ Shotcutrc
 Surfshark/
 Trolltech.conf
 VeraCrypt/
+VSCodium/
 akonadi-firstrunrc
 akonadi-migrationrc
 akonadi/
@@ -63,6 +64,7 @@ configstore/
 darktable/
 dconf/
 defaultcalendarrc
+deluge/
 devedeng/
 device_automounter_kcmrc
 discoverrc
@@ -70,13 +72,13 @@ dolphinrc
 drkonqirc
 easytag/
 elisarc
-emacs/#emacs--init.org#
+emacs/chatgpt
+emacs/eln-cache
 emacs/.dir-locals.el
 emacs/.emacs.desktop
 emacs/.emacs.desktop.lock
 emacs/abbrev_defs
 emacs/auto-save-list/
-emacs/bookmarks
 emacs/ede-projects.el
 emacs/elpa/
 emacs/emacs--init_*
@@ -279,3 +281,7 @@ xsettingsd/
 yakuake.notifyrc
 yakuakerc
 znt/
+pip/
+psd/
+wal/
+micro/

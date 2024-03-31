@@ -1,10 +1,10 @@
 #
 # -> visuals
 #
-gaps inner 4px
-gaps outer 4px
+gaps inner 10px
+gaps outer 5px
 gaps top 0px
-gaps bottom 0px
+gaps bottom -8px
 
 default_border pixel 6px
 
@@ -53,7 +53,7 @@ bindsym $mod+m exec emacs
 bindsym $mod+b exec thunderbird
 bindsym $mod+n exec firefox
 bindsym $mod+r exec screen-record.sh
-bindsym $mod+Return exec $term
+bindsym $mod+return exec $term
 bindsym control+Mod1+t exec $term
 bindsym $mod+q kill
 bindsym Mod1+F4 kill
@@ -72,6 +72,15 @@ bindsym $mod+Left focus left
 bindsym $mod+Right focus right
 bindsym $mod+Up focus up
 bindsym $mod+Down focus down
+
+bindsym $mod+Shift+$left move left
+bindsym $mod+Shift+$down move down
+bindsym $mod+Shift+$up move up
+bindsym $mod+Shift+$right move right
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
 
 #
 # -> Workspaces

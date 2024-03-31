@@ -7,11 +7,11 @@
     "spacing": 18,
     "margin-top": 4,
     "margin-bottom": -2,
-    "margin-right": 14,
-    "margin-left": 14,
+    "margin-right": 16,
+    "margin-left": 16,
     "include": ["~/.config/waybar/modules.json"],
     "modules-left": [
-        "custom/launcher",
+        // "custom/launcher",
         "tray",
         "custom/recorder",
         "idle_inhibitor",
@@ -39,10 +39,11 @@
         "backlight",
         "pulseaudio",
         "clock",
-        "battery",
         "custom/num_lock",
         "custom/caps_lock",
-        "custom/scroll_lock"
+        "custom/scroll_lock",
+        "battery"
+
         // "custom/power"
         // "custom/exit"
     ],

@@ -1,7 +1,7 @@
 @define-color foreground rgba(255, 255, 255, 1.0);
 @define-color background rgba(35, 35, 35, 0.8);
 @define-color border-theme rgba(0, 0, 0, 1.0);
-@define-color recording-color  rgba(255, 255, 255, 0.8);
+@define-color recording-color  #7E9EFF;
 @define-color workspace-color rgba(100, 100, 100, 0.3);
 
 * {
@@ -22,7 +22,7 @@
 }
 
 .recording {
-    color: @foreground;
+    color: @background;
     background-color: @recording-color;
     padding: 0em 0.6em 0em 0.6em;
 }
@@ -52,7 +52,7 @@
 #custom-caps_lock,
 #custom-num_lock,
 #custom-scroll_lock {
-    padding: 0em 0.1em;
+    padding: 0em 0.2em;
 }
 
 /* Active LED styling */
@@ -60,4 +60,5 @@
 #custom-num_lock.active,
 #custom-scroll_lock.active {
     background-color: @recording-color;
+    color: @background;
 }

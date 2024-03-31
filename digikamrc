@@ -28,7 +28,7 @@ Icon Show Resolution=false
 Icon Show Size=false
 Icon Show Tags=true
 Icon Show Title=true
-IconView Font=Sans Serif,9,-1,5,50,0,0,0,0,0
+IconView Font=Sans Serif,9,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
 Image Group Mode=4
 Image Group Sort Order=1
 Image Sort Order=0
@@ -42,12 +42,12 @@ Rating Filter Condition=0
 Recursive Albums=true
 Recursive Tags=true
 Show Album ToolTips=false
-Show Folder Tree View Items Count=false
+Show Folder Tree View Items Count=true
 Show Thumbbar=true
 Show ToolTips=false
 Sidebar Title Style=2
 Theme=FusionGray
-ToolTips Font=Sans Serif,9,-1,5,50,0,0,0,0,0
+ToolTips Font=Sans Serif,9,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
 ToolTips Show Album Caption=true
 ToolTips Show Album Category=true
 ToolTips Show Album Collection=true
@@ -80,12 +80,12 @@ ToolTips Show Video Aspect Ratio=true
 ToolTips Show Video Codec=true
 ToolTips Show Video Duration=true
 ToolTips Show Video Frame Rate=true
-TreeView Font=Sans Serif,9,-1,5,50,0,0,0,0,0
+TreeView Font=Sans Serif,9,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
 Update Type=0
 
 [AlbumFolderView Sidebar]
 CurrentIndex=1
-Expansion=0,1,196,197
+Expansion=0,1,197,238
 RestoreChecked=false
 Selection=1
 SortColumn=0
@@ -102,6 +102,20 @@ AlbumTreeViewSelection=
 AlbumTreeViewSortColumn=0
 AlbumTreeViewSortOrder=0
 CaseSensitive=0
+
+[All Metadata Edit Settings]
+All EXIF Edit Page=0
+All IPTC Edit Page=8
+All Sync EXIF Artists=true
+All Sync EXIF Comment=true
+All Sync EXIF Copyright=true
+All Sync EXIF Date=true
+All Sync IPTC Caption=true
+All Sync IPTC Date=true
+All Sync JFIF Comment=true
+All Sync XMP Caption=true
+All Sync XMP Date=true
+All XMP Edit Page=7
 
 [Baloo Settings]
 Sync Baloo to Digikam=false
@@ -151,7 +165,7 @@ RenderingIntent=0
 WorkProfileFile[$e]=/usr/share/digikam/profiles/srgb-d65.icm
 
 [CoreDB Settings]
-Recently Used Tags=123,103,121,125,124,117,129,119
+Recently Used Tags=31,26,41,101,123,103,121,125,124,117
 
 [DMetadata Settings]
 readingAllTags=false
@@ -256,7 +270,7 @@ specialOpts=0
 subspace=1
 tagPaths=1
 
-[DMetadata Settings][readColour labelNamespaces][#0000]
+[DMetadata Settings][readColor labelNamespaces][#0000]
 index=0
 isDefault=true
 isDisabled=false
@@ -267,7 +281,7 @@ specialOpts=0
 subspace=2
 tagPaths=1
 
-[DMetadata Settings][readColour labelNamespaces][#0001]
+[DMetadata Settings][readColor labelNamespaces][#0001]
 index=1
 isDefault=true
 isDisabled=false
@@ -278,7 +292,7 @@ specialOpts=0
 subspace=2
 tagPaths=1
 
-[DMetadata Settings][readColour labelNamespaces][#0002]
+[DMetadata Settings][readColor labelNamespaces][#0002]
 index=2
 isDefault=true
 isDisabled=false
@@ -347,18 +361,6 @@ nsType=2
 secondNameOpts=0
 specialOpts=0
 subspace=0
-tagPaths=1
-
-[DMetadata Settings][readRatingNamespaces][#0005]
-convertRatio=8,6,5,4,2,1
-index=5
-isDefault=true
-isDisabled=false
-namespaceName=Iptc.Application2.Urgency
-nsType=2
-secondNameOpts=0
-specialOpts=0
-subspace=1
 tagPaths=1
 
 [DMetadata Settings][readTagsNamespaces][#0000]
@@ -600,7 +602,7 @@ specialOpts=0
 subspace=1
 tagPaths=1
 
-[DMetadata Settings][writeColour labelNamespaces][#0000]
+[DMetadata Settings][writeColor labelNamespaces][#0000]
 index=0
 isDefault=true
 isDisabled=false
@@ -611,7 +613,7 @@ specialOpts=0
 subspace=2
 tagPaths=1
 
-[DMetadata Settings][writeColour labelNamespaces][#0001]
+[DMetadata Settings][writeColor labelNamespaces][#0001]
 index=1
 isDefault=true
 isDisabled=false
@@ -622,7 +624,7 @@ specialOpts=0
 subspace=2
 tagPaths=1
 
-[DMetadata Settings][writeColour labelNamespaces][#0002]
+[DMetadata Settings][writeColor labelNamespaces][#0002]
 index=2
 isDefault=true
 isDisabled=false
@@ -691,18 +693,6 @@ nsType=2
 secondNameOpts=0
 specialOpts=0
 subspace=0
-tagPaths=1
-
-[DMetadata Settings][writeRatingNamespaces][#0005]
-convertRatio=8,6,5,4,2,1
-index=5
-isDefault=true
-isDisabled=false
-namespaceName=Iptc.Application2.Urgency
-nsType=2
-secondNameOpts=0
-specialOpts=0
-subspace=1
 tagPaths=1
 
 [DMetadata Settings][writeTagsNamespaces][#0000]
@@ -847,7 +837,7 @@ tagPaths=1
 
 [Database Settings]
 Database Connectoptions=
-Database Encrypted Password=AwKlpaU=
+Database Encrypted Password=AwIkJCQ=
 Database Hostname=
 Database Name=/home/jdyer/Photos/
 Database Name Face=/home/jdyer/Photos/
@@ -861,6 +851,7 @@ Internal Database Server=false
 Internal Database Server Mysql Admin Command=
 Internal Database Server Mysql Init Command=
 Internal Database Server Mysql Server Command=
+Internal Database Server Mysql Upgrade Command=
 Internal Database Server Path=
 
 [DateFolderView Sidebar]
@@ -871,12 +862,12 @@ SortColumn=0
 SortOrder=0
 
 [Digikam Left Sidebar]
-ActiveTab=1
+ActiveTab=0
 Minimized=false
 RestoreSize=-1
 
 [Digikam Right Sidebar]
-ActiveTab=4
+ActiveTab=1
 DigikamProperties Expanded=true
 FileProperties Expanded=true
 ItemProperties Expanded=true
@@ -893,10 +884,10 @@ Contact Expanded=true
 ItemDescEdit Tab=1
 ItemDescEditTab CaptionsLang=x-default
 ItemDescEditTab SearchBarCaseSensitive=0
-ItemDescEditTab TagCheckViewCurrentIndex=124
-ItemDescEditTab TagCheckViewExpansion=0,103
+ItemDescEditTab TagCheckViewCurrentIndex=
+ItemDescEditTab TagCheckViewExpansion=0
 ItemDescEditTab TagCheckViewRestoreChecked=false
-ItemDescEditTab TagCheckViewSelection=124
+ItemDescEditTab TagCheckViewSelection=
 ItemDescEditTab TagCheckViewSortColumn=0
 ItemDescEditTab TagCheckViewSortOrder=0
 ItemDescEditTab TagCheckViewToggle Auto Tags=0
@@ -1049,32 +1040,47 @@ Use Yolo V3=false
 
 [Face Management Settings]
 AlbumComboBox-Checked=
-AlbumComboBox-CurrentIndex=
+AlbumComboBox-CurrentIndex=1
 AlbumComboBox-Expansion=1
 AlbumComboBox-RestoreChecked=true
-AlbumComboBox-Selection=
+AlbumComboBox-Selection=1
 AlbumComboBox-SortColumn=0
 AlbumComboBox-SortOrder=0
 AlbumTypeEntry=0
 Already Scanned Handling=0
 Face Scan Main Task=Detect
 TagComboBox-Checked=
-TagComboBox-CurrentIndex=
+TagComboBox-CurrentIndex=101
 TagComboBox-Expansion=1
 TagComboBox-RestoreChecked=true
-TagComboBox-Selection=
+TagComboBox-Selection=79,99
 TagComboBox-SortColumn=0
 TagComboBox-SortOrder=0
 Use Full CPU=false
 UseWholeAlbumsEntry=true
 UseWholeTagsEntry=false
 
+[FileCopy Export Dialog]
+1745x982 screen: Window-Maximized=true
+
+[FileCopyExport]
+albumPath=false
+changeImageProperties=false
+imageCompression=75
+imageFormat=0
+imageResize=1024
+overwrite=false
+removeMetadata=false
+sidecars=false
+targetBehavior=0
+targetUrl=file:///run/media/jdyer/6665-3063
+
 [Find Duplicates View]
 AlbumComboBox-Checked=
-AlbumComboBox-CurrentIndex=
+AlbumComboBox-CurrentIndex=1
 AlbumComboBox-Expansion=
 AlbumComboBox-RestoreChecked=true
-AlbumComboBox-Selection=
+AlbumComboBox-Selection=1
 AlbumComboBox-SortColumn=0
 AlbumComboBox-SortOrder=0
 AlbumTypeEntry=0
@@ -1085,10 +1091,10 @@ Last search album tag relation=0
 Last search results restriction=0
 Lower bound for minimum similarity=40
 TagComboBox-Checked=
-TagComboBox-CurrentIndex=
+TagComboBox-CurrentIndex=79
 TagComboBox-Expansion=
 TagComboBox-RestoreChecked=true
-TagComboBox-Selection=
+TagComboBox-Selection=79
 TagComboBox-SortColumn=0
 TagComboBox-SortOrder=0
 UseWholeAlbumsEntry=false
@@ -1112,10 +1118,10 @@ SortOrder=0
 
 [Fuzzy Search View]
 AlbumComboBox-Checked=
-AlbumComboBox-CurrentIndex=
+AlbumComboBox-CurrentIndex=1
 AlbumComboBox-Expansion=1
 AlbumComboBox-RestoreChecked=true
-AlbumComboBox-Selection=
+AlbumComboBox-Selection=1
 AlbumComboBox-SortColumn=0
 AlbumComboBox-SortOrder=0
 UseWholeAlbumsEntry=true
@@ -1131,7 +1137,7 @@ Selection=
 Sort Order=0
 SortColumn=0
 SortOrder=0
-SplitterState=AAAA/wAAAAEAAAACAAABeAAAAGUB/////wEAAAACAA==
+SplitterState=AAAA/wAAAAEAAAACAAABfgAAAGUB/////wEAAAACAA==
 
 [GPS Search Sidebar][GPSSearch Map Widget]
 Backend=marble
@@ -1161,13 +1167,14 @@ CaseSensitive=0
 
 [General Settings]
 1745x982 screen: Window-Maximized=true
-Application Font=Sans Serif,9,-1,5,50,0,0,0,0,0
+Application Font=Sans Serif,9,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
 Application Style=fusion
 Apply Sidebar Changes Directly=true
 Clean core DB At Start=false
 Detect faces in newly added images=false
 Draw Frames To Grouped Items=true
 Expand New Current Item On Click=true
+Finger Prints Generator First Run=true
 FullScreen Hide SideBars=false
 FullScreen Hide StatusBar=false
 FullScreen Hide ThumbBar=true
@@ -1179,7 +1186,6 @@ Show Only Face Tags For Assigning Name=true
 Show Permanent Delete Dialog=true
 Show Splash=true
 Show Trash Delete Dialog=true
-State=AAAA/wAAAAD9AAAAAAAABscAAANIAAAABAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAEAAAAWAG0AYQBpAG4AVABvAG8AbABCAGEAcgEAAAAA/////wAAAAAAAAAA
 String Comparison Type=0
 ToolBarsMovable=Disabled
 Use Large Thumbs=false
@@ -1261,12 +1267,12 @@ PGFCompression=3
 PGFLossLess=true
 PNGCompression=9
 PreviewMode=128
-RawImportToolIid=
+RawImportToolIid=org.kde.digikam.plugin.rawimport.Native
 RestoreToolSettings=true
 Show Thumbbar=false
 ShowImageSettingsDialog=true
 SixteenBitsImage=false
-SplitterState=AAAA/wAAAAEAAAACAAAAkAAAAS4B/////wAAAAABAQ==
+SplitterState=AAAA/wAAAAEAAAACAAAAwAAAAS4B/////wAAAAABAQ==
 TIFFCompression=false
 Unclip Color=0
 UnderExposureColor=255,255,255
@@ -1634,9 +1640,9 @@ Version Properties Tab=versions
 Version Properties View Mode=2
 
 [MainWindow]
-InitialAlbumID=134217831
+InitialAlbumID=1
 SplitterState=AAAA/wAAAAEAAAADAAABhgAADWYAAAEuAf////8AAAAAAQE=
-ThumbbarState=AAAA/wAAAAD9AAAAAQAAAAIAAAPTAAAAwPwBAAAAAfsAAAAmAG0AYQBpAG4AdwBpAG4AZABvAHcAXwB0AGgAdQBtAGIAYgBhAHIAAAAAAAAAA9MAAABXAP///wAAA9MAAANIAAAABAAAAAQAAAAIAAAACPwAAAAA
+ThumbbarState=AAAA/wAAAAD9AAAAAQAAAAIAAAPAAAAAwPwBAAAAAfsAAAAmAG0AYQBpAG4AdwBpAG4AZABvAHcAXwB0AGgAdQBtAGIAYgBhAHIAAAAAAAAAA8AAAABXAP///wAAA8AAAANRAAAABAAAAAQAAAAIAAAACPwAAAAA
 
 [MaintenanceDlg Settings]
 AlbumComboBox-Checked=
@@ -1733,6 +1739,11 @@ font=Sans Serif,20,-1,5,75,0,0,0,0,0
 outline=true
 outline_color=0,0,255
 
+[Metadata Edit Dialog]
+1745x982 screen: Height=925
+1745x982 screen: Width=844
+Tab Index=0
+
 [Metadata Settings]
 Album Date Source=1
 Custom Sidecar Extensions=
@@ -1790,17 +1801,16 @@ CaseSensitive=0
 
 [Select Reference]
 AlbumComboBox-Checked=
-AlbumComboBox-CurrentIndex=
+AlbumComboBox-CurrentIndex=1
 AlbumComboBox-Expansion=
 AlbumComboBox-RestoreChecked=true
-AlbumComboBox-Selection=
+AlbumComboBox-Selection=1
 AlbumComboBox-SortColumn=0
 AlbumComboBox-SortOrder=0
 UseWholeAlbumsEntry=false
 
 [Setup Dialog]
-1745x982 screen: Window-Maximized=true
-Albumview Tab=0
+Albumview Tab=1
 Camera Tab=0
 Editor Tab=0
 ICC Tab=0
@@ -1808,17 +1818,17 @@ Metadata SubTab=0
 Metadata Tab=0
 Misc Tab=0
 Plugin Tab=0
-Setup Page=1
+Setup Page=5
 Template Tab=0
 ToolTip Tab=0
 Video Tab=0
 
 [Sketch Search View]
 AlbumComboBox-Checked=
-AlbumComboBox-CurrentIndex=
+AlbumComboBox-CurrentIndex=1
 AlbumComboBox-Expansion=1
 AlbumComboBox-RestoreChecked=true
-AlbumComboBox-Selection=
+AlbumComboBox-Selection=1
 AlbumComboBox-SortColumn=0
 AlbumComboBox-SortOrder=0
 UseWholeAlbumsEntry=true
@@ -1830,6 +1840,9 @@ EnableSpellCheck=false
 IgnoredWords=digiKam,Showfoto,Apple,Nikon,Android,Canon,Sony,Samsung,Panasonic,Olympus,Exif,IPTC,Xmp
 TranslatorEngine=0
 TranslatorLang=de-DE,en-US,es-ES,fr-FR,it-IT,pt-PT
+
+[TagEditDlgTitleEdit Search Text Tool]
+CaseSensitive=0
 
 [TagFilter Sidebar]
 FaceTagsFilter Expanded=true
@@ -1844,13 +1857,24 @@ TypeGeolocationFilter Expanded=true
 TypeMimeFilter Expanded=true
 
 [TagView Sidebar]
-CurrentIndex=103
-Expansion=0,103,100
+CurrentIndex=141
+Expansion=0,19,103,26,141
 RestoreChecked=false
-Selection=103
+Selection=141
 SortColumn=0
 SortOrder=0
-TagsSource=false
+TagsSource=true
+
+[Tags Manager]
+CurrentIndex=
+Expansion=1
+RestoreChecked=false
+Selection=
+SortColumn=0
+SortOrder=0
+
+[Tags Manager List]
+Items=
 
 [TimeLine Sidebar]
 CurrentIndex=
@@ -1910,7 +1934,7 @@ Grouping mode=2
 
 [mainwindow_tableview][Current Profile]
 Column Count=6
-Header State=\x00\x00\x00\xff\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x06\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03\xc3\x00\x00\x00\x06\x01\x01\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00d\xff\xff\xff\xff\x00\x00\x00\x81\x00\x00\x00\x00\x00\x00\x00\x06\x00\x00\x00d\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00d\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00d\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00d\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00d\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x01\xcf\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x03\xe8\x00\x00\x00\x00d
+Header State=AAAA/wAAAAAAAAABAAAAAQAAAAYBAAAAAAAAAAAAAAAAAAAAAAAAAlgAAAAGAQEAAQAAAAAAAAAAAAAAAGT/////AAAAgQAAAAAAAAAGAAAAZAAAAAEAAAAAAAAAZAAAAAEAAAAAAAAAZAAAAAEAAAAAAAAAZAAAAAEAAAAAAAAAZAAAAAEAAAAAAAAAZAAAAAEAAAAAAAAD6AAAAABkAAAAAA==
 Profile Name=
 
 [mainwindow_tableview][Current Profile][Column 0]

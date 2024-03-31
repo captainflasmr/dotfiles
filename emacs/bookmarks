@@ -54,10 +54,10 @@
   (last-modified 26089 60461 220435 142000))
 ("org-capture-last-stored"
   (filename . "~/DCIM/content/emacs--all.org")
-  (front-context-string . "* TODO Waybar-Sw")
+  (front-context-string . "* TODO Kurecolor")
   (rear-context-string . "@emacs:@linux:\n\n")
   (position . 445)
-  (last-modified 26110 47728 722013 751000))
+  (last-modified 26118 34027 733813 737000))
 ("backup"
   (filename . "~/backup/")
   (front-context-string . "!home!jdyer!1.or")
@@ -77,11 +77,11 @@
   (position . 1)
   (last-modified 26072 49685 453942 10000))
 ("org-refile-last-stored"
-  (filename . "~/DCIM/content/aad--todo.org")
-  (front-context-string . "** DONE sway key")
-  (rear-context-string . "\n* 2024 [30/30]\n")
-  (position . 2589)
-  (last-modified 26110 63357 216909 986000))
+  (filename . "~/DCIM/content/aab--todo.org")
+  (front-context-string . "** DONE kurecolo")
+  (rear-context-string . "\n* 2024 [67/67]\n")
+  (position . 2559)
+  (last-modified 26118 34329 37192 461000))
 ("Videos"
   (filename . "~/Videos/")
   (front-context-string . "  /home/jdyer/Vi")

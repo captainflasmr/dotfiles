@@ -6,8 +6,9 @@
   fallthrough true
 
   ;; Set this to false to disable any command-execution in KMonad
-  allow-cmd true)
+  allow-cmd true
+)
 
 (defsrc caps ralt)
 
-(deflayer default lctl lalt)
+(deflayer mine lctl scrlck)
