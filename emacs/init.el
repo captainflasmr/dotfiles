@@ -103,16 +103,6 @@
 (use-package ef-themes)
 (use-package doom-themes)
 
-(use-package toc-org
-  :commands
-  toc-org-enable
-  :init
-  (add-hook 'org-mode-hook 'toc-org-enable))
-
-(use-package org-bullets
-  :config
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-
 (use-package rainbow-mode
   :diminish rainbow-mode colour-shift-mode
   :hook
@@ -959,19 +949,8 @@ as search term for Google search in web browser."
 
 (use-package org
   :defer t
-  :hook
-  (org-mode . (lambda ()(org-indent-mode)(diminish 'org-indent-mode)))
   :config
-  (define-key org-mode-map (kbd "M-h") nil)
   (setq org-src-tab-acts-natively t ;; commenting better in org src blocks
-    org-indent-indentation-per-level 2
-    org-blank-before-new-entry '((heading . nil) (plain-list-item . nil))
-    org-edit-src-content-indentation 0
-    org-src-preserve-indentation t
-    org-directory "~/DCIM/content/"
-    org-default-notes-file "~/DCIM/content/aab--todo.org"
-    org-hide-leading-stars t
-    org-reverse-note-order t
     org-log-done 'time
     org-tags-sort-function 'org-string-collate-greaterp
     org-export-with-sub-superscripts nil
@@ -988,31 +967,18 @@ as search term for Google search in web browser."
        ("SENT" . "#bb44ee")
        ("CANCELLED" . "#426b3e")
        ("DONE" . "#77aa66"))
-    org-cycle-separator-lines 0)
-  :bind
-  (:map org-mode-map
-    ("M-n" . org-metadown)
-    ("M-p" . org-metaup)
-    ("M-N" . org-shiftdown)
-    ("M-P" . org-shiftup)
-    ("M-J" . org-shiftleft)
-    ("M-K" . org-shiftright)
-    ("M-[" . org-metaleft)
-    ("M-]" . org-metaright)
-    :repeat-map my/org-mode-repeat-map
-    ("n" . org-metadown)
-    ("p" . org-metaup)
-    ("N" . org-shiftdown)
-    ("P" . org-shiftup)
-    ("J" . org-shiftleft)
-    ("K" . org-shiftright)
-    ("[" . org-metaleft)
-    ("]" . org-metaright)))
+    org-cycle-separator-lines 0))
 
 (use-package org-tidy)
 
 (use-package org-modern
   :init (global-org-modern-mode -1))
+
+(use-package toc-org
+  :commands
+  toc-org-enable
+  :init
+  (add-hook 'org-mode-hook 'toc-org-enable))
 
 (defun my/org-ql-emacs ()
   "Test org-ql query."
@@ -1394,8 +1360,8 @@ as search term for Google search in web browser."
 
 (setq-default truncate-partial-width-windows 120)
 
-(set-frame-parameter nil 'alpha-background 80)
-(add-to-list 'default-frame-alist '(alpha-background . 80))
+(set-frame-parameter nil 'alpha-background 95)
+(add-to-list 'default-frame-alist '(alpha-background . 95))
 
 (set-fringe-mode '(0 . 0))
 (set-display-table-slot standard-display-table 0 ?\ )
@@ -2020,8 +1986,8 @@ With directories under project root using find."
   (selected-window-accent-percentage-desaturate 30)
   (selected-window-accent-smart-borders nil)
   (selected-window-accent-tab-accent t)
-  (selected-window-accent-custom-color nil)
-  ;; (selected-window-accent-custom-color "#da8163")
+  ;; (selected-window-accent-custom-color nil)
+  (selected-window-accent-custom-color "#AD458B")
   (selected-window-accent-mode-style 'subtle))
 
 ;;
@@ -2689,12 +2655,7 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
 
   (setq diary-file "~/DCIM/content/diary.org")
 
-  (custom-theme-set-faces
-    'user
-    '(variable-pitch ((t (:family "Sans Serif" :height 120 :weight normal))))
-    '(fixed-pitch ((t ( :family "Fira Code Retina" :height 130)))))
-
-  (setq font-general "Monospace 12")
+  (setq font-general "Monospace 11")
   (set-frame-font font-general nil t)
   (add-to-list 'default-frame-alist `(font . ,font-general)))
 
@@ -2922,22 +2883,22 @@ or change the theme from a unified interface."
   ;; Bind dedicated completion commands
   ;; Alternative prefix keys: C-c p, M-p, M-+, ...
   :bind (("C-c p p" . completion-at-point) ;; capf
-	       ("C-c p t" . complete-tag)        ;; etags
-	       ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
-	       ("C-c p h" . cape-history)
-	       ("C-c p f" . cape-file)
-	       ("C-c p k" . cape-keyword)
-	       ("C-c p s" . cape-elisp-symbol)
-	       ("C-c p e" . cape-elisp-block)
-	       ("C-c p a" . cape-abbrev)
-	       ("C-c p l" . cape-line)
-	       ("C-c p w" . cape-dict)
-	       ("C-c p :" . cape-emoji)
-	       ("C-c p \\" . cape-tex)
-	       ("C-c p _" . cape-tex)
-	       ("C-c p ^" . cape-tex)
-	       ("C-c p &" . cape-sgml)
-	       ("C-c p r" . cape-rfc1345))
+          ("C-c p t" . complete-tag)        ;; etags
+          ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
+          ("C-c p h" . cape-history)
+          ("C-c p f" . cape-file)
+          ("C-c p k" . cape-keyword)
+          ("C-c p s" . cape-elisp-symbol)
+          ("C-c p e" . cape-elisp-block)
+          ("C-c p a" . cape-abbrev)
+          ("C-c p l" . cape-line)
+          ("C-c p w" . cape-dict)
+          ("C-c p :" . cape-emoji)
+          ("C-c p \\" . cape-tex)
+          ("C-c p _" . cape-tex)
+          ("C-c p ^" . cape-tex)
+          ("C-c p &" . cape-sgml)
+          ("C-c p r" . cape-rfc1345))
   :init
   ;; Add to the global default value of `completion-at-point-functions' which is
   ;; used by `completion-at-point'.  The order of the functions matters, the
@@ -2964,7 +2925,7 @@ or change the theme from a unified interface."
 (use-package avy
   :bind
   (("M-;" . avy-goto-char-2)))
-  ;; (("M-;" . avy-goto-char-timer)))
+;; (("M-;" . avy-goto-char-timer)))
 
 (use-package ace-window
   :config
