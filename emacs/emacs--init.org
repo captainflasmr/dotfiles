@@ -1,4 +1,5 @@
--*- mode: org; fill-column: 80; eval: (display-fill-column-indicator-mode 1); -*-
+-*- mode: org; fill-column: 80; eval: (display-fill-column-indicator-mode 1);
+-*-
 #+title: Emacs Configuration
 #+options: toc:nil author:t title:t
 #+property: header-args :tangle ~/.config/emacs/init.el
@@ -197,7 +198,7 @@ Demonstrates the use of `use-package` to neatly organize package configuration a
   (use-package doom-themes)
 
   (use-package rainbow-mode
-    :diminish rainbow-mode colour-shift-mode
+    :diminish rainbow-mode
     :hook
     (prog-mode . rainbow-mode)
     (conf-space-mode . rainbow-mode)
@@ -242,11 +243,11 @@ Configures `corfu` for autocompletion, setting up preferences like cycling throu
     (corfu-quit-at-boundary nil)
     (corfu-quit-no-match nil)
     (corfu-preview-current nil)
-    (corfu-preselect 'first)
+    (corfu-preselect 'prompt)
     (corfu-on-exact-match nil)
-    (corfu-scroll-margin 5)
-    :hook ((shell-mode . corfu-mode)
-            (eshell-mode . corfu-mode)))
+    (corfu-scroll-margin 5))
+  ;;    :hook ((shell-mode . corfu-mode)
+  ;;            (eshell-mode . corfu-mode)))
 
   (use-package emacs
     :init
@@ -297,7 +298,7 @@ Setup for both vanilla and advanced modeline completion styles, including config
     (setq completion-auto-wrap t
       completion-auto-help nil
       completions-max-height 15
-      completion-styles '(initials flex)
+      completion-styles '(basic partial-completion initials flex)
       icomplete-in-buffer t
       max-mini-window-height 10)
     (fido-mode 1)
@@ -335,7 +336,7 @@ Setup for both vanilla and advanced modeline completion styles, including config
     (read-buffer-completion-ignore-case t)
     (completion-ignore-case t)
     (vertico-resize nil)
-    (vertico-count 10)
+    (vertico-count 15)
     :bind (:map vertico-map
             ("C-n" . vertico-next)
             ("C-p" . vertico-previous)
@@ -345,7 +346,7 @@ Setup for both vanilla and advanced modeline completion styles, including config
 
   (use-package orderless
     :custom
-    (completion-styles '(flex orderless)))
+    (completion-styles '(basic partial-completion flex orderless)))
 
   (use-package marginalia
     :after vertico
@@ -372,13 +373,12 @@ To reduce wrist RSI I am using the left meta thumb key as much as possible.
   (global-set-key (kbd "M-o") my-jump-keymap)
 
   (define-key my-jump-keymap (kbd "-") #'tab-close)
-  ;; (define-key my-jump-keymap (kbd "=") (lambda () (interactive) (tab-bar-new-tab-to -1)(tab-bar-mode 'toggle)))
   (define-key my-jump-keymap (kbd "=") (lambda () (interactive) (tab-bar-new-tab-to -1)))
   (define-key my-jump-keymap (kbd "e") (lambda () (interactive) (find-file (concat user-emacs-directory "init.el"))))
   (define-key my-jump-keymap (kbd "f") #'my/find-file)
   (define-key my-jump-keymap (kbd "h") (lambda () (interactive) (find-file "~")))
   (define-key my-jump-keymap (kbd "k") (lambda () (interactive) (find-file (concat user-emacs-directory "emacs--init.org"))))
-  (define-key my-jump-keymap (kbd "m") #'magit-list-repositories)
+  (define-key my-jump-keymap (kbd "m") #'customize-themes)
   (define-key my-jump-keymap (kbd "o") #'my/switch-to-thing)
   (define-key my-jump-keymap (kbd "p") #'proced)
   (define-key my-jump-keymap (kbd "r") #'scratch-buffer)
@@ -397,7 +397,7 @@ Sets up keybindings for quickly toggling visual features like font, theme, line 
   ;;
 
   (defvar my-win-keymap (make-sparse-keymap))
-  (global-set-key (kbd "M-m") my-win-keymap)
+  (global-set-key (kbd "M-a") my-win-keymap)
 
   (define-key my-win-keymap (kbd "a") #'selected-window-accent-mode)
   (define-key my-win-keymap (kbd "b") #'(lambda () (interactive)(tab-bar-mode 'toggle)))
@@ -406,9 +406,9 @@ Sets up keybindings for quickly toggling visual features like font, theme, line 
   (define-key my-win-keymap (kbd "e") #'whitespace-mode)
   (define-key my-win-keymap (kbd "f") #'font-lock-mode)
   (define-key my-win-keymap (kbd "g") #'my/toggle-scroll-margin)
-  (define-key my-win-keymap (kbd "h") #'hl-line-mode)
+  (define-key my-win-keymap (kbd "h") #'global-hl-line-mode)
   (define-key my-win-keymap (kbd "i") #'highlight-indent-guides-mode)
-  (define-key my-win-keymap (kbd "m") #'my/toggle-mode-line)
+  (define-key my-win-keymap (kbd "m") #'consult-theme)
   (define-key my-win-keymap (kbd "n") #'display-line-numbers-mode)
   (define-key my-win-keymap (kbd "o") #'visual-fill-column-mode)
   (define-key my-win-keymap (kbd "p") #'variable-pitch-mode)
@@ -436,12 +436,16 @@ This section is a bit experimental while I continue to work out a nice hand comf
   ;; -> keys-other
   ;;
 
-  (defvar my-other-keymap (make-sparse-keymap))
-  (global-set-key (kbd "M-r") my-other-keymap)
-
-  (global-set-key (kbd "M-s r") #'isearch-forward)
-  (global-set-key (kbd "M-s f") #'eval-last-sexp)
+  (global-set-key (kbd "M-s ,") #'my/mark-line)
+  (global-set-key (kbd "M-s M-[") #'beginning-of-buffer)
+  (global-set-key (kbd "M-s M-]") #'end-of-buffer)
+  (global-set-key (kbd "M-s [") #'beginning-of-buffer)
+  (global-set-key (kbd "M-s ]") #'end-of-buffer)
+  (global-set-key (kbd "M-s b") #'(lambda ()(interactive)(org-table-recalculate 'all)))
   (global-set-key (kbd "M-s d") #'eval-defun)
+  (global-set-key (kbd "M-s e") #'my/push-block)
+  (global-set-key (kbd "M-s g") #'my/text-browser-search)
+  (global-set-key (kbd "M-s h") #'my/mark-block)
   (global-set-key (kbd "M-s q") #'dired-toggle-read-only)
 
 #+end_src
@@ -461,11 +465,6 @@ Note that due to my window split bindings with numeric keys I have unbound those
     (use-package magit
       :defer 5
       :config
-      (unbind-key "M-0" magit-mode-map)
-      (unbind-key "M-1" magit-mode-map)
-      (unbind-key "M-2" magit-mode-map)
-      (unbind-key "M-3" magit-mode-map)
-      (unbind-key "M-4" magit-mode-map)
       (magit-add-section-hook
         'magit-status-sections-hook 'magit-insert-tracked-files nil 'append)
       :custom
@@ -617,39 +616,32 @@ Note that occasionally I use the use-package related bind-key for a set all mode
   ;;
   ;; -> keybinding
   ;;
-
   (global-set-key (kbd "C-x C-o") #'my/collapse-space)
-  (global-set-key (kbd "M-_") #'my/replace-spaces-with-dashes-or-vice-versa)
-  (global-set-key (kbd "M-s h") #'my/mark-block)
+  (global-set-key (kbd "C-0") #'delete-window)
+  (global-set-key (kbd "C-1") #'delete-other-windows)
+  (global-set-key (kbd "C-2") #'split-window-vertically)
+  (global-set-key (kbd "C-3") #'split-window-horizontally)
+  (global-set-key (kbd "M-7") #'my/replace-spaces-with-dashes)
+  (global-set-key (kbd "M-8") #'my/replace-dashes-with-spaces)
+  (global-set-key (kbd "M-r") #'my/grep)
   (global-set-key (kbd "M-@") #'my/mark-block)
   (global-set-key (kbd "M-'") #'my/mark-word)
-  (global-set-key (kbd "M-s s") #'save-buffer)
   (global-set-key (kbd "C-=") #'(lambda ()(interactive)(text-scale-adjust 1)))
   (global-set-key (kbd "C--") #'(lambda ()(interactive)(text-scale-adjust -1)))
-  (global-set-key (kbd "M-s l") #'save-buffer)
-  (global-set-key (kbd "M-s a") #'org-plot/gnuplot)
-  (global-set-key (kbd "M-s [") #'beginning-of-buffer)
-  (global-set-key (kbd "M-s ]") #'end-of-buffer)
-  (global-set-key (kbd "M-s M-[") #'beginning-of-buffer)
-  (global-set-key (kbd "M-s M-]") #'end-of-buffer)
-  (global-set-key (kbd "M-s v") #'org-babel-tangle)
-  (global-set-key (kbd "M-s e") #'my/push-block)
-  (global-set-key (kbd "M-s b") #'(lambda ()(interactive)(org-table-recalculate 'all)))
-  (global-set-key (kbd "M-s g") #'my/text-browser-search)
   (global-set-key (kbd "M-=") #'count-words)
   (define-key minibuffer-local-map (kbd "C-c e") #'embark-export)
   (define-key minibuffer-local-map (kbd "M-o") #'abort-minibuffers)
   (global-set-key (kbd "C-c a") #'org-agenda)
-  ;; (global-set-key (kbd "M-h") #'(lambda ()(interactive)(select-window (previous-window))))
-  ;; (global-set-key (kbd "M-l") #'(lambda ()(interactive)(select-window (next-window))))
+  (bind-key* (kbd "M-h") #'backward-char)
   (bind-key* (kbd "M-j") #'next-line)
   (bind-key* (kbd "M-k") #'previous-line)
-  (bind-key* (kbd "M-h") #'backward-char)
-  (global-set-key (kbd "M-p") #'(lambda ()(interactive)(forward-line (- (/ (window-height) 8)))))
-  (global-set-key (kbd "M-n") #'(lambda ()(interactive)(forward-line (/ (window-height) 8))))
   (bind-key* (kbd "M-l") #'forward-char)
-  (bind-key* (kbd "M-]") #'(lambda ()(interactive)(scroll-up-command (/ (window-height) 4))))
-  (bind-key* (kbd "M-[") #'(lambda ()(interactive)(scroll-down-command (/ (window-height) 4))))
+  (bind-key* (kbd "M-n") #'(lambda ()(interactive)(scroll-up-command (/ (window-height) 4))))
+  (bind-key* (kbd "M-m") #'(lambda ()(interactive)(scroll-down-command (/ (window-height) 4))))
+  (bind-key* (kbd "M-s l") #'my/shell-create)
+  (bind-key* (kbd "C-o") #'other-window)
+  (bind-key* (kbd "C-x b") #'my/switch-to-thing)
+  (bind-key* (kbd "C-/") #'undo)
   (global-set-key (kbd "M-I") #'my/window-enlarge)
   (global-set-key (kbd "M-U") #'my/window-shrink)
   (global-set-key (kbd "C-c b") #'(lambda ()(interactive)(async-shell-command "do_backup home" "*backup*")))
@@ -657,14 +649,8 @@ Note that occasionally I use the use-package related bind-key for a set all mode
   (global-set-key (kbd "C-c f") #'my/fold)
   (global-set-key (kbd "C-x C-b") #'ibuffer)
   (global-set-key (kbd "C-x l") #'scroll-lock-mode)
-  ;; (global-set-key (kbd "M-0") #'delete-window)
-  ;; (global-set-key (kbd "M-1") #'delete-other-windows)
-  ;; (global-set-key (kbd "M-2") #'split-window-vertically)
-  ;; (global-set-key (kbd "M-3") #'split-window-horizontally)
-  (global-set-key (kbd "M-'") #'my/comment-or-uncomment)
-  (global-set-key (kbd "M-9") #'my/grep)
+  (global-set-key (kbd "M-;") #'my/comment-or-uncomment)
   (global-set-key (kbd "C-c ,") #'embark-act)
-  (global-set-key (kbd "M-s ,") #'my/mark-line)
   (global-unset-key (kbd "C-z"))
   (global-unset-key (kbd "C-h h"))
 
@@ -678,7 +664,6 @@ I only really use the consult preview mechanism for themes and otherwise turn it
 
 #+begin_src elisp
 
-  ;; (global-set-key (kbd "C-x b") 'my/switch-to-thing)
   (global-set-key (kbd "M-g o") 'consult-outline)
   (global-set-key (kbd "M-g i") 'consult-imenu)
 
@@ -699,6 +684,7 @@ Turns on various modes like `global-font-lock-mode` for syntax highlighting and 
 
   (global-font-lock-mode 1)
   (savehist-mode 1)
+  (add-to-list 'savehist-additional-variables 'comint-input-ring)
   (global-ede-mode t)
   (global-prettify-symbols-mode t)
   (auto-fill-mode -1)
@@ -711,7 +697,6 @@ Turns on various modes like `global-font-lock-mode` for syntax highlighting and 
   (show-paren-mode 1)
   (setq tooltip-mode nil)
   (transient-mark-mode 1)
-  ;; (pixel-scroll-precision-mode 1)
 
 #+end_src
 
@@ -962,13 +947,19 @@ Defines a suite of custom functions to extend Emacs's functionality tailored to 
     (skip-chars-backward " \n\t")
     (setq mark-active t))
 
-  (defun my/replace-spaces-with-dashes-or-vice-versa (start end &optional reverse)
-    "Replace all spaces with dashes or dashes with spaces START to END in REVERSE."
-    (interactive "r\nP") ; "\nP" captures the prefix argument
+  (defun my/replace-spaces-with-dashes (start end)
+    "Replace all spaces with dashes or dashes with spaces START to END"
+    (interactive "r")
     (let* ((selected-text (buffer-substring start end))
-            (replacement-text (if reverse
-                                (replace-regexp-in-string " " "-" selected-text)
-                                (replace-regexp-in-string "-" " " selected-text))))
+            (replacement-text (replace-regexp-in-string " " "-" selected-text)))
+      (delete-region start end)
+      (insert replacement-text)))
+
+  (defun my/replace-dashes-with-spaces (start end)
+    "Replace all dashes with spaces or dashes with spaces START to END"
+    (interactive "r")
+    (let* ((selected-text (buffer-substring start end))
+            (replacement-text (replace-regexp-in-string "-" " " selected-text)))
       (delete-region start end)
       (insert replacement-text)))
 
@@ -1034,6 +1025,11 @@ Defines a suite of custom functions to extend Emacs's functionality tailored to 
     "Shrinks window."
     (interactive)
     (my/resize-window -4 t))
+
+  (defun my/shell-create (name)
+    "Create a custom-named shell buffer with NAME."
+    (interactive "\BName:")
+    (eshell (concat "*eshell-" name "*")))
 
 #+end_src
 
@@ -1238,12 +1234,14 @@ Extends and customizes Org mode for document structuring, note-taking, and proje
       org-log-done 'time
       org-tags-sort-function 'org-string-collate-greaterp
       org-export-with-sub-superscripts nil
+      org-deadline-warning-days 365
       org-hugo-base-dir "~/DCIM"
       org-image-actual-width (list 50)
       org-startup-indented t
       org-return-follows-link t
+      org-use-fast-todo-selection 'expert
       org-todo-keywords
-      '((sequence "TODO" "DOING" "ORDR" "SENT" "|" "CANCELLED" "DONE"))
+      '((sequence "TODO(t)" "DOING(d)" "ORDR(o)" "SENT(s)" "|" "CANCELLED(c)" "DONE(n)"))
       org-todo-keyword-faces
       '(("TODO" . "#ee5566")
          ("DOING" . "#5577aa")
@@ -1329,6 +1327,8 @@ Customizes the Org Agenda for a personalized task management and calendar view, 
     (org-agenda-show-all-dates nil)
     (org-agenda-files '("~/DCIM/content/aaa--calendar.org"
                          "~/DCIM/content/aae--rpt.org"
+                         "~/DCIM/content/aab--todo.org"
+                         "~/DCIM/content/aad--shopping.org"
                          "~/DCIM/content/aaf--kate.org"
                          "~/DCIM/content/aag--bank-hol.org"
                          "~/DCIM/content/aah--subs.org"
@@ -1432,29 +1432,10 @@ Adjusts scrolling behaviours and settings for a smoother navigation experience w
   ;;
   ;; -> scroll
   ;;
-  (setq scroll-conservatively 999)
+  (setq scroll-step 2)
+  (setq scroll-conservatively 10)
   (setq scroll-margin 10)
   (setq scroll-preserve-screen-position t)
-
-#+end_src
-
-* font
-
-Configures font settings for different text styles and sets up preferred fonts for a personalized and visually comfortable editing environment.
-
-#+begin_src elisp
-  ;;
-  ;; -> font
-  ;;
-
-  ;; (setq font-general "Noto Sans Mono 14")
-  ;; (setq font-general "MesloLGS Nerd Font Mono 11")
-  ;; (setq font-general "Source Code Pro 12")
-  ;; (setq font-general "Source Code Pro Light 14")
-  ;; (setq font-general "Nimbus Mono PS 14")
-  ;; (setq font-general "MesloLGS Nerd Font Mono 14")
-  ;; (setq font-general "Droid Sans Mono 12")
-  ;; (setq font-general "Hack Nerd Font Mono 13")
 
 #+end_src
 
@@ -1695,7 +1676,7 @@ Configures various visual aspects of Emacs, including menu bar, toolbar, and scr
   (scroll-bar-mode -1)
   (tool-bar-mode -1)
 
-  (setq inhibit-startup-screen t)
+  (setq inhibit-startup-screen nil)
 
   ;; (add-hook 'text-mode-hook #'visual-line-mode)
   ;; (add-hook 'org-mode-hook '(lambda () (visual-line-mode)))
@@ -1706,8 +1687,8 @@ Configures various visual aspects of Emacs, including menu bar, toolbar, and scr
 
   (setq-default truncate-partial-width-windows 120)
 
-  (set-frame-parameter nil 'alpha-background 95)
-  (add-to-list 'default-frame-alist '(alpha-background . 95))
+  (set-frame-parameter nil 'alpha-background 85)
+  (add-to-list 'default-frame-alist '(alpha-background . 85))
 
   (set-fringe-mode '(0 . 0))
   (set-display-table-slot standard-display-table 0 ?\ )
@@ -1859,7 +1840,7 @@ Customizes the modeline for displaying active modes, buffer names, or other cont
 
   (setq my/mode-line-format
     '("%e"
-       (:eval (my-all-tabs-string))
+       ;;       (:eval (my-all-tabs-string))
        mode-line-modified
        (:eval
          (propertize (format "%s" (abbreviate-file-name default-directory))
@@ -2124,12 +2105,7 @@ Customizes the appearance and behaviour of diff and merge tools within Emacs, ad
                    (define-key diff-mode-map (kbd "M-j") nil)
                    (define-key diff-mode-map (kbd "M-k") nil)
                    (define-key diff-mode-map (kbd "M-h") nil)
-                   (define-key diff-mode-map (kbd "M-l") nil)
-                   (define-key diff-mode-map (kbd "M-0") nil)
-                   (define-key diff-mode-map (kbd "M-1") nil)
-                   (define-key diff-mode-map (kbd "M-2") nil)
-                   (define-key diff-mode-map (kbd "M-3") nil)
-                   (define-key diff-mode-map (kbd "M-4") nil))))
+                   (define-key diff-mode-map (kbd "M-l") nil))))
   (setq ediff-window-setup-function 'ediff-setup-windows-plain)
   (setq ediff-prepare-buffer-hook #'org-fold-show-all)
   (setq-default ediff-highlight-all-diffs t)
@@ -2528,13 +2504,12 @@ The Selected Window Accent Mode is an Emacs package designed to visually disting
     :custom
     (selected-window-accent-fringe-thickness 8)
     (selected-window-accent-percentage-darken 20)
-    (selected-window-accent-percentage-desaturate 30)
+    (selected-window-accent-percentage-desaturate 50)
     (selected-window-accent-smart-borders nil)
     (selected-window-accent-tab-accent t)
-    ;; (selected-window-accent-custom-color nil)
-    (selected-window-accent-custom-color "#AD458B")
+    (selected-window-accent-custom-color nil)
+;;    (selected-window-accent-custom-color "#af473e")
     (selected-window-accent-mode-style 'subtle))
-
 #+end_src
 
 * push-block
@@ -2756,47 +2731,50 @@ Sets up Kurecolor, a color manipulation tool, integrating it within Emacs for ef
 Demonstrates customizations for shell integration within Emacs, optimizing settings for shell modes, command history, and shorthand functions for frequent shell-related tasks.
 
 #+begin_src elisp
-  ;;
-  ;; -> shell
-  ;;
+    ;;
+    ;; -> shell
+    ;;
 
-  (when (file-exists-p "/usr/bin/fish")
-    (setq explicit-shell-file-name "/usr/bin/fish"))
+    (when (file-exists-p "/usr/bin/fish")
+      (setq explicit-shell-file-name "/usr/bin/fish"))
 
-  (when (file-exists-p "/bin/fish")
-    (setq shell-file-name "/bin/fish")
+    (when (file-exists-p "/bin/fish")
+      (setq shell-file-name "/bin/fish"))
 
     (use-package chatgpt-shell
       :defer 5
       :custom
       ((chatgpt-shell-openai-key
          (lambda ()
-           (auth-source-pass-get 'secret "openai-key"))))))
+           (auth-source-pass-get 'secret "openai-key")))))
 
-  (defun my/eshell-hook ()
-    "Set up company completions to be a little more fish like."
-    (interactive)
-    (define-key eshell-mode-map (kbd "<tab>") #'company-complete)
-    (define-key eshell-hist-mode-map (kbd "M-r") #'consult-history))
+    (defun my/eshell-hook ()
+      "Set up company completions to be a little more fish like."
+      (interactive)
+      ;; (define-key eshell-mode-map (kbd "<tab>") #'company-complete)
+      (define-key eshell-hist-mode-map (kbd "M-r") #'consult-history))
 
-  (defun my/shell-hook ()
-    "Set up company completions to be a little more fish like."
-    (interactive)
-    (define-key shell-mode-map (kbd "<tab>") #'company-complete)
-    (define-key shell-mode-map (kbd "M-r") #'consult-history))
+    (defun my/shell-hook ()
+      "Set up company completions to be a little more fish like."
+      (interactive)
+      ;; (define-key shell-mode-map (kbd "<tab>") #'company-complete)
+      (define-key shell-mode-map (kbd "M-r") #'consult-history))
 
-  (use-package eshell
-    :config
-    (setq eshell-scroll-to-bottom-on-input t)
-    (setq-local tab-always-indent 'complete)
-    :hook
-    (eshell-mode . my/eshell-hook))
+    (use-package eshell
+      :config
+      (setq eshell-scroll-to-bottom-on-input t)
+      (setq-local tab-always-indent 'complete)
+      (setq eshell-history-size 10000) ;; Adjust size as needed
+      (setq eshell-save-history-on-exit t) ;; Enable history saving on exit
+      (setq eshell-hist-ignoredups t) ;; Ignore duplicates
+      :hook
+      (eshell-mode . my/eshell-hook))
 
-  (use-package shell
-    :config
-    (setq-local tab-always-indent 'complete)
-    :hook
-    (shell-mode . my/shell-hook))
+    (use-package shell
+      :config
+      (setq-local tab-always-indent 'complete)
+      :hook
+      (shell-mode . my/shell-hook))
 
 #+end_src
 
@@ -2919,8 +2897,8 @@ I have for the moment decided that repeat-mode is not yet for me, I am currently
   (global-set-key (kbd "M-s p") (lambda () (interactive) (my/repeat-thing #'my/previous-thing)))
   (global-set-key (kbd "M-g n") (lambda () (interactive) (my/repeat-thing #'my/next-thing)))
   (global-set-key (kbd "M-g p") (lambda () (interactive) (my/repeat-thing #'my/previous-thing)))
-  (global-set-key (kbd "C-x j") (lambda () (interactive) (my/repeat-thing #'tab-bar-history-back)))
-  (global-set-key (kbd "C-x k") (lambda () (interactive) (my/repeat-thing #'tab-bar-history-forward)))
+  (bind-key* (kbd "C-x j") (lambda () (interactive) (my/repeat-thing #'tab-bar-history-back)))
+  (bind-key* (kbd "C-x k") (lambda () (interactive) (my/repeat-thing #'tab-bar-history-forward)))
   (global-set-key (kbd "C-x u") (lambda () (interactive) (my/repeat-thing #'my/window-enlarge)))
   (global-set-key (kbd "C-x i") (lambda () (interactive) (my/repeat-thing #'my/window-shrink)))
 
@@ -3284,7 +3262,11 @@ Curates configurations specific to Linux, making adjustments for paths, fonts, a
 
     (setq diary-file "~/DCIM/content/diary.org")
 
-    (setq font-general "Monospace 11")
+    (setq font-general "Noto Sans Mono 12")
+    (setq font-general "Source Code Pro 12")
+    (setq font-general "Source Code Pro Light 12")
+    (setq font-general "Nimbus Mono PS 12")
+    (setq font-general "Monospace 12")
     (set-frame-font font-general nil t)
     (add-to-list 'default-frame-alist `(font . ,font-general)))
 
@@ -3295,313 +3277,249 @@ Curates configurations specific to Linux, making adjustments for paths, fonts, a
 Shares miscellaneous development tools, tips, and functions, showcasing the versatility and extensibility of Emacs for a wide range of development tasks and personal workflows.
 
 #+begin_src elisp
-  ;;
-  ;; -> development
-  ;;
+    ;;
+    ;; -> development
+    ;;
 
-  (defun subtract-weight (weight-str avg-loss)
-    "Subtract AVG-LOSS pounds from WEIGHT-STR given in 'stones:pounds' format."
-    (let* ((stones-pounds (split-string weight-str ":"))
-            (stones (string-to-number (car stones-pounds)))
-            (pounds (string-to-number (cadr stones-pounds)))
-            (total-pounds (+ pounds (* stones 14)))      ;; Convert stones to pounds
-            (new-total-pounds (- total-pounds avg-loss)) ;; Subtract weight loss
-            (new-stones (truncate (/ new-total-pounds 14))) ;; Calculate new stones
-            (new-pounds (mod new-total-pounds 14)))      ;; Calculate remaining pounds
-      (format "%d:%d" new-stones new-pounds)))         ;; Format new weight
+    (defun subtract-weight (weight-str avg-loss)
+      "Subtract AVG-LOSS pounds from WEIGHT-STR given in 'stones:pounds' format."
+      (let* ((stones-pounds (split-string weight-str ":"))
+              (stones (string-to-number (car stones-pounds)))
+              (pounds (string-to-number (cadr stones-pounds)))
+              (total-pounds (+ pounds (* stones 14)))      ;; Convert stones to pounds
+              (new-total-pounds (- total-pounds avg-loss)) ;; Subtract weight loss
+              (new-stones (truncate (/ new-total-pounds 14))) ;; Calculate new stones
+              (new-pounds (mod new-total-pounds 14)))      ;; Calculate remaining pounds
+        (format "%d:%d" new-stones new-pounds)))         ;; Format new weight
 
-  (defun extrapolate-weight-loss (num-weeks)
-    "Extrapolate weight loss for NUM-WEEKS using 'av/pd' value in org-table."
-    (interactive "p")
-    (save-excursion
-      (let ((last-weight)
-             (last-avg-loss 2.9)
-             (last-date "")
-             (week 0)
-             (next-date ""))
-        (print num-weeks)
-        (when (org-at-table-p)
-          (goto-char (org-table-end))
-          ;; Find the last date and week number
-          (search-backward-regexp "|\\s-?\\([0-9]+\\)\\s-?|\\s-?<\\([0-9-]+\\)" nil t)
-          (setq week (string-to-number (match-string 1)))
-          (setq last-date (match-string 2))
-          (setq last-weight "16:10")
-          (goto-char (org-table-end))
-          ;; Loop for num-weeks to generate new lines
-          (dotimes (i num-weeks)
-            (setq next-date
-              (format-time-string "<%Y-%m-%d %a>"
-                (time-add (org-time-string-to-time last-date)
-                  (days-to-time (+ (* i 7) 7))))) ;; add 7 days per week
-            (setq week (+ week 1))
-            (insert (format "| %d | %s | %s | | | | | | |\n"
-                      week next-date (subtract-weight last-weight (* (+ i 1) last-avg-loss)))))
+    (defun extrapolate-weight-loss (num-weeks)
+      "Extrapolate weight loss for NUM-WEEKS using 'av/pd' value in org-table."
+      (interactive "p")
+      (save-excursion
+        (let ((last-weight)
+               (last-avg-loss 2.9)
+               (last-date "")
+               (week 0)
+               (next-date ""))
+          (print num-weeks)
+          (when (org-at-table-p)
+            (goto-char (org-table-end))
+            ;; Find the last date and week number
+            (search-backward-regexp "|\\s-?\\([0-9]+\\)\\s-?|\\s-?<\\([0-9-]+\\)" nil t)
+            (setq week (string-to-number (match-string 1)))
+            (setq last-date (match-string 2))
+            (setq last-weight "16:10")
+            (goto-char (org-table-end))
+            ;; Loop for num-weeks to generate new lines
+            (dotimes (i num-weeks)
+              (setq next-date
+                (format-time-string "<%Y-%m-%d %a>"
+                  (time-add (org-time-string-to-time last-date)
+                    (days-to-time (+ (* i 7) 7))))) ;; add 7 days per week
+              (setq week (+ week 1))
+              (insert (format "| %d | %s | %s | | | | | | |\n"
+                        week next-date (subtract-weight last-weight (* (+ i 1) last-avg-loss)))))
+            )
           )
         )
-      )
-    (org-table-align))
+      (org-table-align))
 
-  (defun my/get-window-regex (regex)
-    "Find the first window displaying a buffer whose name matches the given REGEX.
-  If no such window is found, return nil."
-    (let ((windows (window-list))
-           (found-window nil))
-      (dolist (window windows found-window)
-        (when (string-match-p regex (buffer-name (window-buffer window)))
-          (setq found-window window)
-          (cl-return found-window)))))
+    (defun my/get-window-regex (regex)
+      "Find the first window displaying a buffer whose name matches the given REGEX.
+               If no such window is found, return nil."
+      (let ((windows (window-list))
+             (found-window nil))
+        (dolist (window windows found-window)
+          (when (string-match-p regex (buffer-name (window-buffer window)))
+            (setq found-window window)
+            (cl-return found-window)))))
 
-  (defun my/previous-thing ()
-    "Go to the previous thing, meaning warning, error, grep, etc., based on ARG."
-    (interactive)
-    (let ((window))
+    (defun my/previous-thing ()
+      "Go to the previous thing, meaning warning, error, grep, etc., based on ARG."
+      (interactive)
+      (let ((window))
 
-      (setq window (my/get-window-regex "compilation"))
-      (when window
-        (select-window window)
-        (re-search-backward "[[:digit:]]: warning:")
-        (compile-goto-error))
+        (setq window (my/get-window-regex "compilation"))
+        (when window
+          (select-window window)
+          (re-search-backward "[[:digit:]]: warning:")
+          (compile-goto-error))
 
-      (setq window (my/get-window-regex "compile-log"))
-      (when window
-        (select-window window)
-        (previous-error-no-select)
-        (compile-goto-error))
+        (setq window (my/get-window-regex "compile-log"))
+        (when window
+          (select-window window)
+          (previous-error-no-select)
+          (compile-goto-error))
 
-      (setq window (my/get-window-regex "dead"))
-      (when window
-        (select-window window)
-        (deadgrep-backward-match)
-        (deadgrep-visit-result-other-window)
-        (org-fold-show-entry))
+        (setq window (my/get-window-regex "dead"))
+        (when window
+          (select-window window)
+          (deadgrep-backward-match)
+          (deadgrep-visit-result-other-window)
+          (org-fold-show-entry))
 
-      (setq window (my/get-window-regex "org agenda"))
-      (when window
-        (select-window window)
-        (org-agenda-previous-item 1)
-        (org-agenda-goto)
-        (org-fold-show-entry))
+        (setq window (my/get-window-regex "org agenda"))
+        (when window
+          (select-window window)
+          (org-agenda-previous-item 1)
+          (org-agenda-goto)
+          (org-fold-show-entry))
 
-      (setq window (my/get-window-regex "consult-ripgrep"))
-      (when window
-        (select-window window)
-        (backward-button 1)
-        (push-button)
-        (org-fold-show-entry))
+        (setq window (my/get-window-regex "consult-ripgrep"))
+        (when window
+          (select-window window)
+          (backward-button 1)
+          (push-button)
+          (org-fold-show-entry))
 
-      (setq window (or (my/get-window-regex "occur")
-                     (my/get-window-regex "flycheck errors")))
-      (when window
-        (select-window window)
-        (previous-error))))
+        (setq window (or (my/get-window-regex "occur")
+                       (my/get-window-regex "flycheck errors")))
+        (when window
+          (select-window window)
+          (previous-error))))
 
-  (defun my/next-thing ()
-    "Go to the next thing, meaning warning, error, grep, etc., based on ARG."
-    (interactive)
-    (let ((window))
+    (defun my/next-thing ()
+      "Go to the next thing, meaning warning, error, grep, etc., based on ARG."
+      (interactive)
+      (let ((window))
 
-      (setq window (my/get-window-regex "compilation"))
-      (when window
-        (select-window window)
-        (re-search-forward "[[:digit:]]: warning:")
-        (compile-goto-error))
+        (setq window (my/get-window-regex "compilation"))
+        (when window
+          (select-window window)
+          (re-search-forward "[[:digit:]]: warning:")
+          (compile-goto-error))
 
-      (setq window (my/get-window-regex "compile-log"))
-      (when window
-        (select-window window)
-        (next-error-no-select)
-        (compile-goto-error))
+        (setq window (my/get-window-regex "compile-log"))
+        (when window
+          (select-window window)
+          (next-error-no-select)
+          (compile-goto-error))
 
-      (setq window (my/get-window-regex "dead"))
-      (when window
-        (select-window window)
-        (deadgrep-forward-match)
-        (deadgrep-visit-result-other-window)
-        (org-fold-show-entry))
+        (setq window (my/get-window-regex "dead"))
+        (when window
+          (select-window window)
+          (deadgrep-forward-match)
+          (deadgrep-visit-result-other-window)
+          (org-fold-show-entry))
 
-      (setq window (my/get-window-regex "org agenda"))
-      (when window
-        (select-window window)
-        (org-agenda-next-item 1)
-        (org-agenda-goto)
-        (org-fold-show-entry))
+        (setq window (my/get-window-regex "org agenda"))
+        (when window
+          (select-window window)
+          (org-agenda-next-item 1)
+          (org-agenda-goto)
+          (org-fold-show-entry))
 
-      (setq window (my/get-window-regex "consult-ripgrep"))
-      (when window
-        (select-window window)
-        (forward-button 1)
-        (push-button)
-        (org-fold-show-entry))
+        (setq window (my/get-window-regex "consult-ripgrep"))
+        (when window
+          (select-window window)
+          (forward-button 1)
+          (push-button)
+          (org-fold-show-entry))
 
-      (setq window (or (my/get-window-regex "occur")
-                     (my/get-window-regex "flycheck errors")))
-      (when window
-        (select-window window)
-        (next-error))))
+        (setq window (or (my/get-window-regex "occur")
+                       (my/get-window-regex "flycheck errors")))
+        (when window
+          (select-window window)
+          (next-error))))
 
-  (defun my/dired-delete-async ()
-    "Delete files asynchronously in Dired."
-    (interactive)
-    (if (eq delete-by-moving-to-trash t)
-      (let ((files (dired-get-marked-files)))
-        (dolist (file files)
-          (async-shell-command (format "gio trash '%s'" file))))
-      (message "Async deletion is set up only for trash. Set `delete-by-moving-to-trash` to t.")))
+    (defun my/dired-delete-async ()
+      "Delete files asynchronously in Dired."
+      (interactive)
+      (if (eq delete-by-moving-to-trash t)
+        (let ((files (dired-get-marked-files)))
+          (dolist (file files)
+            (async-shell-command (format "gio trash '%s'" file))))
+        (message "Async deletion is set up only for trash. Set `delete-by-moving-to-trash` to t.")))
 
-  (defun my/switch-to-thing ()
-    "Switch to a buffer, open a recent file, jump to a bookmark,
-  or change the theme from a unified interface."
-    (interactive)
-    (let* ((buffers (mapcar #'buffer-name (buffer-list)))
-            (recent-files recentf-list)
-            (bookmarks (bookmark-all-names))
-            (themes (custom-available-themes))
-            (all-options (append buffers recent-files bookmarks
-                           (mapcar (lambda (theme) (concat "Theme: " (symbol-name theme))) themes)))
-            (selection (completing-read "Switch to: "
-                         (lambda (str pred action)
-                           (if (eq action 'metadata)
-                             '(metadata . ((category . file)))
-                             (complete-with-action action all-options str pred)))
-                         nil t nil 'file-name-history)))
-      (pcase selection
-        ((pred (lambda (sel) (member sel buffers))) (switch-to-buffer selection))
-        ((pred (lambda (sel) (member sel bookmarks))) (bookmark-jump selection))
-        ((pred (lambda (sel) (string-prefix-p "Theme: " sel)))
-          (load-theme (intern (substring selection (length "Theme: "))) t))
-        (_ (find-file selection)))))
+    (defun my/switch-to-thing ()
+      "Switch to a buffer, open a recent file, jump to a bookmark,
+               or change the theme from a unified interface."
+      (interactive)
+      (let* ((buffers (mapcar #'buffer-name (buffer-list)))
+              (recent-files recentf-list)
+              (bookmarks (bookmark-all-names))
+              (all-options (append buffers recent-files bookmarks))
+              (selection (completing-read "Switch to: "
+                           (lambda (str pred action)
+                             (if (eq action 'metadata)
+                               '(metadata . ((category . file)))
+                               (complete-with-action action all-options str pred)))
+                           nil t nil 'file-name-history)))
+        (pcase selection
+          ((pred (lambda (sel) (member sel buffers))) (switch-to-buffer selection))
+          ((pred (lambda (sel) (member sel bookmarks))) (bookmark-jump selection))
+          (_ (find-file selection)))))
 
-  (global-set-key (kbd "C-t") 'transpose-sexps)
+    (setq org-icalendar-use-deadline
+      '(event-if-not-todo event-if-todo event-if-todo-not-done todo-due))
 
-  (setq org-icalendar-use-deadline
-    '(event-if-not-todo event-if-todo event-if-todo-not-done todo-due))
+    (setq org-icalendar-use-scheduled
+      '(event-if-not-todo event-if-todo event-if-todo-not-done todo-start))
 
-  (setq org-icalendar-use-scheduled
-    '(event-if-not-todo event-if-todo event-if-todo-not-done todo-start))
+    (defun my/calc-subscription-cost ()
+      (interactive)
+      (let ((sum 0))
+        (save-excursion
+          (goto-char (point-min))
+          ;; Search for the numeric pattern.
+          (while (re-search-forward "\\([0-9]+\\.[0-9]+\\)" nil t)
+            ;; Check if the current line does not contain "DONE"
+            (unless (save-excursion
+                      (beginning-of-line)
+                      (re-search-forward "DONE" (line-end-position) t))
+              ;; If "DONE" is not found on the line, process the number.
+              (let ((amount (string-to-number (substring-no-properties (match-string 1)))))
+                (setq sum (+ sum amount))
+                (message "Adding: %.2f, Total: %.2f" amount sum)))))
+        (message "Total: %.2f" sum)))
 
-  (defun my/calc-subscription-cost ()
-    (interactive)
-    (let ((sum 0))
-      (save-excursion
-        (goto-char (point-min))
-        ;; Search for the numeric pattern.
-        (while (re-search-forward "\\([0-9]+\\.[0-9]+\\)" nil t)
-          ;; Check if the current line does not contain "DONE"
-          (unless (save-excursion
-                    (beginning-of-line)
-                    (re-search-forward "DONE" (line-end-position) t))
-            ;; If "DONE" is not found on the line, process the number.
-            (let ((amount (string-to-number (substring-no-properties (match-string 1)))))
-              (setq sum (+ sum amount))
-              (message "Adding: %.2f, Total: %.2f" amount sum)))))
-      (message "Total: %.2f" sum)))
+    (if (and (fboundp 'native-comp-available-p)
+          (native-comp-available-p))
+      (message "Native compilation is available")
+      (message "Native complation is *not* available"))
 
-  (bind-key* (kbd "C-c <left>") #'windmove-left)
-  (bind-key* (kbd "C-c <right>") #'windmove-right)
-  (bind-key* (kbd "C-c <up>") #'windmove-up)
-  (bind-key* (kbd "C-c <down>") #'windmove-down)
+    (add-hook 'chatgpt-shell-mode-hook 'visual-line-mode)
 
-  (bind-key* (kbd "C-c h") #'windmove-left)
-  (bind-key* (kbd "C-c l") #'windmove-right)
-  (bind-key* (kbd "C-c k") #'windmove-up)
-  (bind-key* (kbd "C-c j") #'windmove-down)
+    (setq native-comp-async-report-warnings-errors nil)
 
-  (if (and (fboundp 'native-comp-available-p)
-        (native-comp-available-p))
-    (message "Native compilation is available")
-    (message "Native complation is *not* available"))
+    ;;   (use-package ace-window
+    ;;   :configk
+    ;;  (setq aw-keys '(?j ?k ?l ?\; ?a ?s ?d ?f))
+    ;;  (setq aw-background nil)
+    ;;  :bind
+    ;;  ("M-a" . ace-window))
 
-  (add-hook 'chatgpt-shell-mode-hook 'visual-line-mode)
+    (use-package keycast
+      :init
+      (keycast-tab-bar-mode -1))
 
-  ;; Add extensions
-  (use-package cape
-    ;; Bind dedicated completion commands
-    ;; Alternative prefix keys: C-c p, M-p, M-+, ...
-    :bind (("C-c p p" . completion-at-point) ;; capf
-            ("C-c p t" . complete-tag)        ;; etags
-            ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
-            ("C-c p h" . cape-history)
-            ("C-c p f" . cape-file)
-            ("C-c p k" . cape-keyword)
-            ("C-c p s" . cape-elisp-symbol)
-            ("C-c p e" . cape-elisp-block)
-            ("C-c p a" . cape-abbrev)
-            ("C-c p l" . cape-line)
-            ("C-c p w" . cape-dict)
-            ("C-c p :" . cape-emoji)
-            ("C-c p \\" . cape-tex)
-            ("C-c p _" . cape-tex)
-            ("C-c p ^" . cape-tex)
-            ("C-c p &" . cape-sgml)
-            ("C-c p r" . cape-rfc1345))
-    :init
-    ;; Add to the global default value of `completion-at-point-functions' which is
-    ;; used by `completion-at-point'.  The order of the functions matters, the
-    ;; first function returning a result wins.  Note that the list of buffer-local
-    ;; completion functions takes precedence over the global list.
-    (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-    (add-to-list 'completion-at-point-functions #'cape-file)
-    (add-to-list 'completion-at-point-functions #'cape-elisp-block)
-    ;;(add-to-list 'completion-at-point-functions #'cape-history)
-    ;;(add-to-list 'completion-at-point-functions #'cape-keyword)
-    ;;(add-to-list 'completion-at-point-functions #'cape-tex)
-    ;;(add-to-list 'completion-at-point-functions #'cape-sgml)
-    ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
-    ;;(add-to-list 'completion-at-point-functions #'cape-abbrev)
-    ;;(add-to-list 'completion-at-point-functions #'cape-dict)
-    ;;(add-to-list 'completion-at-point-functions #'cape-elisp-symbol)
-    ;;(add-to-list 'completion-at-point-functions #'cape-line)
-    )
+    (use-package syntax-subword
+      :init
+      (global-syntax-subword-mode))
 
-  (setq native-comp-async-report-warnings-errors nil)
+    (global-set-key (kbd "M-[") #'yank)
+    (global-set-key (kbd "M-]") #'yank-pop)
 
-  (use-package org-transclusion)
+    (use-package capf-autosuggest
+      :hook
+      (eshell-mode . capf-autosuggest-mode)
+      (shell-mode . capf-autosuggest-mode))
 
-  (use-package avy
-    :bind
-    (("M-;" . avy-goto-char-2)))
-  ;; (("M-;" . avy-goto-char-timer)))
+    (bind-key* (kbd "M-0") #'hippie-expand)
 
-  (use-package ace-window
-    :config
-    (setq aw-keys '(?j ?k ?l ?\; ?a ?s ?d ?f))
-    (setq aw-background nil)
-    :bind
-    ("M-a" . ace-window))
+(use-package plantuml-mode
+  :custom
+  (plantuml-default-exec-mode 'jar)
+  (plantuml-jar-path (concat user-emacs-directory "plantuml.jar"))
+  (org-plantuml-jar-path (concat user-emacs-directory "plantuml.jar")))
 
-  (bind-key* (kbd "M-a h") #'windmove-left)
-  (bind-key* (kbd "M-a l") #'windmove-right)
-  (bind-key* (kbd "M-a k") #'windmove-up)
-  (bind-key* (kbd "M-a j") #'windmove-down)
-  (bind-key* (kbd "M-a 0") #'delete-window)
-  (bind-key* (kbd "M-a q") #'delete-window)
-  (bind-key* (kbd "M-a 1") #'delete-other-windows)
-  (bind-key* (kbd "M-a o") #'delete-other-windows)
-  (bind-key* (kbd "M-a 2") #'split-window-vertically)
-  (bind-key* (kbd "M-a 3") #'split-window-horizontally)
-  (bind-key* (kbd "M-a s") #'split-window-vertically)
-  (bind-key* (kbd "M-a v") #'split-window-horizontally)
+(add-to-list
+  'org-src-lang-modes '("plantuml" . plantuml))
 
-  (bind-key* (kbd "M-a M-h") #'windmove-left)
-  (bind-key* (kbd "M-a M-l") #'windmove-right)
-  (bind-key* (kbd "M-a M-k") #'windmove-up)
-  (bind-key* (kbd "M-a M-j") #'windmove-down)
+(org-babel-do-load-languages
+  'org-babel-load-languages
+  '((plantuml . t)))
 
-  ;; (use-package god-mode)
-
-  ;; (global-set-key (kbd "<escape>") #'god-local-mode)
-
-  ;; (defun my-god-mode-update-cursor-type ()
-  ;;   (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
-
-  ;; (add-hook 'post-command-hook #'my-god-mode-update-cursor-type)
-
-  (use-package keycast
-    :init
-    (keycast-tab-bar-mode -1))
-
-  (global-set-key (kbd "M-0") #'my/switch-to-thing)
-  (define-key minibuffer-local-map (kbd "M-0") #'abort-minibuffers)
+(add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
 
 #+end_src
