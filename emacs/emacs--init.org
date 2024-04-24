@@ -1,5 +1,4 @@
--*- mode: org; fill-column: 80; eval: (display-fill-column-indicator-mode 1);
--*-
+-*- mode: org; fill-column: 80; eval: (display-fill-column-indicator-mode 1); -*-
 #+title: Emacs Configuration
 #+options: toc:nil author:t title:t
 #+property: header-args :tangle ~/.config/emacs/init.el
@@ -397,7 +396,7 @@ Sets up keybindings for quickly toggling visual features like font, theme, line 
   ;;
 
   (defvar my-win-keymap (make-sparse-keymap))
-  (global-set-key (kbd "M-a") my-win-keymap)
+  (global-set-key (kbd "C-q") my-win-keymap)
 
   (define-key my-win-keymap (kbd "a") #'selected-window-accent-mode)
   (define-key my-win-keymap (kbd "b") #'(lambda () (interactive)(tab-bar-mode 'toggle)))
@@ -408,6 +407,7 @@ Sets up keybindings for quickly toggling visual features like font, theme, line 
   (define-key my-win-keymap (kbd "g") #'my/toggle-scroll-margin)
   (define-key my-win-keymap (kbd "h") #'global-hl-line-mode)
   (define-key my-win-keymap (kbd "i") #'highlight-indent-guides-mode)
+  (define-key my-win-keymap (kbd "j") #'org-redisplay-inline-images)
   (define-key my-win-keymap (kbd "m") #'consult-theme)
   (define-key my-win-keymap (kbd "n") #'display-line-numbers-mode)
   (define-key my-win-keymap (kbd "o") #'visual-fill-column-mode)
@@ -415,12 +415,8 @@ Sets up keybindings for quickly toggling visual features like font, theme, line 
   (define-key my-win-keymap (kbd "q") #'toggle-menu-bar-mode-from-frame)
   (define-key my-win-keymap (kbd "r") #'org-modern-mode)
   (define-key my-win-keymap (kbd "s") #'my/toggle-internal-border-width)
-  (define-key my-win-keymap (kbd "t") #'consult-theme)
-  (define-key my-win-keymap (kbd "u") #'toggle-truncate-lines)
   (define-key my-win-keymap (kbd "v") #'visual-line-mode)
   (define-key my-win-keymap (kbd "w") #'org-table-expand)
-  (define-key my-win-keymap (kbd "x") #'my/change-accent-color)
-  (define-key my-win-keymap (kbd "y") #'selected-window-accent--switch-selected-window-accent-style)
   (define-key my-win-keymap (kbd "z") #'org-table-shrink)
 
 #+end_src
@@ -439,8 +435,8 @@ This section is a bit experimental while I continue to work out a nice hand comf
   (global-set-key (kbd "M-s ,") #'my/mark-line)
   (global-set-key (kbd "M-s M-[") #'beginning-of-buffer)
   (global-set-key (kbd "M-s M-]") #'end-of-buffer)
-  (global-set-key (kbd "M-s [") #'beginning-of-buffer)
-  (global-set-key (kbd "M-s ]") #'end-of-buffer)
+  (bind-key* (kbd "M-s [") #'beginning-of-buffer)
+  (bind-key* (kbd "M-s ]") #'end-of-buffer)
   (global-set-key (kbd "M-s b") #'(lambda ()(interactive)(org-table-recalculate 'all)))
   (global-set-key (kbd "M-s d") #'eval-defun)
   (global-set-key (kbd "M-s e") #'my/push-block)
@@ -617,7 +613,7 @@ Note that occasionally I use the use-package related bind-key for a set all mode
   ;; -> keybinding
   ;;
   (global-set-key (kbd "C-x C-o") #'my/collapse-space)
-  (global-set-key (kbd "C-0") #'delete-window)
+  (global-set-key (kbd "M-0") #'delete-window)
   (global-set-key (kbd "C-1") #'delete-other-windows)
   (global-set-key (kbd "C-2") #'split-window-vertically)
   (global-set-key (kbd "C-3") #'split-window-horizontally)
@@ -642,8 +638,8 @@ Note that occasionally I use the use-package related bind-key for a set all mode
   (bind-key* (kbd "C-o") #'other-window)
   (bind-key* (kbd "C-x b") #'my/switch-to-thing)
   (bind-key* (kbd "C-/") #'undo)
-  (global-set-key (kbd "M-I") #'my/window-enlarge)
-  (global-set-key (kbd "M-U") #'my/window-shrink)
+  (global-set-key (kbd "M-=") #'my/window-enlarge)
+  (global-set-key (kbd "M--") #'my/window-shrink)
   (global-set-key (kbd "C-c b") #'(lambda ()(interactive)(async-shell-command "do_backup home" "*backup*")))
   (global-set-key (kbd "C-c c") #'org-capture)
   (global-set-key (kbd "C-c f") #'my/fold)
@@ -651,7 +647,6 @@ Note that occasionally I use the use-package related bind-key for a set all mode
   (global-set-key (kbd "C-x l") #'scroll-lock-mode)
   (global-set-key (kbd "M-;") #'my/comment-or-uncomment)
   (global-set-key (kbd "C-c ,") #'embark-act)
-  (global-unset-key (kbd "C-z"))
   (global-unset-key (kbd "C-h h"))
 
 #+end_src
@@ -2508,7 +2503,7 @@ The Selected Window Accent Mode is an Emacs package designed to visually disting
     (selected-window-accent-smart-borders nil)
     (selected-window-accent-tab-accent t)
     (selected-window-accent-custom-color nil)
-;;    (selected-window-accent-custom-color "#af473e")
+    ;;    (selected-window-accent-custom-color "#af473e")
     (selected-window-accent-mode-style 'subtle))
 #+end_src
 
@@ -2731,50 +2726,50 @@ Sets up Kurecolor, a color manipulation tool, integrating it within Emacs for ef
 Demonstrates customizations for shell integration within Emacs, optimizing settings for shell modes, command history, and shorthand functions for frequent shell-related tasks.
 
 #+begin_src elisp
-    ;;
-    ;; -> shell
-    ;;
+  ;;
+  ;; -> shell
+  ;;
 
-    (when (file-exists-p "/usr/bin/fish")
-      (setq explicit-shell-file-name "/usr/bin/fish"))
+  (when (file-exists-p "/usr/bin/fish")
+    (setq explicit-shell-file-name "/usr/bin/fish"))
 
-    (when (file-exists-p "/bin/fish")
-      (setq shell-file-name "/bin/fish"))
+  (when (file-exists-p "/bin/fish")
+    (setq shell-file-name "/bin/fish"))
 
-    (use-package chatgpt-shell
-      :defer 5
-      :custom
-      ((chatgpt-shell-openai-key
-         (lambda ()
-           (auth-source-pass-get 'secret "openai-key")))))
+  (use-package chatgpt-shell
+    :defer 5
+    :custom
+    ((chatgpt-shell-openai-key
+       (lambda ()
+         (auth-source-pass-get 'secret "openai-key")))))
 
-    (defun my/eshell-hook ()
-      "Set up company completions to be a little more fish like."
-      (interactive)
-      ;; (define-key eshell-mode-map (kbd "<tab>") #'company-complete)
-      (define-key eshell-hist-mode-map (kbd "M-r") #'consult-history))
+  (defun my/eshell-hook ()
+    "Set up company completions to be a little more fish like."
+    (interactive)
+    ;; (define-key eshell-mode-map (kbd "<tab>") #'company-complete)
+    (define-key eshell-hist-mode-map (kbd "M-r") #'consult-history))
 
-    (defun my/shell-hook ()
-      "Set up company completions to be a little more fish like."
-      (interactive)
-      ;; (define-key shell-mode-map (kbd "<tab>") #'company-complete)
-      (define-key shell-mode-map (kbd "M-r") #'consult-history))
+  (defun my/shell-hook ()
+    "Set up company completions to be a little more fish like."
+    (interactive)
+    ;; (define-key shell-mode-map (kbd "<tab>") #'company-complete)
+    (define-key shell-mode-map (kbd "M-r") #'consult-history))
 
-    (use-package eshell
-      :config
-      (setq eshell-scroll-to-bottom-on-input t)
-      (setq-local tab-always-indent 'complete)
-      (setq eshell-history-size 10000) ;; Adjust size as needed
-      (setq eshell-save-history-on-exit t) ;; Enable history saving on exit
-      (setq eshell-hist-ignoredups t) ;; Ignore duplicates
-      :hook
-      (eshell-mode . my/eshell-hook))
+  (use-package eshell
+    :config
+    (setq eshell-scroll-to-bottom-on-input t)
+    (setq-local tab-always-indent 'complete)
+    (setq eshell-history-size 10000) ;; Adjust size as needed
+    (setq eshell-save-history-on-exit t) ;; Enable history saving on exit
+    (setq eshell-hist-ignoredups t) ;; Ignore duplicates
+    :hook
+    (eshell-mode . my/eshell-hook))
 
-    (use-package shell
-      :config
-      (setq-local tab-always-indent 'complete)
-      :hook
-      (shell-mode . my/shell-hook))
+  (use-package shell
+    :config
+    (setq-local tab-always-indent 'complete)
+    :hook
+    (shell-mode . my/shell-hook))
 
 #+end_src
 
@@ -3277,249 +3272,262 @@ Curates configurations specific to Linux, making adjustments for paths, fonts, a
 Shares miscellaneous development tools, tips, and functions, showcasing the versatility and extensibility of Emacs for a wide range of development tasks and personal workflows.
 
 #+begin_src elisp
-    ;;
-    ;; -> development
-    ;;
+  ;;
+  ;; -> development
+  ;;
 
-    (defun subtract-weight (weight-str avg-loss)
-      "Subtract AVG-LOSS pounds from WEIGHT-STR given in 'stones:pounds' format."
-      (let* ((stones-pounds (split-string weight-str ":"))
-              (stones (string-to-number (car stones-pounds)))
-              (pounds (string-to-number (cadr stones-pounds)))
-              (total-pounds (+ pounds (* stones 14)))      ;; Convert stones to pounds
-              (new-total-pounds (- total-pounds avg-loss)) ;; Subtract weight loss
-              (new-stones (truncate (/ new-total-pounds 14))) ;; Calculate new stones
-              (new-pounds (mod new-total-pounds 14)))      ;; Calculate remaining pounds
-        (format "%d:%d" new-stones new-pounds)))         ;; Format new weight
+  (defun subtract-weight (weight-str avg-loss)
+    "Subtract AVG-LOSS pounds from WEIGHT-STR given in 'stones:pounds' format."
+    (let* ((stones-pounds (split-string weight-str ":"))
+            (stones (string-to-number (car stones-pounds)))
+            (pounds (string-to-number (cadr stones-pounds)))
+            (total-pounds (+ pounds (* stones 14)))      ;; Convert stones to pounds
+            (new-total-pounds (- total-pounds avg-loss)) ;; Subtract weight loss
+            (new-stones (truncate (/ new-total-pounds 14))) ;; Calculate new stones
+            (new-pounds (mod new-total-pounds 14)))      ;; Calculate remaining pounds
+      (format "%d:%d" new-stones new-pounds)))         ;; Format new weight
 
-    (defun extrapolate-weight-loss (num-weeks)
-      "Extrapolate weight loss for NUM-WEEKS using 'av/pd' value in org-table."
-      (interactive "p")
-      (save-excursion
-        (let ((last-weight)
-               (last-avg-loss 2.9)
-               (last-date "")
-               (week 0)
-               (next-date ""))
-          (print num-weeks)
-          (when (org-at-table-p)
-            (goto-char (org-table-end))
-            ;; Find the last date and week number
-            (search-backward-regexp "|\\s-?\\([0-9]+\\)\\s-?|\\s-?<\\([0-9-]+\\)" nil t)
-            (setq week (string-to-number (match-string 1)))
-            (setq last-date (match-string 2))
-            (setq last-weight "16:10")
-            (goto-char (org-table-end))
-            ;; Loop for num-weeks to generate new lines
-            (dotimes (i num-weeks)
-              (setq next-date
-                (format-time-string "<%Y-%m-%d %a>"
-                  (time-add (org-time-string-to-time last-date)
-                    (days-to-time (+ (* i 7) 7))))) ;; add 7 days per week
-              (setq week (+ week 1))
-              (insert (format "| %d | %s | %s | | | | | | |\n"
-                        week next-date (subtract-weight last-weight (* (+ i 1) last-avg-loss)))))
-            )
+  (defun extrapolate-weight-loss (num-weeks)
+    "Extrapolate weight loss for NUM-WEEKS using 'av/pd' value in org-table."
+    (interactive "p")
+    (save-excursion
+      (let ((last-weight)
+             (last-avg-loss 2.9)
+             (last-date "")
+             (week 0)
+             (next-date ""))
+        (print num-weeks)
+        (when (org-at-table-p)
+          (goto-char (org-table-end))
+          ;; Find the last date and week number
+          (search-backward-regexp "|\\s-?\\([0-9]+\\)\\s-?|\\s-?<\\([0-9-]+\\)" nil t)
+          (setq week (string-to-number (match-string 1)))
+          (setq last-date (match-string 2))
+          (setq last-weight "16:10")
+          (goto-char (org-table-end))
+          ;; Loop for num-weeks to generate new lines
+          (dotimes (i num-weeks)
+            (setq next-date
+              (format-time-string "<%Y-%m-%d %a>"
+                (time-add (org-time-string-to-time last-date)
+                  (days-to-time (+ (* i 7) 7))))) ;; add 7 days per week
+            (setq week (+ week 1))
+            (insert (format "| %d | %s | %s | | | | | | |\n"
+                      week next-date (subtract-weight last-weight (* (+ i 1) last-avg-loss)))))
           )
         )
-      (org-table-align))
+      )
+    (org-table-align))
 
-    (defun my/get-window-regex (regex)
-      "Find the first window displaying a buffer whose name matches the given REGEX.
-               If no such window is found, return nil."
-      (let ((windows (window-list))
-             (found-window nil))
-        (dolist (window windows found-window)
-          (when (string-match-p regex (buffer-name (window-buffer window)))
-            (setq found-window window)
-            (cl-return found-window)))))
+  (defun my/get-window-regex (regex)
+    "Find the first window displaying a buffer whose name matches the given REGEX.
+                     If no such window is found, return nil."
+    (let ((windows (window-list))
+           (found-window nil))
+      (dolist (window windows found-window)
+        (when (string-match-p regex (buffer-name (window-buffer window)))
+          (setq found-window window)
+          (cl-return found-window)))))
 
-    (defun my/previous-thing ()
-      "Go to the previous thing, meaning warning, error, grep, etc., based on ARG."
-      (interactive)
-      (let ((window))
+  (defun my/previous-thing ()
+    "Go to the previous thing, meaning warning, error, grep, etc., based on ARG."
+    (interactive)
+    (let ((window))
 
-        (setq window (my/get-window-regex "compilation"))
-        (when window
-          (select-window window)
-          (re-search-backward "[[:digit:]]: warning:")
-          (compile-goto-error))
+      (setq window (my/get-window-regex "compilation"))
+      (when window
+        (select-window window)
+        (re-search-backward "[[:digit:]]: warning:")
+        (compile-goto-error))
 
-        (setq window (my/get-window-regex "compile-log"))
-        (when window
-          (select-window window)
-          (previous-error-no-select)
-          (compile-goto-error))
+      (setq window (my/get-window-regex "compile-log"))
+      (when window
+        (select-window window)
+        (previous-error-no-select)
+        (compile-goto-error))
 
-        (setq window (my/get-window-regex "dead"))
-        (when window
-          (select-window window)
-          (deadgrep-backward-match)
-          (deadgrep-visit-result-other-window)
-          (org-fold-show-entry))
+      (setq window (my/get-window-regex "dead"))
+      (when window
+        (select-window window)
+        (deadgrep-backward-match)
+        (deadgrep-visit-result-other-window)
+        (org-fold-show-entry))
 
-        (setq window (my/get-window-regex "org agenda"))
-        (when window
-          (select-window window)
-          (org-agenda-previous-item 1)
-          (org-agenda-goto)
-          (org-fold-show-entry))
+      (setq window (my/get-window-regex "org agenda"))
+      (when window
+        (select-window window)
+        (org-agenda-previous-item 1)
+        (org-agenda-goto)
+        (org-fold-show-entry))
 
-        (setq window (my/get-window-regex "consult-ripgrep"))
-        (when window
-          (select-window window)
-          (backward-button 1)
-          (push-button)
-          (org-fold-show-entry))
+      (setq window (my/get-window-regex "consult-ripgrep"))
+      (when window
+        (select-window window)
+        (backward-button 1)
+        (push-button)
+        (org-fold-show-entry))
 
-        (setq window (or (my/get-window-regex "occur")
-                       (my/get-window-regex "flycheck errors")))
-        (when window
-          (select-window window)
-          (previous-error))))
+      (setq window (or (my/get-window-regex "occur")
+                     (my/get-window-regex "flycheck errors")))
+      (when window
+        (select-window window)
+        (previous-error))))
 
-    (defun my/next-thing ()
-      "Go to the next thing, meaning warning, error, grep, etc., based on ARG."
-      (interactive)
-      (let ((window))
+  (defun my/next-thing ()
+    "Go to the next thing, meaning warning, error, grep, etc., based on ARG."
+    (interactive)
+    (let ((window))
 
-        (setq window (my/get-window-regex "compilation"))
-        (when window
-          (select-window window)
-          (re-search-forward "[[:digit:]]: warning:")
-          (compile-goto-error))
+      (setq window (my/get-window-regex "compilation"))
+      (when window
+        (select-window window)
+        (re-search-forward "[[:digit:]]: warning:")
+        (compile-goto-error))
 
-        (setq window (my/get-window-regex "compile-log"))
-        (when window
-          (select-window window)
-          (next-error-no-select)
-          (compile-goto-error))
+      (setq window (my/get-window-regex "compile-log"))
+      (when window
+        (select-window window)
+        (next-error-no-select)
+        (compile-goto-error))
 
-        (setq window (my/get-window-regex "dead"))
-        (when window
-          (select-window window)
-          (deadgrep-forward-match)
-          (deadgrep-visit-result-other-window)
-          (org-fold-show-entry))
+      (setq window (my/get-window-regex "dead"))
+      (when window
+        (select-window window)
+        (deadgrep-forward-match)
+        (deadgrep-visit-result-other-window)
+        (org-fold-show-entry))
 
-        (setq window (my/get-window-regex "org agenda"))
-        (when window
-          (select-window window)
-          (org-agenda-next-item 1)
-          (org-agenda-goto)
-          (org-fold-show-entry))
+      (setq window (my/get-window-regex "org agenda"))
+      (when window
+        (select-window window)
+        (org-agenda-next-item 1)
+        (org-agenda-goto)
+        (org-fold-show-entry))
 
-        (setq window (my/get-window-regex "consult-ripgrep"))
-        (when window
-          (select-window window)
-          (forward-button 1)
-          (push-button)
-          (org-fold-show-entry))
+      (setq window (my/get-window-regex "consult-ripgrep"))
+      (when window
+        (select-window window)
+        (forward-button 1)
+        (push-button)
+        (org-fold-show-entry))
 
-        (setq window (or (my/get-window-regex "occur")
-                       (my/get-window-regex "flycheck errors")))
-        (when window
-          (select-window window)
-          (next-error))))
+      (setq window (or (my/get-window-regex "occur")
+                     (my/get-window-regex "flycheck errors")))
+      (when window
+        (select-window window)
+        (next-error))))
 
-    (defun my/dired-delete-async ()
-      "Delete files asynchronously in Dired."
-      (interactive)
-      (if (eq delete-by-moving-to-trash t)
-        (let ((files (dired-get-marked-files)))
-          (dolist (file files)
-            (async-shell-command (format "gio trash '%s'" file))))
-        (message "Async deletion is set up only for trash. Set `delete-by-moving-to-trash` to t.")))
+  (defun my/dired-delete-async ()
+    "Delete files asynchronously in Dired."
+    (interactive)
+    (if (eq delete-by-moving-to-trash t)
+      (let ((files (dired-get-marked-files)))
+        (dolist (file files)
+          (async-shell-command (format "gio trash '%s'" file))))
+      (message "Async deletion is set up only for trash. Set `delete-by-moving-to-trash` to t.")))
 
-    (defun my/switch-to-thing ()
-      "Switch to a buffer, open a recent file, jump to a bookmark,
-               or change the theme from a unified interface."
-      (interactive)
-      (let* ((buffers (mapcar #'buffer-name (buffer-list)))
-              (recent-files recentf-list)
-              (bookmarks (bookmark-all-names))
-              (all-options (append buffers recent-files bookmarks))
-              (selection (completing-read "Switch to: "
-                           (lambda (str pred action)
-                             (if (eq action 'metadata)
-                               '(metadata . ((category . file)))
-                               (complete-with-action action all-options str pred)))
-                           nil t nil 'file-name-history)))
-        (pcase selection
-          ((pred (lambda (sel) (member sel buffers))) (switch-to-buffer selection))
-          ((pred (lambda (sel) (member sel bookmarks))) (bookmark-jump selection))
-          (_ (find-file selection)))))
+  (defun my/switch-to-thing ()
+    "Switch to a buffer, open a recent file, jump to a bookmark,
+                     or change the theme from a unified interface."
+    (interactive)
+    (let* ((buffers (mapcar #'buffer-name (buffer-list)))
+            (recent-files recentf-list)
+            (bookmarks (bookmark-all-names))
+            (all-options (append buffers recent-files bookmarks))
+            (selection (completing-read "Switch to: "
+                         (lambda (str pred action)
+                           (if (eq action 'metadata)
+                             '(metadata . ((category . file)))
+                             (complete-with-action action all-options str pred)))
+                         nil t nil 'file-name-history)))
+      (pcase selection
+        ((pred (lambda (sel) (member sel buffers))) (switch-to-buffer selection))
+        ((pred (lambda (sel) (member sel bookmarks))) (bookmark-jump selection))
+        (_ (find-file selection)))))
 
-    (setq org-icalendar-use-deadline
-      '(event-if-not-todo event-if-todo event-if-todo-not-done todo-due))
+  (setq org-icalendar-use-deadline
+    '(event-if-not-todo event-if-todo event-if-todo-not-done todo-due))
 
-    (setq org-icalendar-use-scheduled
-      '(event-if-not-todo event-if-todo event-if-todo-not-done todo-start))
+  (setq org-icalendar-use-scheduled
+    '(event-if-not-todo event-if-todo event-if-todo-not-done todo-start))
 
-    (defun my/calc-subscription-cost ()
-      (interactive)
-      (let ((sum 0))
-        (save-excursion
-          (goto-char (point-min))
-          ;; Search for the numeric pattern.
-          (while (re-search-forward "\\([0-9]+\\.[0-9]+\\)" nil t)
-            ;; Check if the current line does not contain "DONE"
-            (unless (save-excursion
-                      (beginning-of-line)
-                      (re-search-forward "DONE" (line-end-position) t))
-              ;; If "DONE" is not found on the line, process the number.
-              (let ((amount (string-to-number (substring-no-properties (match-string 1)))))
-                (setq sum (+ sum amount))
-                (message "Adding: %.2f, Total: %.2f" amount sum)))))
-        (message "Total: %.2f" sum)))
+  (defun my/calc-subscription-cost ()
+    (interactive)
+    (let ((sum 0))
+      (save-excursion
+        (goto-char (point-min))
+        ;; Search for the numeric pattern.
+        (while (re-search-forward "\\([0-9]+\\.[0-9]+\\)" nil t)
+          ;; Check if the current line does not contain "DONE"
+          (unless (save-excursion
+                    (beginning-of-line)
+                    (re-search-forward "DONE" (line-end-position) t))
+            ;; If "DONE" is not found on the line, process the number.
+            (let ((amount (string-to-number (substring-no-properties (match-string 1)))))
+              (setq sum (+ sum amount))
+              (message "Adding: %.2f, Total: %.2f" amount sum)))))
+      (message "Total: %.2f" sum)))
 
-    (if (and (fboundp 'native-comp-available-p)
-          (native-comp-available-p))
-      (message "Native compilation is available")
-      (message "Native complation is *not* available"))
+  (if (and (fboundp 'native-comp-available-p)
+        (native-comp-available-p))
+    (message "Native compilation is available")
+    (message "Native complation is *not* available"))
 
-    (add-hook 'chatgpt-shell-mode-hook 'visual-line-mode)
+  (add-hook 'chatgpt-shell-mode-hook 'visual-line-mode)
 
-    (setq native-comp-async-report-warnings-errors nil)
+  (setq native-comp-async-report-warnings-errors nil)
 
-    ;;   (use-package ace-window
-    ;;   :configk
-    ;;  (setq aw-keys '(?j ?k ?l ?\; ?a ?s ?d ?f))
-    ;;  (setq aw-background nil)
-    ;;  :bind
-    ;;  ("M-a" . ace-window))
+  ;;   (use-package ace-window
+  ;;   :configk
+  ;;  (setq aw-keys '(?j ?k ?l ?\; ?a ?s ?d ?f))
+  ;;  (setq aw-background nil)
+  ;;  :bind
+  ;;  ("M-a" . ace-window))
 
-    (use-package keycast
-      :init
-      (keycast-tab-bar-mode -1))
+  (use-package keycast
+    :init
+    (keycast-tab-bar-mode -1))
 
-    (use-package syntax-subword
-      :init
-      (global-syntax-subword-mode))
+  (use-package syntax-subword
+    :init
+    (global-syntax-subword-mode))
 
-    (global-set-key (kbd "M-[") #'yank)
-    (global-set-key (kbd "M-]") #'yank-pop)
+  (global-set-key (kbd "M-[") #'yank)
+  (global-set-key (kbd "M-]") #'yank-pop)
 
-    (use-package capf-autosuggest
-      :hook
-      (eshell-mode . capf-autosuggest-mode)
-      (shell-mode . capf-autosuggest-mode))
+  (use-package capf-autosuggest
+    :hook
+    (eshell-mode . capf-autosuggest-mode)
+    (shell-mode . capf-autosuggest-mode))
 
-    (bind-key* (kbd "M-0") #'hippie-expand)
+  (bind-key* (kbd "M-9") #'hippie-expand)
+  (bind-key* (kbd "C-z") #'eval-expression)
 
-(use-package plantuml-mode
-  :custom
-  (plantuml-default-exec-mode 'jar)
-  (plantuml-jar-path (concat user-emacs-directory "plantuml.jar"))
-  (org-plantuml-jar-path (concat user-emacs-directory "plantuml.jar")))
+  (use-package plantuml-mode
+    :custom
+    (plantuml-default-exec-mode 'jar)
+    (plantuml-jar-path (concat user-emacs-directory "plantuml.jar"))
+    (org-plantuml-jar-path (concat user-emacs-directory "plantuml.jar")))
 
-(add-to-list
-  'org-src-lang-modes '("plantuml" . plantuml))
+  (add-to-list
+    'org-src-lang-modes '("plantuml" . plantuml))
 
-(org-babel-do-load-languages
-  'org-babel-load-languages
-  '((plantuml . t)))
+  (org-babel-do-load-languages
+    'org-babel-load-languages
+    '((plantuml . t)))
 
-(add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
+  (add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
+
+  (add-hook 'plantuml-mode-hook (lambda ()
+                                  (setq tab-width 0)
+                                  (setq indent-tabs-mode nil)))
+
+  (setq org-use-speed-commands t)
+
+  (defun my-org-confirm-babel-evaluate (lang body)
+    (not (or (string= lang "plantuml")
+           (string= lang "emacs-lisp"))))
+
+  (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
 
 #+end_src
