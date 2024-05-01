@@ -276,7 +276,7 @@
 ;; -> keys-other
 ;;
 
-(global-set-key (kbd "M-s ,") #'my/mark-line)
+(bind-key* (kbd "M-s ,") #'my/mark-line)
 (global-set-key (kbd "M-s M-[") #'beginning-of-buffer)
 (global-set-key (kbd "M-s M-]") #'end-of-buffer)
 (bind-key* (kbd "M-s [") #'beginning-of-buffer)
@@ -322,8 +322,6 @@
          ("~/bin" . 1)
          ("~/DCIM/Art/Content" . 2)
          ("~/DCIM/themes" . 2)))))
-
-(global-set-key (kbd "M-s m") 'magit-status)
 
 ;;
 ;; -> emms
@@ -420,8 +418,6 @@
 (global-set-key (kbd "C-1") #'delete-other-windows)
 (global-set-key (kbd "C-2") #'split-window-vertically)
 (global-set-key (kbd "C-3") #'split-window-horizontally)
-(global-set-key (kbd "M-7") #'my/replace-spaces-with-dashes)
-(global-set-key (kbd "M-8") #'my/replace-dashes-with-spaces)
 (global-set-key (kbd "M-r") #'my/grep)
 (global-set-key (kbd "M-@") #'my/mark-block)
 (global-set-key (kbd "M-'") #'my/mark-word)
@@ -440,6 +436,7 @@
 (bind-key* (kbd "M-s l") #'my/shell-create)
 (bind-key* (kbd "C-o") #'other-window)
 (bind-key* (kbd "C-x b") #'my/switch-to-thing)
+(bind-key* (kbd "C-0") #'my/switch-to-thing)
 (bind-key* (kbd "C-/") #'undo)
 (global-set-key (kbd "M-=") #'my/window-enlarge)
 (global-set-key (kbd "M--") #'my/window-shrink)
@@ -451,6 +448,7 @@
 (global-set-key (kbd "M-;") #'my/comment-or-uncomment)
 (global-set-key (kbd "C-c ,") #'embark-act)
 (global-unset-key (kbd "C-h h"))
+(global-unset-key (kbd "C-t"))
 
 (global-set-key (kbd "M-g o") 'consult-outline)
 (global-set-key (kbd "M-g i") 'consult-imenu)
@@ -559,13 +557,13 @@
 ;;
 
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
-  '(custom-enabled-themes '(doom-dracula))
-  '(warning-suppress-log-types '((frameset)))
-  '(warning-suppress-types '((frameset))))
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-enabled-themes '(doom-monokai-spectrum))
+ '(warning-suppress-log-types '((frameset)))
+ '(warning-suppress-types '((frameset))))
 
 ;;
 ;; -> defun
@@ -759,9 +757,14 @@ as search term for Google search in web browser."
   (my/resize-window -4 t))
 
 (defun my/shell-create (name)
-  "Create a custom-named shell buffer with NAME."
-  (interactive "\BName:")
-  (eshell (concat "*eshell-" name "*")))
+  "Create a custom-named eshell buffer with NAME."
+  (interactive "BName: ")
+  ;; Create a new eshell session. If eshell isn't active, it starts session #1.
+  (eshell 'new)
+  ;; Generate a unique buffer name for the new eshell buffer, based on the user input.
+  (let ((new-buffer-name (concat "*eshell-" name "*")))
+    ;; Rename the current buffer.
+    (rename-buffer new-buffer-name t)))
 
 ;;
 ;; -> window-positioning
@@ -885,7 +888,7 @@ as search term for Google search in web browser."
        (file+function
          "~/DCIM/content/linux--all.org"
          my-capture-top-level)
-       "** TODO %^{title} :2024:
+       "* TODO %^{title} :2024:
 :PROPERTIES:
 :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>-linux--%\\1
 :EXPORT_HUGO_SECTION: linux
@@ -941,7 +944,8 @@ as search term for Google search in web browser."
 (use-package org
   :defer t
   :config
-  (setq org-src-tab-acts-natively t ;; commenting better in org src blocks
+  (setq org-src-tab-acts-natively t
+    org-edit-src-content-indentation 0
     org-log-done 'time
     org-tags-sort-function 'org-string-collate-greaterp
     org-export-with-sub-superscripts nil
@@ -1126,44 +1130,51 @@ as search term for Google search in web browser."
 ;;
 
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
-  '(diredfl-date-time ((t (:foreground "#8d909b"))))
-  '(diredfl-dir-heading ((t (:foreground "#aa5555" :weight bold))))
-  '(diredfl-dir-priv ((t (:foreground "DarkRed"))))
-  '(diredfl-exec-priv ((t (:foreground "#999999"))))
-  '(diredfl-file-name ((t (:foreground "#818282"))))
-  '(diredfl-no-priv ((t nil)))
-  '(diredfl-number ((t (:foreground "#999999"))))
-  '(diredfl-read-priv ((t nil)))
-  '(diredfl-write-priv ((t nil)))
-  '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
-  '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
-  '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
-  '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
-  '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2"))))
-  '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
-  '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.1 :family "Source Code Pro"))))
-  '(org-code ((t (:inherit (shadow fixed-pitch)))))
-  '(org-modern-date-active ((t (:inherit fixed-pitch))))
-  '(org-date ((t (:inherit fixed-pitch))))
-  '(org-document-info ((t (:foreground "#8f4800"))))
-  '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
-  '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
-  '(org-link ((t (:foreground "#5555ff" :underline t))))
-  '(org-property-value ((t (:inherit fixed-pitch))) t)
-  '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
-  '(org-tag ((t (:inherit (shadow fixed-pitch) :weight regular :height 0.8))))
-  '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
-  '(indent-guide-face ((t (:background "#282828" :foreground "#666666"))))
-  '(outline-1 ((t (:weight regular))))
-  '(outline-2 ((t (:weight regular))))
-  '(widget-button ((t (:inherit fixed-pitch :weight regular))))
-  '(window-divider ((t (:foreground "black"))))
-  '(aw-leading-char-face ((t (:inherit (fixed-pitch) :background "#000000" :foreground "#ffffff" :height 1.0))))
-  '(vertical-border ((t (:foreground "#000000")))))
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(aw-leading-char-face ((t (:inherit (fixed-pitch) :background "#000000" :foreground "#ffffff" :height 1.0))))
+ '(diredfl-date-time ((t (:foreground "#8d909b"))))
+ '(diredfl-dir-heading ((t (:foreground "#aa5555" :weight bold))))
+ '(diredfl-dir-priv ((t (:foreground "DarkRed"))))
+ '(diredfl-exec-priv ((t (:foreground "#999999"))))
+ '(diredfl-file-name ((t (:foreground "#818282"))))
+ '(diredfl-no-priv ((t nil)))
+ '(diredfl-number ((t (:foreground "#999999"))))
+ '(diredfl-read-priv ((t nil)))
+ '(diredfl-write-priv ((t nil)))
+ '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
+ '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
+ '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
+ '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
+ '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.1 :family "Source Code Pro"))))
+ '(indent-guide-face ((t (:background "#282828" :foreground "#666666"))))
+ '(org-code ((t (:inherit (shadow fixed-pitch)))))
+ '(org-date ((t (:inherit fixed-pitch))))
+ '(org-document-info ((t (:foreground "#8f4800"))))
+ '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+ '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
+ '(org-link ((t (:foreground "#5555ff" :underline t))))
+ '(org-modern-date-active ((t (:inherit fixed-pitch))))
+ '(org-property-value ((t (:inherit fixed-pitch))))
+ '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+ '(org-tag ((t (:inherit (shadow fixed-pitch) :weight regular :height 0.8))))
+ '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
+ '(outline-1 ((t (:weight regular))))
+ '(outline-2 ((t (:weight regular))))
+ '(vertical-border ((t (:foreground "#000000"))))
+ '(whitespace-missing-newline-at-eof ((t (:foreground "#666566656665"))))
+ '(whitespace-newline ((t (:foreground "#666566656665"))))
+ '(whitespace-space ((t (:foreground "#666566656665"))))
+ '(whitespace-space-after-tab ((t (:foreground "#666566656665"))))
+ '(whitespace-space-before-tab ((t (:foreground "#666566656665"))))
+ '(whitespace-tab ((t (:foreground "#666566656665"))))
+ '(whitespace-trailing ((t (:foreground "#666566656665"))))
+ '(widget-button ((t (:inherit fixed-pitch :weight regular))))
+ '(window-divider ((t (:foreground "black"))))
+ '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
+ '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2")))))
 
 ;;
 ;; -> dired
@@ -1505,7 +1516,7 @@ as search term for Google search in web browser."
       (setq frame-title-format my/mode-line-format)))
   (force-mode-line-update t))
 
-(display-time-mode 1)
+(display-time-mode -1)
 (setq mode-line-compact nil)
 
 ;;
@@ -1611,7 +1622,7 @@ as search term for Google search in web browser."
 (add-to-list 'auto-mode-alist '("\\.org_archive\\'" . org-mode))
 (add-to-list 'auto-mode-alist '("config.rasi\\'" . js-json-mode))
 (add-to-list 'auto-mode-alist '("theme.rasi\\'" . css-mode))
-(add-to-list 'auto-mode-alist '("waybar/config\\'" . js-json-mode))
+(add-to-list 'auto-mode-alist '("waybar.*/config\\'" . js-json-mode))
 (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
 (add-to-list 'auto-mode-alist '("\\.toml\\'" . toml-ts-mode))
 (add-to-list 'auto-mode-alist '("CMakeLists.txt\\'" . cmake-ts-mode))
@@ -1962,10 +1973,10 @@ With directories under project root using find."
   (selected-window-accent-fringe-thickness 8)
   (selected-window-accent-percentage-darken 20)
   (selected-window-accent-percentage-desaturate 50)
-  (selected-window-accent-smart-borders nil)
+  (selected-window-accent-smart-borders t)
   (selected-window-accent-tab-accent t)
   (selected-window-accent-custom-color nil)
-  ;;    (selected-window-accent-custom-color "#af473e")
+  (selected-window-accent-custom-color "#af473e")
   (selected-window-accent-mode-style 'subtle))
 
 ;;
@@ -2901,3 +2912,11 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
          (string= lang "emacs-lisp"))))
 
 (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
+
+(use-package markdown-mode)
+
+(use-package org-preview-html
+  :custom
+  (org-preview-html-subtree-only t))
+
+(use-package bug-hunter)
