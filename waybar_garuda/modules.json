@@ -1,0 +1,144 @@
+{
+    "custom/spacer": {
+        "format": " ",
+        "min-length": 1,
+        "max-length": 1
+    },
+
+    "custom/emacs": {
+        "format": "ε",
+        "on-click": "emacs",
+        "min-length": 4,
+        "max-length": 4,
+        "tooltip": false
+    },
+
+    "custom/krita": {
+        "format": "",
+        "on-click": "krita",
+        "min-length": 4,
+        "max-length": 4,
+        "tooltip": false
+    },
+
+    "custom/browser": {
+        "format": "",
+        "on-click": "firefox",
+        "min-length": 4,
+        "max-length": 4,
+        "tooltip": false
+    },
+
+    "custom/files": {
+        "format": "",
+        "on-click": "thunar ~/DCIM/Camera",
+        "min-length": 4,
+        "max-length": 4,
+        "tooltip": false
+    },
+
+    "custom/terminal": {
+        "format": "",
+        "on-click": "gnome-terminal",
+        "min-length": 4,
+        "max-length": 4,
+        "tooltip": false
+    },
+
+    "custom/toolbar/undo": {
+        "format": "",
+        "on-click": "exec ydotool key 29:1 44:1 29:0 44:0",
+        "tooltip": false,
+        "min-length": 4,
+        "max-length": 4
+    },
+
+    "custom/toolbar/redo": {
+        "format": "",
+        "on-click": "exec ydotool key 29:1 21:1 29:0 21:0",
+        "tooltip": false,
+        "min-length": 4,
+        "max-length": 4
+    },
+
+    "custom/appmenu": {
+        "format": "🗄️",
+        "on-click": "rofi -show drun -l 10",
+        "tooltip": false
+    },
+
+    "custom/exit": {
+        "format": "⏻",
+        "on-click": "powermenu.sh",
+        "tooltip": false
+    },
+
+    "custom/power": {
+        "format":"⏻",
+        "on-click": "nwgbar",
+        "tooltip": false,
+        "min-length": 3,
+        "max-length": 4,
+    },
+
+    "custom/launcher": {
+    	  "format":"🚀️",
+    	  "on-click": "exec nwg-drawer -c 7 -is 70 -spacing 23",
+    	  "tooltip": false,
+        "min-length": 2,
+        "max-length": 4
+    },
+
+    "custom/keyboard": {
+	     "format": "",
+        "min-length": 3,
+        "max-length": 3,
+	     "interval": 10,
+	     "on-click": "toggle_wlr_keyboard.sh",
+    },
+
+    "sway/window": {
+        "min-length": 1,
+        "max-length": 50,
+    },
+
+    "custom/recorder": {
+        "on-click": "screen-record.sh",
+        "return-type": "json",
+        "interval": 1,
+        "exec": "screen-record-check-status.sh",
+        "min-length": 1,
+        "max-length": 6,
+    },
+
+    "custom/screenshot": {
+        "format": "",
+        "on-click": "screenshot_wayland.sh",
+        "min-length": 4,
+        "max-length": 4,
+        "tooltip": false
+    },
+
+    "custom/caps_lock": {
+        "exec": "led-monitor.sh --caps",
+        "interval": 1,
+        "return-type": "json"
+    },
+    "custom/num_lock": {
+        "exec": "led-monitor.sh --num",
+        "interval": 1,
+        "return-type": "json"
+    },
+    "custom/scroll_lock": {
+        "exec": "led-monitor.sh --scroll",
+        "interval": 1,
+        "return-type": "json"
+    },
+
+    "custom/togglesticky": {
+        "exec": "keymap-monitor.sh",
+        "interval": 1,
+        "return-type": "json",
+        "on-click": "keymap-toggle.sh",
+    }
+}
