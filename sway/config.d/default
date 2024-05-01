@@ -1,23 +1,21 @@
 #
 # -> visuals
 #
-gaps inner 10px
-gaps outer 5px
-gaps top 0px
-gaps bottom -8px
+gaps inner 4px
+gaps outer 25px
+gaps top 20px
+gaps bottom 0px
 
 default_border pixel 6px
 
-# class              border  backgr. text    indicator child_border
-client.focused          #000000 #0b4b55 #cccccc #ffffff44   #ffffff44
-client.focused_inactive #333333 #333333 #cccccc #00000044   #00000044
-client.unfocused        #333333 #222222 #cccccc #292d2e   #222222
-client.urgent           #2f343a #900000 #cccccc #900000   #900000
-client.placeholder      #000000 #0c0c0c #cccccc #000000   #0c0c0c
-client.background       #aaaaaa
+# class                 border  backgr. text    indicator child_border
+client.focused          #88c0d0 #434c5e #eceff4 #8fbcbb   #88c0d0
+client.focused_inactive #88c0d0 #2e3440 #d8dee9 #4c566a   #4c566a
+client.unfocused        #88c0d0 #2e3440 #d8dee9 #4c566a   #4c566a
+client.urgent           #ebcb8b #ebcb8b #2e3440 #8fbcbb   #ebcb8b
 
 # swayfx
-corner_radius 15
+corner_radius 10
 blur enable
 blur_passes 8
 blur_radius 4
@@ -57,21 +55,23 @@ bindsym XF86MonBrightnessDown exec brightnessctl set 2%-
 #
 # -> Key bindings
 #
-bindsym $mod+p exec wl-color-picker
-bindsym $mod+w exec wallpaper_change.sh
-bindsym $mod+s exec screenshot.sh
+bindsym $mod+b exec toggle_waybar.sh
+bindsym $mod+c exec screen-record.sh
+bindsym $mod+d exec --no-startup-id dmenu_run -fn "Mono:pixelsize=16"
 bindsym $mod+e exec thunar ~/DCIM/Camera
 bindsym $mod+m exec emacs
-bindsym $mod+b exec thunderbird
 bindsym $mod+n exec firefox
-bindsym $mod+r exec screen-record.sh
-bindsym $mod+return exec $term
-bindsym control+Mod1+t exec $term
+bindsym $mod+p exec wl-color-picker
 bindsym $mod+q kill
-bindsym Mod1+F4 kill
-bindsym Mod1+space exec rofi -show drun
-bindsym $mod+d exec --no-startup-id dmenu_run -fn "Mono:pixelsize=16"
+bindsym $mod+return exec $term
+bindsym $mod+s exec screenshot.sh
 bindsym $mod+shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+bindsym $mod+w exec wallpaper_change.sh
+bindsym $mod+y exec keymap-toggle.sh
+bindsym $mod+o exec rofi -show drun
+bindsym Mod1+4 kill
+bindsym control+Mod1+t exec $term
+bindsym $mod+z exec switch_waybar.sh
 
 #
 # -> Moving around
@@ -125,7 +125,7 @@ bindsym $mod+f fullscreen
 #
 # -> reload
 #
-bindsym $mod+o reload
+bindsym $mod+r reload
 
 #
 # -> resize
@@ -148,7 +148,7 @@ smart_borders on
 floating_modifier $mod
 
 # Toggle the current focus between tiling and floating mode
-bindsym $mod+control+space floating toggle
+bindsym $mod+space floating toggle
 
 # Press $mod+Shift+g to enter the gap mode. Choose o or i for
 # modifying outer/inner gaps. Press one of + / - (in-/decrement for
@@ -156,8 +156,8 @@ bindsym $mod+control+space floating toggle
 # also press Shift with these keys, the change will be global for all
 # workspaces.
 set $mode_gaps Gaps: (o) outer, (i) inner
-set $mode_gaps_outer Outer Gaps: +|-|0 (local), Shift + +|-|0 (global)
-set $mode_gaps_inner Inner Gaps: +|-|0 (local), Shift + +|-|0 (global)
+set $mode_gaps_outer Outer : u/i/0 (local), U/I/Shift+0 (global)
+set $mode_gaps_inner Inner : u/i/0 (local), U/I/Shift+0 (global)
 bindsym $mod+g mode "$mode_gaps"
 
 mode "$mode_gaps" {
@@ -167,21 +167,21 @@ mode "$mode_gaps" {
         bindsym Escape mode "default"
 }
 mode "$mode_gaps_inner" {
-        bindsym i gaps inner current plus 5
-        bindsym u gaps inner current minus 5
+        bindsym u gaps inner current plus 5
+        bindsym i gaps inner current minus 5
         bindsym 0 gaps inner current set 0
-        bindsym p gaps inner all plus 5
-        bindsym o gaps inner all minus 5
+        bindsym Shift+u gaps inner all plus 5
+        bindsym Shift+i gaps inner all minus 5
         bindsym Shift+0 gaps inner all set 0
         bindsym Return  mode "default"
         bindsym Escape  mode "default"
 }
 mode "$mode_gaps_outer" {
-        bindsym i gaps outer current plus 5
-        bindsym u gaps outer current minus 5
+        bindsym u gaps outer current plus 5
+        bindsym i gaps outer current minus 5
         bindsym 0 gaps outer current set 0
-        bindsym p gaps outer all plus 5
-        bindsym o gaps outer all minus 5
+        bindsym Shift+u gaps outer all plus 5
+        bindsym Shift+i gaps outer all minus 5
         bindsym Shift+0 gaps outer all set 0
         bindsym Return mode "default"
         bindsym Escape mode "default"
@@ -200,15 +200,21 @@ bindgesture swipe:4:left workspace next
 
 bindgesture swipe:4:up floating toggle
 
+bindgesture swipe:3:up exec nwg-drawer
+bindgesture swipe:3:down exec wtype -P "Escape"
+
 bindgesture swipe:3:right exec ydotool key 56:1 105:1 56:0 105:0
 bindgesture swipe:3:left exec ydotool key 56:1 106:1 56:0 106:0
 
 focus_wrapping force
 
-for_window [app_id="thunar"] opacity 0.95
+for_window [app_id="thunar"] opacity 0.8
 for_window [app_id="dolphin"] opacity 0.96
-for_window [app_id="gnome-terminal"] opacity 0.94
-for_window [app_id="thunderbird"] opacity 0.98
+for_window [app_id="gnome-terminal"] opacity 0.8
+for_window [app_id="thunderbird"] opacity 0.90
+
+# Inhibit idle
+for_window [app_id="firefox"] inhibit_idle
 
 #
 # -> input
@@ -223,11 +229,13 @@ input type:touchpad {
 input type:keyboard {
    # events enabled
    # xkb_layout gb
-   repeat_delay 300
+   repeat_delay 200
    repeat_rate 50
-   xkb_file $HOME/.config/keymap_with_locked_modifiers.xkb
+   xkb_file $HOME/.config/keymap_sway.xkb
    # xkb_options ctrl:nocaps
 }
+
+exec_always keyboard-reset.sh
 
 # input type:tablet_tool {
 input 11551:337:WCOM014A:00_2D1F:0151_Stylus {
