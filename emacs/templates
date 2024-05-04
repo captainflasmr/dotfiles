@@ -1,28 +1,28 @@
 fundamental-mode ;; Available everywhere
 
-(za (format-time-string "<%Y-%m-%d>"))
-(zm (format-time-string "%Y%m%d%H%M%S"))
-(zt (format-time-string "%Y%m%d"))
-(zp "| ")
-(zb "\\")
+(qa (format-time-string "<%Y-%m-%d>"))
+(qm (format-time-string "%Y%m%d%H%M%S"))
+(qt (format-time-string "%Y%m%d"))
+(qp "| ")
+(qb "\\")
 
 org-mode
 
-(zi "#+attr_org: :width 300px" n "#+attr_html: :width 100%")
-(ze "#+attr_org: :width 300px" n "#+attr_html: :class emacs-img")
-(zo "---" n "#+TOC: headlines 1 local" n "---")
+(qi "#+attr_org: :width 300px" n "#+attr_html: :width 100%")
+(qe "#+attr_org: :width 300px" n "#+attr_html: :class emacs-img")
+(qo "---" n "#+TOC: headlines 1 local" n "---")
 
 sh-mode
-(zd n "echo \"poop: " q "\"" n)
+(qd n "echo \"poop: " q "\"" n)
 
 emacs-lisp-mode
-(zd n "(message \"poop: " q "\"\)" n)
+(qd n "(message \"poop: " q "\"\)" n)
 
 ada-mode
-(zd n> "Ada.Text_Io.Put_Line \( \"poop: " q "\"\);" n)
+(qd n> "Ada.Text_Io.Put_Line \( \"poop: " q "\"\);" n)
 
 c++-mode
-(zd n> "std::cout << \"poop: " q "\" << std::endl;" n)
+(qd n> "std::cout << \"poop: " q "\" << std::endl;" n)
 
 c-mode
-(zd n> "fprintf(stderr, \"poop: " q "\"\);" n)
+(qd n> "fprintf(stderr, \"poop: " q "\"\);" n)
