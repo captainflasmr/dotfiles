@@ -30,11 +30,12 @@ focus_wrapping force
 # Read `man 5 sway-input` for more information about this section.
 
 input type:keyboard {
-   # events enabled
-   # xkb_layout gb
+   events enabled
+   xkb_layout gb
    repeat_delay 200
-   repeat_rate 50
+   repeat_rate 40
    xkb_file $HOME/.config/keymap_sway.xkb
+   # xkb_options "compose:caps"
    # xkb_options ctrl:nocaps
 }
 
