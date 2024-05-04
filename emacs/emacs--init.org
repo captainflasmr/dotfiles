@@ -335,7 +335,7 @@ Setup for both vanilla and advanced modeline completion styles, including config
   (read-buffer-completion-ignore-case t)
   (completion-ignore-case t)
   (vertico-resize nil)
-  (vertico-count 15)
+  (vertico-count 10)
   :bind (:map vertico-map
           ("C-n" . vertico-next)
           ("C-p" . vertico-previous)
@@ -438,7 +438,7 @@ This section is a bit experimental while I continue to work out a nice hand comf
 (bind-key* (kbd "M-s [") #'beginning-of-buffer)
 (bind-key* (kbd "M-s ]") #'end-of-buffer)
 (global-set-key (kbd "M-s b") #'(lambda ()(interactive)(org-table-recalculate 'all)))
-(global-set-key (kbd "M-s d") #'eval-defun)
+(global-set-key (kbd "M-s j") #'eval-defun)
 (global-set-key (kbd "M-s e") #'my/push-block)
 (global-set-key (kbd "M-s g") #'my/text-browser-search)
 (global-set-key (kbd "M-s h") #'my/mark-block)
@@ -516,7 +516,7 @@ Setup for the Emacs Multimedia System (EMMS) for managing and playing media file
   (emms-volume-amixer-card 1)
   (emms-volume-change-function 'emms-volume-pulse-change))
 
-;; (require 'emms-setup)
+(require 'emms-setup)
 
 #+end_src
 
@@ -1959,7 +1959,7 @@ Configures spell checking tools and dictionaries, integrating external tools lik
     (jinx-correct)))
 
 (global-set-key (kbd "M-s c") 'wc-mode)
-(global-set-key (kbd "M-s j") 'jinx-mode)
+(global-set-key (kbd "M-s x") 'jinx-mode)
 (global-set-key (kbd "M-s i") 'dictionary-lookup-definition)
 (global-set-key (kbd "M-s t") 'powerthesaurus-lookup-synonyms-dwim)
 
@@ -2507,7 +2507,7 @@ The Selected Window Accent Mode is an Emacs package designed to visually disting
   (selected-window-accent-smart-borders t)
   (selected-window-accent-tab-accent t)
   (selected-window-accent-custom-color nil)
-  (selected-window-accent-custom-color "#af473e")
+  (selected-window-accent-custom-color "#4A6A88")
   (selected-window-accent-mode-style 'subtle))
 
 #+end_src
@@ -2523,6 +2523,21 @@ The code below allows text from between two delineating markers to be transporte
 
 (setq my/push-block-spec
   '(
+     (:ascii
+       "~/repos/xkb-mode/CHANGELOG.org"
+       "~/repos/xkb-mode/README.org"
+       "\\* Whats New" "\\* ISSUES"
+       "** Whats New\n" "\n** Screenshot" "  ")
+     (:ascii
+       "~/repos/xkb-mode/CHANGELOG.org"
+       "~/repos/xkb-mode/README.org"
+       "\\* ISSUES" "\\* ROADMAP"
+       "* ISSUES\n" "\n* TODOs / ROADMAP" "  ")
+     (:ascii
+       "~/repos/xkb-mode/CHANGELOG.org"
+       "~/repos/xkb-mode/README.org"
+       "\\* ROADMAP" "\\* Versions"
+       "* TODOs / ROADMAP\n" "\n* Testing" "  ")
      (:ascii
        "~/repos/selected-window-accent-mode/CHANGELOG.org"
        "~/repos/selected-window-accent-mode/README.org"
@@ -3539,8 +3554,36 @@ Shares miscellaneous development tools, tips, and functions, showcasing the vers
 
 (use-package org-preview-html
   :custom
-  (org-preview-html-subtree-only t))
+  (org-preview-html-subtree-only nil)
+  (org-preview-html-refresh-configuration 'manual)
+  (org-preview-html-viewer 'eww))
 
 (use-package bug-hunter)
+
+(setq shr-ignore-cache t)
+(bind-key* (kbd "M-s t") #'org-preview-html-mode)
+(bind-key* (kbd "M-s r") #'org-preview-html-refresh)
+
+(bind-key* (kbd "H-;") #'eval-last-sexp)
+(bind-key* (kbd "H-SPC") #'mark-sexp)
+(bind-key* (kbd "H-d") #'down-list)
+(bind-key* (kbd "H-e") #'eval-region)
+(bind-key* (kbd "H-g") #'revert-buffer-quick)
+(bind-key* (kbd "H-i") #'consult-imenu)
+(bind-key* (kbd "H-j") #'save-buffer)
+(bind-key* (kbd "H-m") #'org-toggle-inline-images)
+(bind-key* (kbd "H-n") #'forward-list)
+(bind-key* (kbd "H-o") #'consult-outline)
+(bind-key* (kbd "H-p") #'backward-list)
+(bind-key* (kbd "H-q") #'dired-toggle-read-only)
+(bind-key* (kbd "H-r") #'sort-lines)
+(bind-key* (kbd "H-s") #'save-buffer)
+(bind-key* (kbd "H-t") #'org-babel-tangle)
+(bind-key* (kbd "H-u") #'backward-up-list)
+(bind-key* (kbd "H-v") #'org-copy-visible)
+
+(use-package xkb-mode
+  :vc (:fetcher github :repo "captainflasmr/xkb-mode"))
+  ;; :load-path "~/repos/xkb-mode")
 
 #+end_src
