@@ -204,7 +204,7 @@
   (read-buffer-completion-ignore-case t)
   (completion-ignore-case t)
   (vertico-resize nil)
-  (vertico-count 15)
+  (vertico-count 10)
   :bind (:map vertico-map
           ("C-n" . vertico-next)
           ("C-p" . vertico-previous)
@@ -282,7 +282,7 @@
 (bind-key* (kbd "M-s [") #'beginning-of-buffer)
 (bind-key* (kbd "M-s ]") #'end-of-buffer)
 (global-set-key (kbd "M-s b") #'(lambda ()(interactive)(org-table-recalculate 'all)))
-(global-set-key (kbd "M-s d") #'eval-defun)
+(global-set-key (kbd "M-s j") #'eval-defun)
 (global-set-key (kbd "M-s e") #'my/push-block)
 (global-set-key (kbd "M-s g") #'my/text-browser-search)
 (global-set-key (kbd "M-s h") #'my/mark-block)
@@ -344,7 +344,7 @@
   (emms-volume-amixer-card 1)
   (emms-volume-change-function 'emms-volume-pulse-change))
 
-;; (require 'emms-setup)
+(require 'emms-setup)
 
 ;;
 ;; -> elfeed
@@ -557,13 +557,13 @@
 ;;
 
 (custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-enabled-themes '(doom-monokai-spectrum))
- '(warning-suppress-log-types '((frameset)))
- '(warning-suppress-types '((frameset))))
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+  '(custom-enabled-themes '(doom-dracula))
+  '(warning-suppress-log-types '((frameset)))
+  '(warning-suppress-types '((frameset))))
 
 ;;
 ;; -> defun
@@ -1130,51 +1130,44 @@ as search term for Google search in web browser."
 ;;
 
 (custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(aw-leading-char-face ((t (:inherit (fixed-pitch) :background "#000000" :foreground "#ffffff" :height 1.0))))
- '(diredfl-date-time ((t (:foreground "#8d909b"))))
- '(diredfl-dir-heading ((t (:foreground "#aa5555" :weight bold))))
- '(diredfl-dir-priv ((t (:foreground "DarkRed"))))
- '(diredfl-exec-priv ((t (:foreground "#999999"))))
- '(diredfl-file-name ((t (:foreground "#818282"))))
- '(diredfl-no-priv ((t nil)))
- '(diredfl-number ((t (:foreground "#999999"))))
- '(diredfl-read-priv ((t nil)))
- '(diredfl-write-priv ((t nil)))
- '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
- '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
- '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
- '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
- '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.1 :family "Source Code Pro"))))
- '(indent-guide-face ((t (:background "#282828" :foreground "#666666"))))
- '(org-code ((t (:inherit (shadow fixed-pitch)))))
- '(org-date ((t (:inherit fixed-pitch))))
- '(org-document-info ((t (:foreground "#8f4800"))))
- '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
- '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
- '(org-link ((t (:foreground "#5555ff" :underline t))))
- '(org-modern-date-active ((t (:inherit fixed-pitch))))
- '(org-property-value ((t (:inherit fixed-pitch))))
- '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
- '(org-tag ((t (:inherit (shadow fixed-pitch) :weight regular :height 0.8))))
- '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
- '(outline-1 ((t (:weight regular))))
- '(outline-2 ((t (:weight regular))))
- '(vertical-border ((t (:foreground "#000000"))))
- '(whitespace-missing-newline-at-eof ((t (:foreground "#666566656665"))))
- '(whitespace-newline ((t (:foreground "#666566656665"))))
- '(whitespace-space ((t (:foreground "#666566656665"))))
- '(whitespace-space-after-tab ((t (:foreground "#666566656665"))))
- '(whitespace-space-before-tab ((t (:foreground "#666566656665"))))
- '(whitespace-tab ((t (:foreground "#666566656665"))))
- '(whitespace-trailing ((t (:foreground "#666566656665"))))
- '(widget-button ((t (:inherit fixed-pitch :weight regular))))
- '(window-divider ((t (:foreground "black"))))
- '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
- '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2")))))
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+  '(diredfl-date-time ((t (:foreground "#8d909b"))))
+  '(diredfl-dir-heading ((t (:foreground "#aa5555" :weight bold))))
+  '(diredfl-dir-priv ((t (:foreground "DarkRed"))))
+  '(diredfl-exec-priv ((t (:foreground "#999999"))))
+  '(diredfl-file-name ((t (:foreground "#818282"))))
+  '(diredfl-no-priv ((t nil)))
+  '(diredfl-number ((t (:foreground "#999999"))))
+  '(diredfl-read-priv ((t nil)))
+  '(diredfl-write-priv ((t nil)))
+  '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
+  '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
+  '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
+  '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
+  '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2"))))
+  '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
+  '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.1 :family "Source Code Pro"))))
+  '(org-code ((t (:inherit (shadow fixed-pitch)))))
+  '(org-modern-date-active ((t (:inherit fixed-pitch))))
+  '(org-date ((t (:inherit fixed-pitch))))
+  '(org-document-info ((t (:foreground "#8f4800"))))
+  '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+  '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
+  '(org-link ((t (:foreground "#5555ff" :underline t))))
+  '(org-property-value ((t (:inherit fixed-pitch))) t)
+  '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+  '(org-tag ((t (:inherit (shadow fixed-pitch) :weight regular :height 0.8))))
+  '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
+  '(indent-guide-face ((t (:background "#282828" :foreground "#666666"))))
+  '(outline-1 ((t (:weight regular))))
+  '(outline-2 ((t (:weight regular))))
+  '(widget-button ((t (:inherit fixed-pitch :weight regular))))
+  '(window-divider ((t (:foreground "black"))))
+  '(aw-leading-char-face ((t (:inherit (fixed-pitch) :background "#000000" :foreground "#ffffff" :height 1.0))))
+  '(vertical-border ((t (:foreground "#000000")))))
 
 ;;
 ;; -> dired
@@ -1580,7 +1573,7 @@ as search term for Google search in web browser."
     (jinx-correct)))
 
 (global-set-key (kbd "M-s c") 'wc-mode)
-(global-set-key (kbd "M-s j") 'jinx-mode)
+(global-set-key (kbd "M-s x") 'jinx-mode)
 (global-set-key (kbd "M-s i") 'dictionary-lookup-definition)
 (global-set-key (kbd "M-s t") 'powerthesaurus-lookup-synonyms-dwim)
 
@@ -1976,7 +1969,7 @@ With directories under project root using find."
   (selected-window-accent-smart-borders t)
   (selected-window-accent-tab-accent t)
   (selected-window-accent-custom-color nil)
-  (selected-window-accent-custom-color "#af473e")
+  (selected-window-accent-custom-color "#4A6A88")
   (selected-window-accent-mode-style 'subtle))
 
 ;;
@@ -1985,6 +1978,21 @@ With directories under project root using find."
 
 (setq my/push-block-spec
   '(
+     (:ascii
+       "~/repos/xkb-mode/CHANGELOG.org"
+       "~/repos/xkb-mode/README.org"
+       "\\* Whats New" "\\* ISSUES"
+       "** Whats New\n" "\n** Screenshot" "  ")
+     (:ascii
+       "~/repos/xkb-mode/CHANGELOG.org"
+       "~/repos/xkb-mode/README.org"
+       "\\* ISSUES" "\\* ROADMAP"
+       "* ISSUES\n" "\n* TODOs / ROADMAP" "  ")
+     (:ascii
+       "~/repos/xkb-mode/CHANGELOG.org"
+       "~/repos/xkb-mode/README.org"
+       "\\* ROADMAP" "\\* Versions"
+       "* TODOs / ROADMAP\n" "\n* Testing" "  ")
      (:ascii
        "~/repos/selected-window-accent-mode/CHANGELOG.org"
        "~/repos/selected-window-accent-mode/README.org"
@@ -2917,6 +2925,34 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
 
 (use-package org-preview-html
   :custom
-  (org-preview-html-subtree-only t))
+  (org-preview-html-subtree-only nil)
+  (org-preview-html-refresh-configuration 'manual)
+  (org-preview-html-viewer 'eww))
 
 (use-package bug-hunter)
+
+(setq shr-ignore-cache t)
+(bind-key* (kbd "M-s t") #'org-preview-html-mode)
+(bind-key* (kbd "M-s r") #'org-preview-html-refresh)
+
+(bind-key* (kbd "H-;") #'eval-last-sexp)
+(bind-key* (kbd "H-SPC") #'mark-sexp)
+(bind-key* (kbd "H-d") #'down-list)
+(bind-key* (kbd "H-e") #'eval-region)
+(bind-key* (kbd "H-g") #'revert-buffer-quick)
+(bind-key* (kbd "H-i") #'consult-imenu)
+(bind-key* (kbd "H-j") #'save-buffer)
+(bind-key* (kbd "H-m") #'org-toggle-inline-images)
+(bind-key* (kbd "H-n") #'forward-list)
+(bind-key* (kbd "H-o") #'consult-outline)
+(bind-key* (kbd "H-p") #'backward-list)
+(bind-key* (kbd "H-q") #'dired-toggle-read-only)
+(bind-key* (kbd "H-r") #'sort-lines)
+(bind-key* (kbd "H-s") #'save-buffer)
+(bind-key* (kbd "H-t") #'org-babel-tangle)
+(bind-key* (kbd "H-u") #'backward-up-list)
+(bind-key* (kbd "H-v") #'org-copy-visible)
+
+(use-package xkb-mode
+  :vc (:fetcher github :repo "captainflasmr/xkb-mode"))
+  ;; :load-path "~/repos/xkb-mode")
