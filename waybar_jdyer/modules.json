@@ -59,7 +59,8 @@
     },
 
     "custom/terminal": {
-        "format": "◼️",
+        // "format": "◼️",
+        "format": "💻",
         "on-click": "gnome-terminal",
         "min-length": 2,
         "max-length": 2,
@@ -147,12 +148,12 @@
         "critical-threshold": 90,
         // "format-critical": "{temperatureC}°C {icon}",
         // "format": "{temperatureC}°C {icon}",
-        "format": "{temperatureC}",
+        "format": "{icon} {temperatureC}",
         // "format-icons": ["❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "⛅", "⛅", "⛅", "🌞", "🌞", "🌞", "🔥"],
         "format-icons": ["❄️", "❄️", "❄️", "❄️", "❄️", "❄️", "❄️", "❄️", "❄️", "❄️", "❄️", "❄️", "❄️", "⛅", "⛅", "⛅", "🌞", "🌞", "🌞", "🔥"],
         "min-length": 4,
         "max-length": 10,
-        "interval" : 4,
+        "interval" : 4
     },
 
     "custom/keyboard": {
@@ -197,7 +198,7 @@
             "phone": "",
             "portable": "",
             "car": "",
-            "default": ["📢"]
+            "default": ["🔊"]
         },
         "on-click": "pavucontrol",
         "min-length": 1,
@@ -242,7 +243,7 @@
     "idle_inhibitor": {
 	     "format": "{icon}",
 	     "format-icons": {
-		      "activated": "⏰",
+		      "activated": "👀",
 		      "deactivated": "🌜"
 	     },
         "min-length": 2,
@@ -261,7 +262,8 @@
     },
 
     "custom/screenshot": {
-        "format": "🎬",
+        // "format": "🎬",
+        "format": "📸",
         "on-click": "screenshot_wayland.sh",
         "min-length": 2,
         "max-length": 2,

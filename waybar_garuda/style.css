@@ -1,5 +1,5 @@
 @define-color foreground rgba(255, 255, 255, 1.0);
-@define-color background rgba(35, 35, 35, 0.5);
+@define-color background rgba(35, 35, 35, 0.1);
 @define-color border-theme rgba(0, 0, 0, 1.0);
 @define-color recording-color  #976767;
 @Define-color workspace-color rgba(100, 100, 100, 0.1);
@@ -63,10 +63,10 @@ window#waybar {
 #custom-terminal,
 #custom-keyboard,
 #custom-power {
-    padding: 0px 10px;
-    border: 1px;
+    padding: 0px 4px;
+    border: 0px;
     border-style: solid;
-    border-radius: 20px;
+    border-radius: 0px;
     margin: 0px 2px;
 }
 
@@ -77,7 +77,7 @@ window#waybar {
 #custom-terminal,
 #custom-keyboard
 {
-    padding: 2px 4px;
+    padding: 0px 0px;
 }
 
 #window
@@ -200,7 +200,7 @@ window#waybar {
 }
 
 #battery.warning {
-    background-color: #FF41D1;
+    background-color: #6C5454;
 }
 
 #battery.critical {

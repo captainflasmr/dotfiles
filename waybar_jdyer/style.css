@@ -1,5 +1,5 @@
 @define-color foreground rgba(255, 255, 255, 1.0);
-@define-color background rgba(35, 35, 35, 0.7);
+@define-color background rgba(35, 35, 35, 0.1);
 @define-color border-theme rgba(0, 0, 0, 1.0);
 @define-color recording-color  #ff4444;
 @define-color workspace-color rgba(100, 100, 100, 0.3);
@@ -13,7 +13,6 @@
 
 #waybar {
     background-color: @background;
-    border: 1px solid @border-theme;
 }
 
 #workspaces button {
@@ -54,11 +53,13 @@
 }
 
 #battery.warning {
-    background-color: #FF41D1;
+    padding: 0em 0.5em;
+    background-color: #6C5454;
 }
 
 #battery.critical {
-    background-color: #ff0000;
+    padding: 0em 0.5em;
+    background-color: #b70000;
 }
 
 #custom-keyboard_leds.caps {
