@@ -84,14 +84,10 @@ emacs/elpa/
 emacs/emacs--init_*
 emacs/emacs--init_*
 emacs/emms/
-emacs/eshell/history
-emacs/eshell/lastdir
-emacs/history
 emacs/image-dired
 emacs/init_*
 emacs/multisession/files/emoji/emoji--recent.value
 emacs/projects
-emacs/recentf
 emacs/tramp
 emacs/transient/
 emacs/tree-sitter
@@ -208,7 +204,6 @@ lightlyrc
 mailtransports
 menus/
 microsoft-edge-beta/
-mimeapps.list
 mypaint/
 neofetch/
 nextjs-nodejs/
@@ -220,10 +215,8 @@ ocs-manager/
 octopi/
 okularpartrc
 okularrc
-pacseek/
 pamac/
 partitionmanagerrc
-paru/
 pimdataexporterrc
 pimpluginsrc
 pipewire-media-session/
