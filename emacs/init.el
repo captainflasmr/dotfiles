@@ -269,13 +269,13 @@
 (define-key my-win-keymap (kbd "r") #'org-modern-mode)
 (define-key my-win-keymap (kbd "s") #'my/toggle-internal-border-width)
 (define-key my-win-keymap (kbd "v") #'visual-line-mode)
-(define-key my-win-keymap (kbd "w") #'org-table-expand)
-(define-key my-win-keymap (kbd "z") #'org-table-shrink)
 
 ;;
 ;; -> keys-other
 ;;
 
+(bind-key* (kbd "M-s z") #'org-table-shrink)
+(bind-key* (kbd "M-s w") #'org-table-expand)
 (bind-key* (kbd "M-s ,") #'my/mark-line)
 (global-set-key (kbd "M-s M-[") #'beginning-of-buffer)
 (global-set-key (kbd "M-s M-]") #'end-of-buffer)
@@ -431,8 +431,8 @@
 (bind-key* (kbd "M-j") #'next-line)
 (bind-key* (kbd "M-k") #'previous-line)
 (bind-key* (kbd "M-l") #'forward-char)
-(bind-key* (kbd "M-n") #'(lambda ()(interactive)(scroll-up-command (/ (window-height) 4))))
-(bind-key* (kbd "M-m") #'(lambda ()(interactive)(scroll-down-command (/ (window-height) 4))))
+;; (bind-key* (kbd "M-n") #'(lambda ()(interactive)(scroll-up-command (/ (window-height) 4))))
+;; (bind-key* (kbd "M-m") #'(lambda ()(interactive)(scroll-down-command (/ (window-height) 4))))
 (bind-key* (kbd "M-s l") #'my/shell-create)
 (bind-key* (kbd "C-o") #'other-window)
 (bind-key* (kbd "C-x b") #'my/switch-to-thing)
@@ -494,7 +494,7 @@
 (setq tramp-default-method "ssh")
 (setq enable-local-variables :all)
 (setq isearch-lazy-count t)
-(setq shr-max-image-proportion 0.5)
+(setq shr-max-image-proportion 0.8)
 (setq shr-max-width 80)
 (setq shr-width 70)
 (setq tooltip-hide-delay 0)
@@ -835,7 +835,7 @@ as search term for Google search in web browser."
   '(
      ("c" "Calendar" plain
        (file+function
-         "~/DCIM/content/aaa--calendar.org"
+         "~/DCIM/content/calendar.org"
          my-capture-top-level)
        "* TODO %?\n SCHEDULED: %(cfw:org-capture-day)\n"
        :prepend t :jump-to-captured t)
@@ -1027,13 +1027,12 @@ as search term for Google search in web browser."
   :custom
   (org-agenda-include-diary nil)
   (org-agenda-show-all-dates nil)
-  (org-agenda-files '("~/DCIM/content/aaa--calendar.org"
-                       "~/DCIM/content/aae--rpt.org"
-                       "~/DCIM/content/aab--todo.org"
+  (org-agenda-files '("~/DCIM/content/aaa--todo.org"
+                       "~/DCIM/content/aab--todo-emacs.org"
                        "~/DCIM/content/aad--shopping.org"
                        "~/DCIM/content/aaf--kate.org"
-                       "~/DCIM/content/aag--bank-hol.org"
-                       "~/DCIM/content/aah--subs.org"
+                       "~/DCIM/content/calendar.org"
+                       "~/DCIM/content/subs.org"
                        ))
   :config
   (with-eval-after-load 'org-agenda
@@ -1150,6 +1149,7 @@ as search term for Google search in web browser."
   '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2"))))
   '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
   '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.1 :family "Source Code Pro"))))
+  '(font-lock-warning-face ((t (:foreground "#ff0000" :inverse-video t))))
   '(org-code ((t (:inherit (shadow fixed-pitch)))))
   '(org-modern-date-active ((t (:inherit fixed-pitch))))
   '(org-date ((t (:inherit fixed-pitch))))
@@ -1347,8 +1347,8 @@ as search term for Google search in web browser."
 
 (setq-default truncate-partial-width-windows 120)
 
-(set-frame-parameter nil 'alpha-background 85)
-(add-to-list 'default-frame-alist '(alpha-background . 85))
+(set-frame-parameter nil 'alpha-background 80)
+(add-to-list 'default-frame-alist '(alpha-background . 80))
 
 (set-fringe-mode '(0 . 0))
 (set-display-table-slot standard-display-table 0 ?\ )
@@ -1575,7 +1575,8 @@ as search term for Google search in web browser."
 (global-set-key (kbd "M-s c") 'wc-mode)
 (global-set-key (kbd "M-s x") 'jinx-mode)
 (global-set-key (kbd "M-s i") 'dictionary-lookup-definition)
-(global-set-key (kbd "M-s t") 'powerthesaurus-lookup-synonyms-dwim)
+(global-set-key (kbd "M-s d") 'dictionary-lookup-definition)
+(global-set-key (kbd "M-s s") 'powerthesaurus-lookup-synonyms-dwim)
 
 (setq ispell-local-dictionary "en_GB")
 (setq ispell-program-name "hunspell")
@@ -1969,7 +1970,7 @@ With directories under project root using find."
   (selected-window-accent-smart-borders t)
   (selected-window-accent-tab-accent t)
   (selected-window-accent-custom-color nil)
-  (selected-window-accent-custom-color "#4A6A88")
+  (selected-window-accent-custom-color "#903e5e")
   (selected-window-accent-mode-style 'subtle))
 
 ;;
@@ -2246,7 +2247,7 @@ With directories under project root using find."
 (setq cfw:org-capture-template
   '("c" "Calendar" plain
      (file+function
-       "~/DCIM/content/aaa--calendar.org"
+       "~/DCIM/content/calendar.org"
        my-capture-top-level)
      "* TODO %?\n SCHEDULED: %(cfw:org-capture-day)\n"
      :prepend t :jump-to-captured t))
@@ -2647,7 +2648,7 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
   (define-key my-jump-keymap (kbd "c") (lambda () (interactive) (find-file "~/DCIM/Camera")))
   (define-key my-jump-keymap (kbd "g") (lambda () (interactive) (find-file "~/.config")))
   (define-key my-jump-keymap (kbd "i") #'chatgpt-shell)
-  (define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~/DCIM/content/aab--todo.org")))
+  (define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~/DCIM/content/aaa--todo.org")))
   (define-key my-jump-keymap (kbd "y") #'emms)
   (define-key my-jump-keymap (kbd "q") #'cfw:open-org-calendar)
   (define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
@@ -2935,24 +2936,67 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
 (bind-key* (kbd "M-s t") #'org-preview-html-mode)
 (bind-key* (kbd "M-s r") #'org-preview-html-refresh)
 
-(bind-key* (kbd "H-;") #'eval-last-sexp)
 (bind-key* (kbd "H-SPC") #'mark-sexp)
 (bind-key* (kbd "H-d") #'down-list)
 (bind-key* (kbd "H-e") #'eval-region)
-(bind-key* (kbd "H-g") #'revert-buffer-quick)
 (bind-key* (kbd "H-i") #'consult-imenu)
-(bind-key* (kbd "H-j") #'save-buffer)
-(bind-key* (kbd "H-m") #'org-toggle-inline-images)
+(bind-key* (kbd "H-j") #'(lambda ()(interactive)(scroll-up-line (/ (window-height) 4))))
+(bind-key* (kbd "H-k") #'(lambda ()(interactive)(scroll-down-line (/ (window-height) 4))))
+(bind-key* (kbd "H-m") #'save-buffer)
 (bind-key* (kbd "H-n") #'forward-list)
 (bind-key* (kbd "H-o") #'consult-outline)
 (bind-key* (kbd "H-p") #'backward-list)
 (bind-key* (kbd "H-q") #'dired-toggle-read-only)
 (bind-key* (kbd "H-r") #'sort-lines)
-(bind-key* (kbd "H-s") #'save-buffer)
-(bind-key* (kbd "H-t") #'org-babel-tangle)
 (bind-key* (kbd "H-u") #'backward-up-list)
 (bind-key* (kbd "H-v") #'org-copy-visible)
 
 (use-package xkb-mode
-  :vc (:fetcher github :repo "captainflasmr/xkb-mode"))
-  ;; :load-path "~/repos/xkb-mode")
+  :load-path "~/repos/xkb-mode")
+  ;; :vc (:fetcher github :repo "captainflasmr/xkb-mode"))
+
+(use-package arscript-mode
+  :load-path "~/repos/arscript-mode")
+  ;; :vc (:fetcher github :repo "captainflasmr/arscript-mode"))
+
+(defun swaywm-list-mod-bindsyms (path)
+  "List all bindsyms that start with $mod or its resolved value in the SwayWM config file at PATH."
+  (interactive "fSway config file path: ")
+  (with-temp-buffer
+    (insert-file-contents path)
+    (goto-char (point-min))
+    (let ((vars nil)
+          (bindsyms nil))
+      ;; Collect variable definitions
+      (while (re-search-forward "^set \\$\\([a-zA-Z0-9_]+\\) \\(.*\\)$" nil t)
+        (let ((var (match-string-no-properties 1))
+              (value (match-string-no-properties 2)))
+          (setq vars (cons (cons var value) vars))))
+      ;; Prepare to translate $mod and other keys
+      (let* ((mod (cdr (assoc "mod" vars)))
+             (left (cdr (assoc "left" vars)))
+             (down (cdr (assoc "down" vars)))
+             (up (cdr (assoc "up" vars)))
+             (right (cdr (assoc "right" vars)))
+             (mod-re (format "\\(%s\\|$mod\\)" (regexp-quote mod))))
+        (goto-char (point-min))
+        ;; Collect all bindings that start with $mod or its resolved value
+        (while (re-search-forward (format "^bindsym %s\\+\\([^ ]+\\) \\(.*\\)$" mod-re) nil t)
+         (let* ((mod-key (match-string-no-properties 1))
+                 (action (match-string-no-properties 2))
+                 (full-key (concat mod "+" action)))
+            ;; Replace variable references in keys
+            (setq full-key (replace-regexp-in-string "\\$left" left full-key))
+            (setq full-key (replace-regexp-in-string "\\$down" down full-key))
+            (setq full-key (replace-regexp-in-string "\\$up" up full-key))
+            (setq full-key (replace-regexp-in-string "\\$right" right full-key))
+            ;; Replace $mod with the actual mod key or keep as $mod for clarity
+            (setq full-key (replace-regexp-in-string "\\$mod" mod full-key))
+            ;; Collect the key-action pair
+            (setq bindsyms (cons (format "%s" full-key) bindsyms)))))
+      ;; Return reversed to maintain order
+      (mapconcat 'identity (sort (nreverse bindsyms) 'string-lessp) "\n"))))
+
+(swaywm-list-mod-bindsyms "/home/jdyer/.config/sway/config.d/default")
+
+(use-package htmlize)
