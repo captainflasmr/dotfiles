@@ -1,46 +1,31 @@
-#
-# -> visuals
-#
-gaps inner 4px
-gaps outer 25px
-gaps top 20px
-gaps bottom 0px
+# Logo key. Use Mod1 for Alt.
+set $mod Mod4
 
-default_border pixel 6px
-
-# class                 border  backgr. text    indicator child_border
-client.focused          #88c0d0 #434c5e #eceff4 #8fbcbb   #88c0d0
-client.focused_inactive #88c0d0 #2e3440 #d8dee9 #4c566a   #4c566a
-client.unfocused        #88c0d0 #2e3440 #d8dee9 #4c566a   #4c566a
-client.urgent           #ebcb8b #ebcb8b #2e3440 #8fbcbb   #ebcb8b
-
-# swayfx
-corner_radius 10
-blur enable
-blur_passes 8
-blur_radius 4
-shadows enable
-shadow_blur_radius 5
-shadow_color #000000ff
-# default_dim_inactive 0
-layer_effects "waybar" blur enable; shadows enable;
-# titlebar_separator enable
+# Add Vim key support
+set $left h
+set $down j
+set $up k
+set $right l
 
 #
 # -> startup
 #
 exec $HOME/bin/startup.sh
 
-#
-# -> global
-#
-set $mod Mod4
-set $left h
-set $down j
-set $up k
-set $right l
-set $term gnome-terminal
-font pango:SourceCodePro Medium 12
+# Set default terminal emulator
+set $term footclient
+
+# Application launcher
+set $launcher fuzzel
+
+exec swayidle -w \
+   timeout 240 'swaymsg "output * dpms off"' \
+   resume 'swaymsg "output * dpms on"' \
+   before-sleep 'swaymsg "output * dpms off"' \
+   after-resume 'swaymsg "output * dpms on"'
+
+## Lock Screen
+bindsym Mod4+f1 exec ~/.config/sway/scripts/lockman.sh
 
 #
 # -> keys
@@ -57,7 +42,6 @@ bindsym XF86MonBrightnessDown exec brightnessctl set 2%-
 #
 bindsym $mod+b exec toggle_waybar.sh
 bindsym $mod+c exec screen-record.sh
-bindsym $mod+d exec --no-startup-id dmenu_run -fn "Mono:pixelsize=16"
 bindsym $mod+e exec thunar ~/DCIM/Camera
 bindsym $mod+m exec emacs
 bindsym $mod+n exec firefox
@@ -68,37 +52,46 @@ bindsym $mod+s exec screenshot.sh
 bindsym $mod+shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
 bindsym $mod+w exec wallpaper_change.sh
 bindsym $mod+y exec keymap-toggle.sh
-bindsym $mod+o exec rofi -show drun
+# bindsym $mod+d exec $launcher --list-executables-in-path --background-color=2f2f38ee
+# bindsym $mod+d exec --no-startup-id dmenu_run -fn "Mono:pixelsize=16"
+bindsym $mod+d exec rofi -matching regex -show combi -modes combi -combi-modes "drun,run"
 bindsym Mod1+4 kill
 bindsym control+Mod1+t exec $term
 bindsym $mod+z exec switch_waybar.sh
+bindsym $mod+bracketleft exec swayr switch-window
+bindsym $mod+Tab exec swayr switch-to-urgent-or-lru-window
+bindsym $mod+o exec swayr next-tiled-window current-workspace
+bindsym $mod+Shift+c exec swayr execute-swayr-command
+bindsym $mod+v exec swayr move-focused-to-workspace
 
 #
-# -> Moving around
+# Moving around:
 #
-bindsym $mod+$left focus left
-bindsym $mod+$right focus right
-bindsym $mod+$up focus up
-bindsym $mod+$down focus down
+# Change window focus
+# Vim key support
 bindsym $mod+Left focus left
-bindsym $mod+Right focus right
-bindsym $mod+Up focus up
 bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+bindsym $mod+$left focus left
+bindsym $mod+$down focus down
+bindsym $mod+$up focus up
+bindsym $mod+$right focus right
 
-bindsym $mod+Shift+$left move left
-bindsym $mod+Shift+$down move down
-bindsym $mod+Shift+$up move up
-bindsym $mod+Shift+$right move right
+# Move the focused window
 bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
+# Vim key support
+bindsym $mod+Shift+$left move left
+bindsym $mod+Shift+$down move down
+bindsym $mod+Shift+$up move up
+bindsym $mod+Shift+$right move right
 
 #
 # -> Workspaces
 #
-bindsym $mod+bracketleft workspace prev
-bindsym $mod+bracketright workspace next
 bindsym $mod+u workspace prev
 bindsym $mod+i workspace next
 
@@ -130,8 +123,8 @@ bindsym $mod+r reload
 #
 # -> resize
 #
-bindsym control+$mod+u resize grow width 25px
-bindsym control+$mod+i resize shrink width 25px
+bindsym $mod+equal resize shrink width 25px
+bindsym $mod+minus resize grow width 25px
 
 #
 # -> other
@@ -148,7 +141,7 @@ smart_borders on
 floating_modifier $mod
 
 # Toggle the current focus between tiling and floating mode
-bindsym $mod+space floating toggle
+# bindsym $mod+space floating toggle
 
 # Press $mod+Shift+g to enter the gap mode. Choose o or i for
 # modifying outer/inner gaps. Press one of + / - (in-/decrement for
@@ -186,70 +179,5 @@ mode "$mode_gaps_outer" {
         bindsym Return mode "default"
         bindsym Escape mode "default"
 }
-
-# ------------------------------------------------------------
-# -> sway specific
-# ------------------------------------------------------------
-include /etc/sway/config.d/*
-
-#
-# -> gestures
-#
-bindgesture swipe:4:right workspace prev
-bindgesture swipe:4:left workspace next
-
-bindgesture swipe:4:up floating toggle
-
-bindgesture swipe:3:up exec nwg-drawer
-bindgesture swipe:3:down exec wtype -P "Escape"
-
-bindgesture swipe:3:right exec ydotool key 56:1 105:1 56:0 105:0
-bindgesture swipe:3:left exec ydotool key 56:1 106:1 56:0 106:0
-
-focus_wrapping force
-
-for_window [app_id="thunar"] opacity 0.8
-for_window [app_id="dolphin"] opacity 0.96
-for_window [app_id="gnome-terminal"] opacity 0.8
-for_window [app_id="thunderbird"] opacity 0.90
-
-# Inhibit idle
-for_window [app_id="firefox"] inhibit_idle
-
-#
-# -> input
-#
-input type:touchpad {
-   events enabled
-   tap enabled
-   natural_scroll enabled
-   pointer_accel 0.7
-}
-
-input type:keyboard {
-   # events enabled
-   # xkb_layout gb
-   repeat_delay 200
-   repeat_rate 50
-   xkb_file $HOME/.config/keymap_sway.xkb
-   # xkb_options ctrl:nocaps
-}
-
-exec_always keyboard-reset.sh
-
-# input type:tablet_tool {
-input 11551:337:WCOM014A:00_2D1F:0151_Stylus {
-   events enabled
-   tap enabled
-   drag enabled
-   middle_emulation disabled
-   # drag_lock enabled
-}
-
-exec swayidle -w \
-   timeout 240 'swaymsg "output * dpms off"' \
-   resume 'swaymsg "output * dpms on"' \
-   before-sleep 'swaymsg "output * dpms off"' \
-   after-resume 'swaymsg "output * dpms on"'
 
 include /etc/sway/config.d/*
