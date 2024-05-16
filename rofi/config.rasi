@@ -6,8 +6,8 @@ configuration {
     modes: "drun,window,ssh,run";
     click-to-exit: true;
     show-icons: true;
-    sort: false;
-    sorting-method: "normal";
+    sort: true;
+    sorting-method: "fzf";
     case-sensitive: false;
     cycle: true;
     sidebar-mode: true;
