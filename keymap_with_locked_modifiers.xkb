@@ -1144,7 +1144,7 @@ xkb_keymap {
       indicator "Caps Lock" {
          !allowExplicit;
          whichModState= locked;
-         modifiers= Control;
+         modifiers= Control+Mod3;
       };
       indicator "Num Lock" {
          !allowExplicit;
