@@ -2,7 +2,37 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(("emacs"
+(("gpt"
+  (filename . "~/DCIM/content/gpt/")
+  (front-context-string)
+  (rear-context-string . "3K Apr  7 11:48 ")
+  (position . 137)
+  (last-modified 26176 26980 262913 481000))
+("examples"
+  (filename . "~/examples/")
+  (front-context-string . "ccl_4_0-linux\n  ")
+  (rear-context-string . "28 May  9 12:09 ")
+  (position . 177)
+  (last-modified 26173 58433 261694 319000))
+("Working"
+  (filename . "~/DCIM/Art/Working/")
+  (front-context-string . "art--garuda-wall")
+  (rear-context-string . "56 Apr 10 17:20 ")
+  (position . 134)
+  (last-modified 26134 48357 400676 291000))
+("OneDrive"
+  (filename . "~/nas/OneDrive/")
+  (front-context-string . "Documents\n  drwx")
+  (rear-context-string . "0K Oct 28 12:34 ")
+  (position . 178)
+  (last-modified 26134 48249 125204 643000))
+("elisp"
+  (filename . "~/examples/test/elisp/")
+  (front-context-string)
+  (rear-context-string . "45 Apr  5 09:44 ")
+  (position . 134)
+  (last-modified 26127 47583 969741 783000))
+("emacs"
   (filename . "~/DCIM/content/emacs--all.org")
   (front-context-string . "monad-sway-kbd-m")
   (rear-context-string . "linux:\n\n* TODO k")
@@ -54,10 +84,10 @@
   (last-modified 26089 60461 220435 142000))
 ("org-capture-last-stored"
   (filename . "~/DCIM/content/emacs--all.org")
-  (front-context-string . "* TODO Kurecolor")
-  (rear-context-string . "@emacs:@linux:\n\n")
-  (position . 445)
-  (last-modified 26118 34027 733813 737000))
+  (front-context-string . "* TODO Emacs-Vim")
+  (rear-context-string . ":@emacs:@linux:\n")
+  (position . 444)
+  (last-modified 26166 29226 351384 246000))
 ("backup"
   (filename . "~/backup/")
   (front-context-string . "!home!jdyer!1.or")
@@ -77,11 +107,11 @@
   (position . 1)
   (last-modified 26072 49685 453942 10000))
 ("org-refile-last-stored"
-  (filename . "~/DCIM/content/aab--todo.org")
-  (front-context-string . "** DONE kurecolo")
-  (rear-context-string . "\n* 2024 [67/67]\n")
-  (position . 2559)
-  (last-modified 26118 34329 37192 461000))
+  (filename . "~/DCIM/content/emacs--todo.org")
+  (front-context-string . "** TODO xkb mino")
+  (rear-context-string . "nifying :emacs:\n")
+  (position . 1946)
+  (last-modified 26171 56760 929340 123000))
 ("Videos"
   (filename . "~/Videos/")
   (front-context-string . "  /home/jdyer/Vi")
