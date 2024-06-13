@@ -2,7 +2,13 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(("gpt"
+(("repos"
+  (filename . "~/source/repos/")
+  (front-context-string . "arscript-mode\n  ")
+  (rear-context-string . "24 May  6 21:05 ")
+  (position . 133)
+  (last-modified 26209 43699 826700 353000))
+("gpt"
   (filename . "~/DCIM/content/gpt/")
   (front-context-string)
   (rear-context-string . "3K Apr  7 11:48 ")
@@ -52,12 +58,6 @@
   (filename . "/usr/share/info/emacs")
   (info-node . "Top")
   (handler . Info-bookmark-jump))
-("source"
-  (filename . "~/DCIM/content/source_code.org")
-  (front-context-string . "* battery-drain\n")
-  (rear-context-string . "\n#+draft: true\n\n")
-  (position . 114)
-  (last-modified 26101 30914 936306 270000))
 ("publish"
   (filename . "~/publish/")
   (front-context-string . ".gitignore\n  drw")
@@ -83,11 +83,11 @@
   (position . 130)
   (last-modified 26089 60461 220435 142000))
 ("org-capture-last-stored"
-  (filename . "~/DCIM/content/emacs--all.org")
-  (front-context-string . "* TODO Emacs-Vim")
-  (rear-context-string . ":@emacs:@linux:\n")
-  (position . 444)
-  (last-modified 26166 29226 351384 246000))
+  (filename . "~/DCIM/content/blog--all.org")
+  (front-context-string . "* TODO Photos-Th")
+  (rear-context-string . "ort\n#+filetags:\n")
+  (position . 428)
+  (last-modified 26202 11686 68573 716000))
 ("backup"
   (filename . "~/backup/")
   (front-context-string . "!home!jdyer!1.or")
@@ -107,11 +107,11 @@
   (position . 1)
   (last-modified 26072 49685 453942 10000))
 ("org-refile-last-stored"
-  (filename . "~/DCIM/content/emacs--todo.org")
-  (front-context-string . "** TODO xkb mino")
-  (rear-context-string . "nifying :emacs:\n")
-  (position . 1946)
-  (last-modified 26171 56760 929340 123000))
+  (filename . "~/DCIM/content/aaa--todo.org")
+  (front-context-string . "** DONE kate new")
+  (rear-context-string . "rinting :linux:\n")
+  (position . 5583)
+  (last-modified 26214 65075 626709 42000))
 ("Videos"
   (filename . "~/Videos/")
   (front-context-string . "  /home/jdyer/Vi")
@@ -148,12 +148,6 @@
   (rear-context-string . "8K Feb 22 09:46 ")
   (position . 128)
   (last-modified 26071 10721 153717 709000))
-("repos"
-  (filename . "~/repos/")
-  (front-context-string . "fd-find\n  drwxr-")
-  (rear-context-string . "66 Nov 10 15:25 ")
-  (position . 126)
-  (last-modified 26071 10641 766328 604000))
 ("elpa"
   (filename . "~/.config/emacs/elpa/")
   (front-context-string . "activities-0.4\n ")
