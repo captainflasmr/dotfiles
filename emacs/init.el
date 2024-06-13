@@ -53,9 +53,9 @@
 ;; -> package-local
 ;;
 
-(when (file-exists-p "~/repos/fd-find")
+(when (file-exists-p "~/source/repos/fd-find")
   (use-package fd-find
-    :load-path "~/repos/fd-find"))
+    :load-path "~/source/repos/fd-find"))
 
 ;;
 ;; -> fetchers
@@ -233,6 +233,7 @@
 
 (define-key my-jump-keymap (kbd "-") #'tab-close)
 (define-key my-jump-keymap (kbd "=") (lambda () (interactive) (tab-bar-new-tab-to -1)))
+(define-key my-jump-keymap (kbd "d") #'my/dired-du)
 (define-key my-jump-keymap (kbd "e") (lambda () (interactive) (find-file (concat user-emacs-directory "init.el"))))
 (define-key my-jump-keymap (kbd "f") #'my/find-file)
 (define-key my-jump-keymap (kbd "h") (lambda () (interactive) (find-file "~")))
@@ -283,7 +284,6 @@
 (bind-key* (kbd "M-s ]") #'end-of-buffer)
 (global-set-key (kbd "M-s b") #'(lambda ()(interactive)(org-table-recalculate 'all)))
 (global-set-key (kbd "M-s j") #'eval-defun)
-(global-set-key (kbd "M-s e") #'my/push-block)
 (global-set-key (kbd "M-s g") #'my/text-browser-search)
 (global-set-key (kbd "M-s h") #'my/mark-block)
 (global-set-key (kbd "M-s q") #'dired-toggle-read-only)
@@ -340,7 +340,7 @@
   (emms-default-players)
   (emms-player-list '(emms-player-vlc))
   (emms-browser-covers 'emms-browser-cache-thumbnail-async)
-  (emms-source-file-default-directory "~/MyMusicLibrary")
+  (emms-source-file-default-directory "/run/media/jdyer/6665-3063/MyMusicLibrary")
   (emms-volume-amixer-card 1)
   (emms-volume-change-function 'emms-volume-pulse-change))
 
@@ -420,9 +420,6 @@
 (global-set-key (kbd "C-3") #'split-window-horizontally)
 (global-set-key (kbd "M-r") #'my/grep)
 (global-set-key (kbd "M-@") #'my/mark-block)
-(global-set-key (kbd "M-'") #'my/mark-word)
-(global-set-key (kbd "C-=") #'(lambda ()(interactive)(text-scale-adjust 1)))
-(global-set-key (kbd "C--") #'(lambda ()(interactive)(text-scale-adjust -1)))
 (global-set-key (kbd "M-=") #'count-words)
 (define-key minibuffer-local-map (kbd "C-c e") #'embark-export)
 (define-key minibuffer-local-map (kbd "M-o") #'abort-minibuffers)
@@ -433,11 +430,9 @@
 (bind-key* (kbd "M-l") #'forward-char)
 ;; (bind-key* (kbd "M-n") #'(lambda ()(interactive)(scroll-up-command (/ (window-height) 4))))
 ;; (bind-key* (kbd "M-m") #'(lambda ()(interactive)(scroll-down-command (/ (window-height) 4))))
-(bind-key* (kbd "M-s l") #'my/shell-create)
 (bind-key* (kbd "C-o") #'other-window)
 (bind-key* (kbd "C-x b") #'my/switch-to-thing)
 (bind-key* (kbd "C-0") #'my/switch-to-thing)
-(bind-key* (kbd "C-/") #'undo)
 (global-set-key (kbd "M-=") #'my/window-enlarge)
 (global-set-key (kbd "M--") #'my/window-shrink)
 (global-set-key (kbd "C-c b") #'(lambda ()(interactive)(async-shell-command "do_backup home" "*backup*")))
@@ -446,7 +441,7 @@
 (global-set-key (kbd "C-x C-b") #'ibuffer)
 (global-set-key (kbd "C-x l") #'scroll-lock-mode)
 (global-set-key (kbd "M-;") #'my/comment-or-uncomment)
-(global-set-key (kbd "C-c ,") #'embark-act)
+(bind-key* (kbd "C-c ,") #'embark-act)
 (global-unset-key (kbd "C-h h"))
 (global-unset-key (kbd "C-t"))
 
@@ -464,7 +459,7 @@
 (global-font-lock-mode 1)
 (savehist-mode 1)
 (add-to-list 'savehist-additional-variables 'comint-input-ring)
-(global-ede-mode t)
+(global-ede-mode -1)
 (global-prettify-symbols-mode t)
 (auto-fill-mode -1)
 (blink-cursor-mode -1)
@@ -545,7 +540,7 @@
 ;; -> hooks
 ;;
 
-(add-hook 'before-save-hook 'time-stamp)
+;; (add-hook 'before-save-hook 'time-stamp)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (add-hook 'calendar-mode-hook 'diary-mark-entries)
 (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
@@ -758,25 +753,14 @@ as search term for Google search in web browser."
 
 (defun my/shell-create (name)
   "Create a custom-named eshell buffer with NAME."
-  (interactive "BName: ")
-  ;; Create a new eshell session. If eshell isn't active, it starts session #1.
+  (interactive "sName: ")
   (eshell 'new)
-  ;; Generate a unique buffer name for the new eshell buffer, based on the user input.
   (let ((new-buffer-name (concat "*eshell-" name "*")))
-    ;; Rename the current buffer.
     (rename-buffer new-buffer-name t)))
 
 ;;
 ;; -> window-positioning
 ;;
-;; (add-to-list 'display-buffer-alist
-;;   '("\\*rsync" display-buffer-no-window
-;;      (allow-no-window . t)))
-
-(add-to-list 'display-buffer-alist
-  '("\\*Async" display-buffer-no-window
-     (allow-no-window . t)))
-
 (add-to-list 'display-buffer-alist
   '("\\*kmonad" display-buffer-no-window
      (allow-no-window . t)))
@@ -835,7 +819,7 @@ as search term for Google search in web browser."
   '(
      ("c" "Calendar" plain
        (file+function
-         "~/DCIM/content/calendar.org"
+         "~/DCIM/content/aab--calendar.org"
          my-capture-top-level)
        "* TODO %?\n SCHEDULED: %(cfw:org-capture-day)\n"
        :prepend t :jump-to-captured t)
@@ -856,16 +840,16 @@ as search term for Google search in web browser."
 %?
 " :prepend t :jump-to-captured t)
 
-     ("p" "Post" plain
+     ("b" "Blog" plain
        (file+function
-         "~/DCIM/content/posts--all.org"
+         "~/DCIM/content/blog--all.org"
          my-capture-top-level)
        "* TODO %^{title} :2024:
 :PROPERTIES:
-:EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>-posts--%\\1
-:EXPORT_HUGO_SECTION: posts
+:EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>-blog--%\\1
+:EXPORT_HUGO_SECTION: blog
 :EXPORT_HUGO_LASTMOD: <%<%Y-%m-%d %H:%M>>
-:EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :thumbnail /posts/%<%Y%m%d%H%M%S>-posts--%\\1.jpg
+:EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :thumbnail /blog/%<%Y%m%d%H%M%S>-blog--%\\1.jpg
 :END:
 %?
 " :prepend t :jump-to-captured t)
@@ -946,7 +930,7 @@ as search term for Google search in web browser."
   :config
   (setq org-src-tab-acts-natively t
     org-edit-src-content-indentation 0
-    org-log-done 'time
+    org-log-done nil
     org-tags-sort-function 'org-string-collate-greaterp
     org-export-with-sub-superscripts nil
     org-deadline-warning-days 365
@@ -956,7 +940,8 @@ as search term for Google search in web browser."
     org-return-follows-link t
     org-use-fast-todo-selection 'expert
     org-todo-keywords
-    '((sequence "TODO(t)" "DOING(d)" "ORDR(o)" "SENT(s)" "|" "CANCELLED(c)" "DONE(n)"))
+    ;; '((sequence "TODO(t)" "DOING(d)" "ORDR(o)" "SENT(s)" "|" "CANCELLED(c)" "DONE(n)"))
+    '((sequence "TODO" "DOING" "ORDR" "SENT" "|" "CANCELLED" "DONE"))
     org-todo-keyword-faces
     '(("TODO" . "#ee5566")
        ("DOING" . "#5577aa")
@@ -1026,12 +1011,13 @@ as search term for Google search in web browser."
 (use-package org
   :custom
   (org-agenda-include-diary nil)
-  (org-agenda-show-all-dates nil)
+  (org-agenda-show-all-dates t)
   (org-agenda-files '("~/DCIM/content/aaa--todo.org"
-                       "~/DCIM/content/aab--todo-emacs.org"
+                       "~/DCIM/content/aab--calendar.org"
+                       "~/DCIM/content/aac--baby.org"
                        "~/DCIM/content/aad--shopping.org"
                        "~/DCIM/content/aaf--kate.org"
-                       "~/DCIM/content/calendar.org"
+                       "~/DCIM/content/emacs--todo.org"
                        "~/DCIM/content/subs.org"
                        ))
   :config
@@ -1149,24 +1135,14 @@ as search term for Google search in web browser."
   '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2"))))
   '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
   '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.1 :family "Source Code Pro"))))
-  '(font-lock-warning-face ((t (:foreground "#ff0000" :inverse-video t))))
-  '(org-code ((t (:inherit (shadow fixed-pitch)))))
-  '(org-modern-date-active ((t (:inherit fixed-pitch))))
-  '(org-date ((t (:inherit fixed-pitch))))
-  '(org-document-info ((t (:foreground "#8f4800"))))
-  '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
-  '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
-  '(org-link ((t (:foreground "#5555ff" :underline t))))
-  '(org-property-value ((t (:inherit fixed-pitch))) t)
-  '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
-  '(org-tag ((t (:inherit (shadow fixed-pitch) :weight regular :height 0.8))))
-  '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
+  '(font-lock-warning-face ((t (:foreground "#930000" :inverse-video nil))))
+  '(org-link ((t (:underline nil))))
   '(indent-guide-face ((t (:background "#282828" :foreground "#666666"))))
-  '(outline-1 ((t (:weight regular))))
-  '(outline-2 ((t (:weight regular))))
+  '(stripe-highlight ((t (:background "#F0F0F0"))))
   '(widget-button ((t (:inherit fixed-pitch :weight regular))))
   '(window-divider ((t (:foreground "black"))))
-  '(aw-leading-char-face ((t (:inherit (fixed-pitch) :background "#000000" :foreground "#ffffff" :height 1.0))))
+  '(org-tag ((t (:height 0.99))))
+  '(aw-leading-char-face ((t (:inherit (highlight) :inverse-video t :weight bold :scale 1.2))))
   '(vertical-border ((t (:foreground "#000000")))))
 
 ;;
@@ -1185,6 +1161,7 @@ as search term for Google search in web browser."
             ("_" . my/dired-create-empty-file)
             ("+" . my/dired-create-directory)
             ("C-c i" . my/image-dired-sort)
+            ("C-c u" . my/dired-du)
             ("C-c d" . my/dired-duplicate-file)))
   :custom
   ;; (dired-async--modeline-mode 1)
@@ -1336,19 +1313,27 @@ as search term for Google search in web browser."
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 
-(setq inhibit-startup-screen nil)
+(setq inhibit-startup-screen t)
 
-;; (add-hook 'text-mode-hook #'visual-line-mode)
-;; (add-hook 'org-mode-hook '(lambda () (visual-line-mode)))
+(defvar my-org-mode-exclude-files-list
+  (list
+    "~/.config/emacs/emacs--init.org"
+    "~/DCIM/content/aac--baby.org"
+    )
+  "List of file paths to exclude from `my-org-visual-line-mode-exclude-init`.")
+
 (defun my-org-visual-line-mode-exclude-init ()
-  (unless (string= (buffer-file-name) (expand-file-name "~/.config/emacs/emacs--init.org"))
-    (visual-line-mode)))
+  (let ((current-file (buffer-file-name))
+         (full-paths-exclude-list (mapcar 'expand-file-name my-org-mode-exclude-files-list)))
+    (unless (member current-file full-paths-exclude-list)
+      (visual-line-mode))))
+
 (add-hook 'org-mode-hook 'my-org-visual-line-mode-exclude-init)
 
 (setq-default truncate-partial-width-windows 120)
 
-(set-frame-parameter nil 'alpha-background 80)
-(add-to-list 'default-frame-alist '(alpha-background . 80))
+(set-frame-parameter nil 'alpha-background 85)
+(add-to-list 'default-frame-alist '(alpha-background . 85))
 
 (set-fringe-mode '(0 . 0))
 (set-display-table-slot standard-display-table 0 ?\ )
@@ -1446,9 +1431,9 @@ as search term for Google search in web browser."
             (propertize "** MODIFIED " 'face
               '(:background "#ff0000" :foreground "#ffffff" :inherit bold)) "")))
 
-(set-face-attribute 'mode-line-active nil :height 120 :underline nil :overline nil :box nil
+(set-face-attribute 'mode-line-active nil :height 130 :underline nil :overline nil :box nil
   :background "#a7a7a7" :foreground "#000000")
-(set-face-attribute 'mode-line-inactive nil :height 120 :underline nil :overline nil
+(set-face-attribute 'mode-line-inactive nil :height 130 :underline nil :overline nil
   :background "#151515" :foreground "#cacaca")
 
 (defun my-tab-bar-number ()
@@ -1479,12 +1464,14 @@ as search term for Google search in web browser."
 
 (setq my/mode-line-format
   '("%e"
-     ;;       (:eval (my-all-tabs-string))
+     (:eval (my-all-tabs-string))
      mode-line-modified
      (:eval
-       (propertize (format "%s" (abbreviate-file-name default-directory))
-         'face '(:inherit bold))
-       )
+       (propertize (format "%s" (abbreviate-file-name default-directory)) 'face '(:inherit bold)))
+     (:eval
+       (when (or (eq major-mode 'image-mode)
+               (eq major-mode 'image-dired-image-mode))
+         (process-lines  "identify"  "-format"  "[%m %wx%h %b]" (buffer-file-name))))
      (:eval
        (if (not (equal major-mode 'dired-mode))
          (propertize (format "%s " (buffer-name)))
@@ -1568,15 +1555,10 @@ as search term for Google search in web browser."
 (use-package jinx)
 (use-package powerthesaurus)
 
-(global-set-key (kbd "M-s k")
-  (lambda () (interactive)
-    (jinx-correct)))
-
-(global-set-key (kbd "M-s c") 'wc-mode)
+(global-set-key (kbd "M-s c") 'jinx-correct)
 (global-set-key (kbd "M-s x") 'jinx-mode)
-(global-set-key (kbd "M-s i") 'dictionary-lookup-definition)
 (global-set-key (kbd "M-s d") 'dictionary-lookup-definition)
-(global-set-key (kbd "M-s s") 'powerthesaurus-lookup-synonyms-dwim)
+(global-set-key (kbd "M-s a") 'powerthesaurus-lookup-synonyms-dwim)
 
 (setq ispell-local-dictionary "en_GB")
 (setq ispell-program-name "hunspell")
@@ -1960,7 +1942,7 @@ With directories under project root using find."
 ;;
 
 (use-package selected-window-accent-mode
-  ;; :load-path "~/repos/selected-window-accent-mode"
+  ;; :load-path "~/source/repos/selected-window-accent-mode"
   ;; :vc (:fetcher github :repo "captainflasmr/selected-window-accent-mode")
   :config (selected-window-accent-mode 1)
   :custom
@@ -1970,7 +1952,7 @@ With directories under project root using find."
   (selected-window-accent-smart-borders t)
   (selected-window-accent-tab-accent t)
   (selected-window-accent-custom-color nil)
-  (selected-window-accent-custom-color "#903e5e")
+  (selected-window-accent-custom-color "#02a2e9")
   (selected-window-accent-mode-style 'subtle))
 
 ;;
@@ -1980,83 +1962,83 @@ With directories under project root using find."
 (setq my/push-block-spec
   '(
      (:ascii
-       "~/repos/xkb-mode/CHANGELOG.org"
-       "~/repos/xkb-mode/README.org"
+       "~/source/repos/xkb-mode/CHANGELOG.org"
+       "~/source/repos/xkb-mode/README.org"
        "\\* Whats New" "\\* ISSUES"
        "** Whats New\n" "\n** Screenshot" "  ")
      (:ascii
-       "~/repos/xkb-mode/CHANGELOG.org"
-       "~/repos/xkb-mode/README.org"
+       "~/source/repos/xkb-mode/CHANGELOG.org"
+       "~/source/repos/xkb-mode/README.org"
        "\\* ISSUES" "\\* ROADMAP"
        "* ISSUES\n" "\n* TODOs / ROADMAP" "  ")
      (:ascii
-       "~/repos/xkb-mode/CHANGELOG.org"
-       "~/repos/xkb-mode/README.org"
+       "~/source/repos/xkb-mode/CHANGELOG.org"
+       "~/source/repos/xkb-mode/README.org"
        "\\* ROADMAP" "\\* Versions"
        "* TODOs / ROADMAP\n" "\n* Testing" "  ")
      (:ascii
-       "~/repos/selected-window-accent-mode/CHANGELOG.org"
-       "~/repos/selected-window-accent-mode/README.org"
+       "~/source/repos/selected-window-accent-mode/CHANGELOG.org"
+       "~/source/repos/selected-window-accent-mode/README.org"
        "\\* Whats New" "\\* ISSUES"
        "** Whats New\n" "\n** Screenshot" "  ")
      (:ascii
-       "~/repos/selected-window-accent-mode/CHANGELOG.org"
-       "~/repos/selected-window-accent-mode/README.org"
+       "~/source/repos/selected-window-accent-mode/CHANGELOG.org"
+       "~/source/repos/selected-window-accent-mode/README.org"
        "\\* ISSUES" "\\* ROADMAP"
        "* ISSUES\n" "\n* TODOs / ROADMAP" "  ")
      (:ascii
-       "~/repos/selected-window-accent-mode/CHANGELOG.org"
-       "~/repos/selected-window-accent-mode/README.org"
+       "~/source/repos/selected-window-accent-mode/CHANGELOG.org"
+       "~/source/repos/selected-window-accent-mode/README.org"
        "\\* ROADMAP" "\\* Versions"
        "* TODOs / ROADMAP\n" "\n* Testing" "  ")
      (:ascii
-       "~/repos/selected-window-accent-mode/README.org"
-       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
+       "~/source/repos/selected-window-accent-mode/README.org"
+       "~/source/repos/selected-window-accent-mode/selected-window-accent-mode.el"
        "\\* Summary" "\\*\\* Whats New"
        ";;; Commentary:\n;;\n" "\n;; Quick Start" ";; ")
      (:ascii
-       "~/repos/selected-window-accent-mode/README.org"
-       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
+       "~/source/repos/selected-window-accent-mode/README.org"
+       "~/source/repos/selected-window-accent-mode/selected-window-accent-mode.el"
        "\\* Quick Start" "\\* Installation"
        ";; Quick Start\n;;\n" ";;\n(require" ";; ")
      (:ascii
-       "~/repos/selected-window-accent-mode/README.org"
-       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
+       "~/source/repos/selected-window-accent-mode/README.org"
+       "~/source/repos/selected-window-accent-mode/selected-window-accent-mode.el"
        "\\*\\* selected-window-accent-fringe-thickness\n" "\n\*\* selected-window-accent-custom-color"
        "defcustom selected-window-accent-fringe-thickness 6\n  \"" "\"\n  \:type" "")
      (:ascii
-       "~/repos/selected-window-accent-mode/README.org"
-       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
+       "~/source/repos/selected-window-accent-mode/README.org"
+       "~/source/repos/selected-window-accent-mode/selected-window-accent-mode.el"
        "\\*\\* selected-window-accent-custom-color\n" "\n\*\* selected-window-accent-mode"
        "defcustom selected-window-accent-custom-color nil\n  \"" "\"\n  \:type" "")
      (:ascii
-       "~/repos/selected-window-accent-mode/README.org"
-       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
+       "~/source/repos/selected-window-accent-mode/README.org"
+       "~/source/repos/selected-window-accent-mode/selected-window-accent-mode.el"
        "\\*\\* selected-window-accent-mode\n" "\n\*\* selected-window-accent-mode-style"
        "defcustom selected-window-accent-mode nil\n  \"" "\"\n  \:type" "")
      (:ascii
-       "~/repos/selected-window-accent-mode/README.org"
-       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
+       "~/source/repos/selected-window-accent-mode/README.org"
+       "~/source/repos/selected-window-accent-mode/selected-window-accent-mode.el"
        "\\*\\* selected-window-accent-mode-style" "\n\*\* selected-window-accent-percentage-darken"
        "defcustom selected-window-accent-mode-style \'default\n  \"" "\"\n  \:type" "")
      (:ascii
-       "~/repos/selected-window-accent-mode/README.org"
-       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
+       "~/source/repos/selected-window-accent-mode/README.org"
+       "~/source/repos/selected-window-accent-mode/selected-window-accent-mode.el"
        "\\*\\* selected-window-accent-percentage-darken" "\n\*\* selected-window-accent-percentage-desaturate"
        "defcustom selected-window-accent-percentage-darken 20\n  \"" "\"\n  \:type" "")
      (:ascii
-       "~/repos/selected-window-accent-mode/README.org"
-       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
+       "~/source/repos/selected-window-accent-mode/README.org"
+       "~/source/repos/selected-window-accent-mode/selected-window-accent-mode.el"
        "\\*\\* selected-window-accent-percentage-desaturate" "\n\*\* selected-window-accent-tab-accent"
        "defcustom selected-window-accent-percentage-desaturate 20\n  \"" "\"\n  \:type" "")
      (:ascii
-       "~/repos/selected-window-accent-mode/README.org"
-       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
+       "~/source/repos/selected-window-accent-mode/README.org"
+       "~/source/repos/selected-window-accent-mode/selected-window-accent-mode.el"
        "\\*\\* selected-window-accent-tab-accent" "\n\*\* selected-window-accent-smart-borders"
        "defcustom selected-window-accent-tab-accent nil\n  \"" "\"\n  \:type" "")
      (:ascii
-       "~/repos/selected-window-accent-mode/README.org"
-       "~/repos/selected-window-accent-mode/selected-window-accent-mode.el"
+       "~/source/repos/selected-window-accent-mode/README.org"
+       "~/source/repos/selected-window-accent-mode/selected-window-accent-mode.el"
        "\\*\\* selected-window-accent-smart-borders" "\* Minor Mode"
        "defcustom selected-window-accent-smart-borders nil\n  \"" "\"\n  \:type" "")
      (:hugo "~/DCIM/content/tagged--all.org" "" "" "" "" "" "")
@@ -2064,7 +2046,7 @@ With directories under project root using find."
      (:hugo "~/DCIM/content/emacs--all.org" "" "" "" "" "" "")
      (:hugo "~/DCIM/content/kate--blog.org" "" "" "" "" "" "")
      (:hugo"~/DCIM/content/linux--all.org" "" "" "" "" "" "")
-     (:hugo "~/DCIM/content/posts--all.org" "" "" "" "" "" "")
+     (:hugo "~/DCIM/content/blog--all.org" "" "" "" "" "" "")
      )
   )
 
@@ -2099,7 +2081,7 @@ With directories under project root using find."
                   (org-hugo-export-wim-to-md)
                   (mapc 'shell-command
                     '("web rsync emacs" "web rsync art"
-                       "web rsync dyerdwelling" "web rsync sway")))
+                       "web rsync dyerdwelling")))
                 (save-excursion ;; other org processing
                   (setq tmp-file (make-temp-file "tmp"))
                   (when (and (stringp source-start-tag) (stringp source-end-tag)
@@ -2247,7 +2229,7 @@ With directories under project root using find."
 (setq cfw:org-capture-template
   '("c" "Calendar" plain
      (file+function
-       "~/DCIM/content/calendar.org"
+       "~/DCIM/content/aab--calendar.org"
        my-capture-top-level)
      "* TODO %?\n SCHEDULED: %(cfw:org-capture-day)\n"
      :prepend t :jump-to-captured t))
@@ -2624,7 +2606,9 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
 (when (eq system-type 'windows-nt)
   (setq home-dir "c:/users/jimbo")
   (let ((xPaths
-          '("c:/GnuWin32/bin"
+          `(,(expand-file-name "~/bin")
+             ,(expand-file-name "~/bin/git-bin")
+             "c:/GnuWin32/bin"
              "c:/GNAT/2021/bin")))
     (setenv "PATH" (mapconcat 'identity xPaths ";"))
     (setq exec-path (append xPaths (list "." exec-directory))))
@@ -2656,11 +2640,11 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
 
   (setq diary-file "~/DCIM/content/diary.org")
 
-  (setq font-general "Noto Sans Mono 12")
+  ;; (setq font-general "Noto Sans Mono 11")
   (setq font-general "Source Code Pro 12")
-  (setq font-general "Source Code Pro Light 12")
-  (setq font-general "Nimbus Mono PS 12")
-  (setq font-general "Monospace 12")
+  ;; (setq font-general "Source Code Pro Light 11")
+  ;; (setq font-general "Nimbus Mono PS 11")
+  ;; (setq font-general "Monospace 11")
   (set-frame-font font-general nil t)
   (add-to-list 'default-frame-alist `(font . ,font-general)))
 
@@ -2673,11 +2657,11 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
   (let* ((stones-pounds (split-string weight-str ":"))
           (stones (string-to-number (car stones-pounds)))
           (pounds (string-to-number (cadr stones-pounds)))
-          (total-pounds (+ pounds (* stones 14)))      ;; Convert stones to pounds
-          (new-total-pounds (- total-pounds avg-loss)) ;; Subtract weight loss
-          (new-stones (truncate (/ new-total-pounds 14))) ;; Calculate new stones
-          (new-pounds (mod new-total-pounds 14)))      ;; Calculate remaining pounds
-    (format "%d:%d" new-stones new-pounds)))         ;; Format new weight
+          (total-pounds (+ pounds (* stones 14)))
+          (new-total-pounds (- total-pounds avg-loss))
+          (new-stones (truncate (/ new-total-pounds 14)))
+          (new-pounds (mod new-total-pounds 14)))
+    (format "%d:%d" new-stones new-pounds)))
 
 (defun extrapolate-weight-loss (num-weeks)
   "Extrapolate weight loss for NUM-WEEKS using 'av/pd' value in org-table."
@@ -2705,10 +2689,7 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
                 (days-to-time (+ (* i 7) 7))))) ;; add 7 days per week
           (setq week (+ week 1))
           (insert (format "| %d | %s | %s | | | | | | |\n"
-                    week next-date (subtract-weight last-weight (* (+ i 1) last-avg-loss)))))
-        )
-      )
-    )
+                    week next-date (subtract-weight last-weight (* (+ i 1) last-avg-loss))))))))
   (org-table-align))
 
 (defun my/get-window-regex (regex)
@@ -2869,13 +2850,6 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
 
 (setq native-comp-async-report-warnings-errors nil)
 
-;;   (use-package ace-window
-;;   :configk
-;;  (setq aw-keys '(?j ?k ?l ?\; ?a ?s ?d ?f))
-;;  (setq aw-background nil)
-;;  :bind
-;;  ("M-a" . ace-window))
-
 (use-package keycast
   :init
   (keycast-tab-bar-mode -1))
@@ -2893,7 +2867,6 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
   (shell-mode . capf-autosuggest-mode))
 
 (bind-key* (kbd "M-9") #'hippie-expand)
-(bind-key* (kbd "C-z") #'eval-expression)
 
 (use-package plantuml-mode
   :custom
@@ -2933,31 +2906,16 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
 (use-package bug-hunter)
 
 (setq shr-ignore-cache t)
-(bind-key* (kbd "M-s t") #'org-preview-html-mode)
-(bind-key* (kbd "M-s r") #'org-preview-html-refresh)
-
-(bind-key* (kbd "H-SPC") #'mark-sexp)
-(bind-key* (kbd "H-d") #'down-list)
-(bind-key* (kbd "H-e") #'eval-region)
-(bind-key* (kbd "H-i") #'consult-imenu)
-(bind-key* (kbd "H-j") #'(lambda ()(interactive)(scroll-up-line (/ (window-height) 4))))
-(bind-key* (kbd "H-k") #'(lambda ()(interactive)(scroll-down-line (/ (window-height) 4))))
-(bind-key* (kbd "H-m") #'save-buffer)
-(bind-key* (kbd "H-n") #'forward-list)
-(bind-key* (kbd "H-o") #'consult-outline)
-(bind-key* (kbd "H-p") #'backward-list)
-(bind-key* (kbd "H-q") #'dired-toggle-read-only)
-(bind-key* (kbd "H-r") #'sort-lines)
-(bind-key* (kbd "H-u") #'backward-up-list)
-(bind-key* (kbd "H-v") #'org-copy-visible)
+(bind-key* (kbd "M-n") #'(lambda ()(interactive)(scroll-up (/ (window-height) 4))))
+(bind-key* (kbd "M-m") #'(lambda ()(interactive)(scroll-down (/ (window-height) 4))))
 
 (use-package xkb-mode
-  :load-path "~/repos/xkb-mode")
-  ;; :vc (:fetcher github :repo "captainflasmr/xkb-mode"))
+  :load-path "~/source/repos/xkb-mode")
+;; :vc (:fetcher github :repo "captainflasmr/xkb-mode"))
 
 (use-package arscript-mode
-  :load-path "~/repos/arscript-mode")
-  ;; :vc (:fetcher github :repo "captainflasmr/arscript-mode"))
+  :load-path "~/source/repos/arscript-mode")
+;; :vc (:fetcher github :repo "captainflasmr/arscript-mode"))
 
 (defun swaywm-list-mod-bindsyms (path)
   "List all bindsyms that start with $mod or its resolved value in the SwayWM config file at PATH."
@@ -2966,25 +2924,25 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
     (insert-file-contents path)
     (goto-char (point-min))
     (let ((vars nil)
-          (bindsyms nil))
+           (bindsyms nil))
       ;; Collect variable definitions
       (while (re-search-forward "^set \\$\\([a-zA-Z0-9_]+\\) \\(.*\\)$" nil t)
         (let ((var (match-string-no-properties 1))
-              (value (match-string-no-properties 2)))
+               (value (match-string-no-properties 2)))
           (setq vars (cons (cons var value) vars))))
       ;; Prepare to translate $mod and other keys
       (let* ((mod (cdr (assoc "mod" vars)))
-             (left (cdr (assoc "left" vars)))
-             (down (cdr (assoc "down" vars)))
-             (up (cdr (assoc "up" vars)))
-             (right (cdr (assoc "right" vars)))
-             (mod-re (format "\\(%s\\|$mod\\)" (regexp-quote mod))))
+              (left (cdr (assoc "left" vars)))
+              (down (cdr (assoc "down" vars)))
+              (up (cdr (assoc "up" vars)))
+              (right (cdr (assoc "right" vars)))
+              (mod-re (format "\\(%s\\|$mod\\)" (regexp-quote mod))))
         (goto-char (point-min))
         ;; Collect all bindings that start with $mod or its resolved value
         (while (re-search-forward (format "^bindsym %s\\+\\([^ ]+\\) \\(.*\\)$" mod-re) nil t)
-         (let* ((mod-key (match-string-no-properties 1))
-                 (action (match-string-no-properties 2))
-                 (full-key (concat mod "+" action)))
+          (let* ((mod-key (match-string-no-properties 1))
+                  (action (match-string-no-properties 2))
+                  (full-key (concat mod "+" action)))
             ;; Replace variable references in keys
             (setq full-key (replace-regexp-in-string "\\$left" left full-key))
             (setq full-key (replace-regexp-in-string "\\$down" down full-key))
@@ -3000,3 +2958,230 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
 (swaywm-list-mod-bindsyms "/home/jdyer/.config/sway/config.d/default")
 
 (use-package htmlize)
+(use-package org-kanban)
+
+(defun my/save-buffer-as-html ()
+  (interactive)
+  ;; Define the export file name by appending .html to the current buffer name
+  (let* ((original-buffer-name (buffer-name))
+          (html-file-name (concat (file-name-sans-extension original-buffer-name) ".html"))
+          (html-buffer (htmlize-buffer (current-buffer))))
+    ;; Check if the file exists, and if so, ask the user if they want to overwrite it
+    (if (file-exists-p html-file-name)
+      (if (y-or-n-p (format "File %s already exists. Overwrite? " html-file-name))
+        (progn
+          ;; User chose to overwrite: Save the HTML buffer to the file
+          (with-current-buffer html-buffer
+            (write-file html-file-name))
+          (kill-buffer html-buffer) ;; Clean up the temporary HTML buffer
+          (message "Exported to %s" html-file-name))
+        ;; User chose not to overwrite: Just clean up
+        (kill-buffer html-buffer))
+      ;; File doesn't exist: Save directly
+      (with-current-buffer html-buffer
+        (write-file html-file-name))
+      (kill-buffer html-buffer) ;; Clean up the temporary HTML buffer
+      (message "Exported to %s" html-file-name))))
+
+(use-package stripe-buffer)
+
+(use-package stripes
+  :custom
+  (stripes-unit 1))
+
+;; export keys
+(bind-key* (kbd "M-s e") #'my/push-block)
+(bind-key* (kbd "M-s f") #'org-preview-html-mode)
+(bind-key* (kbd "M-s r") #'org-preview-html-refresh)
+(bind-key* (kbd "M-s t") #'my/save-buffer-as-html)
+
+;; evaluation
+(bind-key* (kbd "M-s s") #'my/shell-create)
+(bind-key* (kbd "M-s v") #'eval-expression)
+(bind-key* (kbd "M-s k") #'org-kanban/shift)
+(bind-key* (kbd "M-s ;") #'mark-sexp)
+
+(bind-key* (kbd "M-'") #'set-mark-command)
+
+(bind-key* (kbd "C-z") #'undo)
+
+(use-package popper
+  :init
+  (setq popper-reference-buffers
+    '("\\*eshell.*"
+       "\\*convert.*"
+       help-mode
+       compilation-mode))
+  (popper-mode 1)
+  (popper-echo-mode 1)
+  :custom
+  (popper-window-height 20))
+
+(bind-key* (kbd "C-;") #'popper-toggle)
+(bind-key* (kbd "C-'") #'popper-toggle-type)
+
+(defun my/toggle-org-kanban-compressed-and-refresh ()
+  "Toggle the :compressed state for the first org-kanban directive found in the buffer and refresh the table."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (let ((found nil)
+           (begin-pos nil))
+      (while (and (not found)
+               (search-forward "#+begin: kanban" nil t))
+        (setq begin-pos (point-at-bol)) ;; Capture the beginning for later use
+        (let ((line-end (point-at-eol)))
+          (when (search-forward ":compressed" line-end t)
+            (let ((start (point)))
+              (if (search-forward-regexp "nil\\|t" line-end t)
+                (let ((value (match-string 0)))
+                  (replace-match (if (string= value "nil") "t" "nil") t t)
+                  (setq found t))
+                ;; If :compressed is not found, add it as `:compressed t`.
+                (goto-char start)
+                (insert " t")
+                (setq found t))))))
+      (if (not found)
+        (message "No org-kanban directive with a :compressed keyword found.")
+        (progn
+          ;; If a kanban was found and modified, re-evaluate it
+          (goto-char begin-pos)
+          (org-ctrl-c-ctrl-c)
+          (message "Toggled :compressed and refreshed the kanban table."))))))
+
+(bind-key* (kbd "M-s m") #'my/toggle-org-kanban-compressed-and-refresh)
+
+(use-package ace-window
+  :config
+  (setq aw-keys '(?j ?k ?l ?\; ?a ?s ?d ?f))
+  (setq aw-background nil))
+
+(bind-key* (kbd "M-a") #'ace-window)
+
+(defun my/org-tag-refresh()
+  ""
+  (interactive)
+  (revert-buffer-quick)
+  (org-align-tags t))
+
+(defvar consult--xref-history nil
+  "History for the `consult-recent-xref' results.")
+
+(defun consult-recent-xref (&optional markers)
+  "Jump to a marker in MARKERS list (defaults to `xref--history'.
+The command supports preview of the currently selected marker position.
+The symbol at point is added to the future history."
+  (interactive)
+  (consult--read
+    (consult--global-mark-candidates
+      (or markers (flatten-list xref--history)))
+    :prompt "Go to Xref: "
+    :annotate (consult--line-prefix)
+    :category 'consult-location
+    :sort nil
+    :require-match t
+    :lookup #'consult--lookup-location
+    :history '(:input consult--xref-history)
+    :add-history (thing-at-point 'symbol)
+    :state (consult--jump-state)))
+
+(defun my/dired-du ()
+  "Run 'du -hc' on the directory under the cursor in Dired."
+  (interactive)
+  (let ((current-dir (dired-get-file-for-visit)))
+    (if (file-directory-p current-dir)
+      (dired-do-async-shell-command "du -hc" nil (list current-dir))
+      (message "The current point is not a directory."))))
+
+;;; ----------------------------------------
+;;  SWIG
+;;; ----------------------------------------
+
+(require 'cl-lib)
+(require 'subr-x)
+
+(defun swig--parse-include-directives (file)
+  "Parse the #include directives from a header FILE."
+  (let ((includes '()))
+    (with-temp-buffer
+      (insert-file-contents file)
+      (goto-char (point-min))
+      (while (re-search-forward "^#include [\"<]\\(.*?\\)[\">]" nil t)
+        (let ((included-file (match-string 1)))
+          (push included-file includes))))
+    includes))
+
+(defun swig--all-files (path)
+  "Get all SWIG includes with some filtering based off PATH."
+  (remove-if (lambda (x) (string-match-p "\\(?:MSVS\\|CigiProcessType\\|CigiCnvtInfoType\\)" x))
+    (directory-files-recursively path "\\.h\\|\\.hpp")))
+
+(defun swig--build-dependency-graph (include-dir)
+  "Build a dependency graph for header files in INCLUDE-DIR."
+  (let ((graph (make-hash-table :test 'equal))
+         (all-headers '()))
+    (dolist (file (swig--all-files include-dir))
+      (let ((relative-file (file-relative-name file include-dir))
+             (dependencies (swig--parse-include-directives file)))
+        (puthash relative-file dependencies graph)
+        (push relative-file all-headers)))
+    (list graph all-headers)))
+
+(defun swig--topological-sort (graph all-headers)
+  "Perform topological sort on GRAPH with ALL-HEADERS."
+  (let ((in-degree (make-hash-table :test 'equal))
+         (sorted '())
+         (queue '()))
+    ;; Initialize in-degree of all headers
+    (dolist (header all-headers)
+      (puthash header 0 in-degree))
+    ;; Calculate in-degrees
+    (maphash (lambda (u dependencies)
+               (dolist (v dependencies)
+                 (when (gethash v in-degree)
+                   (puthash v (1+ (gethash v in-degree)) in-degree))))
+      graph)
+    ;; Enqueue headers with in-degree 0
+    (maphash (lambda (header degree)
+               (when (= degree 0)
+                 (push header queue)))
+      in-degree)
+    ;; Process the queue
+    (while queue
+      (let ((u (pop queue)))
+        (push u sorted)
+        (dolist (v (gethash u graph))
+          (when (gethash v in-degree)
+            (puthash v (1- (gethash v in-degree)) in-degree)
+            (when (= (gethash v in-degree) 0)
+              (push v queue))))))
+    ;; Check for cycles
+    (if (= (length sorted) (length all-headers))
+      sorted
+      (error "Cycle detected in the dependency graph"))))
+
+(defun swig--generate-include-file-list (include-dir interface-file)
+  "Generate an include file list in dependency order for headers in INCLUDE-DIR."
+  (let* ((result (swig--build-dependency-graph include-dir))
+          (graph (car result))
+          (all-headers (cadr result))
+          (sorted-headers (swig--topological-sort graph all-headers)))
+    (with-temp-buffer
+      (insert "%{\n")
+      (dolist (header sorted-headers)
+        (insert "#include \"" include-dir "/" header "\"\n"))
+      (insert "%}\n")
+      (insert "\n%module example_module\n\n")
+      (dolist (header sorted-headers)
+        (insert "%include \"" include-dir "/" header "\"\n"))
+      (write-file interface-file))
+    (message "Include file list generated at %s" interface-file)))
+
+;; Usage
+(defun swig-test ()
+  ""
+  (interactive)
+  (swig--generate-include-file-list
+    "/home/jdyer/source/repos/cigi-ccl_4_0/include"
+    "/home/jdyer/source/repos/cigi-ccl_4_0/example.i"
+    ))
