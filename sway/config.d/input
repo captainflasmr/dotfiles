@@ -30,7 +30,7 @@ focus_wrapping force
 input type:keyboard {
    events enabled
    xkb_layout gb
-   repeat_delay 200
+   repeat_delay 400
    repeat_rate 50
    xkb_file $HOME/.config/keymap_sway.xkb
    # xkb_options "compose:caps"

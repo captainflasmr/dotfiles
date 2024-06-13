@@ -54,7 +54,7 @@ bindsym $mod+w exec wallpaper_change.sh
 bindsym $mod+y exec keymap-toggle.sh
 # bindsym $mod+d exec $launcher --list-executables-in-path --background-color=2f2f38ee
 # bindsym $mod+d exec --no-startup-id dmenu_run -fn "Mono:pixelsize=16"
-bindsym $mod+d exec rofi -matching regex -show combi -modes combi -combi-modes "drun,run"
+bindsym $mod+d exec rofi -matching regex -show "drun"
 bindsym Mod1+4 kill
 bindsym control+Mod1+t exec $term
 bindsym $mod+z exec switch_waybar.sh

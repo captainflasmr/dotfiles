@@ -1,12 +1,12 @@
 # SwayFX config options
 
 ### Appearance
-corner_radius 10
+corner_radius 15
 blur enable
 blur_xray off
-blur_passes 6
-blur_radius 2
-shadows enable
+blur_passes 8
+blur_radius 4
+shadows disablee
 shadows_on_csd off
 shadow_blur_radius 5
 shadow_color #0000007F
