@@ -483,7 +483,7 @@ Note that due to my window split bindings with numeric keys I have unbound those
          ("Path" 99 magit-repolist-column-path nil)))
     (magit-repository-directories
       '(("~/.config" . 0)
-         ("~/repos" . 2)
+         ("~/source/repos" . 2)
          ("~/bin" . 1)
          ("~/DCIM/Art/Content" . 2)
          ("~/DCIM/themes" . 2)))))
