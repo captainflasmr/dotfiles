@@ -11,7 +11,7 @@
 
 (defalias
   und  C-z
-  rdo  C-S-z
+  rdo  C-y
 )
 
 (defsrc
@@ -24,7 +24,7 @@
 
 (deflayer numpad
   _      @und   @rdo   _
-  lshift lctrl  _      _
+  lshift rctrl  _      _
   spc    _      m      _
   _      _      _
   a             _      _
