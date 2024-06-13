@@ -3,14 +3,16 @@ fundamental-mode ;; Available everywhere
 (ja (format-time-string "<%Y-%m-%d>"))
 (jm (format-time-string "%Y%m%d%H%M%S"))
 (jt (format-time-string "%Y%m%d"))
-(jp "| ")
-(jb "\\")
+(ji "|")
+(jl "\\")
 
 org-mode
 
-(ji "#+attr_org: :width 300px" n "#+attr_html: :width 100%")
+(jg "#+attr_org: :width 300px" n "#+attr_html: :width 100%")
 (je "#+attr_org: :width 300px" n "#+attr_html: :class emacs-img")
 (jo "---" n "#+TOC: headlines 1 local" n "---")
+(jk "#+begin: kanban :layout (\"...\" . 40) :scope nil :range (\"TODO\" . \"DONE\") :sort \"O\" :depth 2 :compressed t" n "#+end:")
+(jp "~--APT--~ ")
 
 sh-mode
 (jd n "echo \"poop: " j "\"" n)
