@@ -14,6 +14,23 @@
     "editor.minimap.enabled": false,
     "breadcrumbs.enabled": false,
     "editor.fontSize": 15,
-    "workbench.colorTheme": "Tomorrow Night Blue",
-    "gpr.trace.server": "verbose"
+    "workbench.colorTheme": "Solarized Dark",
+    "gpr.trace.server": "verbose",
+    "security.workspace.trust.untrustedFiles": "open",
+    "cmake.options.advanced": {
+        "build": {
+            "statusBarVisibility": "inherit",
+            "inheritDefault": "visible"
+        },
+        "launch": {
+            "statusBarVisibility": "inherit",
+            "inheritDefault": "visible"
+        },
+        "debug": {
+            "statusBarVisibility": "inherit",
+            "inheritDefault": "visible"
+        }
+    },
+    "git.openRepositoryInParentFolders": "never",
+    "cmake.showOptionsMovedNotification": false
 }
