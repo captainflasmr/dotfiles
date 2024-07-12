@@ -1,7 +1,7 @@
 fundamental-mode ;; Available everywhere
 
 (ja (format-time-string "<%Y-%m-%d>"))
-(jm (format-time-string "%Y%m%d%H%M%S"))
+(jT (format-time-string "%Y%m%d%H%M%S"))
 (jt (format-time-string "%Y%m%d"))
 (ji "|")
 (jl "\\")
