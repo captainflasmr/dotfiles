@@ -102,21 +102,6 @@ Displays Emacs's startup time in the message buffer as soon as Emacs finishes in
 
 #+end_src
 
-* package-local
-
-Displays Emacs's startup time in the message buffer as soon as Emacs finishes initializing.
-
-#+begin_src elisp
-;;
-;; -> package-local
-;;
-
-(when (file-exists-p "~/source/repos/fd-find")
-  (use-package fd-find
-    :load-path "~/source/repos/fd-find"))
-
-#+end_src
-
 * fetchers
 
 Uses newer features in Emacs 29+ to directly install packages from version control sources like GitHub, showcasing integration with `org-ql`, `ada-mode`, and others.
@@ -316,19 +301,6 @@ Setup for both vanilla and advanced modeline completion styles, including config
 (use-package vertico
   :init
   (vertico-mode 1)
-  (vertico-multiform-mode 1)
-  :config
-  (setq vertico-multiform-commands
-    '((consult-line buffer)
-       (consult-line-thing-at-point buffer)
-       (consult-recent-file buffer)
-       (consult-mode-command buffer)
-       (consult-complex-command buffer)
-       (embark-bindings buffer)
-       (consult-locate buffer)
-       (consult-project-buffer buffer)
-       (consult-ripgrep buffer)
-       (consult-fd buffer)))
   :custom
   (vertico-cycle t)
   (read-file-name-completion-ignore-case t)
@@ -373,13 +345,11 @@ To reduce wrist RSI I am using the left meta thumb key as much as possible.
 
 (define-key my-jump-keymap (kbd "-") #'tab-close)
 (define-key my-jump-keymap (kbd "=") (lambda () (interactive) (tab-bar-new-tab-to -1)))
-(define-key my-jump-keymap (kbd "d") #'my/dired-du)
 (define-key my-jump-keymap (kbd "e") (lambda () (interactive) (find-file (concat user-emacs-directory "init.el"))))
 (define-key my-jump-keymap (kbd "f") #'my/find-file)
 (define-key my-jump-keymap (kbd "h") (lambda () (interactive) (find-file "~")))
 (define-key my-jump-keymap (kbd "k") (lambda () (interactive) (find-file (concat user-emacs-directory "emacs--init.org"))))
 (define-key my-jump-keymap (kbd "m") #'customize-themes)
-(define-key my-jump-keymap (kbd "o") #'my/switch-to-thing)
 (define-key my-jump-keymap (kbd "p") #'proced)
 (define-key my-jump-keymap (kbd "r") #'scratch-buffer)
 (define-key my-jump-keymap (kbd "t") #'customize-themes)
@@ -442,7 +412,6 @@ This section is a bit experimental while I continue to work out a nice hand comf
 (global-set-key (kbd "M-s j") #'eval-defun)
 (global-set-key (kbd "M-s g") #'my/text-browser-search)
 (global-set-key (kbd "M-s h") #'my/mark-block)
-(global-set-key (kbd "M-s q") #'dired-toggle-read-only)
 
 #+end_src
 
@@ -676,7 +645,7 @@ Turns on various modes like `global-font-lock-mode` for syntax highlighting and 
 (global-ede-mode -1)
 (global-prettify-symbols-mode t)
 (auto-fill-mode -1)
-(blink-cursor-mode -1)
+(blink-cursor-mode 1)
 (column-number-mode 1)
 (global-auto-revert-mode 1)
 (put 'narrow-to-page 'disabled nil)
@@ -1183,7 +1152,7 @@ Customizes Org Capture templates for quickly capturing notes, tasks, and other i
        (file+function
          "~/DCIM/content/art--all.org"
          my-capture-top-level)
-       "** TODO %^{title} :painter:krita:artrage:2024:
+       "* TODO %^{title} :painter:krita:artrage:2024:
 :PROPERTIES:
 :EXPORT_FILE_NAME: %\\1
 :EXPORT_HUGO_SECTION: art--all
@@ -1373,7 +1342,7 @@ Demonstrates "Do What I Mean" functionalities custom to Emacs, streamlining oper
          "VideoRotate" "VideoRotateLeft" "VideoRotateRight" "VideoShrink"
          "VideoSlowDown" "VideoSpeedUp" "VideoZoom" "WhatsAppConvert"
          "PictureCorrect" "Picture2pdf" "PictureTag" "PictureTagRename"
-         "OtherTagDate")
+         "OtherTagDate" "VideoRemoveFlips")
       "List of commands for dwim-convert.")
 
     (defun my/read-lines (file-path)
@@ -1460,7 +1429,7 @@ Applies customizations to text appearance through face settings, allowing for de
   '(widget-button ((t (:inherit fixed-pitch :weight regular))))
   '(window-divider ((t (:foreground "black"))))
   '(org-tag ((t (:height 0.99))))
-  '(aw-leading-char-face ((t (:inherit (highlight) :inverse-video t :weight bold :scale 1.2))))
+  '(aw-leading-char-face ((t (:inherit (highlight) :inverse-video nil :weight bold :height 1.4))))
   '(vertical-border ((t (:foreground "#000000")))))
 #+end_src
 
@@ -1823,7 +1792,7 @@ Customizes the modeline for displaying active modes, buffer names, or other cont
 
 (setq my/mode-line-format
   '("%e"
-     (:eval (my-all-tabs-string))
+     ;; (:eval (my-all-tabs-string))
      mode-line-modified
      (:eval
        (propertize (format "%s" (abbreviate-file-name default-directory)) 'face '(:inherit bold)))
@@ -1938,12 +1907,31 @@ Configures spell checking tools and dictionaries, integrating external tools lik
 ;;
 
 (use-package jinx)
-(use-package powerthesaurus)
 
-(global-set-key (kbd "M-s c") 'jinx-correct)
+(use-package powerthesaurus
+  :init
+  (require 'transient)
+  (transient-define-prefix my/transient-spelling ()
+    "Spelling commands"
+    ["Spelling"
+      ["Lookups"
+        ("y" "Synonyms" powerthesaurus-lookup-synonyms-dwim)
+        ("a" "Antonyms" powerthesaurus-lookup-antonyms-dwim)]
+      ["Spelling Tools"
+        ("x" "Jinx" jinx-mode)
+        ("c" "Jinx correct" jinx-correct)]
+      ["Dictionary"
+        ("d" "Lookup" dictionary-lookup-definition)]
+      ["Miscellaneous"
+        ("q" "Quit" transient-quit-one)]])
+  :bind
+  ("C-c s" . my/transient-spelling))
+
+(global-set-key (kbd "M-s y") 'powerthesaurus-lookup-synonyms-dwim)
+(global-set-key (kbd "M-s a") 'powerthesaurus-lookup-antonyms-dwim)
 (global-set-key (kbd "M-s x") 'jinx-mode)
+(global-set-key (kbd "M-s c") 'jinx-correct)
 (global-set-key (kbd "M-s d") 'dictionary-lookup-definition)
-(global-set-key (kbd "M-s a") 'powerthesaurus-lookup-synonyms-dwim)
 
 (setq ispell-local-dictionary "en_GB")
 (setq ispell-program-name "hunspell")
@@ -2373,7 +2361,13 @@ Defining very specific indentation and highlight guides
   (lambda () (setq sh-basic-offset 3)))
 
 (use-package highlight-indent-guides
-  :custom (highlight-indent-guides-method 'character))
+  :custom
+  (highlight-indent-guides-method 'bitmap)
+  (highlight-indent-guides-auto-odd-face-perc 55)
+  (highlight-indent-guides-auto-even-face-perc 75)
+  (highlight-indent-guides-auto-character-face-perc 70)
+  (highlight-indent-guides-bitmap-function 'highlight-indent-guides--bitmap-dots)
+  (highlight-indent-guides-responsive 'top))
 
 #+end_src
 
@@ -2481,15 +2475,14 @@ The Selected Window Accent Mode is an Emacs package designed to visually disting
 (use-package selected-window-accent-mode
   ;; :load-path "~/source/repos/selected-window-accent-mode"
   ;; :vc (:fetcher github :repo "captainflasmr/selected-window-accent-mode")
-  :config (selected-window-accent-mode 1)
+  :config (selected-window-accent-mode -1)
   :custom
-  (selected-window-accent-fringe-thickness 8)
+  (selected-window-accent-fringe-thickness 10)
   (selected-window-accent-percentage-darken 20)
   (selected-window-accent-percentage-desaturate 50)
   (selected-window-accent-smart-borders t)
   (selected-window-accent-tab-accent t)
-  (selected-window-accent-custom-color nil)
-  (selected-window-accent-custom-color "#02a2e9")
+  (selected-window-accent-custom-color "#a67132")
   (selected-window-accent-mode-style 'subtle))
 #+end_src
 
@@ -2839,35 +2832,6 @@ Customizes Proced, the process editor, adjusting its appearance, behaviour, and 
 
 #+end_src
 
-* all-the-icons
-
-Integrates the all-the-icons package for enhancing Emacs with iconography, demonstrating configurations for Dired mode, buffer listings, and completion frameworks.
-
-#+begin_src elisp
-;;
-;; -> all-the-icons
-;;
-
-(use-package all-the-icons-ibuffer
-  :ensure t
-  :hook
-  (ibuffer-mode . all-the-icons-ibuffer-mode))
-
-(use-package all-the-icons-completion
-  :ensure t
-  :init
-  (all-the-icons-completion-mode)
-  :hook
-  (marginalia-mode all-the-icons-completion-marginalia-setup))
-
-(use-package all-the-icons-dired
-  :diminish
-  all-the-icons-dired-mode
-  :hook
-  (dired-mode . all-the-icons-dired-mode))
-
-#+end_src
-
 * repeat
 
 I have for the moment decided that repeat-mode is not yet for me, I am currently using sticky keys in conjunction with sparse keymap creation.
@@ -2926,9 +2890,10 @@ Details configurations for Emacs's tab bar, showcasing customizations for tab be
   :custom
   (tab-bar-format '(tab-bar-format-tabs-groups
                      tab-bar-format-align-right
-                     my-tab-line-buffer-name
+                     ;; my-tab-line-buffer-name
                      tab-bar-format-global)) ;; 28.1
   ;; (tab-bar-select-tab-modifiers '(control)) ;; 27.1
+  (tab-bar-show 1)
   (tab-bar-new-button-show nil) ;; 27.1
   (tab-bar-close-button-show nil) ;; 27.1
   (tab-bar-history-limit 100) ;; 27.1
@@ -3207,7 +3172,7 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
 
 #+end_src
 
-* windows specific
+* windows-specific
 
 Curates configurations specific to the Windows operating system, adjusting paths, fonts, and environment variables for optimal use of Emacs on Windows.
 
@@ -3221,6 +3186,7 @@ Curates configurations specific to the Windows operating system, adjusting paths
   (let ((xPaths
           `(,(expand-file-name "~/bin")
              ,(expand-file-name "~/bin/git-bin")
+             ,(expand-file-name "~/bin/omnisharp-win-x64")
              "c:/GnuWin32/bin"
              "c:/GNAT/2021/bin")))
     (setenv "PATH" (mapconcat 'identity xPaths ";"))
@@ -3234,6 +3200,8 @@ Curates configurations specific to the Windows operating system, adjusting paths
   (setq font-general "Monospace 14")
   (set-frame-font font-general nil t)
   (add-to-list 'default-frame-alist `(font . ,font-general)))
+
+  (setq tab-bar-show 1)
 
 #+end_src
 
@@ -3266,7 +3234,41 @@ Curates configurations specific to Linux, making adjustments for paths, fonts, a
   ;; (setq font-general "Nimbus Mono PS 11")
   ;; (setq font-general "Monospace 11")
   (set-frame-font font-general nil t)
-  (add-to-list 'default-frame-alist `(font . ,font-general)))
+  (add-to-list 'default-frame-alist `(font . ,font-general))
+
+  (use-package all-the-icons-dired
+    :diminish
+    all-the-icons-dired-mode
+    :hook
+    (dired-mode . all-the-icons-dired-mode))
+
+  (use-package all-the-icons-ibuffer
+    :ensure t
+    :hook
+    (ibuffer-mode . all-the-icons-ibuffer-mode))
+
+  (use-package all-the-icons-completion
+    :ensure t
+    :init
+    (all-the-icons-completion-mode)
+    :hook
+    (marginalia-mode all-the-icons-completion-marginalia-setup))
+
+  (use-package xkb-mode
+    :load-path "~/source/repos/xkb-mode")
+  ;; :vc (:fetcher github :repo "captainflasmr/xkb-mode"))
+
+  (use-package arscript-mode
+    :load-path "~/source/repos/arscript-mode")
+  ;; :vc (:fetcher github :repo "captainflasmr/arscript-mode"))
+
+  (when (file-exists-p "~/source/repos/fd-find")
+    (use-package fd-find
+      :load-path "~/source/repos/fd-find"))
+
+  (add-hook 'window-configuration-change-hook #'my/waybar)
+  (add-hook 'window-state-change-hook #'my/waybar)
+  )
 
 #+end_src
 
@@ -3530,19 +3532,9 @@ Shares miscellaneous development tools, tips, and functions, showcasing the vers
   (org-preview-html-refresh-configuration 'manual)
   (org-preview-html-viewer 'eww))
 
-(use-package bug-hunter)
-
 (setq shr-ignore-cache t)
 (bind-key* (kbd "M-n") #'(lambda ()(interactive)(scroll-up (/ (window-height) 4))))
 (bind-key* (kbd "M-m") #'(lambda ()(interactive)(scroll-down (/ (window-height) 4))))
-
-(use-package xkb-mode
-  :load-path "~/source/repos/xkb-mode")
-;; :vc (:fetcher github :repo "captainflasmr/xkb-mode"))
-
-(use-package arscript-mode
-  :load-path "~/source/repos/arscript-mode")
-;; :vc (:fetcher github :repo "captainflasmr/arscript-mode"))
 
 (defun swaywm-list-mod-bindsyms (path)
   "List all bindsyms that start with $mod or its resolved value in the SwayWM config file at PATH."
@@ -3582,7 +3574,7 @@ Shares miscellaneous development tools, tips, and functions, showcasing the vers
       ;; Return reversed to maintain order
       (mapconcat 'identity (sort (nreverse bindsyms) 'string-lessp) "\n"))))
 
-(swaywm-list-mod-bindsyms "/home/jdyer/.config/sway/config.d/default")
+;; (swaywm-list-mod-bindsyms "/home/jdyer/.config/sway/config.d/default")
 
 (use-package htmlize)
 (use-package org-kanban)
@@ -3627,8 +3619,10 @@ Shares miscellaneous development tools, tips, and functions, showcasing the vers
 (bind-key* (kbd "M-s v") #'eval-expression)
 (bind-key* (kbd "M-s k") #'org-kanban/shift)
 (bind-key* (kbd "M-s ;") #'mark-sexp)
+(bind-key* (kbd "M-s l") #'mark-sexp)
 
 (bind-key* (kbd "M-'") #'set-mark-command)
+(bind-key* (kbd "M-SPC") #'set-mark-command)
 
 (bind-key* (kbd "C-z") #'undo)
 
@@ -3642,7 +3636,7 @@ Shares miscellaneous development tools, tips, and functions, showcasing the vers
   (popper-mode 1)
   (popper-echo-mode 1)
   :custom
-  (popper-window-height 20))
+  (popper-window-height 15))
 
 (bind-key* (kbd "C-;") #'popper-toggle)
 (bind-key* (kbd "C-'") #'popper-toggle-type)
@@ -3812,5 +3806,92 @@ The symbol at point is added to the future history."
     "/home/jdyer/source/repos/cigi-ccl_4_0/include"
     "/home/jdyer/source/repos/cigi-ccl_4_0/example.i"
     ))
+
+(use-package cmake-mode)
+
+(defvar my/waybar-output-file
+  (expand-file-name "emacs_output.json" (getenv "HOME"))
+  "Path to the output file for waybar.")
+
+(defun my/waybar-generate-tab-bar-text (max-length)
+  "Generate a string that represents the current tabs in the tab bar, with each tab name truncated to MAX-LENGTH."
+  (interactive "nMax Length: ")
+  (let ((tabs (funcall tab-bar-tabs-function))
+         (tab-names '())
+         (current-tab-index (tab-bar--current-tab-index)))
+    (dolist (tab tabs)
+      (let* ((tab-name (alist-get 'name tab))
+              (is-active (eq tab (nth current-tab-index tabs)))
+              (truncated-name (if (> (length tab-name) max-length)
+                                (substring tab-name 0 max-length)
+                                tab-name)))
+        (push (if is-active (concat "🔸" truncated-name "🔸") truncated-name) tab-names)))
+    (let ((tab-string (concat " " (mapconcat 'identity (reverse tab-names) " | ") "")))
+      tab-string)))
+
+(defun my/waybar ()
+  "Send TEXT to the Waybar script in JSON format and refresh Waybar."
+  (interactive)
+  (let ((json-text (json-encode `((text . ,(my/waybar-generate-tab-bar-text 16))))))
+    ;; Write JSON to file
+    (with-temp-buffer
+      (insert json-text)
+      (write-region (point-min) (point-max) my/waybar-output-file nil 'quiet))
+    (start-process-shell-command "refresh-waybar" nil "pkill -RTMIN+2 waybar")))
+
+(defun my-delete-file-on-exit ()
+  "Delete the file /home/jdyer/emacs_output.json when Emacs exits."
+  (when (file-exists-p my/waybar-output-file)
+    (delete-file my/waybar-output-file)))
+
+(add-hook 'kill-emacs-hook 'my-delete-file-on-exit)
+
+(defun predicate-exclusion-p (dir)
+  "exclusion of directories"
+  (not
+    (or
+      (string-match "/home/jdyer/examples/CPPrograms/nil" dir)
+      )))
+
+(defun my/generate-etags ()
+  "Generate TAGS file for various source files in `default-directory` and its subdirectories."
+  (interactive)
+  (message "Getting file list...")
+  (let ((all-files
+          (append
+            (directory-files-recursively default-directory "\\(?:\\.cpp$\\|\\.c$\\|\\.h$\\)" nil 'predicate-exclusion-p)
+            (directory-files-recursively default-directory "\\(?:\\.cs$\\|\\.cs$\\)" nil 'predicate-exclusion-p)
+            (directory-files-recursively default-directory "\\(?:\\.ads$\\|\\.adb$\\)" nil 'predicate-exclusion-p)))
+        (tags-file-path (expand-file-name (concat default-directory "TAGS"))))
+    (unless (file-directory-p default-directory)
+      (error "Default directory does not exist: %s" default-directory))
+    ;; Generate TAGS file
+    (dolist (file all-files)
+      (message file)
+      (shell-command (format "etags --append \%s -o %s" file tags-file-path)))))
+
+(bind-key* (kbd "C-x s") #'save-buffer)
+
+(defun copy-vcxproj-and-sln-files (src-dir dst-dir)
+  "Copy .vcxproj, .vcxproj.filters, and .sln files from SRC-DIR to DST-DIR recursively."
+  (let ((files (directory-files-recursively src-dir
+                 "\\.\\(vcxproj\\|vcxproj.filters\\|sln\\)$"
+                 nil
+                 (lambda (dir)
+                   (not
+                     (or
+                       (string-match "CMakeFiles" dir)
+                       ))))))
+    ;; (prin1 files)
+    (dolist (file files)
+      (message file)
+      (let* ((relative-path (file-relative-name file src-dir))
+            (new-file (expand-file-name relative-path dst-dir)))
+        (unless (file-directory-p (file-name-directory new-file))
+          (make-directory (file-name-directory new-file) t))
+        (copy-file file new-file t)))))
+
+;; Usage example:
+;; (copy-vcxproj-and-sln-files "c:/Users/jimbo/source/cigi-ccl_4_0/build/windows/debug" "c:/Users/jimbo/source/cigi-ccl_4_0")
 
 #+end_src
