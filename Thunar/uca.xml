@@ -474,4 +474,15 @@
 	<patterns>*</patterns>
 	<video-files/>
 </action>
+<action>
+	<icon></icon>
+	<name>VideoRemoveFlips</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole VideoRemoveFlips %F</command>
+	<description>VideoRemoveFlips</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<video-files/>
+</action>
 </actions>
