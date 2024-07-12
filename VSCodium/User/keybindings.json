@@ -1,9 +1,28 @@
 // Place your key bindings in this file to override the defaults
 [
-    { "key": "alt+h", "command": "workbench.action.previousEditor" },
-    { "key": "alt+l", "command": "workbench.action.nextEditor" },
-    { "key": "alt+2", "command": "workbench.action.splitEditorDown" },
-    { "key": "alt+3", "command": "workbench.action.splitEditorRight" },
+    {
+		  "key": "alt+l",
+		  "command": "emacs-mcx.forwardChar",
+		  "when": "editorTextFocus"
+	 },
+    {
+		  "key": "alt+k",
+		  "command": "emacs-mcx.previousLine",
+		  "when": "editorTextFocus && !suggestWidgetVisible"
+	 },
+    {
+		  "key": "alt+j",
+		  "command": "emacs-mcx.nextLine",
+		  "when": "editorTextFocus"
+	 },
+    {
+		  "key": "alt+h",
+		  "command": "emacs-mcx.backwardChar",
+		  "when": "editorTextFocus"
+	 },
+    { "key": "ctrl+o", "command": "workbench.action.nextEditor" },
+    { "key": "ctrl+2", "command": "workbench.action.splitEditorDown" },
+    { "key": "ctrl+3", "command": "workbench.action.splitEditorRight" },
     { "key": "alt+0", "command": "workbench.action.closeActiveEditor" },
-    { "key": "alt+1", "command": "workbench.action.closeEditorsInOtherGroups" },
+    { "key": "ctrl+1", "command": "workbench.action.closeEditorsInOtherGroups" },
 ]
