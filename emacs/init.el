@@ -50,32 +50,21 @@
 (add-hook 'emacs-startup-hook 'display-startup-time)
 
 ;;
-;; -> fetchers
-;;
-
-(when (and (version<= "29.0" emacs-version) (executable-find "git"))
-  ;; will be able to remove the following package-vc-install as of emacs 30
-  ;; as this will be built-in
-  (unless (package-installed-p 'vc-use-package)
-    (package-vc-install "https://github.com/slotThe/vc-use-package"))
-
-  ;; now use-package has the :vc keyword!
-  (use-package org-ql
-    :defer t
-    :vc (:fetcher github :repo "alphapapa/org-ql"))
-
-  (use-package ada-mode
-    :vc (:fetcher github :repo "captainflasmr/old-ada-mode"))
-
-  (use-package kbd-mode
-    :vc (:fetcher github :repo "kmonad/kbd-mode")
-    :custom
-    (kbd-mode-kill-kmonad "pkill -9 kmonad")
-    (kbd-mode-start-kmonad "kmonad ~/.config/kmonad/keyboard.kbd")))
-
-;;
 ;; -> use-package
 ;;
+(use-package keycast
+  :init
+  (keycast-tab-bar-mode -1))
+(use-package syntax-subword
+  :init
+  (global-syntax-subword-mode))
+(use-package htmlize)
+(use-package org-kanban)
+(use-package stripe-buffer)
+(use-package stripes
+  :custom
+  (stripes-unit 1))
+(use-package markdown-mode)
 (use-package free-keys)
 (use-package lorem-ipsum)
 (use-package file-info
@@ -222,6 +211,13 @@
 (define-key my-jump-keymap (kbd "t") #'customize-themes)
 (define-key my-jump-keymap (kbd "z") #'list-packages)
 
+(use-package ace-window
+  :config
+  (setq aw-keys '(?j ?k ?l ?\; ?a ?s ?d ?f))
+  (setq aw-background nil))
+
+(bind-key* (kbd "M-a") #'ace-window)
+
 ;;
 ;; -> keys-visual
 ;;
@@ -239,12 +235,12 @@
 (define-key my-win-keymap (kbd "h") #'global-hl-line-mode)
 (define-key my-win-keymap (kbd "i") #'highlight-indent-guides-mode)
 (define-key my-win-keymap (kbd "j") #'org-redisplay-inline-images)
+(define-key my-win-keymap (kbd "k") #'my/toggle-mode-line)
 (define-key my-win-keymap (kbd "m") #'consult-theme)
 (define-key my-win-keymap (kbd "n") #'display-line-numbers-mode)
 (define-key my-win-keymap (kbd "o") #'visual-fill-column-mode)
 (define-key my-win-keymap (kbd "p") #'variable-pitch-mode)
 (define-key my-win-keymap (kbd "q") #'toggle-menu-bar-mode-from-frame)
-(define-key my-win-keymap (kbd "r") #'org-modern-mode)
 (define-key my-win-keymap (kbd "s") #'my/toggle-internal-border-width)
 (define-key my-win-keymap (kbd "v") #'visual-line-mode)
 
@@ -252,17 +248,30 @@
 ;; -> keys-other
 ;;
 
-(bind-key* (kbd "M-s z") #'org-table-shrink)
-(bind-key* (kbd "M-s w") #'org-table-expand)
 (bind-key* (kbd "M-s ,") #'my/mark-line)
-(global-set-key (kbd "M-s M-[") #'beginning-of-buffer)
-(global-set-key (kbd "M-s M-]") #'end-of-buffer)
 (bind-key* (kbd "M-s [") #'beginning-of-buffer)
 (bind-key* (kbd "M-s ]") #'end-of-buffer)
+(bind-key* (kbd "M-s w") #'org-table-expand)
+(bind-key* (kbd "M-s z") #'org-table-shrink)
+(global-set-key (kbd "M-s M-[") #'beginning-of-buffer)
+(global-set-key (kbd "M-s M-]") #'end-of-buffer)
 (global-set-key (kbd "M-s b") #'(lambda ()(interactive)(org-table-recalculate 'all)))
-(global-set-key (kbd "M-s j") #'eval-defun)
 (global-set-key (kbd "M-s g") #'my/text-browser-search)
 (global-set-key (kbd "M-s h") #'my/mark-block)
+(global-set-key (kbd "M-s j") #'eval-defun)
+
+;; export keys
+(bind-key* (kbd "M-s e") #'my/push-block)
+(bind-key* (kbd "M-s f") #'org-preview-html-mode)
+(bind-key* (kbd "M-s r") #'org-preview-html-refresh)
+(bind-key* (kbd "M-s t") #'my/save-buffer-as-html)
+
+;; evaluation
+(bind-key* (kbd "M-s ;") #'mark-sexp)
+(bind-key* (kbd "M-s k") #'org-kanban/shift)
+(bind-key* (kbd "M-s l") #'mark-sexp)
+(bind-key* (kbd "M-s s") #'my/shell-create)
+(bind-key* (kbd "M-s v") #'eval-expression)
 
 ;;
 ;; -> magit
@@ -389,7 +398,6 @@
 ;;
 ;; -> keybinding
 ;;
-(global-set-key (kbd "C-x C-o") #'my/collapse-space)
 (global-set-key (kbd "M-0") #'delete-window)
 (global-set-key (kbd "C-1") #'delete-other-windows)
 (global-set-key (kbd "C-2") #'split-window-vertically)
@@ -404,8 +412,8 @@
 (bind-key* (kbd "M-j") #'next-line)
 (bind-key* (kbd "M-k") #'previous-line)
 (bind-key* (kbd "M-l") #'forward-char)
-;; (bind-key* (kbd "M-n") #'(lambda ()(interactive)(scroll-up-command (/ (window-height) 4))))
-;; (bind-key* (kbd "M-m") #'(lambda ()(interactive)(scroll-down-command (/ (window-height) 4))))
+(bind-key* (kbd "M-n") #'(lambda ()(interactive)(scroll-up (/ (window-height) 4))))
+(bind-key* (kbd "M-m") #'(lambda ()(interactive)(scroll-down (/ (window-height) 4))))
 (bind-key* (kbd "C-o") #'other-window)
 (bind-key* (kbd "C-x b") #'my/switch-to-thing)
 (bind-key* (kbd "C-0") #'my/switch-to-thing)
@@ -418,8 +426,14 @@
 (global-set-key (kbd "C-x l") #'scroll-lock-mode)
 (global-set-key (kbd "M-;") #'my/comment-or-uncomment)
 (bind-key* (kbd "C-c ,") #'embark-act)
+(global-set-key (kbd "M-[") #'yank)
+(global-set-key (kbd "M-]") #'yank-pop)
 (global-unset-key (kbd "C-h h"))
+(bind-key* (kbd "M-9") #'hippie-expand)
 (global-unset-key (kbd "C-t"))
+(bind-key* (kbd "M-'") #'set-mark-command)
+(bind-key* (kbd "M-SPC") #'set-mark-command)
+(bind-key* (kbd "C-z") #'undo)
 
 (global-set-key (kbd "M-g o") 'consult-outline)
 (global-set-key (kbd "M-g i") 'consult-imenu)
@@ -468,6 +482,7 @@
 (setq shr-max-image-proportion 0.8)
 (setq shr-max-width 80)
 (setq shr-width 70)
+(setq shr-ignore-cache t)
 (setq tooltip-hide-delay 0)
 (when (fboundp 'imagemagick-register-types)
   (imagemagick-register-types))
@@ -522,23 +537,20 @@
 (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
 (add-hook 'diary-mark-entries-hook 'diary-mark-included-diary-files)
 (add-hook 'next-error-hook #'org-fold-show-all)
+(add-hook 'chatgpt-shell-mode-hook 'visual-line-mode)
 
 ;;
 ;; -> custom-settings
 ;;
 
 (custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-enabled-themes '(doom-dracula))
- '(package-selected-packages
-    '(cmake-mode ace-window popper stripes stripe-buffer org-kanban htmlize org-preview-html markdown-mode plantuml-mode capf-autosuggest syntax-subword keycast all-the-icons-completion all-the-icons-ibuffer all-the-icons-dired wc-mode csv calfw-cal calfw-org calfw chatgpt-shell kurecolor selected-window-accent-mode highlight-indent-guides ztree package-lint flycheck yaml-mode company powerthesaurus jinx toc-org org-modern org-tidy elfeed emms magit marginalia orderless vertico tempel corfu deadgrep ox-hugo visual-fill-column rainbow-mode doom-themes ef-themes gruvbox-theme embark-consult ahk-mode gnuplot git-timemachine i3wm-config-mode diredfl diminish async file-info lorem-ipsum free-keys vc-use-package))
- '(package-vc-selected-packages
-    '((vc-use-package :vc-backend Git :url "https://github.com/slotThe/vc-use-package")))
- '(warning-suppress-log-types '((frameset)))
- '(warning-suppress-types '((frameset))))
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+  '(custom-enabled-themes '(doom-dracula))
+  '(warning-suppress-log-types '((frameset)))
+  '(warning-suppress-types '((frameset))))
 
 ;;
 ;; -> defun
@@ -620,17 +632,6 @@ If ARG is provided, it sets the counter."
           (pounds (string-to-number (cadr parts))))
     (+ (* stone 14) pounds)))
 
-(defun my/mark-word ()
-  "Redefinition of 'mark-word'."
-  (interactive)
-  (when (not (region-active-p))
-    (backward-to-word 1))
-  (forward-to-word 1)
-  (when (not (region-active-p))
-    (push-mark))
-  (forward-word)
-  (setq mark-active t))
-
 (defun my/mark-line ()
   "Mark whole line."
   (interactive)
@@ -669,23 +670,6 @@ If ARG is provided, it sets the counter."
     (insert replacement-text)))
 
 (require 'cl-lib)
-
-(defun my/collapse-space ()
-  "Collapses consecutive blank lines down to a single blank line."
-  (interactive)
-  (save-excursion
-    (let ((found-blank-lines 0))
-      (while (and (not (eobp)))
-        (if (looking-at "^[ ]*\n")
-          (progn
-            (setq found-blank-lines (1+ found-blank-lines))
-            (replace-match ""))
-          (if (> found-blank-lines 0)
-            (progn
-              (if (> found-blank-lines 1)
-                (insert "\n"))
-              (cl-return))
-            (forward-line)))))))
 
 (defun my/text-browser-search ()
   "Use the selected text (or word under cursor)
@@ -904,6 +888,17 @@ as search term for Google search in web browser."
 ;;
 ;; -> org
 ;;
+(use-package org-preview-html
+  :custom
+  (org-preview-html-subtree-only nil)
+  (org-preview-html-refresh-configuration 'manual)
+  (org-preview-html-viewer 'eww))
+
+(defun my/org-tag-refresh()
+  ""
+  (interactive)
+  (revert-buffer-quick)
+  (org-align-tags t))
 
 (use-package org
   :defer t
@@ -911,6 +906,7 @@ as search term for Google search in web browser."
   (setq org-src-tab-acts-natively t
     org-edit-src-content-indentation 0
     org-log-done nil
+    org-use-speed-commands t
     org-tags-sort-function 'org-string-collate-greaterp
     org-export-with-sub-superscripts nil
     org-deadline-warning-days 365
@@ -933,23 +929,11 @@ as search term for Google search in web browser."
 
 (use-package org-tidy)
 
-(use-package org-modern
-  :init (global-org-modern-mode -1))
-
 (use-package toc-org
   :commands
   toc-org-enable
   :init
   (add-hook 'org-mode-hook 'toc-org-enable))
-
-(defun my/org-ql-emacs ()
-  "Test org-ql query."
-  (interactive)
-  (org-ql-search (org-agenda-files)
-    '(and (done) (tags "2023") (tags "emacs"))
-    :title "Emacs-related project tasks"
-    :sort '(date priority todo)
-    :super-groups '((:auto-parent t))))
 
 (defun org-syntax-table-modify ()
   "Modify `org-mode-syntax-table' for the current org buffer."
@@ -1095,46 +1079,47 @@ as search term for Google search in web browser."
 ;;
 
 (custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(aw-leading-char-face ((t (:inherit (highlight) :inverse-video nil :weight bold :height 1.4))))
- '(diredfl-date-time ((t (:foreground "#8d909b"))))
- '(diredfl-dir-heading ((t (:foreground "#aa5555" :weight bold))))
- '(diredfl-dir-priv ((t (:foreground "DarkRed"))))
- '(diredfl-exec-priv ((t (:foreground "#999999"))))
- '(diredfl-file-name ((t (:foreground "#818282"))))
- '(diredfl-no-priv ((t nil)))
- '(diredfl-number ((t (:foreground "#999999"))))
- '(diredfl-read-priv ((t nil)))
- '(diredfl-write-priv ((t nil)))
- '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
- '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
- '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
- '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
- '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.1 :family "Source Code Pro"))))
- '(font-lock-warning-face ((t (:foreground "#930000" :inverse-video nil))))
- '(indent-guide-face ((t (:background "#282828" :foreground "#666666"))))
- '(org-link ((t (:underline nil))))
- '(org-tag ((t (:height 0.99))))
- '(stripe-highlight ((t (:background "#F0F0F0"))))
- '(vertical-border ((t (:foreground "#000000"))))
- '(whitespace-missing-newline-at-eof ((t (:foreground "#666566656665"))))
- '(whitespace-newline ((t (:foreground "#666566656665"))))
- '(whitespace-space ((t (:foreground "#666566656665"))))
- '(whitespace-space-after-tab ((t (:foreground "#666566656665"))))
- '(whitespace-space-before-tab ((t (:foreground "#666566656665"))))
- '(whitespace-tab ((t (:foreground "#666566656665"))))
- '(whitespace-trailing ((t (:foreground "#666566656665"))))
- '(widget-button ((t (:inherit fixed-pitch :weight regular))))
- '(window-divider ((t (:foreground "black"))))
- '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
- '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2")))))
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+  '(diredfl-date-time ((t (:foreground "#8d909b"))))
+  '(diredfl-dir-heading ((t (:foreground "#aa5555" :weight bold))))
+  '(diredfl-dir-priv ((t (:foreground "DarkRed"))))
+  '(diredfl-exec-priv ((t (:foreground "#999999"))))
+  '(diredfl-file-name ((t (:foreground "#818282"))))
+  '(diredfl-no-priv ((t nil)))
+  '(diredfl-number ((t (:foreground "#999999"))))
+  '(diredfl-read-priv ((t nil)))
+  '(diredfl-write-priv ((t nil)))
+  '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
+  '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
+  '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
+  '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
+  '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2"))))
+  '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
+  '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.1 :family "Source Code Pro"))))
+  '(font-lock-warning-face ((t (:foreground "#930000" :inverse-video nil))))
+  '(org-link ((t (:underline nil))))
+  '(indent-guide-face ((t (:background "#282828" :foreground "#666666"))))
+  '(stripe-highlight ((t (:background "#F0F0F0"))))
+  '(widget-button ((t (:inherit fixed-pitch :weight regular))))
+  '(window-divider ((t (:foreground "black"))))
+  '(org-tag ((t (:height 0.99))))
+  '(aw-leading-char-face ((t (:inherit (highlight) :inverse-video nil :weight bold :height 1.4))))
+  '(vertical-border ((t (:foreground "#000000")))))
 
 ;;
 ;; -> dired
 ;;
+
+(defun my/dired-du ()
+  "Run 'du -hc' on the directory under the cursor in Dired."
+  (interactive)
+  (let ((current-dir (dired-get-file-for-visit)))
+    (if (file-directory-p current-dir)
+      (dired-do-async-shell-command "du -hc" nil (list current-dir))
+      (message "The current point is not a directory."))))
 
 (use-package dired
   :ensure nil
@@ -1640,8 +1625,11 @@ as search term for Google search in web browser."
 (setq eldoc-echo-area-use-multiline-p nil)
 
 (use-package flycheck)
+
 (use-package package-lint
   :defer 5)
+
+(use-package cmake-mode)
 
 ;;
 ;; -> diff
@@ -1946,6 +1934,30 @@ With directories under project root using find."
     (interactive)
     (async-shell-command "my-generate-etags.sh" "*etags*")))
 
+(defun predicate-exclusion-p (dir)
+  "exclusion of directories"
+  (not
+    (or
+      (string-match "/home/jdyer/examples/CPPrograms/nil" dir)
+      )))
+
+(defun my/generate-etags ()
+  "Generate TAGS file for various source files in `default-directory` and its subdirectories."
+  (interactive)
+  (message "Getting file list...")
+  (let ((all-files
+          (append
+            (directory-files-recursively default-directory "\\(?:\\.cpp$\\|\\.c$\\|\\.h$\\)" nil 'predicate-exclusion-p)
+            (directory-files-recursively default-directory "\\(?:\\.cs$\\|\\.cs$\\)" nil 'predicate-exclusion-p)
+            (directory-files-recursively default-directory "\\(?:\\.ads$\\|\\.adb$\\)" nil 'predicate-exclusion-p)))
+         (tags-file-path (expand-file-name (concat default-directory "TAGS"))))
+    (unless (file-directory-p default-directory)
+      (error "Default directory does not exist: %s" default-directory))
+    ;; Generate TAGS file
+    (dolist (file all-files)
+      (message file)
+      (shell-command (format "etags --append \%s -o %s" file tags-file-path)))))
+
 ;; (global-set-key (kbd "C-x p l") 'my/etags-load)
 ;; (global-set-key (kbd "C-x p u") 'my/etags-update)
 
@@ -2185,6 +2197,11 @@ With directories under project root using find."
 ;; -> shell
 ;;
 
+(use-package capf-autosuggest
+  :hook
+  (eshell-mode . capf-autosuggest-mode)
+  (shell-mode . capf-autosuggest-mode))
+
 (when (file-exists-p "/usr/bin/fish")
   (setq explicit-shell-file-name "/usr/bin/fish"))
 
@@ -2225,6 +2242,21 @@ With directories under project root using find."
   (setq-local tab-always-indent 'complete)
   :hook
   (shell-mode . my/shell-hook))
+
+(use-package popper
+  :init
+  (setq popper-reference-buffers
+    '("\\*eshell.*"
+       "\\*convert.*"
+       help-mode
+       compilation-mode))
+  (popper-mode 1)
+  (popper-echo-mode 1)
+  :custom
+  (popper-window-height 15))
+
+(bind-key* (kbd "C-;") #'popper-toggle)
+(bind-key* (kbd "C-'") #'popper-toggle-type)
 
 ;;
 ;; -> calendar
@@ -2344,29 +2376,6 @@ With directories under project root using find."
     :repeat-map my/tab-bar-repeat-map
     ("u" . tab-bar-switch-to-prev-tab)
     ("i" . tab-bar-switch-to-next-tab)))
-
-;; (use-package tab-bar ;; 27.1
-;;   :ensure nil ;; Since tab-bar is built-in, no package needs to be downloaded
-;;   :init
-;;   (tab-bar-mode 1) ;; 27.1
-;;   (tab-bar-history-mode 1) ;; 27.1
-;;   :custom
-;;   (tab-bar-select-tab-modifiers '(control)) ;; 27.1
-;;   (tab-bar-new-button-show nil) ;; 27.1
-;;   (tab-bar-close-button-show nil) ;; 27.1
-;;   (tab-bar-history-limit 100) ;; 27.1
-;;   (tab-bar-tab-hints t) ;; 27.1
-;;   (tab-bar-tab-name-function 'tab-bar-tab-name-truncated) ;; *27.1
-;;   (tab-bar-tab-name-truncated-max 1) ;; *27.1
-;;   (tab-bar-tab-name-ellipsis " ") ;; *27.1
-;;   :bind
-;;   (("M-H" . tab-bar-switch-to-prev-tab) ;; 27.1
-;;     ("M-L" . tab-bar-switch-to-next-tab) ;; 27.1
-;;     ("M-u" . tab-bar-history-back) ;; 27.1
-;;     ("M-i" . tab-bar-history-forward)) ;; 27.1
-;;   :custom-face
-;;   (tab-bar-tab ((t (:inherit tab-bar :box (:line-width (2 . 2) :color "#9c9c9c" :style flat))))) ;; 27.1
-;;   (tab-bar-tab-inactive ((t (:inherit tab-bar :box (:line-width (2 . 2) :color "#575757" :style flat)))))) ;; 27.1
 
 ;;
 ;; -> finance
@@ -2551,173 +2560,57 @@ With directories under project root using find."
       (replace-match (concat year "-" month "-" day)))))
 
 ;;
-;; -> word-count
+;; -> plantuml
 ;;
 
-(use-package wc-mode
-  ;; :hook
-  ;; (org-mode . wc-mode)
+(use-package plantuml-mode
   :custom
-  (wc-modeline-format "WC:%tw"))
+  (plantuml-default-exec-mode 'jar)
+  (plantuml-jar-path (concat user-emacs-directory "plantuml.jar"))
+  (org-plantuml-jar-path (concat user-emacs-directory "plantuml.jar")))
 
-(defun my/word-count-function (rstart rend)
-  "Counts words without lines containing 'DONE' 'PROPERTIES' 'END:' drawers.
-Or indeed other filters as defined in the main unless from RSTART and REND."
-  (let ((count 0))
-    (save-excursion
-      (goto-char rstart)
-      ;; Loop over each line in the region
-      (while (< (point) rend)
-        (let ((line (buffer-substring-no-properties (line-beginning-position)
-                      (line-end-position))))
-          ;; Only count words if the line doesn't contain DONE or is not between PROPERTIES and END
-          ;; Or indeed other filters as defined below
-          (unless (or
-                    (string-match-p "\\* DONE" line)
-                    (string-match-p "\\* TODO" line)
-                    (string-match-p "file\:" line)
-                    (and (string-match-p ":PROPERTIES:" line) (re-search-forward ":END:" nil t))
-                    (and (string-match-p "\\#\\+begin" line) (re-search-forward "\\#\\+end" nil t))
-                    (string-match-p "\\#\\+" line)
-                    )
-            (setq count (+ count (1+ (how-many " " (line-beginning-position) (line-end-position))))))
-          ;; (setq count (+ count (length (split-string line "\\W+" t)))))
-          ;; Go to the beginning of the next line
-          (forward-line 1))))
-    count))
+(add-to-list
+  'org-src-lang-modes '("plantuml" . plantuml))
 
-;; Set the custom wc-mode counting function
-(setq wc-count-words-function 'my/word-count-function)
+(org-babel-do-load-languages
+  'org-babel-load-languages
+  '((plantuml . t)))
+
+(add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
+
+(add-hook 'plantuml-mode-hook (lambda ()
+                                (setq tab-width 0)
+                                (setq indent-tabs-mode nil)))
+
+
+(defun my-org-confirm-babel-evaluate (lang body)
+  (not (or (string= lang "plantuml")
+         (string= lang "emacs-lisp"))))
+
+(setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
 
 ;;
-;; -> windows-specific
+;; -> next-thing
 ;;
 
-(when (eq system-type 'windows-nt)
-  (setq home-dir "c:/users/jimbo")
-  (let ((xPaths
-          `(,(expand-file-name "~/bin")
-             ,(expand-file-name "~/bin/git-bin")
-             ,(expand-file-name "~/bin/omnisharp-win-x64")
-             "c:/GnuWin32/bin"
-             "c:/GNAT/2021/bin")))
-    (setenv "PATH" (mapconcat 'identity xPaths ";"))
-    (setq exec-path (append xPaths (list "." exec-directory))))
-
-  (custom-theme-set-faces
-    'user
-    '(variable-pitch ((t (:family "Monospace" :height 150 :weight normal))))
-    '(fixed-pitch ((t ( :family "Monospace" :height 140)))))
-
-  (setq font-general "Monospace 14")
-  (set-frame-font font-general nil t)
-  (add-to-list 'default-frame-alist `(font . ,font-general)))
-
-  (setq tab-bar-show 1)
-
-;;
-;; -> linux specific
-;;
-
-(when (eq system-type 'gnu/linux)
-  (define-key my-jump-keymap (kbd "a") #'emms-browse-by-album)
-  (define-key my-jump-keymap (kbd "b") (lambda () (interactive) (find-file "~/bin")))
-  (define-key my-jump-keymap (kbd "c") (lambda () (interactive) (find-file "~/DCIM/Camera")))
-  (define-key my-jump-keymap (kbd "g") (lambda () (interactive) (find-file "~/.config")))
-  (define-key my-jump-keymap (kbd "i") #'chatgpt-shell)
-  (define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~/DCIM/content/aaa--todo.org")))
-  (define-key my-jump-keymap (kbd "y") #'emms)
-  (define-key my-jump-keymap (kbd "q") #'cfw:open-org-calendar)
-  (define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
-  (define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
-
-  (setq diary-file "~/DCIM/content/diary.org")
-
-  ;; (setq font-general "Noto Sans Mono 11")
-  (setq font-general "Source Code Pro 12")
-  ;; (setq font-general "Source Code Pro Light 11")
-  ;; (setq font-general "Nimbus Mono PS 11")
-  ;; (setq font-general "Monospace 11")
-  (set-frame-font font-general nil t)
-  (add-to-list 'default-frame-alist `(font . ,font-general))
-
-  (use-package all-the-icons-dired
-    :diminish
-    all-the-icons-dired-mode
-    :hook
-    (dired-mode . all-the-icons-dired-mode))
-
-  (use-package all-the-icons-ibuffer
-    :ensure t
-    :hook
-    (ibuffer-mode . all-the-icons-ibuffer-mode))
-
-  (use-package all-the-icons-completion
-    :ensure t
-    :init
-    (all-the-icons-completion-mode)
-    :hook
-    (marginalia-mode all-the-icons-completion-marginalia-setup))
-
-  (use-package xkb-mode
-    :load-path "~/source/repos/xkb-mode")
-  ;; :vc (:fetcher github :repo "captainflasmr/xkb-mode"))
-
-  (use-package arscript-mode
-    :load-path "~/source/repos/arscript-mode")
-  ;; :vc (:fetcher github :repo "captainflasmr/arscript-mode"))
-
-  (when (file-exists-p "~/source/repos/fd-find")
-    (use-package fd-find
-      :load-path "~/source/repos/fd-find"))
-
-  (add-hook 'window-configuration-change-hook #'my/waybar)
-  (add-hook 'window-state-change-hook #'my/waybar)
-  )
-
-;;
-;; -> development
-;;
-
-(defun subtract-weight (weight-str avg-loss)
-  "Subtract AVG-LOSS pounds from WEIGHT-STR given in 'stones:pounds' format."
-  (let* ((stones-pounds (split-string weight-str ":"))
-          (stones (string-to-number (car stones-pounds)))
-          (pounds (string-to-number (cadr stones-pounds)))
-          (total-pounds (+ pounds (* stones 14)))
-          (new-total-pounds (- total-pounds avg-loss))
-          (new-stones (truncate (/ new-total-pounds 14)))
-          (new-pounds (mod new-total-pounds 14)))
-    (format "%d:%d" new-stones new-pounds)))
-
-(defun extrapolate-weight-loss (num-weeks)
-  "Extrapolate weight loss for NUM-WEEKS using 'av/pd' value in org-table."
-  (interactive "p")
-  (save-excursion
-    (let ((last-weight)
-           (last-avg-loss 2.9)
-           (last-date "")
-           (week 0)
-           (next-date ""))
-      (print num-weeks)
-      (when (org-at-table-p)
-        (goto-char (org-table-end))
-        ;; Find the last date and week number
-        (search-backward-regexp "|\\s-?\\([0-9]+\\)\\s-?|\\s-?<\\([0-9-]+\\)" nil t)
-        (setq week (string-to-number (match-string 1)))
-        (setq last-date (match-string 2))
-        (setq last-weight "16:10")
-        (goto-char (org-table-end))
-        ;; Loop for num-weeks to generate new lines
-        (dotimes (i num-weeks)
-          (setq next-date
-            (format-time-string "<%Y-%m-%d %a>"
-              (time-add (org-time-string-to-time last-date)
-                (days-to-time (+ (* i 7) 7))))) ;; add 7 days per week
-          (setq week (+ week 1))
-          (insert (format "| %d | %s | %s | | | | | | |\n"
-                    week next-date (subtract-weight last-weight (* (+ i 1) last-avg-loss))))))))
-  (org-table-align))
+(defun my/switch-to-thing ()
+  "Switch to a buffer, open a recent file, jump to a bookmark,
+                   or change the theme from a unified interface."
+  (interactive)
+  (let* ((buffers (mapcar #'buffer-name (buffer-list)))
+          (recent-files recentf-list)
+          (bookmarks (bookmark-all-names))
+          (all-options (append buffers recent-files bookmarks))
+          (selection (completing-read "Switch to: "
+                       (lambda (str pred action)
+                         (if (eq action 'metadata)
+                           '(metadata . ((category . file)))
+                           (complete-with-action action all-options str pred)))
+                       nil t nil 'file-name-history)))
+    (pcase selection
+      ((pred (lambda (sel) (member sel buffers))) (switch-to-buffer selection))
+      ((pred (lambda (sel) (member sel bookmarks))) (bookmark-jump selection))
+      (_ (find-file selection)))))
 
 (defun my/get-window-regex (regex)
   "Find the first window displaying a buffer whose name matches the given REGEX.
@@ -2817,304 +2710,136 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
       (select-window window)
       (next-error))))
 
-(defun my/dired-delete-async ()
-  "Delete files asynchronously in Dired."
-  (interactive)
-  (if (eq delete-by-moving-to-trash t)
-    (let ((files (dired-get-marked-files)))
-      (dolist (file files)
-        (async-shell-command (format "gio trash '%s'" file))))
-    (message "Async deletion is set up only for trash. Set `delete-by-moving-to-trash` to t.")))
+;;
+;; -> word-count
+;;
 
-(defun my/switch-to-thing ()
-  "Switch to a buffer, open a recent file, jump to a bookmark,
-                   or change the theme from a unified interface."
-  (interactive)
-  (let* ((buffers (mapcar #'buffer-name (buffer-list)))
-          (recent-files recentf-list)
-          (bookmarks (bookmark-all-names))
-          (all-options (append buffers recent-files bookmarks))
-          (selection (completing-read "Switch to: "
-                       (lambda (str pred action)
-                         (if (eq action 'metadata)
-                           '(metadata . ((category . file)))
-                           (complete-with-action action all-options str pred)))
-                       nil t nil 'file-name-history)))
-    (pcase selection
-      ((pred (lambda (sel) (member sel buffers))) (switch-to-buffer selection))
-      ((pred (lambda (sel) (member sel bookmarks))) (bookmark-jump selection))
-      (_ (find-file selection)))))
+(use-package wc-mode
+  ;; :hook
+  ;; (org-mode . wc-mode)
+  :custom
+  (wc-modeline-format "WC:%tw"))
 
-(setq org-icalendar-use-deadline
-  '(event-if-not-todo event-if-todo event-if-todo-not-done todo-due))
-
-(setq org-icalendar-use-scheduled
-  '(event-if-not-todo event-if-todo event-if-todo-not-done todo-start))
-
-(defun my/calc-subscription-cost ()
-  (interactive)
-  (let ((sum 0))
+(defun my/word-count-function (rstart rend)
+  "Counts words without lines containing 'DONE' 'PROPERTIES' 'END:' drawers.
+Or indeed other filters as defined in the main unless from RSTART and REND."
+  (let ((count 0))
     (save-excursion
-      (goto-char (point-min))
-      ;; Search for the numeric pattern.
-      (while (re-search-forward "\\([0-9]+\\.[0-9]+\\)" nil t)
-        ;; Check if the current line does not contain "DONE"
-        (unless (save-excursion
-                  (beginning-of-line)
-                  (re-search-forward "DONE" (line-end-position) t))
-          ;; If "DONE" is not found on the line, process the number.
-          (let ((amount (string-to-number (substring-no-properties (match-string 1)))))
-            (setq sum (+ sum amount))
-            (message "Adding: %.2f, Total: %.2f" amount sum)))))
-    (message "Total: %.2f" sum)))
+      (goto-char rstart)
+      ;; Loop over each line in the region
+      (while (< (point) rend)
+        (let ((line (buffer-substring-no-properties (line-beginning-position)
+                      (line-end-position))))
+          ;; Only count words if the line doesn't contain DONE or is not between PROPERTIES and END
+          ;; Or indeed other filters as defined below
+          (unless (or
+                    (string-match-p "\\* DONE" line)
+                    (string-match-p "\\* TODO" line)
+                    (string-match-p "file\:" line)
+                    (and (string-match-p ":PROPERTIES:" line) (re-search-forward ":END:" nil t))
+                    (and (string-match-p "\\#\\+begin" line) (re-search-forward "\\#\\+end" nil t))
+                    (string-match-p "\\#\\+" line)
+                    )
+            (setq count (+ count (1+ (how-many " " (line-beginning-position) (line-end-position))))))
+          ;; (setq count (+ count (length (split-string line "\\W+" t)))))
+          ;; Go to the beginning of the next line
+          (forward-line 1))))
+    count))
 
-(if (and (fboundp 'native-comp-available-p)
-      (native-comp-available-p))
-  (message "Native compilation is available")
-  (message "Native complation is *not* available"))
+;; Set the custom wc-mode counting function
+(setq wc-count-words-function 'my/word-count-function)
 
-(add-hook 'chatgpt-shell-mode-hook 'visual-line-mode)
+;;
+;; -> windows-specific
+;;
 
-(setq native-comp-async-report-warnings-errors nil)
+(when (eq system-type 'windows-nt)
+  (setq home-dir "c:/users/jimbo")
+  (let ((xPaths
+          `(,(expand-file-name "~/bin")
+             ,(expand-file-name "~/bin/git-bin")
+             ,(expand-file-name "~/bin/omnisharp-win-x64")
+             "c:/GnuWin32/bin"
+             "c:/GNAT/2021/bin")))
+    (setenv "PATH" (mapconcat 'identity xPaths ";"))
+    (setq exec-path (append xPaths (list "." exec-directory))))
 
-(use-package keycast
-  :init
-  (keycast-tab-bar-mode -1))
+  (custom-theme-set-faces
+    'user
+    '(variable-pitch ((t (:family "Monospace" :height 150 :weight normal))))
+    '(fixed-pitch ((t ( :family "Monospace" :height 140)))))
 
-(use-package syntax-subword
-  :init
-  (global-syntax-subword-mode))
+  (setq font-general "Monospace 14")
+  (set-frame-font font-general nil t)
+  (add-to-list 'default-frame-alist `(font . ,font-general)))
 
-(global-set-key (kbd "M-[") #'yank)
-(global-set-key (kbd "M-]") #'yank-pop)
+(setq tab-bar-show 1)
 
-(use-package capf-autosuggest
-  :hook
-  (eshell-mode . capf-autosuggest-mode)
-  (shell-mode . capf-autosuggest-mode))
+;;
+;; -> linux specific
+;;
 
-(bind-key* (kbd "M-9") #'hippie-expand)
+(when (eq system-type 'gnu/linux)
+  (define-key my-jump-keymap (kbd "a") #'emms-browse-by-album)
+  (define-key my-jump-keymap (kbd "b") (lambda () (interactive) (find-file "~/bin")))
+  (define-key my-jump-keymap (kbd "c") (lambda () (interactive) (find-file "~/DCIM/Camera")))
+  (define-key my-jump-keymap (kbd "g") (lambda () (interactive) (find-file "~/.config")))
+  (define-key my-jump-keymap (kbd "i") #'chatgpt-shell)
+  (define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~/DCIM/content/aaa--todo.org")))
+  (define-key my-jump-keymap (kbd "y") #'emms)
+  (define-key my-jump-keymap (kbd "q") #'cfw:open-org-calendar)
+  (define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
+  (define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
 
-(use-package plantuml-mode
-  :custom
-  (plantuml-default-exec-mode 'jar)
-  (plantuml-jar-path (concat user-emacs-directory "plantuml.jar"))
-  (org-plantuml-jar-path (concat user-emacs-directory "plantuml.jar")))
+  (setq diary-file "~/DCIM/content/diary.org")
 
-(add-to-list
-  'org-src-lang-modes '("plantuml" . plantuml))
+  ;; (setq font-general "Noto Sans Mono 11")
+  (setq font-general "Source Code Pro 12")
+  ;; (setq font-general "Source Code Pro Light 11")
+  ;; (setq font-general "Nimbus Mono PS 11")
+  ;; (setq font-general "Monospace 11")
+  (set-frame-font font-general nil t)
+  (add-to-list 'default-frame-alist `(font . ,font-general))
 
-(org-babel-do-load-languages
-  'org-babel-load-languages
-  '((plantuml . t)))
+  (use-package all-the-icons-dired
+    :diminish
+    all-the-icons-dired-mode
+    :hook
+    (dired-mode . all-the-icons-dired-mode))
 
-(add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
+  (use-package all-the-icons-ibuffer
+    :ensure t
+    :hook
+    (ibuffer-mode . all-the-icons-ibuffer-mode))
 
-(add-hook 'plantuml-mode-hook (lambda ()
-                                (setq tab-width 0)
-                                (setq indent-tabs-mode nil)))
+  (use-package all-the-icons-completion
+    :ensure t
+    :init
+    (all-the-icons-completion-mode)
+    :hook
+    (marginalia-mode all-the-icons-completion-marginalia-setup))
 
-(setq org-use-speed-commands t)
+  (when (file-exists-p "~/source/repos/xkb-mode")
+    (use-package xkb-mode
+      :load-path "~/source/repos/xkb-mode"))
+  ;; :vc (:fetcher github :repo "captainflasmr/xkb-mode"))
 
-(defun my-org-confirm-babel-evaluate (lang body)
-  (not (or (string= lang "plantuml")
-         (string= lang "emacs-lisp"))))
+  (when (file-exists-p "~/source/repos/arscript-mode")
+    (use-package arscript-mode
+      :load-path "~/source/repos/arscript-mode"))
+  ;; :vc (:fetcher github :repo "captainflasmr/arscript-mode"))
 
-(setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
+  (when (file-exists-p "~/source/repos/fd-find")
+    (use-package fd-find
+      :load-path "~/source/repos/fd-find"))
 
-(use-package markdown-mode)
+  (add-hook 'window-configuration-change-hook #'my/waybar)
+  (add-hook 'window-state-change-hook #'my/waybar)
+  )
 
-(use-package org-preview-html
-  :custom
-  (org-preview-html-subtree-only nil)
-  (org-preview-html-refresh-configuration 'manual)
-  (org-preview-html-viewer 'eww))
-
-(setq shr-ignore-cache t)
-(bind-key* (kbd "M-n") #'(lambda ()(interactive)(scroll-up (/ (window-height) 4))))
-(bind-key* (kbd "M-m") #'(lambda ()(interactive)(scroll-down (/ (window-height) 4))))
-
-(defun swaywm-list-mod-bindsyms (path)
-  "List all bindsyms that start with $mod or its resolved value in the SwayWM config file at PATH."
-  (interactive "fSway config file path: ")
-  (with-temp-buffer
-    (insert-file-contents path)
-    (goto-char (point-min))
-    (let ((vars nil)
-           (bindsyms nil))
-      ;; Collect variable definitions
-      (while (re-search-forward "^set \\$\\([a-zA-Z0-9_]+\\) \\(.*\\)$" nil t)
-        (let ((var (match-string-no-properties 1))
-               (value (match-string-no-properties 2)))
-          (setq vars (cons (cons var value) vars))))
-      ;; Prepare to translate $mod and other keys
-      (let* ((mod (cdr (assoc "mod" vars)))
-              (left (cdr (assoc "left" vars)))
-              (down (cdr (assoc "down" vars)))
-              (up (cdr (assoc "up" vars)))
-              (right (cdr (assoc "right" vars)))
-              (mod-re (format "\\(%s\\|$mod\\)" (regexp-quote mod))))
-        (goto-char (point-min))
-        ;; Collect all bindings that start with $mod or its resolved value
-        (while (re-search-forward (format "^bindsym %s\\+\\([^ ]+\\) \\(.*\\)$" mod-re) nil t)
-          (let* ((mod-key (match-string-no-properties 1))
-                  (action (match-string-no-properties 2))
-                  (full-key (concat mod "+" action)))
-            ;; Replace variable references in keys
-            (setq full-key (replace-regexp-in-string "\\$left" left full-key))
-            (setq full-key (replace-regexp-in-string "\\$down" down full-key))
-            (setq full-key (replace-regexp-in-string "\\$up" up full-key))
-            (setq full-key (replace-regexp-in-string "\\$right" right full-key))
-            ;; Replace $mod with the actual mod key or keep as $mod for clarity
-            (setq full-key (replace-regexp-in-string "\\$mod" mod full-key))
-            ;; Collect the key-action pair
-            (setq bindsyms (cons (format "%s" full-key) bindsyms)))))
-      ;; Return reversed to maintain order
-      (mapconcat 'identity (sort (nreverse bindsyms) 'string-lessp) "\n"))))
-
-;; (swaywm-list-mod-bindsyms "/home/jdyer/.config/sway/config.d/default")
-
-(use-package htmlize)
-(use-package org-kanban)
-
-(defun my/save-buffer-as-html ()
-  (interactive)
-  ;; Define the export file name by appending .html to the current buffer name
-  (let* ((original-buffer-name (buffer-name))
-          (html-file-name (concat (file-name-sans-extension original-buffer-name) ".html"))
-          (html-buffer (htmlize-buffer (current-buffer))))
-    ;; Check if the file exists, and if so, ask the user if they want to overwrite it
-    (if (file-exists-p html-file-name)
-      (if (y-or-n-p (format "File %s already exists. Overwrite? " html-file-name))
-        (progn
-          ;; User chose to overwrite: Save the HTML buffer to the file
-          (with-current-buffer html-buffer
-            (write-file html-file-name))
-          (kill-buffer html-buffer) ;; Clean up the temporary HTML buffer
-          (message "Exported to %s" html-file-name))
-        ;; User chose not to overwrite: Just clean up
-        (kill-buffer html-buffer))
-      ;; File doesn't exist: Save directly
-      (with-current-buffer html-buffer
-        (write-file html-file-name))
-      (kill-buffer html-buffer) ;; Clean up the temporary HTML buffer
-      (message "Exported to %s" html-file-name))))
-
-(use-package stripe-buffer)
-
-(use-package stripes
-  :custom
-  (stripes-unit 1))
-
-;; export keys
-(bind-key* (kbd "M-s e") #'my/push-block)
-(bind-key* (kbd "M-s f") #'org-preview-html-mode)
-(bind-key* (kbd "M-s r") #'org-preview-html-refresh)
-(bind-key* (kbd "M-s t") #'my/save-buffer-as-html)
-
-;; evaluation
-(bind-key* (kbd "M-s s") #'my/shell-create)
-(bind-key* (kbd "M-s v") #'eval-expression)
-(bind-key* (kbd "M-s k") #'org-kanban/shift)
-(bind-key* (kbd "M-s ;") #'mark-sexp)
-(bind-key* (kbd "M-s l") #'mark-sexp)
-
-(bind-key* (kbd "M-'") #'set-mark-command)
-(bind-key* (kbd "M-SPC") #'set-mark-command)
-
-(bind-key* (kbd "C-z") #'undo)
-
-(use-package popper
-  :init
-  (setq popper-reference-buffers
-    '("\\*eshell.*"
-       "\\*convert.*"
-       help-mode
-       compilation-mode))
-  (popper-mode 1)
-  (popper-echo-mode 1)
-  :custom
-  (popper-window-height 15))
-
-(bind-key* (kbd "C-;") #'popper-toggle)
-(bind-key* (kbd "C-'") #'popper-toggle-type)
-
-(defun my/toggle-org-kanban-compressed-and-refresh ()
-  "Toggle the :compressed state for the first org-kanban directive found in the buffer and refresh the table."
-  (interactive)
-  (save-excursion
-    (goto-char (point-min))
-    (let ((found nil)
-           (begin-pos nil))
-      (while (and (not found)
-               (search-forward "#+begin: kanban" nil t))
-        (setq begin-pos (point-at-bol)) ;; Capture the beginning for later use
-        (let ((line-end (point-at-eol)))
-          (when (search-forward ":compressed" line-end t)
-            (let ((start (point)))
-              (if (search-forward-regexp "nil\\|t" line-end t)
-                (let ((value (match-string 0)))
-                  (replace-match (if (string= value "nil") "t" "nil") t t)
-                  (setq found t))
-                ;; If :compressed is not found, add it as `:compressed t`.
-                (goto-char start)
-                (insert " t")
-                (setq found t))))))
-      (if (not found)
-        (message "No org-kanban directive with a :compressed keyword found.")
-        (progn
-          ;; If a kanban was found and modified, re-evaluate it
-          (goto-char begin-pos)
-          (org-ctrl-c-ctrl-c)
-          (message "Toggled :compressed and refreshed the kanban table."))))))
-
-(bind-key* (kbd "M-s m") #'my/toggle-org-kanban-compressed-and-refresh)
-
-(use-package ace-window
-  :config
-  (setq aw-keys '(?j ?k ?l ?\; ?a ?s ?d ?f))
-  (setq aw-background nil))
-
-(bind-key* (kbd "M-a") #'ace-window)
-
-(defun my/org-tag-refresh()
-  ""
-  (interactive)
-  (revert-buffer-quick)
-  (org-align-tags t))
-
-(defvar consult--xref-history nil
-  "History for the `consult-recent-xref' results.")
-
-(defun consult-recent-xref (&optional markers)
-  "Jump to a marker in MARKERS list (defaults to `xref--history'.
-The command supports preview of the currently selected marker position.
-The symbol at point is added to the future history."
-  (interactive)
-  (consult--read
-    (consult--global-mark-candidates
-      (or markers (flatten-list xref--history)))
-    :prompt "Go to Xref: "
-    :annotate (consult--line-prefix)
-    :category 'consult-location
-    :sort nil
-    :require-match t
-    :lookup #'consult--lookup-location
-    :history '(:input consult--xref-history)
-    :add-history (thing-at-point 'symbol)
-    :state (consult--jump-state)))
-
-(defun my/dired-du ()
-  "Run 'du -hc' on the directory under the cursor in Dired."
-  (interactive)
-  (let ((current-dir (dired-get-file-for-visit)))
-    (if (file-directory-p current-dir)
-      (dired-do-async-shell-command "du -hc" nil (list current-dir))
-      (message "The current point is not a directory."))))
-
-;;; ----------------------------------------
-;;  SWIG
-;;; ----------------------------------------
+;;
+;; -> SWIG
+;;
 
 (require 'cl-lib)
 (require 'subr-x)
@@ -3205,7 +2930,163 @@ The symbol at point is added to the future history."
     "/home/jdyer/source/repos/cigi-ccl_4_0/example.i"
     ))
 
-(use-package cmake-mode)
+;;
+;; -> development
+;;
+
+(defun subtract-weight (weight-str avg-loss)
+  "Subtract AVG-LOSS pounds from WEIGHT-STR given in 'stones:pounds' format."
+  (let* ((stones-pounds (split-string weight-str ":"))
+          (stones (string-to-number (car stones-pounds)))
+          (pounds (string-to-number (cadr stones-pounds)))
+          (total-pounds (+ pounds (* stones 14)))
+          (new-total-pounds (- total-pounds avg-loss))
+          (new-stones (truncate (/ new-total-pounds 14)))
+          (new-pounds (mod new-total-pounds 14)))
+    (format "%d:%d" new-stones new-pounds)))
+
+(defun extrapolate-weight-loss (num-weeks)
+  "Extrapolate weight loss for NUM-WEEKS using 'av/pd' value in org-table."
+  (interactive "p")
+  (save-excursion
+    (let ((last-weight)
+           (last-avg-loss 2.9)
+           (last-date "")
+           (week 0)
+           (next-date ""))
+      (print num-weeks)
+      (when (org-at-table-p)
+        (goto-char (org-table-end))
+        ;; Find the last date and week number
+        (search-backward-regexp "|\\s-?\\([0-9]+\\)\\s-?|\\s-?<\\([0-9-]+\\)" nil t)
+        (setq week (string-to-number (match-string 1)))
+        (setq last-date (match-string 2))
+        (setq last-weight "16:10")
+        (goto-char (org-table-end))
+        ;; Loop for num-weeks to generate new lines
+        (dotimes (i num-weeks)
+          (setq next-date
+            (format-time-string "<%Y-%m-%d %a>"
+              (time-add (org-time-string-to-time last-date)
+                (days-to-time (+ (* i 7) 7))))) ;; add 7 days per week
+          (setq week (+ week 1))
+          (insert (format "| %d | %s | %s | | | | | | |\n"
+                    week next-date (subtract-weight last-weight (* (+ i 1) last-avg-loss))))))))
+  (org-table-align))
+
+(defun my/dired-delete-async ()
+  "Delete files asynchronously in Dired."
+  (interactive)
+  (if (eq delete-by-moving-to-trash t)
+    (let ((files (dired-get-marked-files)))
+      (dolist (file files)
+        (async-shell-command (format "gio trash '%s'" file))))
+    (message "Async deletion is set up only for trash. Set `delete-by-moving-to-trash` to t.")))
+
+(setq org-icalendar-use-deadline
+  '(event-if-not-todo event-if-todo event-if-todo-not-done todo-due))
+
+(setq org-icalendar-use-scheduled
+  '(event-if-not-todo event-if-todo event-if-todo-not-done todo-start))
+
+(defun my/calc-subscription-cost ()
+  (interactive)
+  (let ((sum 0))
+    (save-excursion
+      (goto-char (point-min))
+      ;; Search for the numeric pattern.
+      (while (re-search-forward "\\([0-9]+\\.[0-9]+\\)" nil t)
+        ;; Check if the current line does not contain "DONE"
+        (unless (save-excursion
+                  (beginning-of-line)
+                  (re-search-forward "DONE" (line-end-position) t))
+          ;; If "DONE" is not found on the line, process the number.
+          (let ((amount (string-to-number (substring-no-properties (match-string 1)))))
+            (setq sum (+ sum amount))
+            (message "Adding: %.2f, Total: %.2f" amount sum)))))
+    (message "Total: %.2f" sum)))
+
+(if (and (fboundp 'native-comp-available-p)
+      (native-comp-available-p))
+  (message "Native compilation is available")
+  (message "Native complation is *not* available"))
+
+(setq native-comp-async-report-warnings-errors nil)
+
+(defun my/save-buffer-as-html ()
+  (interactive)
+  ;; Define the export file name by appending .html to the current buffer name
+  (let* ((original-buffer-name (buffer-name))
+          (html-file-name (concat (file-name-sans-extension original-buffer-name) ".html"))
+          (html-buffer (htmlize-buffer (current-buffer))))
+    ;; Check if the file exists, and if so, ask the user if they want to overwrite it
+    (if (file-exists-p html-file-name)
+      (if (y-or-n-p (format "File %s already exists. Overwrite? " html-file-name))
+        (progn
+          ;; User chose to overwrite: Save the HTML buffer to the file
+          (with-current-buffer html-buffer
+            (write-file html-file-name))
+          (kill-buffer html-buffer) ;; Clean up the temporary HTML buffer
+          (message "Exported to %s" html-file-name))
+        ;; User chose not to overwrite: Just clean up
+        (kill-buffer html-buffer))
+      ;; File doesn't exist: Save directly
+      (with-current-buffer html-buffer
+        (write-file html-file-name))
+      (kill-buffer html-buffer) ;; Clean up the temporary HTML buffer
+      (message "Exported to %s" html-file-name))))
+
+(defun my/toggle-org-kanban-compressed-and-refresh ()
+  "Toggle the :compressed state for the first org-kanban directive found in the buffer and refresh the table."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (let ((found nil)
+           (begin-pos nil))
+      (while (and (not found)
+               (search-forward "#+begin: kanban" nil t))
+        (setq begin-pos (point-at-bol)) ;; Capture the beginning for later use
+        (let ((line-end (point-at-eol)))
+          (when (search-forward ":compressed" line-end t)
+            (let ((start (point)))
+              (if (search-forward-regexp "nil\\|t" line-end t)
+                (let ((value (match-string 0)))
+                  (replace-match (if (string= value "nil") "t" "nil") t t)
+                  (setq found t))
+                ;; If :compressed is not found, add it as `:compressed t`.
+                (goto-char start)
+                (insert " t")
+                (setq found t))))))
+      (if (not found)
+        (message "No org-kanban directive with a :compressed keyword found.")
+        (progn
+          ;; If a kanban was found and modified, re-evaluate it
+          (goto-char begin-pos)
+          (org-ctrl-c-ctrl-c)
+          (message "Toggled :compressed and refreshed the kanban table."))))))
+
+(bind-key* (kbd "M-s m") #'my/toggle-org-kanban-compressed-and-refresh)
+
+(defvar consult--xref-history nil
+  "History for the `consult-recent-xref' results.")
+
+(defun consult-recent-xref (&optional markers)
+  "Jump to a marker in MARKERS list (defaults to `xref--history'.
+The command supports preview of the currently selected marker position.
+The symbol at point is added to the future history."
+  (interactive)
+  (consult--read
+    (consult--global-mark-candidates
+      (or markers (flatten-list xref--history)))
+    :prompt "Go to Xref: "
+    :annotate (consult--line-prefix)
+    :category 'consult-location
+    :sort nil
+    :require-match t
+    :lookup #'consult--lookup-location
+    :history '(:input consult--xref-history)
+    :add-history (thing-at-point 'symbol)
+    :state (consult--jump-state)))
 
 (defvar my/waybar-output-file
   (expand-file-name "emacs_output.json" (getenv "HOME"))
@@ -3244,36 +3125,12 @@ The symbol at point is added to the future history."
 
 (add-hook 'kill-emacs-hook 'my-delete-file-on-exit)
 
-(defun predicate-exclusion-p (dir)
-  "exclusion of directories"
-  (not
-    (or
-      (string-match "/home/jdyer/examples/CPPrograms/nil" dir)
-      )))
-
-(defun my/generate-etags ()
-  "Generate TAGS file for various source files in `default-directory` and its subdirectories."
-  (interactive)
-  (message "Getting file list...")
-  (let ((all-files
-          (append
-            (directory-files-recursively default-directory "\\(?:\\.cpp$\\|\\.c$\\|\\.h$\\)" nil 'predicate-exclusion-p)
-            (directory-files-recursively default-directory "\\(?:\\.cs$\\|\\.cs$\\)" nil 'predicate-exclusion-p)
-            (directory-files-recursively default-directory "\\(?:\\.ads$\\|\\.adb$\\)" nil 'predicate-exclusion-p)))
-        (tags-file-path (expand-file-name (concat default-directory "TAGS"))))
-    (unless (file-directory-p default-directory)
-      (error "Default directory does not exist: %s" default-directory))
-    ;; Generate TAGS file
-    (dolist (file all-files)
-      (message file)
-      (shell-command (format "etags --append \%s -o %s" file tags-file-path)))))
-
 (bind-key* (kbd "C-x s") #'save-buffer)
 
 (defun copy-vcxproj-and-sln-files (src-dir dst-dir)
   "Copy .vcxproj, .vcxproj.filters, and .sln files from SRC-DIR to DST-DIR recursively."
   (let ((files (directory-files-recursively src-dir
-                 "\\.\\(vcxproj\\|vcxproj.filters\\|sln\\)$"
+                 "\\.\\(vcxproj\\|sln\\)$"
                  nil
                  (lambda (dir)
                    (not
@@ -3284,7 +3141,7 @@ The symbol at point is added to the future history."
     (dolist (file files)
       (message file)
       (let* ((relative-path (file-relative-name file src-dir))
-            (new-file (expand-file-name relative-path dst-dir)))
+              (new-file (expand-file-name relative-path dst-dir)))
         (unless (file-directory-p (file-name-directory new-file))
           (make-directory (file-name-directory new-file) t))
         (copy-file file new-file t)))))
