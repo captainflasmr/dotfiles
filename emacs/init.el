@@ -50,14 +50,6 @@
 (add-hook 'emacs-startup-hook 'display-startup-time)
 
 ;;
-;; -> package-local
-;;
-
-(when (file-exists-p "~/source/repos/fd-find")
-  (use-package fd-find
-    :load-path "~/source/repos/fd-find"))
-
-;;
 ;; -> fetchers
 ;;
 
@@ -185,19 +177,6 @@
 (use-package vertico
   :init
   (vertico-mode 1)
-  (vertico-multiform-mode 1)
-  :config
-  (setq vertico-multiform-commands
-    '((consult-line buffer)
-       (consult-line-thing-at-point buffer)
-       (consult-recent-file buffer)
-       (consult-mode-command buffer)
-       (consult-complex-command buffer)
-       (embark-bindings buffer)
-       (consult-locate buffer)
-       (consult-project-buffer buffer)
-       (consult-ripgrep buffer)
-       (consult-fd buffer)))
   :custom
   (vertico-cycle t)
   (read-file-name-completion-ignore-case t)
@@ -233,13 +212,11 @@
 
 (define-key my-jump-keymap (kbd "-") #'tab-close)
 (define-key my-jump-keymap (kbd "=") (lambda () (interactive) (tab-bar-new-tab-to -1)))
-(define-key my-jump-keymap (kbd "d") #'my/dired-du)
 (define-key my-jump-keymap (kbd "e") (lambda () (interactive) (find-file (concat user-emacs-directory "init.el"))))
 (define-key my-jump-keymap (kbd "f") #'my/find-file)
 (define-key my-jump-keymap (kbd "h") (lambda () (interactive) (find-file "~")))
 (define-key my-jump-keymap (kbd "k") (lambda () (interactive) (find-file (concat user-emacs-directory "emacs--init.org"))))
 (define-key my-jump-keymap (kbd "m") #'customize-themes)
-(define-key my-jump-keymap (kbd "o") #'my/switch-to-thing)
 (define-key my-jump-keymap (kbd "p") #'proced)
 (define-key my-jump-keymap (kbd "r") #'scratch-buffer)
 (define-key my-jump-keymap (kbd "t") #'customize-themes)
@@ -286,7 +263,6 @@
 (global-set-key (kbd "M-s j") #'eval-defun)
 (global-set-key (kbd "M-s g") #'my/text-browser-search)
 (global-set-key (kbd "M-s h") #'my/mark-block)
-(global-set-key (kbd "M-s q") #'dired-toggle-read-only)
 
 ;;
 ;; -> magit
@@ -318,7 +294,7 @@
          ("Path" 99 magit-repolist-column-path nil)))
     (magit-repository-directories
       '(("~/.config" . 0)
-         ("~/repos" . 2)
+         ("~/source/repos" . 2)
          ("~/bin" . 1)
          ("~/DCIM/Art/Content" . 2)
          ("~/DCIM/themes" . 2)))))
@@ -462,7 +438,7 @@
 (global-ede-mode -1)
 (global-prettify-symbols-mode t)
 (auto-fill-mode -1)
-(blink-cursor-mode -1)
+(blink-cursor-mode 1)
 (column-number-mode 1)
 (global-auto-revert-mode 1)
 (put 'narrow-to-page 'disabled nil)
@@ -552,13 +528,17 @@
 ;;
 
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
-  '(custom-enabled-themes '(doom-dracula))
-  '(warning-suppress-log-types '((frameset)))
-  '(warning-suppress-types '((frameset))))
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-enabled-themes '(doom-dracula))
+ '(package-selected-packages
+    '(cmake-mode ace-window popper stripes stripe-buffer org-kanban htmlize org-preview-html markdown-mode plantuml-mode capf-autosuggest syntax-subword keycast all-the-icons-completion all-the-icons-ibuffer all-the-icons-dired wc-mode csv calfw-cal calfw-org calfw chatgpt-shell kurecolor selected-window-accent-mode highlight-indent-guides ztree package-lint flycheck yaml-mode company powerthesaurus jinx toc-org org-modern org-tidy elfeed emms magit marginalia orderless vertico tempel corfu deadgrep ox-hugo visual-fill-column rainbow-mode doom-themes ef-themes gruvbox-theme embark-consult ahk-mode gnuplot git-timemachine i3wm-config-mode diredfl diminish async file-info lorem-ipsum free-keys vc-use-package))
+ '(package-vc-selected-packages
+    '((vc-use-package :vc-backend Git :url "https://github.com/slotThe/vc-use-package")))
+ '(warning-suppress-log-types '((frameset)))
+ '(warning-suppress-types '((frameset))))
 
 ;;
 ;; -> defun
@@ -906,7 +886,7 @@ as search term for Google search in web browser."
        (file+function
          "~/DCIM/content/art--all.org"
          my-capture-top-level)
-       "** TODO %^{title} :painter:krita:artrage:2024:
+       "* TODO %^{title} :painter:krita:artrage:2024:
 :PROPERTIES:
 :EXPORT_FILE_NAME: %\\1
 :EXPORT_HUGO_SECTION: art--all
@@ -1069,7 +1049,7 @@ as search term for Google search in web browser."
          "VideoRotate" "VideoRotateLeft" "VideoRotateRight" "VideoShrink"
          "VideoSlowDown" "VideoSpeedUp" "VideoZoom" "WhatsAppConvert"
          "PictureCorrect" "Picture2pdf" "PictureTag" "PictureTagRename"
-         "OtherTagDate")
+         "OtherTagDate" "VideoRemoveFlips")
       "List of commands for dwim-convert.")
 
     (defun my/read-lines (file-path)
@@ -1115,35 +1095,42 @@ as search term for Google search in web browser."
 ;;
 
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
-  '(diredfl-date-time ((t (:foreground "#8d909b"))))
-  '(diredfl-dir-heading ((t (:foreground "#aa5555" :weight bold))))
-  '(diredfl-dir-priv ((t (:foreground "DarkRed"))))
-  '(diredfl-exec-priv ((t (:foreground "#999999"))))
-  '(diredfl-file-name ((t (:foreground "#818282"))))
-  '(diredfl-no-priv ((t nil)))
-  '(diredfl-number ((t (:foreground "#999999"))))
-  '(diredfl-read-priv ((t nil)))
-  '(diredfl-write-priv ((t nil)))
-  '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
-  '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
-  '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
-  '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
-  '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2"))))
-  '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
-  '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.1 :family "Source Code Pro"))))
-  '(font-lock-warning-face ((t (:foreground "#930000" :inverse-video nil))))
-  '(org-link ((t (:underline nil))))
-  '(indent-guide-face ((t (:background "#282828" :foreground "#666666"))))
-  '(stripe-highlight ((t (:background "#F0F0F0"))))
-  '(widget-button ((t (:inherit fixed-pitch :weight regular))))
-  '(window-divider ((t (:foreground "black"))))
-  '(org-tag ((t (:height 0.99))))
-  '(aw-leading-char-face ((t (:inherit (highlight) :inverse-video t :weight bold :scale 1.2))))
-  '(vertical-border ((t (:foreground "#000000")))))
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(aw-leading-char-face ((t (:inherit (highlight) :inverse-video nil :weight bold :height 1.4))))
+ '(diredfl-date-time ((t (:foreground "#8d909b"))))
+ '(diredfl-dir-heading ((t (:foreground "#aa5555" :weight bold))))
+ '(diredfl-dir-priv ((t (:foreground "DarkRed"))))
+ '(diredfl-exec-priv ((t (:foreground "#999999"))))
+ '(diredfl-file-name ((t (:foreground "#818282"))))
+ '(diredfl-no-priv ((t nil)))
+ '(diredfl-number ((t (:foreground "#999999"))))
+ '(diredfl-read-priv ((t nil)))
+ '(diredfl-write-priv ((t nil)))
+ '(ediff-current-diff-A ((t (:extend t :background "#b5daeb" :foreground "#000000"))))
+ '(ediff-even-diff-A ((t (:background "#bafbba" :foreground "#000000" :extend t))))
+ '(ediff-fine-diff-A ((t (:background "#f4bd92" :foreground "#000000" :extend t))))
+ '(ediff-odd-diff-A ((t (:background "#b8fbb8" :foreground "#000000" :extend t))))
+ '(elfeed-search-title-face ((t (:foreground "#4E4E4E" :height 1.1 :family "Source Code Pro"))))
+ '(font-lock-warning-face ((t (:foreground "#930000" :inverse-video nil))))
+ '(indent-guide-face ((t (:background "#282828" :foreground "#666666"))))
+ '(org-link ((t (:underline nil))))
+ '(org-tag ((t (:height 0.99))))
+ '(stripe-highlight ((t (:background "#F0F0F0"))))
+ '(vertical-border ((t (:foreground "#000000"))))
+ '(whitespace-missing-newline-at-eof ((t (:foreground "#666566656665"))))
+ '(whitespace-newline ((t (:foreground "#666566656665"))))
+ '(whitespace-space ((t (:foreground "#666566656665"))))
+ '(whitespace-space-after-tab ((t (:foreground "#666566656665"))))
+ '(whitespace-space-before-tab ((t (:foreground "#666566656665"))))
+ '(whitespace-tab ((t (:foreground "#666566656665"))))
+ '(whitespace-trailing ((t (:foreground "#666566656665"))))
+ '(widget-button ((t (:inherit fixed-pitch :weight regular))))
+ '(window-divider ((t (:foreground "black"))))
+ '(ztreep-diff-model-add-face ((t (:foreground "#e38d5a"))))
+ '(ztreep-diff-model-diff-face ((t (:foreground "#7cb0f2")))))
 
 ;;
 ;; -> dired
@@ -1464,7 +1451,7 @@ as search term for Google search in web browser."
 
 (setq my/mode-line-format
   '("%e"
-     (:eval (my-all-tabs-string))
+     ;; (:eval (my-all-tabs-string))
      mode-line-modified
      (:eval
        (propertize (format "%s" (abbreviate-file-name default-directory)) 'face '(:inherit bold)))
@@ -1553,12 +1540,31 @@ as search term for Google search in web browser."
 ;;
 
 (use-package jinx)
-(use-package powerthesaurus)
 
-(global-set-key (kbd "M-s c") 'jinx-correct)
+(use-package powerthesaurus
+  :init
+  (require 'transient)
+  (transient-define-prefix my/transient-spelling ()
+    "Spelling commands"
+    ["Spelling"
+      ["Lookups"
+        ("y" "Synonyms" powerthesaurus-lookup-synonyms-dwim)
+        ("a" "Antonyms" powerthesaurus-lookup-antonyms-dwim)]
+      ["Spelling Tools"
+        ("x" "Jinx" jinx-mode)
+        ("c" "Jinx correct" jinx-correct)]
+      ["Dictionary"
+        ("d" "Lookup" dictionary-lookup-definition)]
+      ["Miscellaneous"
+        ("q" "Quit" transient-quit-one)]])
+  :bind
+  ("C-c s" . my/transient-spelling))
+
+(global-set-key (kbd "M-s y") 'powerthesaurus-lookup-synonyms-dwim)
+(global-set-key (kbd "M-s a") 'powerthesaurus-lookup-antonyms-dwim)
 (global-set-key (kbd "M-s x") 'jinx-mode)
+(global-set-key (kbd "M-s c") 'jinx-correct)
 (global-set-key (kbd "M-s d") 'dictionary-lookup-definition)
-(global-set-key (kbd "M-s a") 'powerthesaurus-lookup-synonyms-dwim)
 
 (setq ispell-local-dictionary "en_GB")
 (setq ispell-program-name "hunspell")
@@ -1914,7 +1920,13 @@ With directories under project root using find."
   (lambda () (setq sh-basic-offset 3)))
 
 (use-package highlight-indent-guides
-  :custom (highlight-indent-guides-method 'character))
+  :custom
+  (highlight-indent-guides-method 'bitmap)
+  (highlight-indent-guides-auto-odd-face-perc 55)
+  (highlight-indent-guides-auto-even-face-perc 75)
+  (highlight-indent-guides-auto-character-face-perc 70)
+  (highlight-indent-guides-bitmap-function 'highlight-indent-guides--bitmap-dots)
+  (highlight-indent-guides-responsive 'top))
 
 ;;
 ;; -> etags
@@ -1944,15 +1956,14 @@ With directories under project root using find."
 (use-package selected-window-accent-mode
   ;; :load-path "~/source/repos/selected-window-accent-mode"
   ;; :vc (:fetcher github :repo "captainflasmr/selected-window-accent-mode")
-  :config (selected-window-accent-mode 1)
+  :config (selected-window-accent-mode -1)
   :custom
-  (selected-window-accent-fringe-thickness 8)
+  (selected-window-accent-fringe-thickness 10)
   (selected-window-accent-percentage-darken 20)
   (selected-window-accent-percentage-desaturate 50)
   (selected-window-accent-smart-borders t)
   (selected-window-accent-tab-accent t)
-  (selected-window-accent-custom-color nil)
-  (selected-window-accent-custom-color "#02a2e9")
+  (selected-window-accent-custom-color "#a67132")
   (selected-window-accent-mode-style 'subtle))
 
 ;;
@@ -2267,28 +2278,6 @@ With directories under project root using find."
     :after proced))
 
 ;;
-;; -> all-the-icons
-;;
-
-(use-package all-the-icons-ibuffer
-  :ensure t
-  :hook
-  (ibuffer-mode . all-the-icons-ibuffer-mode))
-
-(use-package all-the-icons-completion
-  :ensure t
-  :init
-  (all-the-icons-completion-mode)
-  :hook
-  (marginalia-mode all-the-icons-completion-marginalia-setup))
-
-(use-package all-the-icons-dired
-  :diminish
-  all-the-icons-dired-mode
-  :hook
-  (dired-mode . all-the-icons-dired-mode))
-
-;;
 ;; -> repeat
 ;;
 
@@ -2334,9 +2323,10 @@ With directories under project root using find."
   :custom
   (tab-bar-format '(tab-bar-format-tabs-groups
                      tab-bar-format-align-right
-                     my-tab-line-buffer-name
+                     ;; my-tab-line-buffer-name
                      tab-bar-format-global)) ;; 28.1
   ;; (tab-bar-select-tab-modifiers '(control)) ;; 27.1
+  (tab-bar-show 1)
   (tab-bar-new-button-show nil) ;; 27.1
   (tab-bar-close-button-show nil) ;; 27.1
   (tab-bar-history-limit 100) ;; 27.1
@@ -2608,6 +2598,7 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
   (let ((xPaths
           `(,(expand-file-name "~/bin")
              ,(expand-file-name "~/bin/git-bin")
+             ,(expand-file-name "~/bin/omnisharp-win-x64")
              "c:/GnuWin32/bin"
              "c:/GNAT/2021/bin")))
     (setenv "PATH" (mapconcat 'identity xPaths ";"))
@@ -2621,6 +2612,8 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
   (setq font-general "Monospace 14")
   (set-frame-font font-general nil t)
   (add-to-list 'default-frame-alist `(font . ,font-general)))
+
+  (setq tab-bar-show 1)
 
 ;;
 ;; -> linux specific
@@ -2646,7 +2639,41 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
   ;; (setq font-general "Nimbus Mono PS 11")
   ;; (setq font-general "Monospace 11")
   (set-frame-font font-general nil t)
-  (add-to-list 'default-frame-alist `(font . ,font-general)))
+  (add-to-list 'default-frame-alist `(font . ,font-general))
+
+  (use-package all-the-icons-dired
+    :diminish
+    all-the-icons-dired-mode
+    :hook
+    (dired-mode . all-the-icons-dired-mode))
+
+  (use-package all-the-icons-ibuffer
+    :ensure t
+    :hook
+    (ibuffer-mode . all-the-icons-ibuffer-mode))
+
+  (use-package all-the-icons-completion
+    :ensure t
+    :init
+    (all-the-icons-completion-mode)
+    :hook
+    (marginalia-mode all-the-icons-completion-marginalia-setup))
+
+  (use-package xkb-mode
+    :load-path "~/source/repos/xkb-mode")
+  ;; :vc (:fetcher github :repo "captainflasmr/xkb-mode"))
+
+  (use-package arscript-mode
+    :load-path "~/source/repos/arscript-mode")
+  ;; :vc (:fetcher github :repo "captainflasmr/arscript-mode"))
+
+  (when (file-exists-p "~/source/repos/fd-find")
+    (use-package fd-find
+      :load-path "~/source/repos/fd-find"))
+
+  (add-hook 'window-configuration-change-hook #'my/waybar)
+  (add-hook 'window-state-change-hook #'my/waybar)
+  )
 
 ;;
 ;; -> development
@@ -2903,19 +2930,9 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
   (org-preview-html-refresh-configuration 'manual)
   (org-preview-html-viewer 'eww))
 
-(use-package bug-hunter)
-
 (setq shr-ignore-cache t)
 (bind-key* (kbd "M-n") #'(lambda ()(interactive)(scroll-up (/ (window-height) 4))))
 (bind-key* (kbd "M-m") #'(lambda ()(interactive)(scroll-down (/ (window-height) 4))))
-
-(use-package xkb-mode
-  :load-path "~/source/repos/xkb-mode")
-;; :vc (:fetcher github :repo "captainflasmr/xkb-mode"))
-
-(use-package arscript-mode
-  :load-path "~/source/repos/arscript-mode")
-;; :vc (:fetcher github :repo "captainflasmr/arscript-mode"))
 
 (defun swaywm-list-mod-bindsyms (path)
   "List all bindsyms that start with $mod or its resolved value in the SwayWM config file at PATH."
@@ -2955,7 +2972,7 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
       ;; Return reversed to maintain order
       (mapconcat 'identity (sort (nreverse bindsyms) 'string-lessp) "\n"))))
 
-(swaywm-list-mod-bindsyms "/home/jdyer/.config/sway/config.d/default")
+;; (swaywm-list-mod-bindsyms "/home/jdyer/.config/sway/config.d/default")
 
 (use-package htmlize)
 (use-package org-kanban)
@@ -3000,8 +3017,10 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
 (bind-key* (kbd "M-s v") #'eval-expression)
 (bind-key* (kbd "M-s k") #'org-kanban/shift)
 (bind-key* (kbd "M-s ;") #'mark-sexp)
+(bind-key* (kbd "M-s l") #'mark-sexp)
 
 (bind-key* (kbd "M-'") #'set-mark-command)
+(bind-key* (kbd "M-SPC") #'set-mark-command)
 
 (bind-key* (kbd "C-z") #'undo)
 
@@ -3015,7 +3034,7 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
   (popper-mode 1)
   (popper-echo-mode 1)
   :custom
-  (popper-window-height 20))
+  (popper-window-height 15))
 
 (bind-key* (kbd "C-;") #'popper-toggle)
 (bind-key* (kbd "C-'") #'popper-toggle-type)
@@ -3185,3 +3204,90 @@ The symbol at point is added to the future history."
     "/home/jdyer/source/repos/cigi-ccl_4_0/include"
     "/home/jdyer/source/repos/cigi-ccl_4_0/example.i"
     ))
+
+(use-package cmake-mode)
+
+(defvar my/waybar-output-file
+  (expand-file-name "emacs_output.json" (getenv "HOME"))
+  "Path to the output file for waybar.")
+
+(defun my/waybar-generate-tab-bar-text (max-length)
+  "Generate a string that represents the current tabs in the tab bar, with each tab name truncated to MAX-LENGTH."
+  (interactive "nMax Length: ")
+  (let ((tabs (funcall tab-bar-tabs-function))
+         (tab-names '())
+         (current-tab-index (tab-bar--current-tab-index)))
+    (dolist (tab tabs)
+      (let* ((tab-name (alist-get 'name tab))
+              (is-active (eq tab (nth current-tab-index tabs)))
+              (truncated-name (if (> (length tab-name) max-length)
+                                (substring tab-name 0 max-length)
+                                tab-name)))
+        (push (if is-active (concat "🔸" truncated-name "🔸") truncated-name) tab-names)))
+    (let ((tab-string (concat " " (mapconcat 'identity (reverse tab-names) " | ") "")))
+      tab-string)))
+
+(defun my/waybar ()
+  "Send TEXT to the Waybar script in JSON format and refresh Waybar."
+  (interactive)
+  (let ((json-text (json-encode `((text . ,(my/waybar-generate-tab-bar-text 16))))))
+    ;; Write JSON to file
+    (with-temp-buffer
+      (insert json-text)
+      (write-region (point-min) (point-max) my/waybar-output-file nil 'quiet))
+    (start-process-shell-command "refresh-waybar" nil "pkill -RTMIN+2 waybar")))
+
+(defun my-delete-file-on-exit ()
+  "Delete the file /home/jdyer/emacs_output.json when Emacs exits."
+  (when (file-exists-p my/waybar-output-file)
+    (delete-file my/waybar-output-file)))
+
+(add-hook 'kill-emacs-hook 'my-delete-file-on-exit)
+
+(defun predicate-exclusion-p (dir)
+  "exclusion of directories"
+  (not
+    (or
+      (string-match "/home/jdyer/examples/CPPrograms/nil" dir)
+      )))
+
+(defun my/generate-etags ()
+  "Generate TAGS file for various source files in `default-directory` and its subdirectories."
+  (interactive)
+  (message "Getting file list...")
+  (let ((all-files
+          (append
+            (directory-files-recursively default-directory "\\(?:\\.cpp$\\|\\.c$\\|\\.h$\\)" nil 'predicate-exclusion-p)
+            (directory-files-recursively default-directory "\\(?:\\.cs$\\|\\.cs$\\)" nil 'predicate-exclusion-p)
+            (directory-files-recursively default-directory "\\(?:\\.ads$\\|\\.adb$\\)" nil 'predicate-exclusion-p)))
+        (tags-file-path (expand-file-name (concat default-directory "TAGS"))))
+    (unless (file-directory-p default-directory)
+      (error "Default directory does not exist: %s" default-directory))
+    ;; Generate TAGS file
+    (dolist (file all-files)
+      (message file)
+      (shell-command (format "etags --append \%s -o %s" file tags-file-path)))))
+
+(bind-key* (kbd "C-x s") #'save-buffer)
+
+(defun copy-vcxproj-and-sln-files (src-dir dst-dir)
+  "Copy .vcxproj, .vcxproj.filters, and .sln files from SRC-DIR to DST-DIR recursively."
+  (let ((files (directory-files-recursively src-dir
+                 "\\.\\(vcxproj\\|vcxproj.filters\\|sln\\)$"
+                 nil
+                 (lambda (dir)
+                   (not
+                     (or
+                       (string-match "CMakeFiles" dir)
+                       ))))))
+    ;; (prin1 files)
+    (dolist (file files)
+      (message file)
+      (let* ((relative-path (file-relative-name file src-dir))
+            (new-file (expand-file-name relative-path dst-dir)))
+        (unless (file-directory-p (file-name-directory new-file))
+          (make-directory (file-name-directory new-file) t))
+        (copy-file file new-file t)))))
+
+;; Usage example:
+;; (copy-vcxproj-and-sln-files "c:/Users/jimbo/source/cigi-ccl_4_0/build/windows/debug" "c:/Users/jimbo/source/cigi-ccl_4_0")
