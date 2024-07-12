@@ -1,55 +1,204 @@
-#+title: dotfiles readme
-#+options: toc: nil
+#+TITLE: Configuration Files Overview
+#+AUTHOR: Your Name
+#+DATE: Date
 
-#+begin_src bash
-emacs/
-emacs/early-init.el
-emacs/elisp/
-emacs/elisp/kbd-mode.el
-emacs/emacs--enduring.org
-emacs/emacs--init-windows.el
-emacs/emacs--init.md
-emacs/emacs--init.org
-emacs/emacs--windows.org
-emacs/eshell/
-emacs/eshell/alias
-emacs/init.el
-fish/
-fish/config.fish
-fish/fish_variables
-fusuma/
-fusuma/config.yml
-gtk-3.0/
-gtk-3.0/gtk.css
-hypr/
-hypr/hyprland.conf
-i3/
-i3/config
-kmonad/
-kmonad/Keycode.hs
-kmonad/keyboard.kbd
-kmonad/numpad.kbd
-kmonad/tutorial.kbd
-mpv/
-mpv/mpv.conf
-picom/
-picom/picom.conf
-polybar/
-polybar/colors.ini
-polybar/config.ini
-polybar/fonts.ini
-polybar/modules.ini
-qtile/
-qtile/README.rst
-qtile/config.py
-qtile/default_config.py
-rofi/
-rofi/config.rasi
-rofi/theme.rasi
-sway/
-sway/config
-waybar/
-waybar/config
-waybar/modules.json
-waybar/style.css
-#+end_src
+* Introduction
+This repository contains various configuration files and directories for different applications and tools. It is intended to be a backup and a reference for setting up a similar environment on another system.
+
+* Directory Structure
+Here is an overview of the files and folders located in your `.config` directory.
+
+** .gitignore
+Git ignore file specifying which files and directories to ignore when committing to the repository.
+
+** .profile
+User profile script for shell initialization customizations.
+
+** Thunar
+Configuration files for Thunar file manager.
+
+- =Thunar/uca.xml=: Custom actions for Thunar.
+
+** VSCodium/User
+Configurations for VSCodium user settings.
+
+- =VSCodium/User/keybindings.json=: Keybinding settings for VSCodium.
+- =VSCodium/User/settings.json=: General settings for VSCodium.
+
+** Digikam Configuration
+Configuration files for Digikam photo management software.
+
+- =digikam_systemrc=
+- =digikamrc=
+
+** Dunst
+Notification daemon configuration.
+
+- =dunst/dunstrc=: Configuration for Dunst notifications.
+
+** Emacs
+Emacs configuration files and directory structure.
+
+- =emacs/bookmarks=: Bookmarks file for Emacs.
+- =emacs/early-init.el=: Early initialization file for Emacs.
+- =emacs/emacs--init.org=: Main initialization configuration for Emacs.
+- =emacs/emacs--simple.org=: Simplified initialization configuration.
+- =emacs/emacs--straight.org=: Configuration using straight.el package manager.
+- =emacs/eshell/=: Directory for eshell-related settings.
+  - =emacs/eshell/alias=: Alias definitions for eshell.
+- =emacs/init.el=: Main init file for Emacs.
+- =emacs/plantuml.jar=: PlantUML JAR file.
+- =emacs/templates=: Templates directory for Emacs.
+
+** Fish Shell
+Configuration files for Fish shell.
+
+- =fish/config.fish=: Main configuration file for Fish shell.
+- =fish/fish_variables=: Variables file for Fish shell.
+
+** Fusuma
+Configuration files for Fusuma touchpad gesture recognizer.
+
+- =fusuma/config.yml=: Main configuration file.
+
+** GThumb
+Configuration for GThumb image viewer.
+
+- =gthumb/shortcuts.xml=: Custom shortcuts for GThumb.
+
+** GTK-3.0
+GTK settings and themes.
+
+- =gtk-3.0/bookmarks=
+- =gtk-3.0/colors.css=
+- =gtk-3.0/gtk.css=
+- =gtk-3.0/settings.ini=
+
+** Hyprland
+Configuration for Hyprland window manager.
+
+- =hypr/hyprland.conf=
+
+** i3
+Configurations for i3 window manager.
+
+- =i3/config=: Main configuration file for i3.
+
+** i3status
+Status bar configuration for i3.
+
+- =i3status/config=: Configuration for i3status.
+
+** Custom Keymaps
+Custom keymap configurations.
+
+- =keymap_current=
+- =keymap_sway.xkb=
+- =keymap_with_locked_modifiers.xkb=
+- =keymap_with_sticky_modifiers.xkb=
+
+** KMonad
+Key remapping configurations.
+
+- =kmonad/Keycode.hs=
+- =kmonad/keyboard.kbd=
+- =kmonad/kmonad-0.3.0-windows.exe=
+- =kmonad/kmonad-0.4.0-windows.exe=
+- =kmonad/kmonad-0.4.1-win.exe=
+- =kmonad/kmonad-win.kbd=
+- =kmonad/kmonad.bat=
+- =kmonad/numpad.kbd=
+- =kmonad/tutorial.kbd=
+
+** MPV
+Configuration for MPV media player.
+
+- =mpv/mpv.conf=
+
+** Pacseek
+Configuration for Pacseek.
+
+- =pacseek/config.json=
+
+** Picom
+Compositor configuration.
+
+- =picom/picom.conf=: Configuration for Picom.
+
+** Polybar
+Configuration for the Polybar status bar.
+
+- =polybar/colors.ini=
+- =polybar/config.ini=
+- =polybar/fonts.ini=
+- =polybar/modules.ini=
+
+** Qtile
+Configurations and documentation for Qtile window manager.
+
+- =qtile/README.rst=
+- =qtile/config.py=: Main configuration for Qtile.
+- =qtile/default_config.py=: Default configuration for Qtile.
+
+** Rofi
+Application launcher configurations.
+
+- =rofi/config.rasi=
+- =rofi/theme.rasi=
+
+** Sway
+Configurations for Sway window manager.
+
+- =sway/config=: Main configuration file.
+- =sway/config.d/=: Additional configuration files for Sway.
+  - =sway/config.d/application_defaults=
+  - =sway/config.d/autostart_applications=
+  - =sway/config.d/clamshell=
+  - =sway/config.d/default=
+  - =sway/config.d/input=
+  - =sway/config.d/output=
+  - =sway/config.d/swayfx=
+  - =sway/config.d/theme=
+  - =sway/scripts/=: Custom scripts for Sway.
+    - =sway/scripts/advance_workspace.sh=
+    - =sway/scripts/clamshell.sh=
+    - =sway/scripts/hidpi_1.5.sh=
+    - =sway/scripts/import-gsettings=
+    - =sway/scripts/light.sh=
+    - =sway/scripts/lockman.sh=
+    - =sway/scripts/screenshot_display.sh=
+    - =sway/scripts/screenshot_window.sh=
+    - =sway/scripts/swayfader.py=
+    - =sway/scripts/wkill.sh=
+
+** Swayr
+Configuration for Swayr.
+
+- =swayr/config.toml=
+
+** Waybar
+Status bar configuration for Waybar.
+
+- =waybar/config=
+- =waybar/input-event-codes.h=
+- =waybar/modules.json=
+- =waybar/style.css=
+
+** Waybar Garuda
+Custom configurations for Garuda Linux's Waybar.
+
+- =waybar_garuda/config=
+- =waybar_garuda/modules.json=
+- =waybar_garuda/scripts/=: Scripts for custom Waybar modules.
+  - =waybar_garuda/scripts/check_updates.sh=
+  - =waybar_garuda/scripts/keyhint-full.sh=
+  - =waybar_garuda/scripts/network_traffic.sh=
+- =waybar_garuda/style.css=
+
+** Waybar Jdyer
+Custom Waybar configurations for user jdyer.
+
+- =waybar_jdyer/config=
+- =waybar_jdyer/input-event-codes.h=
+- =waybar_jdyer/modules.json=
+- =waybar_jdyer/style.css=
