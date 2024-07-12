@@ -5,10 +5,10 @@
     // "output": "DP-1",
     // "width": 1920,
     "spacing": 0,
-    "margin-top": 10,
-    "margin-bottom": -10,
-    "margin-right": 20,
-    "margin-left": 20,
+    "margin-top": 4,
+    "margin-bottom": -4,
+    "margin-right": 10,
+    "margin-left": 10,
     "include": ["~/.config/waybar/modules.json"],
     "modules-left": [
         // "custom/updates",
@@ -123,7 +123,7 @@
         "tooltip-format-deactivated": "Idle Inhibitor Deactivated"
     },
     "backlight": {
-        "scroll-step": 8,
+        "scroll-step": 0.5,
         "format": "{icon}{percent: >3}%",
         "format-icons": ["", ""],
         "tooltip-format": "Backlight (Scroll): {percent: >3}%",

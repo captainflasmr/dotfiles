@@ -1,5 +1,5 @@
 @define-color foreground rgba(255, 255, 255, 1.0);
-@define-color background rgba(35, 35, 35, 0.1);
+@define-color background rgba(35, 35, 35, 0.8);
 @define-color border-theme rgba(0, 0, 0, 1.0);
 @define-color recording-color  #976767;
 @Define-color workspace-color rgba(100, 100, 100, 0.1);
