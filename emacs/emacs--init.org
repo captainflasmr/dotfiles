@@ -144,7 +144,7 @@ Demonstrates the use of `use-package` to neatly organize package configuration a
 (use-package lorem-ipsum)
 (use-package file-info
   :bind
-  (("C-c w" . file-info-show)))
+  (("C-c f" . file-info-show)))
 (use-package async)
 (use-package diminish)
 (use-package diredfl
@@ -479,7 +479,7 @@ Setup for the Emacs Multimedia System (EMMS) for managing and playing media file
   (emms-default-players)
   (emms-player-list '(emms-player-vlc))
   (emms-browser-covers 'emms-browser-cache-thumbnail-async)
-  (emms-source-file-default-directory "/run/media/jdyer/6665-3063/MyMusicLibrary")
+  (emms-source-file-default-directory "/run/media/jdyer/Backup/MyMusicLibrary")
   (emms-volume-amixer-card 1)
   (emms-volume-change-function 'emms-volume-pulse-change))
 
@@ -602,6 +602,7 @@ Note that occasionally I use the use-package related bind-key for a set all mode
 (global-set-key (kbd "C-c c") #'org-capture)
 (global-set-key (kbd "C-c f") #'my/fold)
 (global-set-key (kbd "C-x C-b") #'ibuffer)
+(bind-key* (kbd "C-x b") #'ibuffer)
 (global-set-key (kbd "C-x l") #'scroll-lock-mode)
 (global-set-key (kbd "M-;") #'my/comment-or-uncomment)
 (bind-key* (kbd "C-c ,") #'embark-act)
@@ -746,10 +747,10 @@ Adjusts Emacs's file backup settings for a better experience, specifying backup 
 (setq make-backup-files 1)
 (setq backup-directory-alist '(("." . "~/backup"))
   backup-by-copying t    ; Don't delink hardlinks
-  version-control t          ; Use version numbers on backups
+  version-control t      ; Use version numbers on backups
   delete-old-versions t  ; Automatically delete excess backups
   kept-new-versions 10   ; how many of the newest versions to keep
-  kept-old-versions 5)    ; and how many of the old
+  kept-old-versions 5)   ; and how many of the old
 
 #+end_src
 
@@ -1171,7 +1172,7 @@ Extends and customizes Org mode for document structuring, note-taking, and proje
   :config
   (setq org-src-tab-acts-natively t
     org-edit-src-content-indentation 0
-    org-log-done nil
+    org-log-done t
     org-use-speed-commands t
     org-tags-sort-function 'org-string-collate-greaterp
     org-export-with-sub-superscripts nil
@@ -1255,10 +1256,10 @@ Customizes the Org Agenda for a personalized task management and calendar view, 
   :custom
   (org-agenda-include-diary nil)
   (org-agenda-show-all-dates t)
+  (org-refile-targets '((org-agenda-files :maxlevel . 1)))
   (org-agenda-files '("~/DCIM/content/aaa--todo.org"
                        "~/DCIM/content/aab--calendar.org"
                        "~/DCIM/content/aac--baby.org"
-                       "~/DCIM/content/aad--shopping.org"
                        "~/DCIM/content/aaf--kate.org"
                        "~/DCIM/content/emacs--todo.org"
                        "~/DCIM/content/subs.org"
@@ -1912,12 +1913,6 @@ Configures spell checking tools and dictionaries, integrating external tools lik
   :bind
   ("C-c s" . my/transient-spelling))
 
-(global-set-key (kbd "M-s y") 'powerthesaurus-lookup-synonyms-dwim)
-(global-set-key (kbd "M-s a") 'powerthesaurus-lookup-antonyms-dwim)
-(global-set-key (kbd "M-s x") 'jinx-mode)
-(global-set-key (kbd "M-s c") 'jinx-correct)
-(global-set-key (kbd "M-s d") 'dictionary-lookup-definition)
-
 (setq ispell-local-dictionary "en_GB")
 (setq ispell-program-name "hunspell")
 (setq dictionary-default-dictionary "*")
@@ -1984,7 +1979,7 @@ Maps file extensions to specific Emacs modes, enabling automatic mode activation
 (add-to-list 'auto-mode-alist '("waybar.*/config\\'" . js-json-mode))
 (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
 (add-to-list 'auto-mode-alist '("\\.toml\\'" . toml-ts-mode))
-(add-to-list 'auto-mode-alist '("CMakeLists.txt\\'" . cmake-ts-mode))
+(add-to-list 'auto-mode-alist '("CMakeLists.txt\\'" . cmake-mode))
 (add-to-list 'auto-mode-alist '("\\.org_archive\\'" . org-mode))
 (add-to-list 'auto-mode-alist '("/sway/.*config.*/" . i3wm-config-mode))
 (add-to-list 'auto-mode-alist '("/sway/config\\'" . i3wm-config-mode))
@@ -2003,7 +1998,19 @@ Sets up configurations and tool integrations for a productive programming enviro
 ;;
 
 (use-package eglot
-  :defer 5)
+  :custom
+  (custom-enabled-themes '(doom-dracula))
+  (eglot-ignored-server-capabilities
+    '(:hoverProvider :signatureHelpProvider
+       :implementationProvider :declarationProvider
+       :documentHighlightProvider :documentSymbolProvider
+       :workspaceSymbolProvider :codeActionProvider :codeLensProvider
+       :documentFormattingProvider :documentRangeFormattingProvider
+       :documentOnTypeFormattingProvider :renameProvider
+       :documentLinkProvider :colorProvider :foldingRangeProvider
+       :executeCommandProvider :inlayHintProvider))
+  (eglot-send-changes-idle-time 2.0))
+
 
 ;; (define-key company-active-map (kbd "<tab>") 'company-complete-selection)
 
@@ -2487,15 +2494,17 @@ The Selected Window Accent Mode is an Emacs package designed to visually disting
 (use-package selected-window-accent-mode
   ;; :load-path "~/source/repos/selected-window-accent-mode"
   ;; :vc (:fetcher github :repo "captainflasmr/selected-window-accent-mode")
-  :config (selected-window-accent-mode -1)
+  :init (selected-window-accent-mode 1)
+  :bind (("C-c w" . selected-window-accent-transient))
   :custom
   (selected-window-accent-fringe-thickness 10)
-  (selected-window-accent-percentage-darken 20)
-  (selected-window-accent-percentage-desaturate 50)
+  (selected-window-accent-percentage-darken 0)
+  (selected-window-accent-percentage-desaturate 0)
   (selected-window-accent-smart-borders t)
   (selected-window-accent-tab-accent t)
-  (selected-window-accent-custom-color "#a67132")
-  (selected-window-accent-mode-style 'subtle))
+  (selected-window-accent-custom-color "pink")
+  (selected-window-accent-mode-style 'default))
+
 #+end_src
 
 * push-block
@@ -2509,86 +2518,6 @@ The code below allows text from between two delineating markers to be transporte
 
 (setq my/push-block-spec
   '(
-     (:ascii
-       "~/source/repos/xkb-mode/CHANGELOG.org"
-       "~/source/repos/xkb-mode/README.org"
-       "\\* Whats New" "\\* ISSUES"
-       "** Whats New\n" "\n** Screenshot" "  ")
-     (:ascii
-       "~/source/repos/xkb-mode/CHANGELOG.org"
-       "~/source/repos/xkb-mode/README.org"
-       "\\* ISSUES" "\\* ROADMAP"
-       "* ISSUES\n" "\n* TODOs / ROADMAP" "  ")
-     (:ascii
-       "~/source/repos/xkb-mode/CHANGELOG.org"
-       "~/source/repos/xkb-mode/README.org"
-       "\\* ROADMAP" "\\* Versions"
-       "* TODOs / ROADMAP\n" "\n* Testing" "  ")
-     (:ascii
-       "~/source/repos/selected-window-accent-mode/CHANGELOG.org"
-       "~/source/repos/selected-window-accent-mode/README.org"
-       "\\* Whats New" "\\* ISSUES"
-       "** Whats New\n" "\n** Screenshot" "  ")
-     (:ascii
-       "~/source/repos/selected-window-accent-mode/CHANGELOG.org"
-       "~/source/repos/selected-window-accent-mode/README.org"
-       "\\* ISSUES" "\\* ROADMAP"
-       "* ISSUES\n" "\n* TODOs / ROADMAP" "  ")
-     (:ascii
-       "~/source/repos/selected-window-accent-mode/CHANGELOG.org"
-       "~/source/repos/selected-window-accent-mode/README.org"
-       "\\* ROADMAP" "\\* Versions"
-       "* TODOs / ROADMAP\n" "\n* Testing" "  ")
-     (:ascii
-       "~/source/repos/selected-window-accent-mode/README.org"
-       "~/source/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       "\\* Summary" "\\*\\* Whats New"
-       ";;; Commentary:\n;;\n" "\n;; Quick Start" ";; ")
-     (:ascii
-       "~/source/repos/selected-window-accent-mode/README.org"
-       "~/source/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       "\\* Quick Start" "\\* Installation"
-       ";; Quick Start\n;;\n" ";;\n(require" ";; ")
-     (:ascii
-       "~/source/repos/selected-window-accent-mode/README.org"
-       "~/source/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       "\\*\\* selected-window-accent-fringe-thickness\n" "\n\*\* selected-window-accent-custom-color"
-       "defcustom selected-window-accent-fringe-thickness 6\n  \"" "\"\n  \:type" "")
-     (:ascii
-       "~/source/repos/selected-window-accent-mode/README.org"
-       "~/source/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       "\\*\\* selected-window-accent-custom-color\n" "\n\*\* selected-window-accent-mode"
-       "defcustom selected-window-accent-custom-color nil\n  \"" "\"\n  \:type" "")
-     (:ascii
-       "~/source/repos/selected-window-accent-mode/README.org"
-       "~/source/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       "\\*\\* selected-window-accent-mode\n" "\n\*\* selected-window-accent-mode-style"
-       "defcustom selected-window-accent-mode nil\n  \"" "\"\n  \:type" "")
-     (:ascii
-       "~/source/repos/selected-window-accent-mode/README.org"
-       "~/source/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       "\\*\\* selected-window-accent-mode-style" "\n\*\* selected-window-accent-percentage-darken"
-       "defcustom selected-window-accent-mode-style \'default\n  \"" "\"\n  \:type" "")
-     (:ascii
-       "~/source/repos/selected-window-accent-mode/README.org"
-       "~/source/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       "\\*\\* selected-window-accent-percentage-darken" "\n\*\* selected-window-accent-percentage-desaturate"
-       "defcustom selected-window-accent-percentage-darken 20\n  \"" "\"\n  \:type" "")
-     (:ascii
-       "~/source/repos/selected-window-accent-mode/README.org"
-       "~/source/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       "\\*\\* selected-window-accent-percentage-desaturate" "\n\*\* selected-window-accent-tab-accent"
-       "defcustom selected-window-accent-percentage-desaturate 20\n  \"" "\"\n  \:type" "")
-     (:ascii
-       "~/source/repos/selected-window-accent-mode/README.org"
-       "~/source/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       "\\*\\* selected-window-accent-tab-accent" "\n\*\* selected-window-accent-smart-borders"
-       "defcustom selected-window-accent-tab-accent nil\n  \"" "\"\n  \:type" "")
-     (:ascii
-       "~/source/repos/selected-window-accent-mode/README.org"
-       "~/source/repos/selected-window-accent-mode/selected-window-accent-mode.el"
-       "\\*\\* selected-window-accent-smart-borders" "\* Minor Mode"
-       "defcustom selected-window-accent-smart-borders nil\n  \"" "\"\n  \:type" "")
      (:hugo "~/DCIM/content/tagged--all.org" "" "" "" "" "" "")
      (:hugo "~/DCIM/content/art--all.org" "" "" "" "" "" "")
      (:hugo "~/DCIM/content/emacs--all.org" "" "" "" "" "" "")
@@ -3356,6 +3285,7 @@ Curates configurations specific to the Windows operating system, adjusting paths
   (let ((xPaths
           `(,(expand-file-name "~/bin")
              ,(expand-file-name "~/bin/git-bin")
+             ,(expand-file-name "~/bin/find")
              ,(expand-file-name "~/bin/omnisharp-win-x64")
              "c:/GnuWin32/bin"
              "c:/GNAT/2021/bin")))
@@ -3367,7 +3297,7 @@ Curates configurations specific to the Windows operating system, adjusting paths
     '(variable-pitch ((t (:family "Monospace" :height 150 :weight normal))))
     '(fixed-pitch ((t ( :family "Monospace" :height 140)))))
 
-  (setq font-general "Monospace 14")
+  (setq font-general "Monospace 12")
   (set-frame-font font-general nil t)
   (add-to-list 'default-frame-alist `(font . ,font-general)))
 
@@ -3439,8 +3369,7 @@ Curates configurations specific to Linux, making adjustments for paths, fonts, a
       :load-path "~/source/repos/fd-find"))
 
   (add-hook 'window-configuration-change-hook #'my/waybar)
-  (add-hook 'window-state-change-hook #'my/waybar)
-  )
+  (add-hook 'window-state-change-hook #'my/waybar))
 
 #+end_src
 
@@ -3765,5 +3694,166 @@ The symbol at point is added to the future history."
 
 ;; Usage example:
 ;; (copy-vcxproj-and-sln-files "c:/Users/jimbo/source/cigi-ccl_4_0/build/windows/debug" "c:/Users/jimbo/source/cigi-ccl_4_0")
+
+(defun my/org-replace-inactive-timestamps ()
+  "Replace all inactive timestamps in the current buffer with CLOSED and DEADLINE timestamps."
+  (interactive)
+  (save-excursion
+    ;; (goto-char (point-min))
+    (while (re-search-forward "\\[\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}.*\\)\\]" nil t)
+      (let ((timestamp (match-string 1)))
+        (replace-match (format "CLOSED: [%s] SCHEDULED: <%s>" timestamp timestamp))))))
+
+(require 'cus-edit)
+
+(defun my/summarize-customize-group ()
+  "Summarize the customization options of a group with their descriptions."
+  (interactive)
+  (let* ((all-groups (mapcar 'symbol-name (custom-group-members 'custom-group nil)))
+         (group-name (completing-read "Select customization group: " all-groups))
+         (group-symbol (intern group-name))
+         (output-buffer (get-buffer-create "*Customize Group Summary*")))
+    (with-current-buffer output-buffer
+      (read-only-mode -1)
+      (erase-buffer)
+      (insert (format "Summary of Customize Group: %s\n\n" group-name))
+      (dolist (item (custom-group-members group-symbol nil))
+        (let ((symbol (car item))
+              (type (cadr item))
+              (description "No description available."))
+          (cond
+           ((custom-variable-p symbol)
+            (setq description (or (documentation-property symbol 'variable-documentation)
+                                  "No description available.")))
+           ((get symbol 'face-documentation)
+            (setq description (get symbol 'face-documentation)))
+           ((custom-group-p symbol)
+            (setq description (or (documentation-property symbol 'group-documentation)
+                                  "No description available."))))
+          (insert (format "** %s\n\n%s\n\n"
+                          symbol
+                          description))))
+      (read-only-mode 1)
+      (goto-char (point-min)))
+    (display-buffer output-buffer)))
+
+(pixel-scroll-precision-mode 1)
+
+(setq native-comp-verbose 3)
+
+(use-package devil
+  :init (global-devil-mode 1))
+
+(defun change-directory-and-run (dir command bufname)
+  "Change to DIR and run the COMMAND."
+  (let ((default-directory dir))
+    (async-shell-command command bufname)
+    (message "Running command: %s:%s" dir command)))
+
+(defun run-exe-command (dir exe bufname)
+  "Run EXE from a specified DIR."
+  (message "run-exe-command: %s:%s:%s" dir exe bufname)
+  (change-directory-and-run dir exe bufname))
+
+(defun run-cmake-command (command)
+  "Run COMMAND from the top level of the project."
+  (message command)
+  (change-directory-and-run (project-root (project-current t)) command "*cmake*"))
+
+(defun kill-async-buffer (buffer-name)
+  "Kill the async buffer with BUFFER-NAME."
+  (let ((buffer (get-buffer buffer-name)))
+    (when buffer
+      (kill-buffer buffer)
+      (message "Killed buffer: %s" buffer-name))))
+
+(transient-define-prefix build-transient ()
+  "Build and Diagnostic transient commands."
+  ["Build"
+    ["CMake"
+      ("c" "Configure"
+        (lambda () (interactive)
+          (run-cmake-command "cmake --preset windows-debug")))
+      ("RET" "Build"
+        (lambda () (interactive)
+          (run-cmake-command "cmake --build --preset windows-debug-build")))
+      ("i" "Install"
+        (lambda () (interactive)
+          (run-cmake-command "cmake --install ./build/windows/debug")))
+      ("f" "Refresh"
+        (lambda () (interactive)
+          (run-cmake-command "cmake --preset windows-debug --fresh")))
+      ("x" "Clean"
+        (lambda () (interactive)
+          (run-cmake-command "rm -rf build")))
+      ("s" "List Presets"
+        (lambda () (interactive)
+          (run-cmake-command "cmake --list-presets=configure")))]
+    ["Flymake"
+      ("t" "Toggle Flycheck" flymake-mode)
+      ("d" "Show Diagnostics" flymake-show-buffer-diagnostics)]
+    ["Coding"
+      ("j" "Fancy Stuff"
+        (lambda () (interactive)
+          (call-interactively 'eglot)
+          (flymake-mode 1)
+          (company-mode 1)))
+      ("u" "Undo Fancy Stuff"
+        (lambda () (interactive)
+          (eglot-shutdown-all)
+          (flymake-mode -1)
+          (company-mode -1)))
+      ("g" "Stop eglot"
+        (lambda () (interactive)
+          (eglot-shutdown-all)))]
+    ["Run"
+      ("r" "All"
+        (lambda () (interactive)
+          (run-exe-command
+            (concat (project-root (project-current t))
+              "build/windows/debug/bin/Debug")
+            "CigiDummyIG.exe" "*Running CigiDummyIG.exe*")
+          (run-exe-command
+            (concat (project-root (project-current t))
+              "build/windows/debug/bin/Debug")
+            "CigiMiniHostCSharp.exe" "*Running CigiMiniHostCSharp.exe*")))
+      ("1" "CigiDummyIG"
+        (lambda () (interactive)
+          (run-exe-command
+            (concat (project-root (project-current t))
+              "build/windows/debug/bin/Debug")
+            "CigiDummyIG.exe"
+            "*Running CigiDummyIG.exe*")))
+      ("2" "CigiMiniHost"
+        (lambda () (interactive)
+          (run-exe-command
+            (concat (project-root (project-current t))
+              "build/windows/debug/bin/Debug")
+            "CigiMiniHost.exe"
+            "*Running CigiMiniHost.exe*")))
+      ("3" "CigiMiniHostCSharp"
+        (lambda () (interactive)
+          (run-exe-command
+            (concat (project-root (project-current t))
+              "build/windows/debug/bin/Debug")
+            "CigiMiniHostCSharp.exe"
+            "*Running CigiMiniHostCSharp.exe*")))]
+    ["Kill"
+      ("5" "CigiDummyIG (k)"
+        (lambda () (interactive)
+          (kill-async-buffer "*Running CigiDummyIG.exe*")))
+      ("6" "CigiMiniHost (k)"
+        (lambda () (interactive)
+          (kill-async-buffer "*Running CigiMiniHost.exe*")))
+      ("7" "CigiMiniHostCSharp (k)"
+        (lambda () (interactive)
+          (kill-async-buffer "*Running CigiMiniHostCSharp.exe*")))
+      ("k" "All (k)"
+        (lambda () (interactive)
+          (kill-async-buffer "*Running CigiDummyIG.exe*")
+          (kill-async-buffer "*Running CigiMiniHost.exe*")
+          (kill-async-buffer "*Running CigiMiniHostCSharp.exe*")))]])
+
+(global-set-key (kbd "M-RET") 'build-transient)
 
 #+end_src
