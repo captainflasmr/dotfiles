@@ -1598,18 +1598,20 @@ as search term for Google search in web browser."
 ;; -> programming
 ;;
 
+(use-package ada-mode)
+  ;; :load-path "~/source/repos/old-ada-mode")
+
 (use-package eglot
   :custom
-  (custom-enabled-themes '(doom-dracula))
-  (eglot-ignored-server-capabilities
-    '(:hoverProvider :signatureHelpProvider
-       :implementationProvider :declarationProvider
-       :documentHighlightProvider :documentSymbolProvider
-       :workspaceSymbolProvider :codeActionProvider :codeLensProvider
-       :documentFormattingProvider :documentRangeFormattingProvider
-       :documentOnTypeFormattingProvider :renameProvider
-       :documentLinkProvider :colorProvider :foldingRangeProvider
-       :executeCommandProvider :inlayHintProvider))
+  ;; (eglot-ignored-server-capabilities
+  ;;   '(:hoverProvider :signatureHelpProvider
+  ;;      :implementationProvider :declarationProvider
+  ;;      :documentHighlightProvider :documentSymbolProvider
+  ;;      :workspaceSymbolProvider :codeActionProvider :codeLensProvider
+  ;;      :documentFormattingProvider :documentRangeFormattingProvider
+  ;;      :documentOnTypeFormattingProvider :renameProvider
+  ;;      :documentLinkProvider :colorProvider :foldingRangeProvider
+  ;;      :executeCommandProvider :inlayHintProvider))
   (eglot-send-changes-idle-time 2.0))
 
 
@@ -3124,7 +3126,11 @@ The symbol at point is added to the future history."
 (setq native-comp-verbose 3)
 
 (use-package devil
-  :init (global-devil-mode 1))
+  :init (global-devil-mode -1))
+
+(defvar cmake-preset
+  "build/linux/debug"
+  "cmake-preset")
 
 (defun change-directory-and-run (dir command bufname)
   "Change to DIR and run the COMMAND."
@@ -3149,28 +3155,46 @@ The symbol at point is added to the future history."
       (kill-buffer buffer)
       (message "Killed buffer: %s" buffer-name))))
 
+(defun list-cmake-presets ()
+  "List available CMake presets using `cmake --list-presets=configure`."
+  (let ((output (shell-command-to-string "cmake --list-presets=configure")))
+    (delq nil
+          (mapcar (lambda (line)
+                    (if (string-match "^\\s-+\"\\([^\"]+\\)\"\\s-*$" line)
+                        (match-string 1 line)))
+                  (split-string output "\n")))))
+
+(defun transient-select-cmake-preset ()
+  "Function to select a CMake preset."
+  (interactive)
+  (let* ((presets (list-cmake-presets))
+          (preset (completing-read "Select CMake preset: " presets nil t)))
+    (setq cmake-preset preset)
+    (message "Selected CMake preset: %s" preset)))
+
 (transient-define-prefix build-transient ()
   "Build and Diagnostic transient commands."
   ["Build"
-    ["CMake"
-      ("c" "Configure"
-        (lambda () (interactive)
-          (run-cmake-command "cmake --preset windows-debug")))
-      ("RET" "Build"
-        (lambda () (interactive)
-          (run-cmake-command "cmake --build --preset windows-debug-build")))
-      ("i" "Install"
-        (lambda () (interactive)
-          (run-cmake-command "cmake --install ./build/windows/debug")))
-      ("f" "Refresh"
-        (lambda () (interactive)
-          (run-cmake-command "cmake --preset windows-debug --fresh")))
-      ("x" "Clean"
-        (lambda () (interactive)
-          (run-cmake-command "rm -rf build")))
-      ("s" "List Presets"
-        (lambda () (interactive)
-          (run-cmake-command "cmake --list-presets=configure")))]
+  ["CMake"
+    ("p" "Set Preset" transient-select-cmake-preset)
+    ("c" "Configure"
+     (lambda () (interactive)
+       (run-cmake-command (format "cmake --preset %s" cmake-preset))))
+    ("RET" "Build"
+     (lambda () (interactive)
+       (run-cmake-command (format "cmake --build --preset %s" cmake-preset))))
+    ("i" "Install"
+     (lambda () (interactive)
+       (run-cmake-command (format "cmake --install %s" cmake-preset))))
+    ("f" "Refresh"
+     (lambda () (interactive)
+       (run-cmake-command (format "cmake --preset %s --fresh" cmake-preset))))
+    ("x" "Clean"
+     (lambda () (interactive)
+       (run-cmake-command "rm -rf build")))
+    ("s" "List Presets"
+     (lambda () (interactive)
+       (run-cmake-command "cmake --list-presets=configure")))]
     ["Flymake"
       ("t" "Toggle Flycheck" flymake-mode)
       ("d" "Show Diagnostics" flymake-show-buffer-diagnostics)]
@@ -3236,4 +3260,37 @@ The symbol at point is added to the future history."
           (kill-async-buffer "*Running CigiMiniHost.exe*")
           (kill-async-buffer "*Running CigiMiniHostCSharp.exe*")))]])
 
+
 (global-set-key (kbd "M-RET") 'build-transient)
+
+(transient-define-prefix my-transient-outline-mode ()
+  "Transient menu for outline-mode."
+  ["Outline Mode Commands"
+   ["Visibility"
+    ("h" "Hide Sublevels" outline-hide-sublevels)
+    ("s" "Show All" outline-show-all)
+    ("i" "Hide Body" outline-hide-body)
+    ("e" "Show Entry" outline-show-entry)
+    ("H" "Hide Entry" outline-hide-entry)
+    ("c" "Hide Leaves" outline-hide-leaves)
+    ("k" "Show Branches" outline-show-branches)
+    ("t" "Hide Subtree" outline-hide-subtree)
+    ("S" "Show Subtree" outline-show-subtree)]
+   ["Motion"
+    ("n" "Next Visible Heading" outline-next-visible-heading)
+    ("p" "Previous Visible Heading" outline-previous-visible-heading)
+    ("u" "Up Heading" outline-up-heading)
+    ("f" "Forward Same Level" outline-forward-same-level)
+    ("b" "Backward Same Level" outline-backward-same-level)]
+   ["Structure"
+    ("a" "Insert Heading" outline-insert-heading)
+    ("t" "Promote Heading" outline-promote)
+    ("D" "Demote Heading" outline-demote)
+    ("N" "Move Subtree Up" outline-move-subtree-up)
+    ("P" "Move Subtree Down" outline-move-subtree-down)]
+   ["Edit"
+    ("l" "Add Heading" outline-insert-heading)
+    ("r" "Rename Heading" outline-insert-heading)
+    ("m" "Mark Subtree" outline-mark-subtree)]])
+
+(bind-key* (kbd "C-c o") 'my-transient-outline-mode)
