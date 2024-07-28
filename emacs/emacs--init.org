@@ -1437,6 +1437,7 @@ Enhances Dired, the directory editor, with additional functionalities like async
             ("j" . dired-next-line)
             ("k" . dired-previous-line)
             ("-" . dired-jump)
+            ("b" . my/dired-file-to-org-link)
             ("_" . my/dired-create-empty-file)
             ("+" . my/dired-create-directory)
             ("C-c i" . my/image-dired-sort)
@@ -1901,11 +1902,11 @@ Configures spell checking tools and dictionaries, integrating external tools lik
     "Spelling commands"
     ["Spelling"
       ["Lookups"
-        ("y" "Synonyms" powerthesaurus-lookup-synonyms-dwim)
+        ("s" "Synonyms" powerthesaurus-lookup-synonyms-dwim)
         ("a" "Antonyms" powerthesaurus-lookup-antonyms-dwim)]
       ["Spelling Tools"
         ("x" "Jinx" jinx-mode)
-        ("c" "Jinx correct" jinx-correct)]
+        ("j" "Jinx correct" jinx-correct)]
       ["Dictionary"
         ("d" "Lookup" dictionary-lookup-definition)]
       ["Miscellaneous"
@@ -2723,7 +2724,7 @@ Demonstrates customizations for shell integration within Emacs, optimizing setti
   (popper-mode 1)
   (popper-echo-mode 1)
   :custom
-  (popper-window-height 15))
+  (popper-window-height 20))
 
 (bind-key* (kbd "C-;") #'popper-toggle)
 (bind-key* (kbd "C-'") #'popper-toggle-type)
@@ -3878,13 +3879,21 @@ The symbol at point is added to the future history."
           (kill-async-buffer "*Running CigiMiniHost.exe*")
           (kill-async-buffer "*Running CigiMiniHostCSharp.exe*")))]])
 
-
 (global-set-key (kbd "M-RET") 'build-transient)
 
-(transient-define-prefix my-transient-outline-mode ()
+(transient-define-prefix my/transient-outlining-and-folding ()
   "Transient menu for outline-mode."
   ["Outline Mode Commands"
-   ["Visibility"
+    ["Cycle / Folding"
+      ("g" "Cycle" outline-cycle)
+      ("O" "Cycle Buffer" outline-cycle-buffer)
+      ("F" "Global Folding at Point"
+        (lambda () (interactive)
+          (if (eq selective-display (1+ (current-column)))
+            (set-selective-display 0)
+            (set-selective-display (1+ (current-column))))))]
+    ["Visibility"
+    ("o" "Toggle Children" outline-toggle-children)
     ("h" "Hide Sublevels" outline-hide-sublevels)
     ("s" "Show All" outline-show-all)
     ("i" "Hide Body" outline-hide-body)
@@ -3901,16 +3910,66 @@ The symbol at point is added to the future history."
     ("f" "Forward Same Level" outline-forward-same-level)
     ("b" "Backward Same Level" outline-backward-same-level)]
    ["Structure"
-    ("a" "Insert Heading" outline-insert-heading)
     ("t" "Promote Heading" outline-promote)
-    ("D" "Demote Heading" outline-demote)
-    ("N" "Move Subtree Up" outline-move-subtree-up)
-    ("P" "Move Subtree Down" outline-move-subtree-down)]
+    ("d" "Demote Heading" outline-demote)
+    ("P" "Move Subtree Up" outline-move-subtree-up)
+    ("N" "Move Subtree Down" outline-move-subtree-down)]
    ["Edit"
-    ("l" "Add Heading" outline-insert-heading)
+    ("a" "Add Heading" outline-insert-heading)
     ("r" "Rename Heading" outline-insert-heading)
     ("m" "Mark Subtree" outline-mark-subtree)]])
 
-(bind-key* (kbd "C-c o") 'my-transient-outline-mode)
+(bind-key* (kbd "C-c o") 'my/transient-outlining-and-folding)
+
+(defun my/prog-folding ()
+    "Enable and configure outline minor mode for code folding.
+
+This function sets up the outline minor mode tailored for
+programming modes based on basic space / tab indentation."
+  (interactive)
+  (setq-local outline-minor-mode-use-buttons nil)
+  (setq-local outline-regexp (rx bol
+                               (zero-or-more (any " \t"))
+                               (not (any " \t\n"))))
+  (outline-minor-mode 1))
+
+(add-hook 'prog-mode-hook 'my/prog-folding)
+
+(defun my/dired-file-to-org-link ()
+  "Transform the file path under the cursor in Dired to an Org mode
+link and copy to kill ring.
+
+This function transforms the current file path in Dired mode into
+an Org link with attributes for both org-mode and HTML width
+settings. The generated link is then copied to the kill ring for
+easy pasting."
+  (interactive)
+  (let ((file-path (dired-get-file-for-visit)))
+    (if file-path
+      (let* ((relative-path (file-relative-name file-path
+                              (project-root (project-current t))))
+              (org-link (concat "#+attr_org: :width 300px\n"
+                          "#+attr_html: :width 100%\n"
+                          "[[file:" relative-path "]]\n")))
+        (kill-new org-link)
+        (message "Copied to kill ring: %s" org-link))
+      (message "No file under the cursor"))))
+
+(defun my/dired-meld-diff-all-dwim ()
+"Compare all marked directories in all visible Dired buffers using Meld.
+   The order of directories respects the order suggested by `dired-dwim-target`."
+(interactive)
+(let ((files ()))
+  (dolist (window (window-list))
+    (with-current-buffer (window-buffer window)
+      (when (and (derived-mode-p 'dired-mode)
+              (dired-get-marked-files))
+        (setq files (append files (dired-get-marked-files))))))
+  (if (or (<= (length files) 1)
+        (not (every 'file-directory-p files)))
+    (message "Please mark at least two directories.")
+    (apply 'start-process "meld" nil "meld" files))))
+
+(define-key dired-mode-map (kbd "C-c m") 'my/dired-meld-diff-all-dwim)
 
 #+end_src
