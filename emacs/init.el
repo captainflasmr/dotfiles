@@ -1107,7 +1107,7 @@ as search term for Google search in web browser."
   '(widget-button ((t (:inherit fixed-pitch :weight regular))))
   '(window-divider ((t (:foreground "black"))))
   '(org-tag ((t (:height 0.99))))
-  '(aw-leading-char-face ((t (:inherit (highlight) :inverse-video nil :weight bold :height 1.4))))
+  '(aw-leading-char-face ((t (:inherit (highlight) :inverse-video nil :weight bold :height 1.1))))
   '(vertical-border ((t (:foreground "#000000")))))
 
 ;;
@@ -1570,7 +1570,7 @@ as search term for Google search in web browser."
 
 (setq compilation-always-kill t)
 (setq compilation-context-lines 3)
-(setq compilation-scroll-output nil)
+(setq compilation-scroll-output t)
 ;; ignore warnings
 (setq compilation-skip-threshold 2)
 
@@ -2179,6 +2179,7 @@ With directories under project root using find."
   (setq popper-reference-buffers
     '("\\*eshell.*"
        "\\*convert.*"
+       flymake-diagnostics-buffer-mode
        help-mode
        compilation-mode))
   (popper-mode 1)
@@ -2560,9 +2561,7 @@ With directories under project root using find."
 
     (setq window (my/get-window-regex "compilation"))
     (when window
-      (select-window window)
-      (re-search-backward "[[:digit:]]: warning:")
-      (compile-goto-error))
+      (previous-error))
 
     (setq window (my/get-window-regex "compile-log"))
     (when window
@@ -2604,9 +2603,7 @@ With directories under project root using find."
 
     (setq window (my/get-window-regex "compilation"))
     (when window
-      (select-window window)
-      (re-search-forward "[[:digit:]]: warning:")
-      (compile-goto-error))
+      (next-error))
 
     (setq window (my/get-window-regex "compile-log"))
     (when window
@@ -2657,23 +2654,18 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
   (let ((count 0))
     (save-excursion
       (goto-char rstart)
-      ;; Loop over each line in the region
       (while (< (point) rend)
         (let ((line (buffer-substring-no-properties (line-beginning-position)
                       (line-end-position))))
-          ;; Only count words if the line doesn't contain DONE or is not between PROPERTIES and END
-          ;; Or indeed other filters as defined below
           (unless (or
                     (string-match-p "\\* DONE" line)
                     (string-match-p "\\* TODO" line)
                     (string-match-p "file\:" line)
                     (and (string-match-p ":PROPERTIES:" line) (re-search-forward ":END:" nil t))
-                    (and (string-match-p "\\#\\+begin" line) (re-search-forward "\\#\\+end" nil t))
-                    (string-match-p "\\#\\+" line)
-                    )
+                    (and (string-match-p "\\#\\+begin_src" line) (re-search-forward "\\#\\+end_src" nil t))
+                    (string-match-p "\\#\\+" line))
             (setq count (+ count (1+ (how-many " " (line-beginning-position) (line-end-position))))))
           ;; (setq count (+ count (length (split-string line "\\W+" t)))))
-          ;; Go to the beginning of the next line
           (forward-line 1))))
     count))
 
@@ -3149,6 +3141,13 @@ The symbol at point is added to the future history."
   (message command)
   (change-directory-and-run (project-root (project-current t)) command "*cmake*"))
 
+(defun run-cmake-compile-command (command)
+  "Run compile COMMAND from the top level of the project."
+  (message command)
+    (let ((default-directory (project-root (project-current t))))
+      (compile command)
+    (message "Running command: %s:%s" dir command)))
+
 (defun kill-async-buffer (buffer-name)
   "Kill the async buffer with BUFFER-NAME."
   (let ((buffer (get-buffer buffer-name)))
@@ -3173,6 +3172,23 @@ The symbol at point is added to the future history."
     (setq cmake-preset preset)
     (message "Selected CMake preset: %s" preset)))
 
+(defun my/dired-duplicate-file (arg)
+  "Duplicate a file to a backup directory with an incremented number.
+If ARG is provided, it sets the counter."
+  (interactive "p")
+  (let* ((dir "~/backup/")
+          (name (buffer-name))
+          (base-name (file-name-sans-extension name))
+          (extension (file-name-extension name t))
+          (counter (if arg (prefix-numeric-value arg) 1))
+          (new-file))
+    (while (and (setq new-file
+                  (format "%s%s_%03d%s" dir base-name counter extension))
+             (file-exists-p new-file))
+      (setq counter (1+ counter)))
+    (message (concat "Backed " new-file))
+    (copy-file name new-file)))
+
 (transient-define-prefix build-transient ()
   "Build and Diagnostic transient commands."
   ["Build"
@@ -3183,22 +3199,31 @@ The symbol at point is added to the future history."
        (run-cmake-command (format "cmake --preset %s" cmake-preset))))
     ("RET" "Build"
      (lambda () (interactive)
-       (run-cmake-command (format "cmake --build --preset %s" cmake-preset))))
+       (run-cmake-compile-command (format "cmake --build --preset %s" cmake-preset))))
     ("i" "Install"
      (lambda () (interactive)
        (run-cmake-command (format "cmake --install %s" cmake-preset))))
-    ("f" "Refresh"
+    ("g" "Refresh"
      (lambda () (interactive)
        (run-cmake-command (format "cmake --preset %s --fresh" cmake-preset))))
     ("x" "Clean"
      (lambda () (interactive)
        (run-cmake-command "rm -rf build")))
+    ;; ("m" "Toggle compilation"
+    ;;   (lambda () (interactive)
+    ;;     (let ((buffer (get-buffer "*compilation*")))
+    ;;       (if buffer
+    ;;         (if (get-buffer-window buffer 'visible)
+    ;;           (delete-windows-on buffer)
+    ;;           (display-buffer buffer))
+    ;;         (message "No *compilation* buffer found.")))))
     ("s" "List Presets"
      (lambda () (interactive)
        (run-cmake-command "cmake --list-presets=configure")))]
-    ["Flymake"
-      ("t" "Toggle Flycheck" flymake-mode)
-      ("d" "Show Diagnostics" flymake-show-buffer-diagnostics)]
+    ["Actions"
+      ("b" "File Backup" my/dired-duplicate-file)
+      ("f" "Toggle Flycheck" flymake-mode)
+      ("d" "Show Flycheck Diagnostics" flymake-show-buffer-diagnostics)]
     ["Coding"
       ("j" "Fancy Stuff"
         (lambda () (interactive)
@@ -3210,7 +3235,7 @@ The symbol at point is added to the future history."
           (eglot-shutdown-all)
           (flymake-mode -1)
           (company-mode -1)))
-      ("g" "Stop eglot"
+      ("h" "Stop eglot"
         (lambda () (interactive)
           (eglot-shutdown-all)))]
     ["Run"
@@ -3259,9 +3284,10 @@ The symbol at point is added to the future history."
         (lambda () (interactive)
           (kill-async-buffer "*Running CigiDummyIG.exe*")
           (kill-async-buffer "*Running CigiMiniHost.exe*")
-          (kill-async-buffer "*Running CigiMiniHostCSharp.exe*")))]])
+          (kill-async-buffer "*Running CigiMiniHostCSharp.exe*")))]
+    ])
 
-(global-set-key (kbd "M-RET") 'build-transient)
+(bind-key* (kbd "M-RET") #'build-transient)
 
 (transient-define-prefix my/transient-outlining-and-folding ()
   "Transient menu for outline-mode."
@@ -3348,8 +3374,23 @@ easy pasting."
               (dired-get-marked-files))
         (setq files (append files (dired-get-marked-files))))))
   (if (or (<= (length files) 1)
-        (not (every 'file-directory-p files)))
+        (not (cl-every 'file-directory-p files)))
     (message "Please mark at least two directories.")
     (apply 'start-process "meld" nil "meld" files))))
 
 (define-key dired-mode-map (kbd "C-c m") 'my/dired-meld-diff-all-dwim)
+
+(use-package ready-player
+  :init
+  (ready-player-mode 1)
+  :custom
+  (ready-player-autoplay nil)
+  (ready-player-repeat t)
+  (ready-player-shuffle t)
+  (ready-player-open-playback-commands
+    '(
+       ("mplayer")
+       ("ffplay")
+       ("vlc")
+       ("mpv" "--audio-display=no")
+       )))
