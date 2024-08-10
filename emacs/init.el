@@ -32,12 +32,7 @@
 (require 'org)
 (require 'dired-x)
 (require 'org-agenda)
-
-;;
-;; -> top-level-variables
-;;
-
-(setq my/accent-color "#821a00")
+(require 'cl-lib)
 
 ;;
 ;; -> startup
@@ -67,9 +62,6 @@
 (use-package markdown-mode)
 (use-package free-keys)
 (use-package lorem-ipsum)
-(use-package file-info
-  :bind
-  (("C-c f" . file-info-show)))
 (use-package async)
 (use-package diminish)
 (use-package diredfl
@@ -147,13 +139,11 @@
   :diminish tempel-abbrev-mode global-tempel-abbrev-mode abbrev-mode
   :bind (("M-+" . tempel-complete) ;; Alternative tempel-expand
           ("M-*" . tempel-insert))
-
   :init
   (defun tempel-setup-capf ()
     (setq-local completion-at-point-functions
       (cons #'tempel-expand
         completion-at-point-functions)))
-
   (add-hook 'conf-mode-hook #'tempel-setup-capf)
   (add-hook 'prog-mode-hook #'tempel-setup-capf)
   (add-hook 'text-mode-hook #'tempel-setup-capf)
@@ -182,7 +172,7 @@
 
 (use-package orderless
   :custom
-  (completion-styles '(basic partial-completion flex orderless)))
+  (completion-styles '(basic partial-completion orderless)))
 
 (use-package marginalia
   :after vertico
@@ -255,7 +245,6 @@
 (bind-key* (kbd "M-s z") #'org-table-shrink)
 (global-set-key (kbd "M-s M-[") #'beginning-of-buffer)
 (global-set-key (kbd "M-s M-]") #'end-of-buffer)
-(global-set-key (kbd "M-s b") #'(lambda ()(interactive)(org-table-recalculate 'all)))
 (global-set-key (kbd "M-s g") #'my/text-browser-search)
 (global-set-key (kbd "M-s h") #'my/mark-block)
 (global-set-key (kbd "M-s j") #'eval-defun)
@@ -270,7 +259,6 @@
 (bind-key* (kbd "M-s ;") #'mark-sexp)
 (bind-key* (kbd "M-s k") #'org-kanban/shift)
 (bind-key* (kbd "M-s l") #'mark-sexp)
-(bind-key* (kbd "M-s s") #'my/shell-create)
 (bind-key* (kbd "M-s v") #'eval-expression)
 
 ;;
@@ -403,10 +391,9 @@
 (global-set-key (kbd "C-2") #'split-window-vertically)
 (global-set-key (kbd "C-3") #'split-window-horizontally)
 (global-set-key (kbd "M-r") #'my/grep)
-(global-set-key (kbd "M-@") #'my/mark-block)
-(global-set-key (kbd "M-=") #'count-words)
+(global-set-key (kbd "M-=") #'my/count-words)
 (define-key minibuffer-local-map (kbd "C-c e") #'embark-export)
-(define-key minibuffer-local-map (kbd "M-o") #'abort-minibuffers)
+(define-key minibuffer-local-map (kbd "C-c c") #'embark-collect)
 (global-set-key (kbd "C-c a") #'org-agenda)
 (bind-key* (kbd "M-h") #'backward-char)
 (bind-key* (kbd "M-j") #'next-line)
@@ -415,13 +402,11 @@
 (bind-key* (kbd "M-n") #'(lambda ()(interactive)(scroll-up (/ (window-height) 4))))
 (bind-key* (kbd "M-m") #'(lambda ()(interactive)(scroll-down (/ (window-height) 4))))
 (bind-key* (kbd "C-o") #'other-window)
-(bind-key* (kbd "C-x b") #'my/switch-to-thing)
 (bind-key* (kbd "C-0") #'my/switch-to-thing)
 (global-set-key (kbd "M-=") #'my/window-enlarge)
 (global-set-key (kbd "M--") #'my/window-shrink)
 (global-set-key (kbd "C-c b") #'(lambda ()(interactive)(async-shell-command "do_backup home" "*backup*")))
 (global-set-key (kbd "C-c c") #'org-capture)
-(global-set-key (kbd "C-c f") #'my/fold)
 (global-set-key (kbd "C-x C-b") #'ibuffer)
 (bind-key* (kbd "C-x b") #'ibuffer)
 (global-set-key (kbd "C-x l") #'scroll-lock-mode)
@@ -446,14 +431,14 @@
 ;;
 ;; -> modes
 ;;
-
+(global-hl-line-mode 1)
 (global-font-lock-mode 1)
 (savehist-mode 1)
 (add-to-list 'savehist-additional-variables 'comint-input-ring)
 (global-ede-mode -1)
 (global-prettify-symbols-mode t)
 (auto-fill-mode -1)
-(blink-cursor-mode 1)
+(blink-cursor-mode -1)
 (column-number-mode 1)
 (global-auto-revert-mode 1)
 (put 'narrow-to-page 'disabled nil)
@@ -549,7 +534,7 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
-  '(custom-enabled-themes '(doom-dracula))
+  '(custom-enabled-themes '(gruvbox))
   '(warning-suppress-log-types '((frameset)))
   '(warning-suppress-types '((frameset))))
 
@@ -585,13 +570,6 @@
       (region-beginning)(region-end))
     (comment-or-uncomment-region
       (line-beginning-position)(line-end-position))))
-
-(defun my/fold ()
-  "Fold text indented same of more than the cursor."
-  (interactive)
-  (if (eq selective-display (1+ (current-column)))
-    (set-selective-display 0)
-    (set-selective-display (1+ (current-column)))))
 
 (defun my/grep (arg)
   "Wrapper to grep with ARG."
@@ -653,24 +631,6 @@ If ARG is provided, it sets the counter."
   (re-search-forward "^[ \t]*\n" nil 1)
   (skip-chars-backward " \n\t")
   (setq mark-active t))
-
-(defun my/replace-spaces-with-dashes (start end)
-  "Replace all spaces with dashes or dashes with spaces START to END"
-  (interactive "r")
-  (let* ((selected-text (buffer-substring start end))
-          (replacement-text (replace-regexp-in-string " " "-" selected-text)))
-    (delete-region start end)
-    (insert replacement-text)))
-
-(defun my/replace-dashes-with-spaces (start end)
-  "Replace all dashes with spaces or dashes with spaces START to END"
-  (interactive "r")
-  (let* ((selected-text (buffer-substring start end))
-          (replacement-text (replace-regexp-in-string "-" " " selected-text)))
-    (delete-region start end)
-    (insert replacement-text)))
-
-(require 'cl-lib)
 
 (defun my/text-browser-search ()
   "Use the selected text (or word under cursor)
@@ -1306,10 +1266,10 @@ as search term for Google search in web browser."
 
 (setq-default truncate-partial-width-windows 120)
 
-(set-frame-parameter nil 'alpha-background 85)
-(add-to-list 'default-frame-alist '(alpha-background . 85))
+(set-frame-parameter nil 'alpha-background 80)
+(add-to-list 'default-frame-alist '(alpha-background . 80))
 
-(set-fringe-mode '(0 . 0))
+(set-fringe-mode '(20 . 20))
 (set-display-table-slot standard-display-table 0 ?\ )
 
 (setq window-divider-default-bottom-width 6)
@@ -1319,7 +1279,7 @@ as search term for Google search in web browser."
 
 (setq-default left-margin-width 0 right-margin-width 0)
 
-(defvar my/internal-border-width 5 "Default internal border width for toggling.")
+(defvar my/internal-border-width 0 "Default internal border width for toggling.")
 
 (defun my/toggle-internal-border-width (&optional value)
   "Toggle internal border width given VALUE."
@@ -1333,23 +1293,6 @@ as search term for Google search in web browser."
     (modify-all-frames-parameters `((internal-border-width . ,new-value)))))
 
 (modify-all-frames-parameters `((internal-border-width . ,my/internal-border-width)))
-
-(defun my/change-accent-color ()
-  "Prompt for a new color and apply it as the accent color."
-  (interactive)
-  (let ((new-color (read-color "Choose new accent color: ")))
-    (setq my/accent-color new-color)
-
-    ;; Update selected-window-accent-mode custom variables
-    (when (featurep 'selected-window-accent-mode)
-      (setq selected-window-accent-custom-color my/accent-color)
-
-      ;; Refresh the mode to apply the changes.
-      (selected-window-accent-mode -1)
-      (selected-window-accent-mode +1))
-
-    ;; Display a message to confirm the change
-    (message "Accent color changed to %s" my/accent-color)))
 
 ;;
 ;; -> imenu
@@ -1526,26 +1469,21 @@ as search term for Google search in web browser."
 ;; -> spelling
 ;;
 
-(use-package jinx)
+(use-package powerthesaurus)
 
-(use-package powerthesaurus
-  :init
-  (require 'transient)
-  (transient-define-prefix my/transient-spelling ()
-    "Spelling commands"
-    ["Spelling"
-      ["Lookups"
-        ("s" "Synonyms" powerthesaurus-lookup-synonyms-dwim)
-        ("a" "Antonyms" powerthesaurus-lookup-antonyms-dwim)]
-      ["Spelling Tools"
-        ("x" "Jinx" jinx-mode)
-        ("j" "Jinx correct" jinx-correct)]
-      ["Dictionary"
-        ("d" "Lookup" dictionary-lookup-definition)]
-      ["Miscellaneous"
-        ("q" "Quit" transient-quit-one)]])
-  :bind
-  ("C-c s" . my/transient-spelling))
+(bind-key* (kbd "C-c s")
+  #'(lambda ()(interactive)
+      (if (not flyspell-mode)
+        (progn
+          (flyspell-buffer)
+          (flyspell-mode 1)
+          (message "Spell Check ENABLED"))
+        (progn
+          (flyspell-mode -1)
+          (message "Spell Check DISABLED")))))
+(bind-key* (kbd "C-c j") #'ispell-word)
+(bind-key* (kbd "C-c l") #'dictionary-lookup-definition)
+(bind-key* (kbd "C-c y") #'powerthesaurus-lookup-synonyms-dwim)
 
 (setq ispell-local-dictionary "en_GB")
 (setq ispell-program-name "hunspell")
@@ -1600,7 +1538,7 @@ as search term for Google search in web browser."
 ;;
 
 (use-package ada-mode)
-  ;; :load-path "~/source/repos/old-ada-mode")
+;; :load-path "~/source/repos/old-ada-mode")
 
 (use-package eglot
   :custom
@@ -1635,10 +1573,7 @@ as search term for Google search in web browser."
 (setq eldoc-echo-area-use-multiline-p nil)
 
 (use-package flycheck)
-
-(use-package package-lint
-  :defer 5)
-
+(use-package package-lint)
 (use-package cmake-mode)
 
 ;;
@@ -1977,17 +1912,21 @@ With directories under project root using find."
 
 (use-package selected-window-accent-mode
   ;; :load-path "~/source/repos/selected-window-accent-mode"
+  ;; :ensure nil
   ;; :vc (:fetcher github :repo "captainflasmr/selected-window-accent-mode")
-  :init (selected-window-accent-mode 1)
-  :bind (("C-c w" . selected-window-accent-transient))
+  :config (selected-window-accent-mode 1)
   :custom
   (selected-window-accent-fringe-thickness 10)
   (selected-window-accent-percentage-darken 0)
   (selected-window-accent-percentage-desaturate 0)
   (selected-window-accent-smart-borders t)
   (selected-window-accent-tab-accent t)
-  (selected-window-accent-custom-color "pink")
+  (selected-window-accent-custom-color "cyan4")
   (selected-window-accent-mode-style 'default))
+
+(eval-after-load 'selected-window-accent-mode
+  '(progn
+     (define-key global-map (kbd "C-c w") 'selected-window-accent-transient)))
 
 ;;
 ;; -> push-block
@@ -2174,6 +2113,8 @@ With directories under project root using find."
   :hook
   (shell-mode . my/shell-hook))
 
+(bind-key* (kbd "<f8>") #'my/shell-create)
+
 (use-package popper
   :init
   (setq popper-reference-buffers
@@ -2185,7 +2126,7 @@ With directories under project root using find."
   (popper-mode 1)
   (popper-echo-mode 1)
   :custom
-  (popper-window-height 20))
+  (popper-window-height 15))
 
 (bind-key* (kbd "C-;") #'popper-toggle)
 (bind-key* (kbd "C-'") #'popper-toggle-type)
@@ -2669,6 +2610,14 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
           (forward-line 1))))
     count))
 
+(defun my/count-words ()
+  "Counts words in current buffer"
+  (interactive)
+  (message
+    (format
+      "Found %s words"
+      (my/word-count-function (point-min) (point-max)))))
+
 ;; Set the custom wc-mode counting function
 (setq wc-count-words-function 'my/word-count-function)
 
@@ -2680,7 +2629,10 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
   (setq home-dir "c:/users/jimbo")
   (let ((xPaths
           `(,(expand-file-name "~/bin")
-             ,(expand-file-name "~/bin/git-bin")
+             ,(expand-file-name "~/bin/PortableGit/bin")
+             ,(expand-file-name "~/bin/PortableGit/usr/bin")
+             ,(expand-file-name "~/bin/Apache-Subversion/bin/")
+             ,(expand-file-name "~/bin/svn2git-2.4.0/bin")
              ,(expand-file-name "~/bin/find")
              ,(expand-file-name "~/bin/omnisharp-win-x64")
              "c:/GnuWin32/bin"
@@ -2690,10 +2642,10 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
 
   (custom-theme-set-faces
     'user
-    '(variable-pitch ((t (:family "Monospace" :height 150 :weight normal))))
-    '(fixed-pitch ((t ( :family "Monospace" :height 140)))))
+    '(variable-pitch ((t (:family "Consolas" :height 110 :weight normal))))
+    '(fixed-pitch ((t ( :family "Consolas" :height 110)))))
 
-  (setq font-general "Monospace 12")
+  (setq font-general "Consolas 11")
   (set-frame-font font-general nil t)
   (add-to-list 'default-frame-alist `(font . ,font-general)))
 
@@ -2764,7 +2716,6 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
 ;; -> SWIG
 ;;
 
-(require 'cl-lib)
 (require 'subr-x)
 
 (defun swig--parse-include-directives (file)
@@ -2850,8 +2801,7 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
   (interactive)
   (swig--generate-include-file-list
     "/home/jdyer/source/repos/cigi-ccl_4_0/include"
-    "/home/jdyer/source/repos/cigi-ccl_4_0/example.i"
-    ))
+    "/home/jdyer/source/repos/cigi-ccl_4_0/example.i"))
 
 ;;
 ;; -> development
@@ -3087,29 +3037,29 @@ The symbol at point is added to the future history."
   "Summarize the customization options of a group with their descriptions."
   (interactive)
   (let* ((all-groups (mapcar 'symbol-name (custom-group-members 'custom-group nil)))
-         (group-name (completing-read "Select customization group: " all-groups))
-         (group-symbol (intern group-name))
-         (output-buffer (get-buffer-create "*Customize Group Summary*")))
+          (group-name (completing-read "Select customization group: " all-groups))
+          (group-symbol (intern group-name))
+          (output-buffer (get-buffer-create "*Customize Group Summary*")))
     (with-current-buffer output-buffer
       (read-only-mode -1)
       (erase-buffer)
       (insert (format "Summary of Customize Group: %s\n\n" group-name))
       (dolist (item (custom-group-members group-symbol nil))
         (let ((symbol (car item))
-              (type (cadr item))
-              (description "No description available."))
+               (type (cadr item))
+               (description "No description available."))
           (cond
-           ((custom-variable-p symbol)
-            (setq description (or (documentation-property symbol 'variable-documentation)
+            ((custom-variable-p symbol)
+              (setq description (or (documentation-property symbol 'variable-documentation)
                                   "No description available.")))
-           ((get symbol 'face-documentation)
-            (setq description (get symbol 'face-documentation)))
-           ((custom-group-p symbol)
-            (setq description (or (documentation-property symbol 'group-documentation)
+            ((get symbol 'face-documentation)
+              (setq description (get symbol 'face-documentation)))
+            ((custom-group-p symbol)
+              (setq description (or (documentation-property symbol 'group-documentation)
                                   "No description available."))))
           (insert (format "** %s\n\n%s\n\n"
-                          symbol
-                          description))))
+                    symbol
+                    description))))
       (read-only-mode 1)
       (goto-char (point-min)))
     (display-buffer output-buffer)))
@@ -3144,8 +3094,8 @@ The symbol at point is added to the future history."
 (defun run-cmake-compile-command (command)
   "Run compile COMMAND from the top level of the project."
   (message command)
-    (let ((default-directory (project-root (project-current t))))
-      (compile command)
+  (let ((default-directory (project-root (project-current t))))
+    (compile command)
     (message "Running command: %s:%s" dir command)))
 
 (defun kill-async-buffer (buffer-name)
@@ -3159,10 +3109,10 @@ The symbol at point is added to the future history."
   "List available CMake presets using `cmake --list-presets=configure`."
   (let ((output (shell-command-to-string "cmake --list-presets=configure")))
     (delq nil
-          (mapcar (lambda (line)
-                    (if (string-match "^\\s-+\"\\([^\"]+\\)\"\\s-*$" line)
-                        (match-string 1 line)))
-                  (split-string output "\n")))))
+      (mapcar (lambda (line)
+                (if (string-match "^\\s-+\"\\([^\"]+\\)\"\\s-*$" line)
+                  (match-string 1 line)))
+        (split-string output "\n")))))
 
 (defun transient-select-cmake-preset ()
   "Function to select a CMake preset."
@@ -3172,7 +3122,7 @@ The symbol at point is added to the future history."
     (setq cmake-preset preset)
     (message "Selected CMake preset: %s" preset)))
 
-(defun my/dired-duplicate-file (arg)
+(defun my/dired-duplicate-backup-file (arg)
   "Duplicate a file to a backup directory with an incremented number.
 If ARG is provided, it sets the counter."
   (interactive "p")
@@ -3192,36 +3142,36 @@ If ARG is provided, it sets the counter."
 (transient-define-prefix build-transient ()
   "Build and Diagnostic transient commands."
   ["Build"
-  ["CMake"
-    ("p" "Set Preset" transient-select-cmake-preset)
-    ("c" "Configure"
-     (lambda () (interactive)
-       (run-cmake-command (format "cmake --preset %s" cmake-preset))))
-    ("RET" "Build"
-     (lambda () (interactive)
-       (run-cmake-compile-command (format "cmake --build --preset %s" cmake-preset))))
-    ("i" "Install"
-     (lambda () (interactive)
-       (run-cmake-command (format "cmake --install %s" cmake-preset))))
-    ("g" "Refresh"
-     (lambda () (interactive)
-       (run-cmake-command (format "cmake --preset %s --fresh" cmake-preset))))
-    ("x" "Clean"
-     (lambda () (interactive)
-       (run-cmake-command "rm -rf build")))
-    ;; ("m" "Toggle compilation"
-    ;;   (lambda () (interactive)
-    ;;     (let ((buffer (get-buffer "*compilation*")))
-    ;;       (if buffer
-    ;;         (if (get-buffer-window buffer 'visible)
-    ;;           (delete-windows-on buffer)
-    ;;           (display-buffer buffer))
-    ;;         (message "No *compilation* buffer found.")))))
-    ("s" "List Presets"
-     (lambda () (interactive)
-       (run-cmake-command "cmake --list-presets=configure")))]
+    ["CMake"
+      ("p" "Set Preset" transient-select-cmake-preset)
+      ("c" "Configure"
+        (lambda () (interactive)
+          (run-cmake-command (format "cmake --preset %s" cmake-preset))))
+      ("RET" "Build"
+        (lambda () (interactive)
+          (run-cmake-compile-command (format "cmake --build --preset %s" cmake-preset))))
+      ("i" "Install"
+        (lambda () (interactive)
+          (run-cmake-command (format "cmake --install %s" cmake-preset))))
+      ("g" "Refresh"
+        (lambda () (interactive)
+          (run-cmake-command (format "cmake --preset %s --fresh" cmake-preset))))
+      ("x" "Clean"
+        (lambda () (interactive)
+          (run-cmake-command "rm -rf build")))
+      ;; ("m" "Toggle compilation"
+      ;;   (lambda () (interactive)
+      ;;     (let ((buffer (get-buffer "*compilation*")))
+      ;;       (if buffer
+      ;;         (if (get-buffer-window buffer 'visible)
+      ;;           (delete-windows-on buffer)
+      ;;           (display-buffer buffer))
+      ;;         (message "No *compilation* buffer found.")))))
+      ("s" "List Presets"
+        (lambda () (interactive)
+          (run-cmake-command "cmake --list-presets=configure")))]
     ["Actions"
-      ("b" "File Backup" my/dired-duplicate-file)
+      ("b" "File Backup" my/dired-duplicate-backup-file)
       ("f" "Toggle Flycheck" flymake-mode)
       ("d" "Show Flycheck Diagnostics" flymake-show-buffer-diagnostics)]
     ["Coding"
@@ -3287,7 +3237,7 @@ If ARG is provided, it sets the counter."
           (kill-async-buffer "*Running CigiMiniHostCSharp.exe*")))]
     ])
 
-(bind-key* (kbd "M-RET") #'build-transient)
+(global-set-key (kbd "M-RET") #'build-transient)
 
 (transient-define-prefix my/transient-outlining-and-folding ()
   "Transient menu for outline-mode."
@@ -3301,36 +3251,36 @@ If ARG is provided, it sets the counter."
             (set-selective-display 0)
             (set-selective-display (1+ (current-column))))))]
     ["Visibility"
-    ("o" "Toggle Children" outline-toggle-children)
-    ("h" "Hide Sublevels" outline-hide-sublevels)
-    ("s" "Show All" outline-show-all)
-    ("i" "Hide Body" outline-hide-body)
-    ("e" "Show Entry" outline-show-entry)
-    ("H" "Hide Entry" outline-hide-entry)
-    ("c" "Hide Leaves" outline-hide-leaves)
-    ("k" "Show Branches" outline-show-branches)
-    ("t" "Hide Subtree" outline-hide-subtree)
-    ("S" "Show Subtree" outline-show-subtree)]
-   ["Motion"
-    ("n" "Next Visible Heading" outline-next-visible-heading)
-    ("p" "Previous Visible Heading" outline-previous-visible-heading)
-    ("u" "Up Heading" outline-up-heading)
-    ("f" "Forward Same Level" outline-forward-same-level)
-    ("b" "Backward Same Level" outline-backward-same-level)]
-   ["Structure"
-    ("t" "Promote Heading" outline-promote)
-    ("d" "Demote Heading" outline-demote)
-    ("P" "Move Subtree Up" outline-move-subtree-up)
-    ("N" "Move Subtree Down" outline-move-subtree-down)]
-   ["Edit"
-    ("a" "Add Heading" outline-insert-heading)
-    ("r" "Rename Heading" outline-insert-heading)
-    ("m" "Mark Subtree" outline-mark-subtree)]])
+      ("o" "Toggle Children" outline-toggle-children)
+      ("h" "Hide Sublevels" outline-hide-sublevels)
+      ("s" "Show All" outline-show-all)
+      ("i" "Hide Body" outline-hide-body)
+      ("e" "Show Entry" outline-show-entry)
+      ("H" "Hide Entry" outline-hide-entry)
+      ("c" "Hide Leaves" outline-hide-leaves)
+      ("k" "Show Branches" outline-show-branches)
+      ("t" "Hide Subtree" outline-hide-subtree)
+      ("S" "Show Subtree" outline-show-subtree)]
+    ["Motion"
+      ("n" "Next Visible Heading" outline-next-visible-heading)
+      ("p" "Previous Visible Heading" outline-previous-visible-heading)
+      ("u" "Up Heading" outline-up-heading)
+      ("f" "Forward Same Level" outline-forward-same-level)
+      ("b" "Backward Same Level" outline-backward-same-level)]
+    ["Structure"
+      ("t" "Promote Heading" outline-promote)
+      ("d" "Demote Heading" outline-demote)
+      ("P" "Move Subtree Up" outline-move-subtree-up)
+      ("N" "Move Subtree Down" outline-move-subtree-down)]
+    ["Edit"
+      ("a" "Add Heading" outline-insert-heading)
+      ("r" "Rename Heading" outline-insert-heading)
+      ("m" "Mark Subtree" outline-mark-subtree)]])
 
 (bind-key* (kbd "C-c o") 'my/transient-outlining-and-folding)
 
 (defun my/prog-folding ()
-    "Enable and configure outline minor mode for code folding.
+  "Enable and configure outline minor mode for code folding.
 
 This function sets up the outline minor mode tailored for
 programming modes based on basic space / tab indentation."
@@ -3363,34 +3313,174 @@ easy pasting."
         (message "Copied to kill ring: %s" org-link))
       (message "No file under the cursor"))))
 
-(defun my/dired-meld-diff-all-dwim ()
-"Compare all marked directories in all visible Dired buffers using Meld.
-   The order of directories respects the order suggested by `dired-dwim-target`."
-(interactive)
-(let ((files ()))
-  (dolist (window (window-list))
-    (with-current-buffer (window-buffer window)
-      (when (and (derived-mode-p 'dired-mode)
-              (dired-get-marked-files))
-        (setq files (append files (dired-get-marked-files))))))
-  (if (or (<= (length files) 1)
-        (not (cl-every 'file-directory-p files)))
-    (message "Please mark at least two directories.")
-    (apply 'start-process "meld" nil "meld" files))))
+;; (defun my/dired-meld-diff-all-dwim ()
+;; "Compare all marked directories in all visible Dired buffers using Meld.
+;;    The order of directories respects the order suggested by `dired-dwim-target`."
+;; (interactive)
+;; (let ((files ()))
+;;   (dolist (window (window-list))
+;;     (with-current-buffer (window-buffer window)
+;;       (when (and (derived-mode-p 'dired-mode)
+;;               (dired-get-marked-files))
+;;         (setq files (append files (dired-get-marked-files))))))
+;;   (if (or (<= (length files) 1)
+;;         (not (cl-every 'file-directory-p files)))
+;;     (message "Please mark at least two directories.")
+;;     (apply 'start-process "meld" nil "meld" files))))
 
-(define-key dired-mode-map (kbd "C-c m") 'my/dired-meld-diff-all-dwim)
+;; (define-key dired-mode-map (kbd "C-c m") 'my/dired-meld-diff-all-dwim)
 
 (use-package ready-player
   :init
   (ready-player-mode 1)
   :custom
+  (ready-player-thumbnail-max-pixel-height 200)
   (ready-player-autoplay nil)
   (ready-player-repeat t)
   (ready-player-shuffle t)
   (ready-player-open-playback-commands
     '(
+       ("mpv" "--audio-display=no")
        ("mplayer")
        ("ffplay")
        ("vlc")
-       ("mpv" "--audio-display=no")
        )))
+
+(bind-key* (kbd "M-s x") #'diff-buffer-with-file)
+(bind-key* (kbd "M-s =") #'ediff-buffers)
+
+(use-package ibuffer
+  :bind (:map ibuffer-mode-map
+          ("j" . next-line)
+          ("k" . previous-line)))
+
+(use-package my-dired-diff
+  :load-path "~/source/my-dired-diff")
+
+(setq vc-handled-backends '(SVN Git))
+
+;; (use-package magit-svn
+;;   :ensure t
+;;   :after magit
+;;   :config
+;;   (magit-svn-mode 1))
+
+;;
+;;; Potential optimizations
+;;
+
+;;; Variables
+(defvar minimal-emacs-debug nil
+  "Non-nil to enable debug.")
+
+(defvar minimal-emacs-gc-cons-threshold (* 16 1024 1024)
+  "The value of `gc-cons-threshold' after Emacs startup.")
+
+;; Do not resize the frames in steps. It can leave gaps.
+(setq frame-resize-pixelwise t)
+;; However, do not resize windows pixelwise, as this can cause crashes in some
+;; cases when resizing too many windows at once or rapidly.
+(setq window-resize-pixelwise nil)
+(setq fast-but-imprecise-scrolling t)
+
+;; Increase how much is read from processes in a single chunk (default is 4kb).
+(setq read-process-output-max (* 128 1024))  ; 128kb
+
+;; Reduce rendering/line scan work by not rendering cursors or regions in
+;; non-focused windows.
+(setq-default cursor-in-non-selected-windows nil)
+(setq highlight-nonselected-windows nil)
+
+;; By default, Emacs "updates" its ui more often than it needs to
+(setq idle-update-delay 1.0)
+
+;; Font compacting can be very resource-intensive, especially when rendering
+;; icon fonts on Windows. This will increase memory usage.
+(setq inhibit-compacting-font-caches t)
+
+;; Suppress the vanilla startup screen completely. We've disabled it with
+;; `inhibit-startup-screen', but it would still initialize anyway.
+(advice-add #'display-startup-screen :override #'ignore)
+
+;; (setq initial-major-mode 'fundamental-mode
+;;       initial-scratch-message nil)
+
+;;; Native compilation and Byte compilation
+
+(if (and (featurep 'native-compile)
+      (fboundp 'native-comp-available-p)
+      (native-comp-available-p))
+  ;; Activate `native-compile'
+  (setq
+    native-comp-jit-compilation t
+    ;; native-comp-deferred-compilation t
+    package-native-compile t)
+  ;; Deactivate the `native-compile' feature if it is not available
+  (setq features (delq 'native-compile features)))
+
+;; Suppress compiler warnings and don't inundate users with their popups.
+(setq native-comp-async-report-warnings-errors
+  (or minimal-emacs-debug 'silent))
+(setq native-comp-warning-on-missing-source minimal-emacs-debug)
+
+(setq debug-on-error minimal-emacs-debug
+  jka-compr-verbose minimal-emacs-debug)
+
+(setq byte-compile-warnings (or minimal-emacs-debug '(not obsolete)))
+(setq byte-compile-verbose minimal-emacs-debug)
+
+(setq use-file-dialog nil)
+
+(when (fboundp 'horizontal-scroll-bar-mode)
+  (horizontal-scroll-bar-mode -1))
+
+(defun set-ready-player-commands ()
+  "Set `ready-player-open-playback-commands` based on file extension."
+  (let ((file-extension (file-name-extension (buffer-file-name))))
+    (setq ready-player-open-playback-commands
+      (cond
+        ((member file-extension '("mp4" "mkv" "mov" "avi"))
+          '(("mpv" "--audio-display=no")
+             ("mplayer")
+             ("ffplay")
+             ("vlc")))
+        ((equal file-extension "mp3")
+          '(("mplayer")
+             ("mpv" "--audio-display=no")
+             ("ffplay")
+             ("vlc")))
+        (t
+          '(("mpv" "--audio-display=no")
+             ("vlc")
+             ("ffplay")
+             ("mplayer")))))))
+
+(add-hook 'find-file-hook 'set-ready-player-commands)
+
+(transient-define-prefix chatgpt-shell-transient ()
+  "Transient for ChatGPT Shell commands."
+  ["ChatGPT Shell Commands"
+   ["Code and Text"
+    ("e" "Explain Code" chatgpt-shell-explain-code)
+    ("p" "Proofread Region" chatgpt-shell-proofread-region)
+    ("g" "Write Git Commit" chatgpt-shell-write-git-commit)
+    ("s" "Send Region" chatgpt-shell-send-region)
+    ("d" "Describe Code" chatgpt-shell-describe-code)
+    ("r" "Refactor Code" chatgpt-shell-refactor-code)
+    ("u" "Generate Unit Test" chatgpt-shell-generate-unit-test)
+    ("a" "Send and Review Region" chatgpt-shell-send-and-review-region)]
+   ["Shell Operations"
+    ("c" "Start Shell" chatgpt-shell)
+    ("m" "Swap Model Version" chatgpt-shell-swap-model-version)
+    ("t" "Swap System Prompt" chatgpt-shell-swap-system-prompt)
+    ("v" "Save Session Transcript" chatgpt-shell-save-session-transcript)]
+   ["Eshell Integrations"
+    ("o" "Summarize Last Command Output" chatgpt-shell-eshell-summarize-last-command-output)
+    ("w" "What's Wrong With Last Command" chatgpt-shell-eshell-whats-wrong-with-last-command)]
+   ["Miscellaneous"
+    ("i" "Describe Image" chatgpt-shell-describe-image)]
+   ])
+
+(global-set-key (kbd "C-c g") 'chatgpt-shell-transient)
+
+(global-set-key (kbd "C-x v e") 'vc-ediff)
