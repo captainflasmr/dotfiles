@@ -3,8 +3,8 @@ fundamental-mode ;; Available everywhere
 (ja (format-time-string "<%Y-%m-%d>"))
 (jT (format-time-string "%Y%m%d%H%M%S"))
 (jt (format-time-string "%Y%m%d"))
-(ji "|")
-(jl "\\")
+(ji "(interactive)")
+(jl "(lambda ()")
 
 org-mode
 
