@@ -313,6 +313,7 @@ To reduce wrist RSI I am using the left meta thumb key as much as possible.
 (define-key my-jump-keymap (kbd "m") #'customize-themes)
 (define-key my-jump-keymap (kbd "p") #'proced)
 (define-key my-jump-keymap (kbd "r") #'scratch-buffer)
+(define-key my-jump-keymap (kbd "s") #'my/shell-create)
 (define-key my-jump-keymap (kbd "t") #'customize-themes)
 (define-key my-jump-keymap (kbd "z") #'list-packages)
 
@@ -347,6 +348,7 @@ Sets up keybindings for quickly toggling visual features like font, theme, line 
 (define-key my-win-keymap (kbd "h") #'global-hl-line-mode)
 (define-key my-win-keymap (kbd "i") #'highlight-indent-guides-mode)
 (define-key my-win-keymap (kbd "j") #'org-redisplay-inline-images)
+(define-key my-win-keymap (kbd "l") #'my/sync-tab-bar-to-theme)
 (define-key my-win-keymap (kbd "k") #'my/toggle-mode-line)
 (define-key my-win-keymap (kbd "m") #'consult-theme)
 (define-key my-win-keymap (kbd "n") #'display-line-numbers-mode)
@@ -620,7 +622,7 @@ Turns on various modes like `global-font-lock-mode` for syntax highlighting and 
 ;;
 ;; -> modes
 ;;
-(global-hl-line-mode 1)
+(global-hl-line-mode -1)
 (global-font-lock-mode 1)
 (savehist-mode 1)
 (add-to-list 'savehist-additional-variables 'comint-input-ring)
@@ -1573,14 +1575,14 @@ Configures various visual aspects of Emacs, including menu bar, toolbar, and scr
   (let ((current-file (buffer-file-name))
          (full-paths-exclude-list (mapcar 'expand-file-name my-org-mode-exclude-files-list)))
     (unless (member current-file full-paths-exclude-list)
-      (visual-line-mode))))
+      (visual-line-mode 1))))
 
 (add-hook 'org-mode-hook 'my-org-visual-line-mode-exclude-init)
 
 (setq-default truncate-partial-width-windows 120)
 
-(set-frame-parameter nil 'alpha-background 80)
-(add-to-list 'default-frame-alist '(alpha-background . 80))
+(set-frame-parameter nil 'alpha-background 75)
+(add-to-list 'default-frame-alist '(alpha-background . 95))
 
 (set-fringe-mode '(20 . 20))
 (set-display-table-slot standard-display-table 0 ?\ )
@@ -1829,21 +1831,40 @@ Configures spell checking tools and dictionaries, integrating external tools lik
 ;; -> spelling
 ;;
 
-(use-package powerthesaurus)
+(use-package jinx)
 
-(bind-key* (kbd "C-c s")
-  #'(lambda ()(interactive)
-      (if (not flyspell-mode)
-        (progn
-          (flyspell-buffer)
-          (flyspell-mode 1)
-          (message "Spell Check ENABLED"))
-        (progn
-          (flyspell-mode -1)
-          (message "Spell Check DISABLED")))))
-(bind-key* (kbd "C-c j") #'ispell-word)
-(bind-key* (kbd "C-c l") #'dictionary-lookup-definition)
-(bind-key* (kbd "C-c y") #'powerthesaurus-lookup-synonyms-dwim)
+(use-package powerthesaurus
+  :init
+  (require 'transient)
+  (transient-define-prefix my/transient-spelling ()
+    "Spelling commands"
+    ["Spelling"
+      ["Lookups"
+        ("y" "Synonyms" powerthesaurus-lookup-synonyms-dwim)
+        ("a" "Antonyms" powerthesaurus-lookup-antonyms-dwim)]
+      ["Spelling Tools"
+        ("w" "Jinx" jinx-mode)
+        ("l" "Jinx correct" jinx-correct)]
+      ["Dictionary"
+        ("d" "Lookup" dictionary-lookup-definition)]
+      ["Miscellaneous"
+        ("q" "Quit" transient-quit-one)]])
+  :bind
+  ("C-c s" . my/transient-spelling))
+
+;; (bind-key* (kbd "C-c s")
+;;   #'(lambda ()(interactive)
+;;       (if (not flyspell-mode)
+;;         (progn
+;;           (flyspell-buffer)
+;;           (flyspell-mode 1)
+;;           (message "Spell Check ENABLED"))
+;;         (progn
+;;           (flyspell-mode -1)
+;;           (message "Spell Check DISABLED")))))
+;; (bind-key* (kbd "C-c j") #'ispell-word)
+;; (bind-key* (kbd "C-c l") #'dictionary-lookup-definition)
+;; (bind-key* (kbd "C-c y") #'powerthesaurus-lookup-synonyms-dwim)
 
 (setq ispell-local-dictionary "en_GB")
 (setq ispell-program-name "hunspell")
@@ -2002,7 +2023,8 @@ Customizes the appearance and behaviour of diff and merge tools within Emacs, ad
                  (define-key diff-mode-map (kbd "M-h") nil)
                  (define-key diff-mode-map (kbd "M-l") nil))))
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
-(setq ediff-prepare-buffer-hook #'org-fold-show-all)
+(add-hook 'ediff-prepare-buffer-hook #'org-fold-show-all)
+(add-hook 'ediff-prepare-buffer-hook (lambda ()(visual-line-mode -1)))
 (setq-default ediff-highlight-all-diffs t)
 (setq ediff-split-window-function 'split-window-horizontally)
 
@@ -2431,8 +2453,9 @@ The Selected Window Accent Mode is an Emacs package designed to visually disting
   (selected-window-accent-fringe-thickness 10)
   (selected-window-accent-percentage-darken 0)
   (selected-window-accent-percentage-desaturate 0)
-  (selected-window-accent-smart-borders t)
+  (selected-window-accent-smart-borders nil)
   (selected-window-accent-tab-accent t)
+  (selected-window-accent-use-pywal t)
   (selected-window-accent-custom-color "cyan4")
   (selected-window-accent-mode-style 'default))
 
@@ -2645,8 +2668,6 @@ Demonstrates customizations for shell integration within Emacs, optimizing setti
   (setq-local tab-always-indent 'complete)
   :hook
   (shell-mode . my/shell-hook))
-
-(bind-key* (kbd "<f8>") #'my/shell-create)
 
 (use-package popper
   :init
@@ -3258,11 +3279,10 @@ Curates configurations specific to Linux, making adjustments for paths, fonts, a
   (define-key my-jump-keymap (kbd "b") (lambda () (interactive) (find-file "~/bin")))
   (define-key my-jump-keymap (kbd "c") (lambda () (interactive) (find-file "~/DCIM/Camera")))
   (define-key my-jump-keymap (kbd "g") (lambda () (interactive) (find-file "~/.config")))
-  (define-key my-jump-keymap (kbd "i") #'chatgpt-shell)
   (define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~/DCIM/content/aaa--todo.org")))
   (define-key my-jump-keymap (kbd "y") #'emms)
   (define-key my-jump-keymap (kbd "q") #'cfw:open-org-calendar)
-  (define-key my-jump-keymap (kbd "s") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
+  (define-key my-jump-keymap (kbd "n") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
   (define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
 
   (setq diary-file "~/DCIM/content/diary.org")
@@ -3940,22 +3960,6 @@ easy pasting."
 
 ;; (define-key dired-mode-map (kbd "C-c m") 'my/dired-meld-diff-all-dwim)
 
-(use-package ready-player
-  :init
-  (ready-player-mode 1)
-  :custom
-  (ready-player-thumbnail-max-pixel-height 200)
-  (ready-player-autoplay nil)
-  (ready-player-repeat t)
-  (ready-player-shuffle t)
-  (ready-player-open-playback-commands
-    '(
-       ("mpv" "--audio-display=no")
-       ("mplayer")
-       ("ffplay")
-       ("vlc")
-       )))
-
 (bind-key* (kbd "M-s x") #'diff-buffer-with-file)
 (bind-key* (kbd "M-s =") #'ediff-buffers)
 
@@ -3975,124 +3979,58 @@ easy pasting."
 ;;   :config
 ;;   (magit-svn-mode 1))
 
-;;
-;;; Potential optimizations
-;;
-
-;;; Variables
-(defvar minimal-emacs-debug nil
-  "Non-nil to enable debug.")
-
-(defvar minimal-emacs-gc-cons-threshold (* 16 1024 1024)
-  "The value of `gc-cons-threshold' after Emacs startup.")
-
-;; Do not resize the frames in steps. It can leave gaps.
-(setq frame-resize-pixelwise t)
-;; However, do not resize windows pixelwise, as this can cause crashes in some
-;; cases when resizing too many windows at once or rapidly.
-(setq window-resize-pixelwise nil)
-(setq fast-but-imprecise-scrolling t)
-
-;; Increase how much is read from processes in a single chunk (default is 4kb).
-(setq read-process-output-max (* 128 1024))  ; 128kb
-
-;; Reduce rendering/line scan work by not rendering cursors or regions in
-;; non-focused windows.
-(setq-default cursor-in-non-selected-windows nil)
-(setq highlight-nonselected-windows nil)
-
-;; By default, Emacs "updates" its ui more often than it needs to
-(setq idle-update-delay 1.0)
-
-;; Font compacting can be very resource-intensive, especially when rendering
-;; icon fonts on Windows. This will increase memory usage.
-(setq inhibit-compacting-font-caches t)
-
-;; Suppress the vanilla startup screen completely. We've disabled it with
-;; `inhibit-startup-screen', but it would still initialize anyway.
-(advice-add #'display-startup-screen :override #'ignore)
-
-;; (setq initial-major-mode 'fundamental-mode
-;;       initial-scratch-message nil)
-
-;;; Native compilation and Byte compilation
-
-(if (and (featurep 'native-compile)
-      (fboundp 'native-comp-available-p)
-      (native-comp-available-p))
-  ;; Activate `native-compile'
-  (setq
-    native-comp-jit-compilation t
-    ;; native-comp-deferred-compilation t
-    package-native-compile t)
-  ;; Deactivate the `native-compile' feature if it is not available
-  (setq features (delq 'native-compile features)))
-
-;; Suppress compiler warnings and don't inundate users with their popups.
-(setq native-comp-async-report-warnings-errors
-  (or minimal-emacs-debug 'silent))
-(setq native-comp-warning-on-missing-source minimal-emacs-debug)
-
-(setq debug-on-error minimal-emacs-debug
-  jka-compr-verbose minimal-emacs-debug)
-
-(setq byte-compile-warnings (or minimal-emacs-debug '(not obsolete)))
-(setq byte-compile-verbose minimal-emacs-debug)
-
-(setq use-file-dialog nil)
-
-(when (fboundp 'horizontal-scroll-bar-mode)
-  (horizontal-scroll-bar-mode -1))
-
-(defun set-ready-player-commands ()
-  "Set `ready-player-open-playback-commands` based on file extension."
-  (let ((file-extension (file-name-extension (buffer-file-name))))
-    (setq ready-player-open-playback-commands
-      (cond
-        ((member file-extension '("mp4" "mkv" "mov" "avi"))
-          '(("mpv" "--audio-display=no")
-             ("mplayer")
-             ("ffplay")
-             ("vlc")))
-        ((equal file-extension "mp3")
-          '(("mplayer")
-             ("mpv" "--audio-display=no")
-             ("ffplay")
-             ("vlc")))
-        (t
-          '(("mpv" "--audio-display=no")
-             ("vlc")
-             ("ffplay")
-             ("mplayer")))))))
-
-(add-hook 'find-file-hook 'set-ready-player-commands)
-
 (transient-define-prefix chatgpt-shell-transient ()
   "Transient for ChatGPT Shell commands."
   ["ChatGPT Shell Commands"
-   ["Code and Text"
-    ("e" "Explain Code" chatgpt-shell-explain-code)
-    ("p" "Proofread Region" chatgpt-shell-proofread-region)
-    ("g" "Write Git Commit" chatgpt-shell-write-git-commit)
-    ("s" "Send Region" chatgpt-shell-send-region)
-    ("d" "Describe Code" chatgpt-shell-describe-code)
-    ("r" "Refactor Code" chatgpt-shell-refactor-code)
-    ("u" "Generate Unit Test" chatgpt-shell-generate-unit-test)
-    ("a" "Send and Review Region" chatgpt-shell-send-and-review-region)]
-   ["Shell Operations"
-    ("c" "Start Shell" chatgpt-shell)
-    ("m" "Swap Model Version" chatgpt-shell-swap-model-version)
-    ("t" "Swap System Prompt" chatgpt-shell-swap-system-prompt)
-    ("v" "Save Session Transcript" chatgpt-shell-save-session-transcript)]
-   ["Eshell Integrations"
-    ("o" "Summarize Last Command Output" chatgpt-shell-eshell-summarize-last-command-output)
-    ("w" "What's Wrong With Last Command" chatgpt-shell-eshell-whats-wrong-with-last-command)]
-   ["Miscellaneous"
-    ("i" "Describe Image" chatgpt-shell-describe-image)]
-   ])
+    ["Code and Text"
+      ("e" "Explain Code" chatgpt-shell-explain-code)
+      ("p" "Proofread Region" chatgpt-shell-proofread-region)
+      ("g" "Write Git Commit" chatgpt-shell-write-git-commit)
+      ("s" "Send Region" chatgpt-shell-send-region)
+      ("d" "Describe Code" chatgpt-shell-describe-code)
+      ("r" "Refactor Code" chatgpt-shell-refactor-code)
+      ("u" "Generate Unit Test" chatgpt-shell-generate-unit-test)
+      ("a" "Send and Review Region" chatgpt-shell-send-and-review-region)]
+    ["Shell Operations"
+      ("c" "Start Shell" chatgpt-shell)
+      ("m" "Swap Model Version" chatgpt-shell-swap-model-version)
+      ("t" "Swap System Prompt" chatgpt-shell-swap-system-prompt)
+      ("v" "Save Session Transcript" chatgpt-shell-save-session-transcript)]
+    ["Eshell Integrations"
+      ("o" "Summarize Last Command Output" chatgpt-shell-eshell-summarize-last-command-output)
+      ("w" "What's Wrong With Last Command" chatgpt-shell-eshell-whats-wrong-with-last-command)]
+    ["Miscellaneous"
+      ("i" "Describe Image" chatgpt-shell-describe-image)]
+    ])
 
 (global-set-key (kbd "C-c g") 'chatgpt-shell-transient)
 
 (global-set-key (kbd "C-x v e") 'vc-ediff)
+
+(use-package ready-player
+  :init
+  (ready-player-mode 1)
+  :custom
+  (ready-player-thumbnail-max-pixel-height 200)
+  (ready-player-autoplay nil)
+  (ready-player-repeat t)
+  (ready-player-shuffle t)
+  (ready-player-open-playback-commands
+    '((ready-player-is-audio-p "mplayer")
+       (ready-player-is-video-p "mpv"))))
+
+(defun my/sync-tab-bar-to-theme ()
+  "Synchronize tab-bar faces with the current theme."
+  (interactive)
+  (let ((default-bg (face-background 'default))
+         (default-fg (face-foreground 'default))
+         (inactive-fg (face-foreground 'mode-line-inactive))) ;; Fallback to mode-line-inactive
+    (custom-set-faces
+      `(tab-bar ((t (:inherit default :background ,default-bg :foreground ,default-fg))))
+      `(tab-bar-tab ((t (:inherit default :background ,default-fg :foreground ,default-bg))))
+      `(tab-bar-tab-inactive ((t (:inherit default :background ,default-bg :foreground ,inactive-fg)))))))
+
+;; Call the function now to set the faces initially
+(my/sync-tab-bar-to-theme)
 
 #+end_src
