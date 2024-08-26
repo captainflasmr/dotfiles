@@ -493,7 +493,7 @@ Configures `elfeed` for RSS/Atom feed reading, showcasing customization of feed 
   (elfeed-search-remain-on-entry t)
   (elfeed-search-title-min-width 60)
   (elfeed-search-title-max-width 60)
-  (elfeed-search-filter "@2-months-ago")
+  (elfeed-search-filter "@1-months-ago")
   (elfeed-feeds
     '("https://www.dyerdwelling.family/index.xml"
        "https://www.emacs.dyerdwelling.family/index.xml"
@@ -565,7 +565,7 @@ Note that occasionally I use the use-package related bind-key for a set all mode
 (global-set-key (kbd "C-2") #'split-window-vertically)
 (global-set-key (kbd "C-3") #'split-window-horizontally)
 (global-set-key (kbd "M-r") #'my/grep)
-(global-set-key (kbd "M-=") #'my/count-words)
+(global-set-key (kbd "M-s c") #'my/count-words)
 (define-key minibuffer-local-map (kbd "C-c e") #'embark-export)
 (define-key minibuffer-local-map (kbd "C-c c") #'embark-collect)
 (global-set-key (kbd "C-c a") #'org-agenda)
@@ -1067,7 +1067,7 @@ Customizes Org Capture templates for quickly capturing notes, tasks, and other i
        (file+function
          "~/DCIM/content/art--all.org"
          my-capture-top-level)
-       "* TODO %^{title} Video :videos:painter:krita:artrage:2024:
+       "* TODO %^{title} :videos:painter:krita:artrage:2024:
 :PROPERTIES:
 :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>--%\\1-%\\2
 :EXPORT_HUGO_SECTION: art--videos
@@ -1582,7 +1582,7 @@ Configures various visual aspects of Emacs, including menu bar, toolbar, and scr
 (setq-default truncate-partial-width-windows 120)
 
 (set-frame-parameter nil 'alpha-background 75)
-(add-to-list 'default-frame-alist '(alpha-background . 95))
+(add-to-list 'default-frame-alist '(alpha-background . 75))
 
 (set-fringe-mode '(20 . 20))
 (set-display-table-slot standard-display-table 0 ?\ )
@@ -1832,6 +1832,7 @@ Configures spell checking tools and dictionaries, integrating external tools lik
 ;;
 
 (use-package jinx)
+(use-package writegood-mode)
 
 (use-package powerthesaurus
   :init
@@ -1840,10 +1841,12 @@ Configures spell checking tools and dictionaries, integrating external tools lik
     "Spelling commands"
     ["Spelling"
       ["Lookups"
-        ("y" "Synonyms" powerthesaurus-lookup-synonyms-dwim)
+        ("s" "Synonyms" powerthesaurus-lookup-synonyms-dwim)
         ("a" "Antonyms" powerthesaurus-lookup-antonyms-dwim)]
       ["Spelling Tools"
-        ("w" "Jinx" jinx-mode)
+        ("w" "Jinx" (lambda ()(interactive)
+                      (call-interactively 'jinx-mode)
+                      (call-interactively 'writegood-mode)))
         ("l" "Jinx correct" jinx-correct)]
       ["Dictionary"
         ("d" "Lookup" dictionary-lookup-definition)]
@@ -2017,16 +2020,17 @@ Customizes the appearance and behaviour of diff and merge tools within Emacs, ad
 
 (use-package diff-mode
   :hook
-  (diff-mode . (lambda ()
-                 (define-key diff-mode-map (kbd "M-j") nil)
-                 (define-key diff-mode-map (kbd "M-k") nil)
-                 (define-key diff-mode-map (kbd "M-h") nil)
-                 (define-key diff-mode-map (kbd "M-l") nil))))
-(setq ediff-window-setup-function 'ediff-setup-windows-plain)
-(add-hook 'ediff-prepare-buffer-hook #'org-fold-show-all)
-(add-hook 'ediff-prepare-buffer-hook (lambda ()(visual-line-mode -1)))
-(setq-default ediff-highlight-all-diffs t)
-(setq ediff-split-window-function 'split-window-horizontally)
+  ((diff-mode . (lambda ()
+                  (define-key diff-mode-map (kbd "M-j") nil)
+                  (define-key diff-mode-map (kbd "M-k") nil)
+                  (define-key diff-mode-map (kbd "M-h") nil)
+                  (define-key diff-mode-map (kbd "M-l") nil)))
+   (ediff-prepare-buffer . org-fold-show-all)
+   (ediff-prepare-buffer . (lambda () (visual-line-mode -1))))
+  :custom
+  (ediff-window-setup-function 'ediff-setup-windows-plain)
+  (ediff-highlight-all-diffs t)
+  (ediff-split-window-function 'split-window-horizontally))
 
 #+end_src
 
@@ -2304,7 +2308,6 @@ Defining very specific indentation and highlight guides
 
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 3)
-(setq-default lisp-indent-offset 2)
 (add-hook 'sh-mode-hook
   (lambda () (setq sh-basic-offset 3)))
 
@@ -2453,7 +2456,9 @@ The Selected Window Accent Mode is an Emacs package designed to visually disting
   (selected-window-accent-fringe-thickness 10)
   (selected-window-accent-percentage-darken 0)
   (selected-window-accent-percentage-desaturate 0)
-  (selected-window-accent-smart-borders nil)
+  (selected-window-accent-smart-borders t)
+  (selected-window-accent-use-blend-background t)
+  (selected-window-accent-use-blend-alpha 0)
   (selected-window-accent-tab-accent t)
   (selected-window-accent-use-pywal t)
   (selected-window-accent-custom-color "cyan4")
@@ -2775,12 +2780,10 @@ I have for the moment decided that repeat-mode is not yet for me, I am currently
 
 (global-set-key (kbd "M-s n") (lambda () (interactive) (my/repeat-thing #'my/next-thing)))
 (global-set-key (kbd "M-s p") (lambda () (interactive) (my/repeat-thing #'my/previous-thing)))
-(global-set-key (kbd "M-g n") (lambda () (interactive) (my/repeat-thing #'my/next-thing)))
-(global-set-key (kbd "M-g p") (lambda () (interactive) (my/repeat-thing #'my/previous-thing)))
 (bind-key* (kbd "C-x j") (lambda () (interactive) (my/repeat-thing #'tab-bar-history-back)))
 (bind-key* (kbd "C-x k") (lambda () (interactive) (my/repeat-thing #'tab-bar-history-forward)))
-(global-set-key (kbd "C-x u") (lambda () (interactive) (my/repeat-thing #'my/window-enlarge)))
-(global-set-key (kbd "C-x i") (lambda () (interactive) (my/repeat-thing #'my/window-shrink)))
+(global-set-key (kbd "C-x u") (lambda () (interactive) (my/repeat-thing #'my/window-shrink)))
+(global-set-key (kbd "C-x i") (lambda () (interactive) (my/repeat-thing #'my/window-enlarge)))
 
 #+end_src
 
@@ -3065,25 +3068,6 @@ Shares custom Lisp functions for managing financial data within Emacs, demonstra
 ;; -> next-thing
 ;;
 
-(defun my/switch-to-thing ()
-  "Switch to a buffer, open a recent file, jump to a bookmark,
-                   or change the theme from a unified interface."
-  (interactive)
-  (let* ((buffers (mapcar #'buffer-name (buffer-list)))
-          (recent-files recentf-list)
-          (bookmarks (bookmark-all-names))
-          (all-options (append buffers recent-files bookmarks))
-          (selection (completing-read "Switch to: "
-                       (lambda (str pred action)
-                         (if (eq action 'metadata)
-                           '(metadata . ((category . file)))
-                           (complete-with-action action all-options str pred)))
-                       nil t nil 'file-name-history)))
-    (pcase selection
-      ((pred (lambda (sel) (member sel buffers))) (switch-to-buffer selection))
-      ((pred (lambda (sel) (member sel bookmarks))) (bookmark-jump selection))
-      (_ (find-file selection)))))
-
 (defun my/get-window-regex (regex)
   "Find the first window displaying a buffer whose name matches the given REGEX.
                    If no such window is found, return nil."
@@ -3094,89 +3078,42 @@ Shares custom Lisp functions for managing financial data within Emacs, demonstra
         (setq found-window window)
         (cl-return found-window)))))
 
+(defun my/navigate-thing (prev-or-next-funcs)
+  "Navigate through things using a list of corresponding functions."
+  (let ((window nil))
+    (dolist (func prev-or-next-funcs)
+      (setq window (my/get-window-regex (nth 0 func)))
+      (when window
+        (apply 'select-window (list window))
+        (dolist (f (nth 1 func))
+          (funcall f))))))
+
 (defun my/previous-thing ()
-  "Go to the previous thing, meaning warning, error, grep, etc., based on ARG."
+  "Go to the previous thing, meaning warning, error, grep, etc."
   (interactive)
-  (let ((window))
-
-    (setq window (my/get-window-regex "compilation"))
-    (when window
-      (previous-error))
-
-    (setq window (my/get-window-regex "compile-log"))
-    (when window
-      (select-window window)
-      (previous-error-no-select)
-      (compile-goto-error))
-
-    (setq window (my/get-window-regex "dead"))
-    (when window
-      (select-window window)
-      (deadgrep-backward-match)
-      (deadgrep-visit-result-other-window)
-      (org-fold-show-entry))
-
-    (setq window (my/get-window-regex "org agenda"))
-    (when window
-      (select-window window)
-      (org-agenda-previous-item 1)
-      (org-agenda-goto)
-      (org-fold-show-entry))
-
-    (setq window (my/get-window-regex "consult-ripgrep"))
-    (when window
-      (select-window window)
-      (backward-button 1)
-      (push-button)
-      (org-fold-show-entry))
-
-    (setq window (or (my/get-window-regex "occur")
-                   (my/get-window-regex "flycheck errors")))
-    (when window
-      (select-window window)
-      (previous-error))))
+  (my/navigate-thing
+   '(("compilation" (previous-error))
+     ("compile-log" (previous-error-no-select compile-goto-error))
+     ("dead" (deadgrep-backward-match deadgrep-visit-result-other-window org-fold-show-entry))
+     ("xref" (xref-prev-line))
+     ("org agenda" ((lambda () (org-agenda-previous-item 1)) org-agenda-goto org-fold-show-entry))
+     ("consult-ripgrep" (backward-button push-button org-fold-show-entry))
+     ("occur" (previous-error))
+     ("flycheck errors" (previous-error)))))
 
 (defun my/next-thing ()
-  "Go to the next thing, meaning warning, error, grep, etc., based on ARG."
+  "Go to the next thing, meaning warning, error, grep, etc."
   (interactive)
-  (let ((window))
+  (my/navigate-thing
+   '(("compilation" (next-error))
+     ("compile-log" (next-error-no-select compile-goto-error))
+     ("dead" (deadgrep-forward-match deadgrep-visit-result-other-window org-fold-show-entry))
+     ("xref" (xref-next-line))
+     ("org agenda" ((lambda () (org-agenda-next-item 1)) org-agenda-goto org-fold-show-entry))
+     ("consult-ripgrep" (forward-button push-button org-fold-show-entry))
+     ("occur" (next-error))
+     ("flycheck errors" (next-error)))))
 
-    (setq window (my/get-window-regex "compilation"))
-    (when window
-      (next-error))
-
-    (setq window (my/get-window-regex "compile-log"))
-    (when window
-      (select-window window)
-      (next-error-no-select)
-      (compile-goto-error))
-
-    (setq window (my/get-window-regex "dead"))
-    (when window
-      (select-window window)
-      (deadgrep-forward-match)
-      (deadgrep-visit-result-other-window)
-      (org-fold-show-entry))
-
-    (setq window (my/get-window-regex "org agenda"))
-    (when window
-      (select-window window)
-      (org-agenda-next-item 1)
-      (org-agenda-goto)
-      (org-fold-show-entry))
-
-    (setq window (my/get-window-regex "consult-ripgrep"))
-    (when window
-      (select-window window)
-      (forward-button 1)
-      (push-button)
-      (org-fold-show-entry))
-
-    (setq window (or (my/get-window-regex "occur")
-                   (my/get-window-regex "flycheck errors")))
-    (when window
-      (select-window window)
-      (next-error))))
 #+end_src
 
 
@@ -3313,16 +3250,6 @@ Curates configurations specific to Linux, making adjustments for paths, fonts, a
     :hook
     (marginalia-mode all-the-icons-completion-marginalia-setup))
 
-  (when (file-exists-p "~/source/repos/xkb-mode")
-    (use-package xkb-mode
-      :load-path "~/source/repos/xkb-mode"))
-  ;; :vc (:fetcher github :repo "captainflasmr/xkb-mode"))
-
-  (when (file-exists-p "~/source/repos/arscript-mode")
-    (use-package arscript-mode
-      :load-path "~/source/repos/arscript-mode"))
-  ;; :vc (:fetcher github :repo "captainflasmr/arscript-mode"))
-
   (when (file-exists-p "~/source/repos/fd-find")
     (use-package fd-find
       :load-path "~/source/repos/fd-find"))
@@ -3440,12 +3367,12 @@ Shares miscellaneous development tools, tips, and functions, showcasing the vers
 (defun subtract-weight (weight-str avg-loss)
   "Subtract AVG-LOSS pounds from WEIGHT-STR given in 'stones:pounds' format."
   (let* ((stones-pounds (split-string weight-str ":"))
-          (stones (string-to-number (car stones-pounds)))
-          (pounds (string-to-number (cadr stones-pounds)))
-          (total-pounds (+ pounds (* stones 14)))
-          (new-total-pounds (- total-pounds avg-loss))
-          (new-stones (truncate (/ new-total-pounds 14)))
-          (new-pounds (mod new-total-pounds 14)))
+         (stones (string-to-number (car stones-pounds)))
+         (pounds (string-to-number (cadr stones-pounds)))
+         (total-pounds (+ pounds (* stones 14)))
+         (new-total-pounds (- total-pounds avg-loss))
+         (new-stones (truncate (/ new-total-pounds 14)))
+         (new-pounds (mod new-total-pounds 14)))
     (format "%d:%d" new-stones new-pounds)))
 
 (defun extrapolate-weight-loss (num-weeks)
@@ -3453,10 +3380,10 @@ Shares miscellaneous development tools, tips, and functions, showcasing the vers
   (interactive "p")
   (save-excursion
     (let ((last-weight)
-           (last-avg-loss 2.9)
-           (last-date "")
-           (week 0)
-           (next-date ""))
+          (last-avg-loss 2.9)
+          (last-date "")
+          (week 0)
+          (next-date ""))
       (print num-weeks)
       (when (org-at-table-p)
         (goto-char (org-table-end))
@@ -3469,28 +3396,28 @@ Shares miscellaneous development tools, tips, and functions, showcasing the vers
         ;; Loop for num-weeks to generate new lines
         (dotimes (i num-weeks)
           (setq next-date
-            (format-time-string "<%Y-%m-%d %a>"
-              (time-add (org-time-string-to-time last-date)
-                (days-to-time (+ (* i 7) 7))))) ;; add 7 days per week
+                (format-time-string "<%Y-%m-%d %a>"
+                                    (time-add (org-time-string-to-time last-date)
+                                              (days-to-time (+ (* i 7) 7))))) ;; add 7 days per week
           (setq week (+ week 1))
           (insert (format "| %d | %s | %s | | | | | | |\n"
-                    week next-date (subtract-weight last-weight (* (+ i 1) last-avg-loss))))))))
+                          week next-date (subtract-weight last-weight (* (+ i 1) last-avg-loss))))))))
   (org-table-align))
 
 (defun my/dired-delete-async ()
   "Delete files asynchronously in Dired."
   (interactive)
   (if (eq delete-by-moving-to-trash t)
-    (let ((files (dired-get-marked-files)))
-      (dolist (file files)
-        (async-shell-command (format "gio trash '%s'" file))))
+      (let ((files (dired-get-marked-files)))
+        (dolist (file files)
+          (async-shell-command (format "gio trash '%s'" file))))
     (message "Async deletion is set up only for trash. Set `delete-by-moving-to-trash` to t.")))
 
 (setq org-icalendar-use-deadline
-  '(event-if-not-todo event-if-todo event-if-todo-not-done todo-due))
+      '(event-if-not-todo event-if-todo event-if-todo-not-done todo-due))
 
 (setq org-icalendar-use-scheduled
-  '(event-if-not-todo event-if-todo event-if-todo-not-done todo-start))
+      '(event-if-not-todo event-if-todo event-if-todo-not-done todo-start))
 
 (defun my/calc-subscription-cost ()
   (interactive)
@@ -3510,8 +3437,8 @@ Shares miscellaneous development tools, tips, and functions, showcasing the vers
     (message "Total: %.2f" sum)))
 
 (if (and (fboundp 'native-comp-available-p)
-      (native-comp-available-p))
-  (message "Native compilation is available")
+         (native-comp-available-p))
+    (message "Native compilation is available")
   (message "Native complation is *not* available"))
 
 (setq native-comp-async-report-warnings-errors nil)
@@ -3520,19 +3447,19 @@ Shares miscellaneous development tools, tips, and functions, showcasing the vers
   (interactive)
   ;; Define the export file name by appending .html to the current buffer name
   (let* ((original-buffer-name (buffer-name))
-          (html-file-name (concat (file-name-sans-extension original-buffer-name) ".html"))
-          (html-buffer (htmlize-buffer (current-buffer))))
+         (html-file-name (concat (file-name-sans-extension original-buffer-name) ".html"))
+         (html-buffer (htmlize-buffer (current-buffer))))
     ;; Check if the file exists, and if so, ask the user if they want to overwrite it
     (if (file-exists-p html-file-name)
-      (if (y-or-n-p (format "File %s already exists. Overwrite? " html-file-name))
-        (progn
-          ;; User chose to overwrite: Save the HTML buffer to the file
-          (with-current-buffer html-buffer
-            (write-file html-file-name))
-          (kill-buffer html-buffer) ;; Clean up the temporary HTML buffer
-          (message "Exported to %s" html-file-name))
-        ;; User chose not to overwrite: Just clean up
-        (kill-buffer html-buffer))
+        (if (y-or-n-p (format "File %s already exists. Overwrite? " html-file-name))
+            (progn
+              ;; User chose to overwrite: Save the HTML buffer to the file
+              (with-current-buffer html-buffer
+                (write-file html-file-name))
+              (kill-buffer html-buffer) ;; Clean up the temporary HTML buffer
+              (message "Exported to %s" html-file-name))
+          ;; User chose not to overwrite: Just clean up
+          (kill-buffer html-buffer))
       ;; File doesn't exist: Save directly
       (with-current-buffer html-buffer
         (write-file html-file-name))
@@ -3545,23 +3472,23 @@ Shares miscellaneous development tools, tips, and functions, showcasing the vers
   (save-excursion
     (goto-char (point-min))
     (let ((found nil)
-           (begin-pos nil))
+          (begin-pos nil))
       (while (and (not found)
-               (search-forward "#+begin: kanban" nil t))
+                  (search-forward "#+begin: kanban" nil t))
         (setq begin-pos (point-at-bol)) ;; Capture the beginning for later use
         (let ((line-end (point-at-eol)))
           (when (search-forward ":compressed" line-end t)
             (let ((start (point)))
               (if (search-forward-regexp "nil\\|t" line-end t)
-                (let ((value (match-string 0)))
-                  (replace-match (if (string= value "nil") "t" "nil") t t)
-                  (setq found t))
+                  (let ((value (match-string 0)))
+                    (replace-match (if (string= value "nil") "t" "nil") t t)
+                    (setq found t))
                 ;; If :compressed is not found, add it as `:compressed t`.
                 (goto-char start)
                 (insert " t")
                 (setq found t))))))
       (if (not found)
-        (message "No org-kanban directive with a :compressed keyword found.")
+          (message "No org-kanban directive with a :compressed keyword found.")
         (progn
           ;; If a kanban was found and modified, re-evaluate it
           (goto-char begin-pos)
@@ -3579,17 +3506,17 @@ The command supports preview of the currently selected marker position.
 The symbol at point is added to the future history."
   (interactive)
   (consult--read
-    (consult--global-mark-candidates
-      (or markers (flatten-list xref--history)))
-    :prompt "Go to Xref: "
-    :annotate (consult--line-prefix)
-    :category 'consult-location
-    :sort nil
-    :require-match t
-    :lookup #'consult--lookup-location
-    :history '(:input consult--xref-history)
-    :add-history (thing-at-point 'symbol)
-    :state (consult--jump-state)))
+   (consult--global-mark-candidates
+    (or markers (flatten-list xref--history)))
+   :prompt "Go to Xref: "
+   :annotate (consult--line-prefix)
+   :category 'consult-location
+   :sort nil
+   :require-match t
+   :lookup #'consult--lookup-location
+   :history '(:input consult--xref-history)
+   :add-history (thing-at-point 'symbol)
+   :state (consult--jump-state)))
 
 (defvar my/waybar-output-file
   (expand-file-name "emacs_output.json" (getenv "HOME"))
@@ -3599,14 +3526,14 @@ The symbol at point is added to the future history."
   "Generate a string that represents the current tabs in the tab bar, with each tab name truncated to MAX-LENGTH."
   (interactive "nMax Length: ")
   (let ((tabs (funcall tab-bar-tabs-function))
-         (tab-names '())
-         (current-tab-index (tab-bar--current-tab-index)))
+        (tab-names '())
+        (current-tab-index (tab-bar--current-tab-index)))
     (dolist (tab tabs)
       (let* ((tab-name (alist-get 'name tab))
-              (is-active (eq tab (nth current-tab-index tabs)))
-              (truncated-name (if (> (length tab-name) max-length)
-                                (substring tab-name 0 max-length)
-                                tab-name)))
+             (is-active (eq tab (nth current-tab-index tabs)))
+             (truncated-name (if (> (length tab-name) max-length)
+                                 (substring tab-name 0 max-length)
+                               tab-name)))
         (push (if is-active (concat "🔸" truncated-name "🔸") truncated-name) tab-names)))
     (let ((tab-string (concat " " (mapconcat 'identity (reverse tab-names) " | ") "")))
       tab-string)))
@@ -3633,18 +3560,18 @@ The symbol at point is added to the future history."
 (defun copy-vcxproj-and-sln-files (src-dir dst-dir)
   "Copy .vcxproj, .vcxproj.filters, and .sln files from SRC-DIR to DST-DIR recursively."
   (let ((files (directory-files-recursively src-dir
-                 "\\.\\(vcxproj\\|sln\\)$"
-                 nil
-                 (lambda (dir)
-                   (not
-                     (or
-                       (string-match "CMakeFiles" dir)
-                       ))))))
+                                            "\\.\\(vcxproj\\|sln\\)$"
+                                            nil
+                                            (lambda (dir)
+                                              (not
+                                               (or
+                                                (string-match "CMakeFiles" dir)
+                                                ))))))
     ;; (prin1 files)
     (dolist (file files)
       (message file)
       (let* ((relative-path (file-relative-name file src-dir))
-              (new-file (expand-file-name relative-path dst-dir)))
+             (new-file (expand-file-name relative-path dst-dir)))
         (unless (file-directory-p (file-name-directory new-file))
           (make-directory (file-name-directory new-file) t))
         (copy-file file new-file t)))))
@@ -3667,34 +3594,34 @@ The symbol at point is added to the future history."
   "Summarize the customization options of a group with their descriptions."
   (interactive)
   (let* ((all-groups (mapcar 'symbol-name (custom-group-members 'custom-group nil)))
-          (group-name (completing-read "Select customization group: " all-groups))
-          (group-symbol (intern group-name))
-          (output-buffer (get-buffer-create "*Customize Group Summary*")))
+         (group-name (completing-read "Select customization group: " all-groups))
+         (group-symbol (intern group-name))
+         (output-buffer (get-buffer-create "*Customize Group Summary*")))
     (with-current-buffer output-buffer
       (read-only-mode -1)
       (erase-buffer)
       (insert (format "Summary of Customize Group: %s\n\n" group-name))
       (dolist (item (custom-group-members group-symbol nil))
         (let ((symbol (car item))
-               (type (cadr item))
-               (description "No description available."))
+              (type (cadr item))
+              (description "No description available."))
           (cond
-            ((custom-variable-p symbol)
-              (setq description (or (documentation-property symbol 'variable-documentation)
+           ((custom-variable-p symbol)
+            (setq description (or (documentation-property symbol 'variable-documentation)
                                   "No description available.")))
-            ((get symbol 'face-documentation)
-              (setq description (get symbol 'face-documentation)))
-            ((custom-group-p symbol)
-              (setq description (or (documentation-property symbol 'group-documentation)
+           ((get symbol 'face-documentation)
+            (setq description (get symbol 'face-documentation)))
+           ((custom-group-p symbol)
+            (setq description (or (documentation-property symbol 'group-documentation)
                                   "No description available."))))
           (insert (format "** %s\n\n%s\n\n"
-                    symbol
-                    description))))
+                          symbol
+                          description))))
       (read-only-mode 1)
       (goto-char (point-min)))
     (display-buffer output-buffer)))
 
-(pixel-scroll-precision-mode 1)
+(pixel-scroll-precision-mode -1)
 
 (setq native-comp-verbose 3)
 
@@ -3739,16 +3666,16 @@ The symbol at point is added to the future history."
   "List available CMake presets using `cmake --list-presets=configure`."
   (let ((output (shell-command-to-string "cmake --list-presets=configure")))
     (delq nil
-      (mapcar (lambda (line)
-                (if (string-match "^\\s-+\"\\([^\"]+\\)\"\\s-*$" line)
-                  (match-string 1 line)))
-        (split-string output "\n")))))
+          (mapcar (lambda (line)
+                    (if (string-match "^\\s-+\"\\([^\"]+\\)\"\\s-*$" line)
+                        (match-string 1 line)))
+                  (split-string output "\n")))))
 
 (defun transient-select-cmake-preset ()
   "Function to select a CMake preset."
   (interactive)
   (let* ((presets (list-cmake-presets))
-          (preset (completing-read "Select CMake preset: " presets nil t)))
+         (preset (completing-read "Select CMake preset: " presets nil t)))
     (setq cmake-preset preset)
     (message "Selected CMake preset: %s" preset)))
 
@@ -3757,14 +3684,14 @@ The symbol at point is added to the future history."
 If ARG is provided, it sets the counter."
   (interactive "p")
   (let* ((dir "~/backup/")
-          (name (buffer-name))
-          (base-name (file-name-sans-extension name))
-          (extension (file-name-extension name t))
-          (counter (if arg (prefix-numeric-value arg) 1))
-          (new-file))
+         (name (buffer-name))
+         (base-name (file-name-sans-extension name))
+         (extension (file-name-extension name t))
+         (counter (if arg (prefix-numeric-value arg) 1))
+         (new-file))
     (while (and (setq new-file
-                  (format "%s%s_%03d%s" dir base-name counter extension))
-             (file-exists-p new-file))
+                      (format "%s%s_%03d%s" dir base-name counter extension))
+                (file-exists-p new-file))
       (setq counter (1+ counter)))
     (message (concat "Backed " new-file))
     (copy-file name new-file)))
@@ -3772,140 +3699,140 @@ If ARG is provided, it sets the counter."
 (transient-define-prefix build-transient ()
   "Build and Diagnostic transient commands."
   ["Build"
-    ["CMake"
-      ("p" "Set Preset" transient-select-cmake-preset)
-      ("c" "Configure"
-        (lambda () (interactive)
-          (run-cmake-command (format "cmake --preset %s" cmake-preset))))
-      ("RET" "Build"
-        (lambda () (interactive)
-          (run-cmake-compile-command (format "cmake --build --preset %s" cmake-preset))))
-      ("i" "Install"
-        (lambda () (interactive)
-          (run-cmake-command (format "cmake --install %s" cmake-preset))))
-      ("g" "Refresh"
-        (lambda () (interactive)
-          (run-cmake-command (format "cmake --preset %s --fresh" cmake-preset))))
-      ("x" "Clean"
-        (lambda () (interactive)
-          (run-cmake-command "rm -rf build")))
-      ;; ("m" "Toggle compilation"
-      ;;   (lambda () (interactive)
-      ;;     (let ((buffer (get-buffer "*compilation*")))
-      ;;       (if buffer
-      ;;         (if (get-buffer-window buffer 'visible)
-      ;;           (delete-windows-on buffer)
-      ;;           (display-buffer buffer))
-      ;;         (message "No *compilation* buffer found.")))))
-      ("s" "List Presets"
-        (lambda () (interactive)
-          (run-cmake-command "cmake --list-presets=configure")))]
-    ["Actions"
-      ("b" "File Backup" my/dired-duplicate-backup-file)
-      ("f" "Toggle Flycheck" flymake-mode)
-      ("d" "Show Flycheck Diagnostics" flymake-show-buffer-diagnostics)]
-    ["Coding"
-      ("j" "Fancy Stuff"
-        (lambda () (interactive)
-          (call-interactively 'eglot)
-          (flymake-mode 1)
-          (company-mode 1)))
-      ("u" "Undo Fancy Stuff"
-        (lambda () (interactive)
-          (eglot-shutdown-all)
-          (flymake-mode -1)
-          (company-mode -1)))
-      ("h" "Stop eglot"
-        (lambda () (interactive)
-          (eglot-shutdown-all)))]
-    ["Run"
-      ("r" "All"
-        (lambda () (interactive)
-          (run-exe-command
-            (concat (project-root (project-current t))
-              "build/windows/debug/bin/Debug")
-            "CigiDummyIG.exe" "*Running CigiDummyIG.exe*")
-          (run-exe-command
-            (concat (project-root (project-current t))
-              "build/windows/debug/bin/Debug")
-            "CigiMiniHostCSharp.exe" "*Running CigiMiniHostCSharp.exe*")))
-      ("1" "CigiDummyIG"
-        (lambda () (interactive)
-          (run-exe-command
-            (concat (project-root (project-current t))
-              "build/windows/debug/bin/Debug")
-            "CigiDummyIG.exe"
-            "*Running CigiDummyIG.exe*")))
-      ("2" "CigiMiniHost"
-        (lambda () (interactive)
-          (run-exe-command
-            (concat (project-root (project-current t))
-              "build/windows/debug/bin/Debug")
-            "CigiMiniHost.exe"
-            "*Running CigiMiniHost.exe*")))
-      ("3" "CigiMiniHostCSharp"
-        (lambda () (interactive)
-          (run-exe-command
-            (concat (project-root (project-current t))
-              "build/windows/debug/bin/Debug")
-            "CigiMiniHostCSharp.exe"
-            "*Running CigiMiniHostCSharp.exe*")))]
-    ["Kill"
-      ("5" "CigiDummyIG (k)"
-        (lambda () (interactive)
-          (kill-async-buffer "*Running CigiDummyIG.exe*")))
-      ("6" "CigiMiniHost (k)"
-        (lambda () (interactive)
-          (kill-async-buffer "*Running CigiMiniHost.exe*")))
-      ("7" "CigiMiniHostCSharp (k)"
-        (lambda () (interactive)
-          (kill-async-buffer "*Running CigiMiniHostCSharp.exe*")))
-      ("k" "All (k)"
-        (lambda () (interactive)
-          (kill-async-buffer "*Running CigiDummyIG.exe*")
-          (kill-async-buffer "*Running CigiMiniHost.exe*")
-          (kill-async-buffer "*Running CigiMiniHostCSharp.exe*")))]
-    ])
+   ["CMake"
+    ("p" "Set Preset" transient-select-cmake-preset)
+    ("c" "Configure"
+     (lambda () (interactive)
+       (run-cmake-command (format "cmake --preset %s" cmake-preset))))
+    ("RET" "Build"
+     (lambda () (interactive)
+       (run-cmake-compile-command (format "cmake --build --preset %s" cmake-preset))))
+    ("i" "Install"
+     (lambda () (interactive)
+       (run-cmake-command (format "cmake --install %s" cmake-preset))))
+    ("g" "Refresh"
+     (lambda () (interactive)
+       (run-cmake-command (format "cmake --preset %s --fresh" cmake-preset))))
+    ("x" "Clean"
+     (lambda () (interactive)
+       (run-cmake-command "rm -rf build")))
+    ;; ("m" "Toggle compilation"
+    ;;   (lambda () (interactive)
+    ;;     (let ((buffer (get-buffer "*compilation*")))
+    ;;       (if buffer
+    ;;         (if (get-buffer-window buffer 'visible)
+    ;;           (delete-windows-on buffer)
+    ;;           (display-buffer buffer))
+    ;;         (message "No *compilation* buffer found.")))))
+    ("s" "List Presets"
+     (lambda () (interactive)
+       (run-cmake-command "cmake --list-presets=configure")))]
+   ["Actions"
+    ("b" "File Backup" my/dired-duplicate-backup-file)
+    ("f" "Toggle Flycheck" flymake-mode)
+    ("d" "Show Flycheck Diagnostics" flymake-show-buffer-diagnostics)]
+   ["Coding"
+    ("j" "Fancy Stuff"
+     (lambda () (interactive)
+       (call-interactively 'eglot)
+       (flymake-mode 1)
+       (company-mode 1)))
+    ("u" "Undo Fancy Stuff"
+     (lambda () (interactive)
+       (eglot-shutdown-all)
+       (flymake-mode -1)
+       (company-mode -1)))
+    ("h" "Stop eglot"
+     (lambda () (interactive)
+       (eglot-shutdown-all)))]
+   ["Run"
+    ("r" "All"
+     (lambda () (interactive)
+       (run-exe-command
+        (concat (project-root (project-current t))
+                "build/windows/debug/bin/Debug")
+        "CigiDummyIG.exe" "*Running CigiDummyIG.exe*")
+       (run-exe-command
+        (concat (project-root (project-current t))
+                "build/windows/debug/bin/Debug")
+        "CigiMiniHostCSharp.exe" "*Running CigiMiniHostCSharp.exe*")))
+    ("1" "CigiDummyIG"
+     (lambda () (interactive)
+       (run-exe-command
+        (concat (project-root (project-current t))
+                "build/windows/debug/bin/Debug")
+        "CigiDummyIG.exe"
+        "*Running CigiDummyIG.exe*")))
+    ("2" "CigiMiniHost"
+     (lambda () (interactive)
+       (run-exe-command
+        (concat (project-root (project-current t))
+                "build/windows/debug/bin/Debug")
+        "CigiMiniHost.exe"
+        "*Running CigiMiniHost.exe*")))
+    ("3" "CigiMiniHostCSharp"
+     (lambda () (interactive)
+       (run-exe-command
+        (concat (project-root (project-current t))
+                "build/windows/debug/bin/Debug")
+        "CigiMiniHostCSharp.exe"
+        "*Running CigiMiniHostCSharp.exe*")))]
+   ["Kill"
+    ("5" "CigiDummyIG (k)"
+     (lambda () (interactive)
+       (kill-async-buffer "*Running CigiDummyIG.exe*")))
+    ("6" "CigiMiniHost (k)"
+     (lambda () (interactive)
+       (kill-async-buffer "*Running CigiMiniHost.exe*")))
+    ("7" "CigiMiniHostCSharp (k)"
+     (lambda () (interactive)
+       (kill-async-buffer "*Running CigiMiniHostCSharp.exe*")))
+    ("k" "All (k)"
+     (lambda () (interactive)
+       (kill-async-buffer "*Running CigiDummyIG.exe*")
+       (kill-async-buffer "*Running CigiMiniHost.exe*")
+       (kill-async-buffer "*Running CigiMiniHostCSharp.exe*")))]
+   ])
 
 (global-set-key (kbd "M-RET") #'build-transient)
 
 (transient-define-prefix my/transient-outlining-and-folding ()
   "Transient menu for outline-mode."
   ["Outline Mode Commands"
-    ["Cycle / Folding"
-      ("g" "Cycle" outline-cycle)
-      ("O" "Cycle Buffer" outline-cycle-buffer)
-      ("F" "Global Folding at Point"
-        (lambda () (interactive)
-          (if (eq selective-display (1+ (current-column)))
-            (set-selective-display 0)
-            (set-selective-display (1+ (current-column))))))]
-    ["Visibility"
-      ("o" "Toggle Children" outline-toggle-children)
-      ("h" "Hide Sublevels" outline-hide-sublevels)
-      ("s" "Show All" outline-show-all)
-      ("i" "Hide Body" outline-hide-body)
-      ("e" "Show Entry" outline-show-entry)
-      ("H" "Hide Entry" outline-hide-entry)
-      ("c" "Hide Leaves" outline-hide-leaves)
-      ("k" "Show Branches" outline-show-branches)
-      ("t" "Hide Subtree" outline-hide-subtree)
-      ("S" "Show Subtree" outline-show-subtree)]
-    ["Motion"
-      ("n" "Next Visible Heading" outline-next-visible-heading)
-      ("p" "Previous Visible Heading" outline-previous-visible-heading)
-      ("u" "Up Heading" outline-up-heading)
-      ("f" "Forward Same Level" outline-forward-same-level)
-      ("b" "Backward Same Level" outline-backward-same-level)]
-    ["Structure"
-      ("t" "Promote Heading" outline-promote)
-      ("d" "Demote Heading" outline-demote)
-      ("P" "Move Subtree Up" outline-move-subtree-up)
-      ("N" "Move Subtree Down" outline-move-subtree-down)]
-    ["Edit"
-      ("a" "Add Heading" outline-insert-heading)
-      ("r" "Rename Heading" outline-insert-heading)
-      ("m" "Mark Subtree" outline-mark-subtree)]])
+   ["Cycle / Folding"
+    ("g" "Cycle" outline-cycle)
+    ("O" "Cycle Buffer" outline-cycle-buffer)
+    ("F" "Global Folding at Point"
+     (lambda () (interactive)
+       (if (eq selective-display (1+ (current-column)))
+           (set-selective-display 0)
+         (set-selective-display (1+ (current-column))))))]
+   ["Visibility"
+    ("o" "Toggle Children" outline-toggle-children)
+    ("h" "Hide Sublevels" outline-hide-sublevels)
+    ("s" "Show All" outline-show-all)
+    ("i" "Hide Body" outline-hide-body)
+    ("e" "Show Entry" outline-show-entry)
+    ("H" "Hide Entry" outline-hide-entry)
+    ("c" "Hide Leaves" outline-hide-leaves)
+    ("k" "Show Branches" outline-show-branches)
+    ("t" "Hide Subtree" outline-hide-subtree)
+    ("S" "Show Subtree" outline-show-subtree)]
+   ["Motion"
+    ("n" "Next Visible Heading" outline-next-visible-heading)
+    ("p" "Previous Visible Heading" outline-previous-visible-heading)
+    ("u" "Up Heading" outline-up-heading)
+    ("f" "Forward Same Level" outline-forward-same-level)
+    ("b" "Backward Same Level" outline-backward-same-level)]
+   ["Structure"
+    ("t" "Promote Heading" outline-promote)
+    ("d" "Demote Heading" outline-demote)
+    ("P" "Move Subtree Up" outline-move-subtree-up)
+    ("N" "Move Subtree Down" outline-move-subtree-down)]
+   ["Edit"
+    ("a" "Add Heading" outline-insert-heading)
+    ("r" "Rename Heading" outline-insert-heading)
+    ("m" "Mark Subtree" outline-mark-subtree)]])
 
 (bind-key* (kbd "C-c o") 'my/transient-outlining-and-folding)
 
@@ -3917,8 +3844,8 @@ programming modes based on basic space / tab indentation."
   (interactive)
   (setq-local outline-minor-mode-use-buttons nil)
   (setq-local outline-regexp (rx bol
-                               (zero-or-more (any " \t"))
-                               (not (any " \t\n"))))
+                                 (zero-or-more (any " \t"))
+                                 (not (any " \t\n"))))
   (outline-minor-mode 1))
 
 (add-hook 'prog-mode-hook 'my/prog-folding)
@@ -3934,13 +3861,13 @@ easy pasting."
   (interactive)
   (let ((file-path (dired-get-file-for-visit)))
     (if file-path
-      (let* ((relative-path (file-relative-name file-path
-                              (project-root (project-current t))))
-              (org-link (concat "#+attr_org: :width 300px\n"
-                          "#+attr_html: :width 100%\n"
-                          "[[file:" relative-path "]]\n")))
-        (kill-new org-link)
-        (message "Copied to kill ring: %s" org-link))
+        (let* ((relative-path (file-relative-name file-path
+                                                  (project-root (project-current t))))
+               (org-link (concat "#+attr_org: :width 300px\n"
+                                 "#+attr_html: :width 100%\n"
+                                 "[[file:" relative-path "]]\n")))
+          (kill-new org-link)
+          (message "Copied to kill ring: %s" org-link))
       (message "No file under the cursor"))))
 
 ;; (defun my/dired-meld-diff-all-dwim ()
@@ -3965,8 +3892,8 @@ easy pasting."
 
 (use-package ibuffer
   :bind (:map ibuffer-mode-map
-          ("j" . next-line)
-          ("k" . previous-line)))
+              ("j" . next-line)
+              ("k" . previous-line)))
 
 (use-package my-dired-diff
   :load-path "~/source/my-dired-diff")
@@ -3982,26 +3909,25 @@ easy pasting."
 (transient-define-prefix chatgpt-shell-transient ()
   "Transient for ChatGPT Shell commands."
   ["ChatGPT Shell Commands"
-    ["Code and Text"
-      ("e" "Explain Code" chatgpt-shell-explain-code)
-      ("p" "Proofread Region" chatgpt-shell-proofread-region)
-      ("g" "Write Git Commit" chatgpt-shell-write-git-commit)
-      ("s" "Send Region" chatgpt-shell-send-region)
-      ("d" "Describe Code" chatgpt-shell-describe-code)
-      ("r" "Refactor Code" chatgpt-shell-refactor-code)
-      ("u" "Generate Unit Test" chatgpt-shell-generate-unit-test)
-      ("a" "Send and Review Region" chatgpt-shell-send-and-review-region)]
-    ["Shell Operations"
-      ("c" "Start Shell" chatgpt-shell)
-      ("m" "Swap Model Version" chatgpt-shell-swap-model-version)
-      ("t" "Swap System Prompt" chatgpt-shell-swap-system-prompt)
-      ("v" "Save Session Transcript" chatgpt-shell-save-session-transcript)]
-    ["Eshell Integrations"
-      ("o" "Summarize Last Command Output" chatgpt-shell-eshell-summarize-last-command-output)
-      ("w" "What's Wrong With Last Command" chatgpt-shell-eshell-whats-wrong-with-last-command)]
-    ["Miscellaneous"
-      ("i" "Describe Image" chatgpt-shell-describe-image)]
-    ])
+   ["Code and Text"
+    ;; ("e" "Explain Code" chatgpt-shell-explain-code)
+    ("p" "Proofread Region" chatgpt-shell-proofread-region)
+    ("g" "Write Git Commit" chatgpt-shell-write-git-commit)
+    ("s" "Send Region" chatgpt-shell-send-region)
+    ("d" "Describe Code" chatgpt-shell-describe-code)
+    ("r" "Refactor Code" chatgpt-shell-refactor-code)
+    ("u" "Generate Unit Test" chatgpt-shell-generate-unit-test)
+    ("a" "Send and Review Region" chatgpt-shell-send-and-review-region)]
+   ["Shell Operations"
+    ("l" "Start Shell" chatgpt-shell)
+    ("m" "Swap Model Version" chatgpt-shell-swap-model-version)
+    ("t" "Save Session Transcript" chatgpt-shell-save-session-transcript)]
+   ["Eshell Integrations"
+    ("o" "Summarize Last Command Output" chatgpt-shell-eshell-summarize-last-command-output)
+    ("w" "What's Wrong With Last Command" chatgpt-shell-eshell-whats-wrong-with-last-command)]
+   ["Miscellaneous"
+    ("i" "Describe Image" chatgpt-shell-describe-image)]
+   ])
 
 (global-set-key (kbd "C-c g") 'chatgpt-shell-transient)
 
@@ -4016,21 +3942,152 @@ easy pasting."
   (ready-player-repeat t)
   (ready-player-shuffle t)
   (ready-player-open-playback-commands
-    '((ready-player-is-audio-p "mplayer")
-       (ready-player-is-video-p "mpv"))))
+   '((ready-player-is-audio-p "mplayer")
+     (ready-player-is-video-p "mpv"))))
 
 (defun my/sync-tab-bar-to-theme ()
   "Synchronize tab-bar faces with the current theme."
   (interactive)
   (let ((default-bg (face-background 'default))
-         (default-fg (face-foreground 'default))
-         (inactive-fg (face-foreground 'mode-line-inactive))) ;; Fallback to mode-line-inactive
+        (default-fg (face-foreground 'default))
+        (inactive-fg (face-foreground 'mode-line-inactive))) ;; Fallback to mode-line-inactive
     (custom-set-faces
-      `(tab-bar ((t (:inherit default :background ,default-bg :foreground ,default-fg))))
-      `(tab-bar-tab ((t (:inherit default :background ,default-fg :foreground ,default-bg))))
-      `(tab-bar-tab-inactive ((t (:inherit default :background ,default-bg :foreground ,inactive-fg)))))))
+     `(tab-bar ((t (:inherit default :background ,default-bg :foreground ,default-fg))))
+     `(tab-bar-tab ((t (:inherit default :background ,default-fg :foreground ,default-bg))))
+     `(tab-bar-tab-inactive ((t (:inherit default :background ,default-bg :foreground ,inactive-fg)))))))
 
 ;; Call the function now to set the faces initially
 (my/sync-tab-bar-to-theme)
+
+(use-package hl-sentence)
+;; (use-package hl-sentence-length
+;; :load-path "~/source/hl-sentence-length")
+
+(defun my/convert-markdown-clipboard-to-org ()
+  "Convert Markdown content from clipboard to Org format and insert it at point."
+  (interactive)
+  (let ((markdown-content (current-kill 0))
+        (output-buffer (get-buffer-create "*markdown-to-org-output*"))
+        (original-buffer (current-buffer)))
+    (with-temp-buffer
+      (insert markdown-content)
+      (call-process-region (point-min) (point-max) "pandoc" nil output-buffer nil
+                           "-f" "markdown" "-t" "org"))
+    (with-current-buffer output-buffer
+      (let ((org-content (buffer-string)))
+        (setq org-content (replace-regexp-in-string
+                           "^:PROPERTIES:\n.*\n.*:END:" "" org-content))
+        ;; Replace erroneous code block conversion
+        ;; (setq org-content (replace-regexp-in-string
+        ;; "^=elisp"
+        ;; "#+begin_src elisp\n"
+        ;; org-content))
+        ;; (setq org-content (replace-regexp-in-string
+        ;; "=$"
+        ;; "\n#+end_src"
+        ;; org-content))
+        (with-current-buffer original-buffer
+          (insert org-content))))
+    (kill-buffer output-buffer)))
+
+(use-package ox-pandoc)
+
+(defun highlight-long-sentences (limit)
+  "Highlight sentences that are longer than LIMIT words."
+  (interactive "nSentence word limit: ")
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward "[.!?:]" nil t)
+      (let ((my-end (point)))
+        (backward-sentence)
+        (let ((my-start (point)))
+          (save-excursion
+            (goto-char my-start)
+            (let ((word-count 0))
+              (while (and (< (point) my-end)
+                          (re-search-forward "\\w+" my-end t))
+                (setq word-count (1+ word-count)))
+              (when (> word-count limit)
+                (highlight-region my-start my-end 'highlight)))))
+        ;; Move point forward to avoid re-processing the same sentence
+        (goto-char my-end)))))
+
+(defun highlight-region (my-start my-end face)
+  "Highlight region from MY-START to MY-END with FACE. Tag the overlay."
+  (let ((ov (make-overlay my-start my-end)))
+    (overlay-put ov 'face face)
+    (overlay-put ov 'highlight-long-sentences t)))
+
+(defun remove-highlighted-long-sentences ()
+  "Remove overlays created by `highlight-long-sentences` function."
+  (interactive)
+  (remove-overlays nil nil 'highlight-long-sentences t))
+
+(add-hook 'flyspell-mode-hook 'flyspell-check-long-sentences)
+
+(setq sentence-end-double-space nil)
+
+(use-package casual-calc
+  :ensure nil
+  :bind (:map
+         calc-mode-map
+         ("M-s a" . casual-calc-tmenu)
+         :map
+         calc-alg-map
+         ("M-s a" . casual-calc-tmenu))
+  :after (calc))
+
+(use-package casual-dired
+  :ensure t
+  :custom
+  (casual-dired-listing-switches
+   '("--all" "--human-readable" "-g" "--no-group"))
+  :bind (:map dired-mode-map
+              ("M-s a" . #'casual-dired-tmenu)
+              ("s" . #'casual-dired-sort-by-tmenu)
+              ("/" . #'casual-dired-search-replace-tmenu)))
+
+(use-package xkb-mode)
+(use-package arscript-mode)
+
+(defun my/switch-to-thing ()
+  "Switch to a buffer, open a recent file, jump to a bookmark,
+                   or change the theme from a unified interface."
+  (interactive)
+  (let* ((buffers (mapcar #'buffer-name (buffer-list)))
+         (recent-files recentf-list)
+         (bookmarks (bookmark-all-names))
+         (all-options (append buffers recent-files bookmarks))
+         (selection (completing-read "Switch to: "
+                                     (lambda (str pred action)
+                                       (if (eq action 'metadata)
+                                           '(metadata . ((category . file)))
+                                         (complete-with-action action all-options str pred)))
+                                     nil t nil 'file-name-history)))
+    (pcase selection
+      ((pred (lambda (sel) (member sel buffers))) (switch-to-buffer selection))
+      ((pred (lambda (sel) (member sel bookmarks))) (bookmark-jump selection))
+      (_ (find-file selection)))))
+
+(use-package hl-sentence-long-lines
+  :load-path "~/source/repos/hl-sentence-long-lines")
+
+(eval-after-load 'hl-sentence-long-lines
+  '(progn
+     (define-key global-map (kbd "C-c l") 'hl-sentence-long-lines-transient)))
+
+(defun my/repeat-window-size ()
+  "Call FUNC and set up a sparse keymap for repeating actions."
+  (interactive)
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "u") (lambda () (interactive)
+                                (my/window-shrink)
+                                (my/repeat-window-size)))
+    (define-key map (kbd "i") (lambda () (interactive)
+                                (my/window-enlarge)
+                                (my/repeat-window-size)))
+    (set-transient-map map t)))
+
+(global-set-key (kbd "C-c r") #'my/repeat-window-size)
 
 #+end_src
