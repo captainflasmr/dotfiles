@@ -1,5 +1,6 @@
 (defcfg
-  input  (device-file "/dev/input/by-id/usb-13ba_0001-event-kbd")
+;;  input  (device-file "/dev/input/by-id/usb-13ba_0001-event-kbd")
+  input  (device-file "/dev/input/by-id/usb-CX_2.4G_Wireless_Receiver-event-kbd")
   output (uinput-sink "My KMonad output")
 
   ;; Comment this if you want unhandled events not to be emitted
