@@ -704,7 +704,7 @@ xkb_keymap {
       interpret ISO_Level3_Shift+AnyOf(all) {
          virtualModifier= LevelThree;
          useModMapMods=level1;
-         action= LatchMods(modifiers=LevelThree,clearLocks,latchToLock);
+         action= LatchMods(modifiers=LevelThree,clearLocks);
       };
       interpret ISO_Level3_Latch+AnyOf(all) {
          virtualModifier= LevelThree;
@@ -718,35 +718,35 @@ xkb_keymap {
       };
       interpret Alt_L+AnyOf(all) {
          virtualModifier= Alt;
-         action= LatchMods(modifiers=modMapMods,clearLocks,latchToLock);
+         action= LatchMods(modifiers=modMapMods,clearLocks);
       };
       interpret Alt_R+AnyOf(all) {
          virtualModifier= Alt;
-         action= LatchMods(modifiers=modMapMods,clearLocks,latchToLock);
+         action= LatchMods(modifiers=modMapMods,clearLocks);
       };
       interpret Meta_L+AnyOf(all) {
          virtualModifier= Meta;
-         action= LatchMods(modifiers=modMapMods,clearLocks,latchToLock);
+         action= LatchMods(modifiers=modMapMods,clearLocks);
       };
       interpret Meta_R+AnyOf(all) {
          virtualModifier= Meta;
-         action= LatchMods(modifiers=modMapMods,clearLocks,latchToLock);
+         action= LatchMods(modifiers=modMapMods,clearLocks);
       };
       interpret Super_L+AnyOf(all) {
          virtualModifier= Super;
-         action= LatchMods(modifiers=modMapMods,clearLocks,latchToLock);
+         action= LatchMods(modifiers=modMapMods,clearLocks);
       };
       interpret Super_R+AnyOf(all) {
          virtualModifier= Super;
-         action= LatchMods(modifiers=modMapMods,clearLocks,latchToLock);
+         action= LatchMods(modifiers=modMapMods,clearLocks);
       };
       interpret Hyper_L+AnyOf(all) {
          virtualModifier= Hyper;
-         action= LatchMods(modifiers=modMapMods,clearLocks,latchToLock);
+         action= LatchMods(modifiers=modMapMods,clearLocks);
       };
       interpret Hyper_R+AnyOf(all) {
          virtualModifier= Hyper;
-         action= LatchMods(modifiers=modMapMods,clearLocks,latchToLock);
+         action= LatchMods(modifiers=modMapMods,clearLocks);
       };
       interpret Scroll_Lock+AnyOf(all) {
          virtualModifier= ScrollLock;
@@ -755,7 +755,7 @@ xkb_keymap {
       interpret ISO_Level5_Shift+AnyOf(all) {
          virtualModifier= LevelFive;
          useModMapMods=level1;
-         action= LatchMods(modifiers=LevelFive,clearLocks,latchToLock);
+         action= LatchMods(modifiers=LevelFive,clearLocks);
       };
       interpret ISO_Level5_Latch+AnyOf(all) {
          virtualModifier= LevelFive;
@@ -771,7 +771,7 @@ xkb_keymap {
          action= SetGroup(group=+1);
       };
       interpret ISO_Level3_Shift+AnyOfOrNone(all) {
-         action= LatchMods(modifiers=LevelThree,clearLocks,latchToLock);
+         action= LatchMods(modifiers=LevelThree,clearLocks);
       };
       interpret ISO_Level3_Latch+AnyOfOrNone(all) {
          action= LatchMods(modifiers=LevelThree,clearLocks,latchToLock);
@@ -1027,34 +1027,34 @@ xkb_keymap {
          action= Terminate();
       };
       interpret Alt_L+AnyOfOrNone(all) {
-         action= LatchMods(modifiers=Alt,clearLocks,latchToLock);
+         action= LatchMods(modifiers=Alt,clearLocks);
       };
       interpret Alt_R+AnyOfOrNone(all) {
-         action= LatchMods(modifiers=Alt,clearLocks,latchToLock);
+         action= LatchMods(modifiers=Alt,clearLocks);
       };
       interpret Meta_L+AnyOfOrNone(all) {
-         action= LatchMods(modifiers=Meta,clearLocks,latchToLock);
+         action= LatchMods(modifiers=Meta,clearLocks);
       };
       interpret Meta_R+AnyOfOrNone(all) {
-         action= LatchMods(modifiers=Meta,clearLocks,latchToLock);
+         action= LatchMods(modifiers=Meta,clearLocks);
       };
       interpret Super_L+AnyOfOrNone(all) {
-         action= LatchMods(modifiers=Super,clearLocks,latchToLock);
+         action= LatchMods(modifiers=Super,clearLocks);
       };
       interpret Super_R+AnyOfOrNone(all) {
-         action= LatchMods(modifiers=Super,clearLocks,latchToLock);
+         action= LatchMods(modifiers=Super,clearLocks);
       };
       interpret Hyper_L+AnyOfOrNone(all) {
-         action= LatchMods(modifiers=Hyper,clearLocks,latchToLock);
+         action= LatchMods(modifiers=Hyper,clearLocks);
       };
       interpret Hyper_R+AnyOfOrNone(all) {
-         action= LatchMods(modifiers=Hyper,clearLocks,latchToLock);
+         action= LatchMods(modifiers=Hyper,clearLocks);
       };
       interpret Shift_L+AnyOfOrNone(all) {
-         action= LatchMods(modifiers=Shift,clearLocks,latchToLock);
+         action= LatchMods(modifiers=Shift,clearLocks);
       };
       interpret Shift_R+AnyOfOrNone(all) {
-         action= LatchMods(modifiers=Shift,clearLocks,latchToLock);
+         action= LatchMods(modifiers=Shift,clearLocks);
       };
       interpret XF86Switch_VT_1+AnyOfOrNone(all) {
          repeat= True;
@@ -1121,7 +1121,7 @@ xkb_keymap {
          action= Private(type=0x86,data[0]=0x2d,data[1]=0x56,data[2]=0x4d,data[3]=0x6f,data[4]=0x64,data[5]=0x65,data[6]=0x00);
       };
       interpret ISO_Level5_Shift+AnyOfOrNone(all) {
-         action= LatchMods(modifiers=LevelFive,clearLocks,latchToLock);
+         action= LatchMods(modifiers=LevelFive,clearLocks);
       };
       interpret ISO_Level5_Latch+AnyOfOrNone(all) {
          action= LatchMods(modifiers=LevelFive,clearLocks,latchToLock);
@@ -1136,7 +1136,7 @@ xkb_keymap {
          action= LockMods(modifiers=Lock);
       };
       interpret Any+AnyOf(all) {
-         action= LatchMods(modifiers=modMapMods,clearLocks,latchToLock);
+         action= LatchMods(modifiers=modMapMods,clearLocks);
       };
       group 2 = Mod5;
       group 3 = Mod5;
@@ -1153,12 +1153,12 @@ xkb_keymap {
       };
       indicator "Scroll Lock" {
          whichModState= locked;
-         modifiers= Shift+Mod4;
+         modifiers= ScrollLock;
       };
       indicator "Shift Lock" {
          !allowExplicit;
          whichModState= locked;
-         modifiers= Shift+Mod4;
+         modifiers= Shift;
       };
       indicator "Group 2" {
          !allowExplicit;
@@ -1374,7 +1374,7 @@ xkb_keymap {
          symbols[Group1]= [     KP_Multiply,     KP_Multiply,     KP_Multiply,     KP_Multiply,   XF86ClearGrab ]
       };
       key <LALT> {         [           Alt_L,          Meta_L ] };
-      key <RALT> {         [           Alt_R,          Alt_R ] };
+      key <RALT> {         [           Control_L,          Control_L ] };
       key <SPCE> {         [           space ] };
       key <CAPS> {         [       Control_L ] };
       key <FK01> {
@@ -1601,13 +1601,14 @@ xkb_keymap {
       key <I253> {         [  XF86DisplayOff ] };
       key <I254> {         [        XF86WWAN ] };
       key <I255> {         [      XF86RFKill ] };
+      modifier_map Control { <CAPS> };
       modifier_map Control { <LCTL> };
       modifier_map Shift { <LFSH> };
       modifier_map Shift { <RTSH> };
       modifier_map Mod1 { <LALT> };
       modifier_map Mod1 { <ALT> };
       modifier_map Mod1 { <META> };
-      modifier_map Control { <CAPS> };
+      modifier_map Control { <RALT> };
       modifier_map Control { <RCTL> };
       modifier_map Mod4 { <LWIN> };
       modifier_map Mod4 { <SUPR> };
