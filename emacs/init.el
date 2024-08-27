@@ -109,13 +109,15 @@
 (use-package corfu
   ;; Optional customizations
   :custom
+  (corfu-auto-delay 0.1)
+  (corfu-auto-prefix 2)
   (corfu-cycle t)
   (corfu-auto t)
   (corfu-separator ?\s)
   (corfu-quit-at-boundary nil)
   (corfu-quit-no-match nil)
   (corfu-preview-current nil)
-  (corfu-preselect 'prompt)
+  (corfu-preselect 'first)
   (corfu-on-exact-match nil)
   (corfu-scroll-margin 5))
 ;;    :hook ((shell-mode . corfu-mode)
@@ -2095,6 +2097,8 @@ With directories under project root using find."
 ;; -> shell
 ;;
 
+(use-package cape)
+
 (use-package capf-autosuggest
   :hook
   (eshell-mode . capf-autosuggest-mode)
@@ -2116,6 +2120,12 @@ With directories under project root using find."
 (defun my/eshell-hook ()
   "Set up company completions to be a little more fish like."
   (interactive)
+  (setq-local completion-styles '(basic partial-completion))
+  (corfu-mode)
+  (setq-local completion-at-point-functions
+              (list (cape-capf-super
+                     #'pcomplete-completions-at-point
+                     #'cape-history)))
   ;; (define-key eshell-mode-map (kbd "<tab>") #'company-complete)
   (define-key eshell-hist-mode-map (kbd "M-r") #'consult-history))
 
