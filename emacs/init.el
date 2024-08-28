@@ -106,8 +106,72 @@
 ;; -> completion
 ;;
 
+(defun my/complete ()
+  (interactive)
+  (cond
+   (corfu-mode
+    (corfu-complete))
+   (company-mode
+    (company-complete))
+   (t
+    (hippie-expand nil))))
+
+(use-package orderless
+  :custom
+  (completion-styles '(basic partial-completion orderless)))
+
+(setq-default abbrev-mode t)
+
+(global-set-key (kbd "M-/") 'hippie-expand)
+
+(setq hippie-expand-try-functions-list
+      '(try-complete-file-name-partially try-complete-file-name
+                                         try-expand-all-abbrevs try-expand-dabbrev
+                                         try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill
+                                         try-complete-lisp-symbol-partially try-complete-lisp-symbol))
+
+(use-package cape)
+
+(use-package capf-autosuggest
+  :hook
+  (eshell-mode . capf-autosuggest-mode)
+  (shell-mode . capf-autosuggest-mode))
+
+(use-package eglot
+  :hook
+  (eglot-managed-mode
+   . (lambda ()
+       (setq-local completion-at-point-functions
+                   (list (cape-capf-super #'eglot-completion-at-point)))))
+  :custom
+  (eglot-ignored-server-capabilities
+   '(
+     ;; :hoverProvider                    ; Provides information when you hover over code elements.
+     ;; :completionProvider               ; Provides code completion suggestions.
+     ;; :signatureHelpProvider            ; Offers signature information for functions/methods.
+     ;; :definitionProvider               ; Finds the definition of variables/functions.
+     ;; :typeDefinitionProvider           ; Finds the type definition of variables/functions.
+     ;; :implementationProvider           ; Finds the implementation of types/functions.
+     ;; :declarationProvider              ; Finds the declaration of variables/types.
+     ;; :referencesProvider               ; Finds all references to the symbol at the caret.
+     ;; :documentHighlightProvider        ; Highlights references to the symbol at the caret.
+     ;; :documentSymbolProvider           ; Lists all symbols in a document.
+     ;; :workspaceSymbolProvider          ; Lists symbols across workspace/project.
+     ;; :codeActionProvider               ; Suggests code actions (like quick fixes).
+     ;; :codeLensProvider                 ; Displays inline code actions or information.
+     ;; :documentFormattingProvider       ; Formats an entire document.
+     ;; :documentRangeFormattingProvider  ; Formats a specified range in a document.
+     ;; :documentOnTypeFormattingProvider ; Formats code as you type.
+     ;; :renameProvider                   ; Refactors/renames symbols.
+     ;; :documentLinkProvider             ; Handles clickable links in documents.
+     ;; :colorProvider                    ; Provides color information for document.
+     ;; :foldingRangeProvider             ; Supports code folding.
+     ;; :executeCommandProvider           ; Allows execution of commands.
+     ;; :inlayHintProvider                ; Displays inline hints (e.g., parameter names).
+     ))
+  (eglot-send-changes-idle-time 2.0))
+
 (use-package corfu
-  ;; Optional customizations
   :custom
   (corfu-auto-delay 0.1)
   (corfu-auto-prefix 2)
@@ -120,8 +184,14 @@
   (corfu-preselect 'first)
   (corfu-on-exact-match nil)
   (corfu-scroll-margin 5))
-;;    :hook ((shell-mode . corfu-mode)
-;;            (eshell-mode . corfu-mode)))
+
+(use-package company
+  :bind
+  (:map company-active-map
+        ("<tab>" . company-complete-selection))
+  :config
+  (setq company-minimum-prefix-length 1)
+  (setq company-idle-delay 0.05))
 
 (use-package emacs
   :init
@@ -140,12 +210,12 @@
 (use-package tempel
   :diminish tempel-abbrev-mode global-tempel-abbrev-mode abbrev-mode
   :bind (("M-+" . tempel-complete) ;; Alternative tempel-expand
-          ("M-*" . tempel-insert))
+         ("M-*" . tempel-insert))
   :init
   (defun tempel-setup-capf ()
     (setq-local completion-at-point-functions
-      (cons #'tempel-expand
-        completion-at-point-functions)))
+                (cons #'tempel-expand
+                      completion-at-point-functions)))
   (add-hook 'conf-mode-hook #'tempel-setup-capf)
   (add-hook 'prog-mode-hook #'tempel-setup-capf)
   (add-hook 'text-mode-hook #'tempel-setup-capf)
@@ -171,10 +241,6 @@
           :repeat-map my/vertico-repeat-map
           ("n" . vertico-next)
           ("p" . vertico-previous)))
-
-(use-package orderless
-  :custom
-  (completion-styles '(basic partial-completion orderless)))
 
 (use-package marginalia
   :after vertico
@@ -258,6 +324,9 @@
 (bind-key* (kbd "M-s f") #'org-preview-html-mode)
 (bind-key* (kbd "M-s r") #'org-preview-html-refresh)
 (bind-key* (kbd "M-s t") #'my/save-buffer-as-html)
+
+;; import keys
+(bind-key* (kbd "M-s i") #'my/convert-markdown-clipboard-to-org)
 
 ;; evaluation
 (bind-key* (kbd "M-s ;") #'mark-sexp)
@@ -374,20 +443,6 @@
     (setq elfeed-show-entry-switch #'my/show-elfeed)))
 
 ;;
-;; -> expansion
-;;
-
-(setq-default abbrev-mode t)
-
-(global-set-key (kbd "M-/") 'hippie-expand)
-
-(setq hippie-expand-try-functions-list
-  '(try-complete-file-name-partially try-complete-file-name
-     try-expand-all-abbrevs try-expand-dabbrev
-     try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill
-     try-complete-lisp-symbol-partially try-complete-lisp-symbol))
-
-;;
 ;; -> keybinding
 ;;
 (global-set-key (kbd "M-0") #'delete-window)
@@ -419,7 +474,7 @@
 (global-set-key (kbd "M-[") #'yank)
 (global-set-key (kbd "M-]") #'yank-pop)
 (global-unset-key (kbd "C-h h"))
-(bind-key* (kbd "M-9") #'hippie-expand)
+(bind-key* (kbd "M-9") #'my/complete)
 (global-unset-key (kbd "C-t"))
 (bind-key* (kbd "M-'") #'set-mark-command)
 (bind-key* (kbd "M-SPC") #'set-mark-command)
@@ -1566,30 +1621,6 @@ as search term for Google search in web browser."
 (use-package ada-mode)
 ;; :load-path "~/source/repos/old-ada-mode")
 
-(use-package eglot
-  :custom
-  ;; (eglot-ignored-server-capabilities
-  ;;   '(:hoverProvider :signatureHelpProvider
-  ;;      :implementationProvider :declarationProvider
-  ;;      :documentHighlightProvider :documentSymbolProvider
-  ;;      :workspaceSymbolProvider :codeActionProvider :codeLensProvider
-  ;;      :documentFormattingProvider :documentRangeFormattingProvider
-  ;;      :documentOnTypeFormattingProvider :renameProvider
-  ;;      :documentLinkProvider :colorProvider :foldingRangeProvider
-  ;;      :executeCommandProvider :inlayHintProvider))
-  (eglot-send-changes-idle-time 2.0))
-
-
-;; (define-key company-active-map (kbd "<tab>") 'company-complete-selection)
-
-(use-package company
-  :bind
-  (:map company-active-map
-    ("<tab>" . company-complete-selection))
-  :config
-  (setq company-minimum-prefix-length 1)
-  (setq company-idle-delay 0.05))
-
 (use-package yaml-mode)
 
 (add-hook 'yaml-mode-hook
@@ -2096,13 +2127,6 @@ With directories under project root using find."
 ;;
 ;; -> shell
 ;;
-
-(use-package cape)
-
-(use-package capf-autosuggest
-  :hook
-  (eshell-mode . capf-autosuggest-mode)
-  (shell-mode . capf-autosuggest-mode))
 
 (when (file-exists-p "/usr/bin/fish")
   (setq explicit-shell-file-name "/usr/bin/fish"))
@@ -3134,13 +3158,11 @@ If ARG is provided, it sets the counter."
     ("j" "Fancy Stuff"
      (lambda () (interactive)
        (call-interactively 'eglot)
-       (flymake-mode 1)
-       (company-mode 1)))
+       (flymake-mode 1)))
     ("u" "Undo Fancy Stuff"
      (lambda () (interactive)
        (eglot-shutdown-all)
-       (flymake-mode -1)
-       (company-mode -1)))
+       (flymake-mode -1)))
     ("h" "Stop eglot"
      (lambda () (interactive)
        (eglot-shutdown-all)))]
