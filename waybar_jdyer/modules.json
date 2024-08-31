@@ -186,7 +186,7 @@
     },
 
     "pulseaudio": {
-        "scroll-step": 0.1,
+        "scroll-step": 0.2,
         "format": "{icon} {volume}",
         "format-muted": "🔇 {format_source}",
         "format-source": "% {volume}",
