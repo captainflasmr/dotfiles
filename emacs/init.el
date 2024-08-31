@@ -109,10 +109,10 @@
 (defun my/complete ()
   (interactive)
   (cond
-   (corfu-mode
-    (corfu-complete))
-   (company-mode
-    (company-complete))
+   ((and (fboundp 'corfu-mode) corfu-mode)
+    (indent-for-tab-command))
+   ((and (fboundp 'company-mode) company-mode)
+    (company-manual-begin))
    (t
     (hippie-expand nil))))
 
@@ -142,7 +142,9 @@
   (eglot-managed-mode
    . (lambda ()
        (setq-local completion-at-point-functions
-                   (list (cape-capf-super #'eglot-completion-at-point)))))
+                   (list (cape-capf-super
+                          #'cape-dabbrev
+                          #'eglot-completion-at-point)))))
   :custom
   (eglot-ignored-server-capabilities
    '(
@@ -176,7 +178,7 @@
   (corfu-auto-delay 0.1)
   (corfu-auto-prefix 2)
   (corfu-cycle t)
-  (corfu-auto t)
+  (corfu-auto nil)
   (corfu-separator ?\s)
   (corfu-quit-at-boundary nil)
   (corfu-quit-no-match nil)
@@ -188,10 +190,12 @@
 (use-package company
   :bind
   (:map company-active-map
+        ("M-j" . company-select-next)
+        ("M-k" . company-select-previous)
         ("<tab>" . company-complete-selection))
   :config
   (setq company-minimum-prefix-length 1)
-  (setq company-idle-delay 0.05))
+  (setq company-idle-delay nil))
 
 (use-package emacs
   :init
@@ -205,7 +209,7 @@
 
   ;; Enable indentation+completion using the TAB key.
   ;; `completion-at-point' is often bound to M-TAB.
-  (setq tab-always-indent t))
+  (setq tab-always-indent 'complete))
 
 (use-package tempel
   :diminish tempel-abbrev-mode global-tempel-abbrev-mode abbrev-mode
@@ -461,13 +465,16 @@
 (bind-key* (kbd "M-n") #'(lambda ()(interactive)(scroll-up (/ (window-height) 4))))
 (bind-key* (kbd "M-m") #'(lambda ()(interactive)(scroll-down (/ (window-height) 4))))
 (bind-key* (kbd "C-o") #'other-window)
-(bind-key* (kbd "C-0") #'my/switch-to-thing)
-(global-set-key (kbd "M-=") #'my/window-enlarge)
-(global-set-key (kbd "M--") #'my/window-shrink)
+;; (bind-key* (kbd "C-0") #'my/switch-to-thing)
+(bind-key* (kbd "C-0") #'recentf-open)
+(bind-key* (kbd "C--") #'bookmark-jump)
+(bind-key* (kbd "C-=") #'switch-to-buffer)
+;; (global-set-key (kbd "M-=") #'my/window-enlarge)
+;; (global-set-key (kbd "M--") #'my/window-shrink)
 (global-set-key (kbd "C-c b") #'(lambda ()(interactive)(async-shell-command "do_backup home" "*backup*")))
 (global-set-key (kbd "C-c c") #'org-capture)
 (global-set-key (kbd "C-x C-b") #'ibuffer)
-(bind-key* (kbd "C-x b") #'ibuffer)
+;; (bind-key* (kbd "C-x b") #'ibuffer)
 (global-set-key (kbd "C-x l") #'scroll-lock-mode)
 (global-set-key (kbd "M-;") #'my/comment-or-uncomment)
 (bind-key* (kbd "C-c ,") #'embark-act)
@@ -1046,7 +1053,7 @@ as search term for Google search in web browser."
          "PictureOrganise" "PictureCrop" "PictureRotateFlip"
          "PictureRotateLeft" "PictureRotateRight" "PictureScale"
          "PictureUpscale" "PictureGetText" "PictureOrientation"
-         "PictureUpdateToCreateDate" "VideoConcat" "VideoConvert"
+         "PictureUpdateToCreateDate" "VideoConcat" "VideoConvert" "VideoConvertToGif"
          "VideoCut" "VideoDouble" "VideoExtractAudio" "VideoExtractFrames"
          "VideoFilter" "VideoFromFrames" "VideoInfo" "VideoRemoveAudio"
          "VideoReplaceVideoAudio" "VideoRescale" "VideoReverse"
@@ -1325,8 +1332,8 @@ as search term for Google search in web browser."
 
 (setq-default truncate-partial-width-windows 120)
 
-(set-frame-parameter nil 'alpha-background 75)
-(add-to-list 'default-frame-alist '(alpha-background . 75))
+(set-frame-parameter nil 'alpha-background 80)
+(add-to-list 'default-frame-alist '(alpha-background . 80))
 
 (set-fringe-mode '(20 . 20))
 (set-display-table-slot standard-display-table 0 ?\ )
@@ -1404,7 +1411,7 @@ as search term for Google search in web browser."
 
 (setq-default mode-line-modified
   '(:eval (if (and (buffer-file-name) (buffer-modified-p))
-            (propertize "** MODIFIED " 'face
+            (propertize " * " 'face
               '(:background "#ff0000" :foreground "#ffffff" :inherit bold)) "")))
 
 (set-face-attribute 'mode-line-active nil :height 130 :underline nil :overline nil :box nil
@@ -1978,7 +1985,7 @@ With directories under project root using find."
   (selected-window-accent-percentage-darken 0)
   (selected-window-accent-percentage-desaturate 0)
   (selected-window-accent-smart-borders t)
-  (selected-window-accent-use-blend-background t)
+  (selected-window-accent-use-blend-background nil)
   (selected-window-accent-use-blend-alpha 0)
   (selected-window-accent-tab-accent t)
   (selected-window-accent-use-pywal t)
@@ -2145,6 +2152,7 @@ With directories under project root using find."
   "Set up company completions to be a little more fish like."
   (interactive)
   (setq-local completion-styles '(basic partial-completion))
+  (setq-local corfu-auto t)
   (corfu-mode)
   (setq-local completion-at-point-functions
               (list (cape-capf-super
@@ -2180,6 +2188,7 @@ With directories under project root using find."
   (setq popper-reference-buffers
     '("\\*eshell.*"
        "\\*convert.*"
+       "\\*eldoc.*"
        flymake-diagnostics-buffer-mode
        help-mode
        compilation-mode))
@@ -3151,17 +3160,19 @@ If ARG is provided, it sets the counter."
      (lambda () (interactive)
        (run-cmake-command "cmake --list-presets=configure")))]
    ["Actions"
-    ("b" "File Backup" my/dired-duplicate-backup-file)
+    ("SPC" "File Backup" my/dired-duplicate-backup-file)
     ("f" "Toggle Flycheck" flymake-mode)
     ("d" "Show Flycheck Diagnostics" flymake-show-buffer-diagnostics)]
    ["Coding"
-    ("j" "Fancy Stuff"
+    ("e" "Fancy Stuff"
      (lambda () (interactive)
        (call-interactively 'eglot)
+       (company-mode 1)
        (flymake-mode 1)))
     ("u" "Undo Fancy Stuff"
      (lambda () (interactive)
        (eglot-shutdown-all)
+       (company-mode -1)
        (flymake-mode -1)))
     ("h" "Stop eglot"
      (lambda () (interactive)
@@ -3501,12 +3512,16 @@ easy pasting."
   "Call FUNC and set up a sparse keymap for repeating actions."
   (interactive)
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "u") (lambda () (interactive)
+    (define-key map (kbd "h") (lambda () (interactive)
                                 (my/window-shrink)
                                 (my/repeat-window-size)))
-    (define-key map (kbd "i") (lambda () (interactive)
+    (define-key map (kbd "l") (lambda () (interactive)
                                 (my/window-enlarge)
                                 (my/repeat-window-size)))
     (set-transient-map map t)))
 
 (global-set-key (kbd "C-c r") #'my/repeat-window-size)
+
+(when (file-exists-p "~/source/repos/indent-bars")
+  (use-package indent-bars
+    :load-path "~/source/repos/indent-bars"))
