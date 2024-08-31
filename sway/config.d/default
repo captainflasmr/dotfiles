@@ -40,29 +40,30 @@ bindsym XF86MonBrightnessDown exec brightnessctl set 2%-
 #
 # -> Key bindings
 #
-bindsym $mod+b exec toggle_waybar.sh
+bindsym $mod+a exec exec nwg-drawer
+bindsym $mod+Tab exec swayr switch-to-urgent-or-lru-window
+bindsym $mod+b exec firefox
+# bindsym $mod+bracketleft exec swayr switch-window
+bindsym $mod+bracketright exec wallpaper_change.sh
 bindsym $mod+c exec screen-record.sh
 bindsym $mod+e exec thunar ~/DCIM/Camera
-bindsym $mod+m exec emacs
-bindsym $mod+n exec firefox
+bindsym $mod+f exec thunar ~/DCIM/Camera
+bindsym $mod+g floating toggle
 bindsym $mod+p exec wl-color-picker
 bindsym $mod+q kill
 bindsym $mod+return exec $term
-bindsym $mod+s exec screenshot.sh
+bindsym $mod+shift+s exec screenshot.sh
 bindsym $mod+shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
-bindsym $mod+w exec wallpaper_change.sh
-bindsym $mod+y exec keymap-toggle.sh
-# bindsym $mod+d exec $launcher --list-executables-in-path --background-color=2f2f38ee
-# bindsym $mod+d exec --no-startup-id dmenu_run -fn "Mono:pixelsize=16"
-bindsym $mod+d exec rofi -matching regex -show "drun"
+bindsym $mod+slash exec rofi -matching regex -show "drun"
+bindsym $mod+t exec $term
+bindsym $mod+w exec swayr switch-window
+bindsym $mod+y exec toggle_waybar.sh
+bindsym $mod+z exec switch_waybar.sh
 bindsym Mod1+4 kill
 bindsym control+Mod1+t exec $term
-bindsym $mod+z exec switch_waybar.sh
-bindsym $mod+bracketleft exec swayr switch-window
-bindsym $mod+Tab exec swayr switch-to-urgent-or-lru-window
-bindsym $mod+o exec swayr next-tiled-window current-workspace
-bindsym $mod+Shift+c exec swayr execute-swayr-command
-bindsym $mod+v exec swayr move-focused-to-workspace
+# bindsym $mod+o exec swayr next-tiled-window current-workspace
+# bindsym $mod+Shift+c exec swayr execute-swayr-command
+# bindsym $mod+v exec swayr move-focused-to-workspace
 
 #
 # Moving around:
@@ -73,10 +74,12 @@ bindsym $mod+Left focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
 bindsym $mod+Right focus right
-bindsym $mod+$left focus left
+# bindsym $mod+$left focus left
+bindsym $mod+$left exec /home/jdyer/bin/sway_prev.sh
 bindsym $mod+$down focus down
 bindsym $mod+$up focus up
-bindsym $mod+$right focus right
+# bindsym $mod+$right focus right
+bindsym $mod+$right exec /home/jdyer/bin/sway_next.sh
 
 # Move the focused window
 bindsym $mod+Shift+Left move left
@@ -92,8 +95,8 @@ bindsym $mod+Shift+$right move right
 #
 # -> Workspaces
 #
-bindsym $mod+u workspace prev
-bindsym $mod+i workspace next
+# bindsym $mod+u workspace prev
+# bindsym $mod+i workspace next
 
 bindsym $mod+1 workspace number 1
 bindsym $mod+2 workspace number 2
@@ -113,12 +116,12 @@ bindsym $mod+shift+6 move container to workspace number 6
 #
 # -> full screen
 #
-bindsym $mod+f fullscreen
+bindsym $mod+m fullscreen
 
 #
 # -> reload
 #
-bindsym $mod+r reload
+bindsym $mod+o reload
 
 #
 # -> resize
@@ -151,7 +154,7 @@ floating_modifier $mod
 set $mode_gaps Gaps: (o) outer, (i) inner
 set $mode_gaps_outer Outer : u/i/0 (local), U/I/Shift+0 (global)
 set $mode_gaps_inner Inner : u/i/0 (local), U/I/Shift+0 (global)
-bindsym $mod+g mode "$mode_gaps"
+bindsym $mod+r mode "$mode_gaps"
 
 mode "$mode_gaps" {
         bindsym o mode "$mode_gaps_outer"

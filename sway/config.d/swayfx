@@ -1,16 +1,16 @@
 # SwayFX config options
 
 ### Appearance
-corner_radius 15
+corner_radius 10
 blur enable
 blur_xray off
-blur_passes 6
-blur_radius 6
-shadows disablee
-shadows_on_csd off
-shadow_blur_radius 5
-shadow_color #0000007F
-layer_effects "waybar" blur enable; shadows disable; corner_radius 0
+blur_passes 8
+blur_radius 8
+shadows enable
+shadows_on_csd on
+shadow_blur_radius 8
+shadow_color #000000
+# layer_effects "waybar" blur enable; shadows disable; corner_radius 0
 
 # inactive window fade amount. 0.0 = no dimming, 1.0 = fully dimmed
 # default_dim_inactive 0.5

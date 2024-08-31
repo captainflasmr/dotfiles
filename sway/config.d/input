@@ -15,7 +15,7 @@ bindgesture swipe:right workspace prev
 bindgesture swipe:4:left workspace next
 # bindgesture swipe:left exec ~/.config/sway/scripts/advance_workspace.sh
 
-bindgesture swipe:4:up floating toggle
+Bindgesture swipe:4:up floating toggle
 
 bindgesture swipe:3:up exec nwg-drawer
 bindgesture swipe:3:down exec wtype -P "Escape"
@@ -23,7 +23,7 @@ bindgesture swipe:3:down exec wtype -P "Escape"
 bindgesture swipe:3:right exec ydotool key 56:1 105:1 56:0 105:0
 bindgesture swipe:3:left exec ydotool key 56:1 106:1 56:0 106:0
 
-focus_wrapping force
+focus_wrapping no
 
 # Read `man 5 sway-input` for more information about this section.
 
