@@ -2039,7 +2039,8 @@ With directories under project root using find."
             (progn
               (pcase format-spec
                 (:hugo
-                  (org-hugo-export-wim-to-md)
+                 (without-gc #'org-hugo-export-wim-to-md)
+                  ;; (org-hugo-export-wim-to-md)
                   (mapc 'shell-command
                     '("web rsync emacs" "web rsync art"
                        "web rsync dyerdwelling")))
@@ -3525,3 +3526,9 @@ easy pasting."
 (when (file-exists-p "~/source/repos/indent-bars")
   (use-package indent-bars
     :load-path "~/source/repos/indent-bars"))
+
+;; (benchmark-run (org-hugo-export-wim-to-md))
+;; (benchmark-run (without-gc #'org-hugo-export-wim-to-md))
+(defun without-gc (&rest args)
+  (let ((gc-cons-threshold most-positive-fixnum))
+    (apply args)))
