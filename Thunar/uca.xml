@@ -278,6 +278,17 @@
 </action>
 <action>
 	<icon></icon>
+	<name>VideoConvertToGif</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole VideoConvertToGif %F</command>
+	<description>VideoConvertToGif</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<video-files/>
+</action>
+<action>
+	<icon></icon>
 	<name>VideoCut</name>
 	<submenu></submenu>
 	<unique-id>1688724015024216-1</unique-id>
