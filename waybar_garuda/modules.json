@@ -107,7 +107,7 @@
         "return-type": "json",
         "interval": 1,
         "exec": "screen-record-check-status.sh",
-        "min-length": 1,
+        "min-length": 4,
         "max-length": 6,
     },
 
@@ -122,17 +122,23 @@
     "custom/caps_lock": {
         "exec": "led-monitor.sh --caps",
         "interval": 1,
-        "return-type": "json"
+        "return-type": "json",
+        "min-length": 2,
+        "max-length": 2
     },
     "custom/num_lock": {
         "exec": "led-monitor.sh --num",
         "interval": 1,
-        "return-type": "json"
+        "return-type": "json",
+        "min-length": 2,
+        "max-length": 2
     },
     "custom/scroll_lock": {
         "exec": "led-monitor.sh --scroll",
         "interval": 1,
-        "return-type": "json"
+        "return-type": "json",
+        "min-length": 3,
+        "max-length": 3
     },
 
     "custom/togglesticky": {

@@ -1,24 +1,24 @@
 {
     "layer": "top",
     "position": "top",
-    // "height": 35,
+    // "height": 40,
     // "output": "DP-1",
     // "width": 1920,
     "spacing": 0,
     "margin-top": 4,
-    "margin-bottom": -4,
-    "margin-right": 10,
-    "margin-left": 10,
+    "margin-bottom": -2,
+    "margin-right": 8,
+    "margin-left": 8,
     "include": ["~/.config/waybar/modules.json"],
     "modules-left": [
         // "custom/updates",
         "custom/recorder",
         "idle_inhibitor",
-        "custom/screenshot",
-        "custom/krita",
-        "custom/browser",
-        "custom/files",
-        "custom/terminal",
+        // "custom/screenshot",
+        // "custom/krita",
+        // "custom/browser",
+        // "custom/files",
+        // "custom/terminal",
         "custom/keyboard",
         //        "custom/spacer",
         "sway/workspaces",
@@ -66,11 +66,11 @@
         "pulseaudio",
         "clock",
         "tray",
-        "battery",
-        "custom/num_lock",
-        "custom/caps_lock",
-        "custom/scroll_lock",
-        "custom/togglesticky"
+        "battery"
+        // "custom/num_lock",
+        // "custom/caps_lock",
+        // "custom/scroll_lock"
+        // "custom/togglesticky"
         //        "custom/exit",
     ],
 
@@ -123,13 +123,13 @@
         "tooltip-format-deactivated": "Idle Inhibitor Deactivated"
     },
     "backlight": {
-        "scroll-step": 0.5,
+        "scroll-step": 4,
         "format": "{icon}{percent: >3}%",
         "format-icons": ["", ""],
         "tooltip-format": "Backlight (Scroll): {percent: >3}%",
     },
     "pulseaudio": {
-        "scroll-step": 0.1,
+        "scroll-step": 0.2,
         "format": "{icon}{volume: >3}%",
         "format-bluetooth": "{icon}{volume: >3}%",
         "format-muted":" muted",
