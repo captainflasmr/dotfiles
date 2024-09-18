@@ -109,11 +109,19 @@
 (defun my/complete ()
   (interactive)
   (cond
-   ((and (fboundp 'corfu-mode) corfu-mode)
-    (indent-for-tab-command))
-   ((and (fboundp 'company-mode) company-mode)
+   ;; Check if corfu is available and corfu-mode is active
+   ((and (fboundp 'corfu-mode) (bound-and-true-p corfu-mode))
+    (message "Using corfu for completion")
+    (indent-for-tab-command)
+    ;; (corfu-complete)
+    )
+   ;; Check if company is available and company-mode is active
+   ((and (fboundp 'company-mode) (bound-and-true-p company-mode))
+    (message "Using company for completion")
     (company-manual-begin))
+   ;; Fallback
    (t
+    (message "Using hippie-expand for completion")
     (hippie-expand nil))))
 
 (use-package orderless
@@ -264,15 +272,17 @@
 (define-key my-jump-keymap (kbd "-") #'tab-close)
 (define-key my-jump-keymap (kbd "=") (lambda () (interactive) (tab-bar-new-tab-to -1)))
 (define-key my-jump-keymap (kbd "e") (lambda () (interactive) (find-file (concat user-emacs-directory "init.el"))))
-(define-key my-jump-keymap (kbd "f") #'my/find-file)
+;; (define-key my-jump-keymap (kbd "f") #'my/find-file)
 (define-key my-jump-keymap (kbd "h") (lambda () (interactive) (find-file "~")))
 (define-key my-jump-keymap (kbd "k") (lambda () (interactive) (find-file (concat user-emacs-directory "emacs--init.org"))))
+(define-key my-jump-keymap (kbd "l") #'recentf-open)
 (define-key my-jump-keymap (kbd "m") #'customize-themes)
-(define-key my-jump-keymap (kbd "p") #'proced)
+(define-key my-jump-keymap (kbd "o") #'bookmark-jump)
 (define-key my-jump-keymap (kbd "r") #'scratch-buffer)
-(define-key my-jump-keymap (kbd "s") #'my/shell-create)
 (define-key my-jump-keymap (kbd "t") #'customize-themes)
 (define-key my-jump-keymap (kbd "z") #'list-packages)
+(define-key my-jump-keymap (kbd "i") #'my/complete)
+
 
 (use-package ace-window
   :config
@@ -315,17 +325,21 @@
 (bind-key* (kbd "M-s ,") #'my/mark-line)
 (bind-key* (kbd "M-s [") #'beginning-of-buffer)
 (bind-key* (kbd "M-s ]") #'end-of-buffer)
+(bind-key* (kbd "M-s c") #'cfw:open-org-calendar)
 (bind-key* (kbd "M-s w") #'org-table-expand)
 (bind-key* (kbd "M-s z") #'org-table-shrink)
 (global-set-key (kbd "M-s M-[") #'beginning-of-buffer)
 (global-set-key (kbd "M-s M-]") #'end-of-buffer)
-(global-set-key (kbd "M-s g") #'my/text-browser-search)
+(global-set-key (kbd "M-s g") #'my/grep)
+;; (global-set-key (kbd "M-s g") #'my/text-browser-search)
 (global-set-key (kbd "M-s h") #'my/mark-block)
 (global-set-key (kbd "M-s j") #'eval-defun)
+(global-set-key (kbd "M-s b") #'my/dired-duplicate-backup-file)
 
 ;; export keys
 (bind-key* (kbd "M-s e") #'my/push-block)
-(bind-key* (kbd "M-s f") #'org-preview-html-mode)
+(bind-key* (kbd "M-s f") #'my/find-file)
+(bind-key* (kbd "M-s m") #'org-preview-html-mode)
 (bind-key* (kbd "M-s r") #'org-preview-html-refresh)
 (bind-key* (kbd "M-s t") #'my/save-buffer-as-html)
 
@@ -453,8 +467,6 @@
 (global-set-key (kbd "C-1") #'delete-other-windows)
 (global-set-key (kbd "C-2") #'split-window-vertically)
 (global-set-key (kbd "C-3") #'split-window-horizontally)
-(global-set-key (kbd "M-r") #'my/grep)
-(global-set-key (kbd "M-s c") #'my/count-words)
 (define-key minibuffer-local-map (kbd "C-c e") #'embark-export)
 (define-key minibuffer-local-map (kbd "C-c c") #'embark-collect)
 (global-set-key (kbd "C-c a") #'org-agenda)
@@ -465,27 +477,27 @@
 (bind-key* (kbd "M-n") #'(lambda ()(interactive)(scroll-up (/ (window-height) 4))))
 (bind-key* (kbd "M-m") #'(lambda ()(interactive)(scroll-down (/ (window-height) 4))))
 (bind-key* (kbd "C-o") #'other-window)
-;; (bind-key* (kbd "C-0") #'my/switch-to-thing)
-(bind-key* (kbd "C-0") #'recentf-open)
+(bind-key* (kbd "C-0") #'my/switch-to-thing)
 (bind-key* (kbd "C--") #'bookmark-jump)
 (bind-key* (kbd "C-=") #'switch-to-buffer)
-;; (global-set-key (kbd "M-=") #'my/window-enlarge)
-;; (global-set-key (kbd "M--") #'my/window-shrink)
+(global-set-key (kbd "M--") #'bookmark-jump)
 (global-set-key (kbd "C-c b") #'(lambda ()(interactive)(async-shell-command "do_backup home" "*backup*")))
 (global-set-key (kbd "C-c c") #'org-capture)
 (global-set-key (kbd "C-x C-b") #'ibuffer)
-;; (bind-key* (kbd "C-x b") #'ibuffer)
 (global-set-key (kbd "C-x l") #'scroll-lock-mode)
 (global-set-key (kbd "M-;") #'my/comment-or-uncomment)
 (bind-key* (kbd "C-c ,") #'embark-act)
 (global-set-key (kbd "M-[") #'yank)
 (global-set-key (kbd "M-]") #'yank-pop)
 (global-unset-key (kbd "C-h h"))
-(bind-key* (kbd "M-9") #'my/complete)
 (global-unset-key (kbd "C-t"))
+(global-unset-key (kbd "C-x m"))
 (bind-key* (kbd "M-'") #'set-mark-command)
 (bind-key* (kbd "M-SPC") #'set-mark-command)
 (bind-key* (kbd "C-z") #'undo)
+(bind-key* (kbd "C-@") #'my/shell-create)
+(bind-key* (kbd "M-9") #'my/complete)
+(bind
 
 (global-set-key (kbd "M-g o") 'consult-outline)
 (global-set-key (kbd "M-g i") 'consult-imenu)
@@ -611,12 +623,7 @@
 (defun my/resize-window (delta &optional horizontal)
   "Resize window back and forth by DELTA and HORIZONTAL."
   (interactive)
-  (cond
-    ((< (nth 0 (window-edges)) 2)
-      (enlarge-window delta horizontal))
-    (t (select-window (windmove-left (selected-window)))
-      (enlarge-window delta horizontal)
-      (select-window (windmove-right (selected-window))))))
+  (enlarge-window delta horizontal))
 
 (defun save-macro (name)
   "Save a macro by NAME."
@@ -732,16 +739,6 @@ as search term for Google search in web browser."
   (recentf-save-list)
   (message "Cleared recent files list"))
 
-(defun my/window-enlarge ()
-  "Enlarges window."
-  (interactive)
-  (my/resize-window 4 t))
-
-(defun my/window-shrink ()
-  "Shrinks window."
-  (interactive)
-  (my/resize-window -4 t))
-
 (defun my/shell-create (name)
   "Create a custom-named eshell buffer with NAME."
   (interactive "sName: ")
@@ -783,6 +780,14 @@ as search term for Google search in web browser."
 
 (add-to-list 'display-buffer-alist
   '("consult-ripgrep"
+     (display-buffer-reuse-window display-buffer-in-direction)
+     (direction . leftmost)
+     (dedicated . t)
+     (window-width . 0.33)
+     (inhibit-same-window . t)))
+
+(add-to-list 'display-buffer-alist
+  '("\\Running"
      (display-buffer-reuse-window display-buffer-in-direction)
      (direction . leftmost)
      (dedicated . t)
@@ -929,6 +934,10 @@ as search term for Google search in web browser."
 
 (use-package org
   :defer t
+  :bind
+  (:map org-mode-map
+        ("M-8" . org-metadown)
+        ("M-9" . org-metaup))
   :config
   (setq org-src-tab-acts-natively t
     org-edit-src-content-indentation 0
@@ -1332,8 +1341,8 @@ as search term for Google search in web browser."
 
 (setq-default truncate-partial-width-windows 120)
 
-(set-frame-parameter nil 'alpha-background 80)
-(add-to-list 'default-frame-alist '(alpha-background . 80))
+(set-frame-parameter nil 'alpha-background 60)
+(add-to-list 'default-frame-alist '(alpha-background . 60))
 
 (set-fringe-mode '(20 . 20))
 (set-display-table-slot standard-display-table 0 ?\ )
@@ -1551,6 +1560,7 @@ as search term for Google search in web browser."
         ("w" "Jinx" (lambda ()(interactive)
                       (call-interactively 'jinx-mode)
                       (call-interactively 'writegood-mode)))
+        ("j" "Jinx correct" jinx-correct)
         ("l" "Jinx correct" jinx-correct)]
       ["Dictionary"
         ("d" "Lookup" dictionary-lookup-definition)]
@@ -1625,8 +1635,10 @@ as search term for Google search in web browser."
 ;; -> programming
 ;;
 
-(use-package ada-mode)
-;; :load-path "~/source/repos/old-ada-mode")
+(setq my/old-ada-mode (concat user-emacs-directory "old/old-ada-mode"))
+(when (file-exists-p my/old-ada-mode)
+  (use-package ada-mode
+    :load-path my/old-ada-mode))
 
 (use-package yaml-mode)
 
@@ -1976,9 +1988,6 @@ With directories under project root using find."
 ;;
 
 (use-package selected-window-accent-mode
-  ;; :load-path "~/source/repos/selected-window-accent-mode"
-  ;; :ensure nil
-  ;; :vc (:fetcher github :repo "captainflasmr/selected-window-accent-mode")
   :config (selected-window-accent-mode 1)
   :custom
   (selected-window-accent-fringe-thickness 10)
@@ -2153,7 +2162,7 @@ With directories under project root using find."
   "Set up company completions to be a little more fish like."
   (interactive)
   (setq-local completion-styles '(basic partial-completion))
-  (setq-local corfu-auto t)
+  (setq-local corfu-auto nil)
   (corfu-mode)
   (setq-local completion-at-point-functions
               (list (cape-capf-super
@@ -2198,8 +2207,8 @@ With directories under project root using find."
   :custom
   (popper-window-height 15))
 
-(bind-key* (kbd "C-;") #'popper-toggle)
-(bind-key* (kbd "C-'") #'popper-toggle-type)
+(bind-key* (kbd "C-'") #'popper-toggle)
+(bind-key* (kbd "C-;") #'popper-toggle-type)
 
 ;;
 ;; -> calendar
@@ -2263,8 +2272,6 @@ With directories under project root using find."
     (define-key map (kbd "p") (lambda () (interactive) (my/repeat-thing #'my/previous-thing)))
     (define-key map (kbd "j") (lambda () (interactive) (my/repeat-thing #'tab-bar-history-back)))
     (define-key map (kbd "k") (lambda () (interactive) (my/repeat-thing #'tab-bar-history-forward)))
-    (define-key map (kbd "u") (lambda () (interactive) (my/repeat-thing #'my/window-shrink)))
-    (define-key map (kbd "i") (lambda () (interactive) (my/repeat-thing #'my/window-enlarge)))
     (funcall func)
     (set-transient-map map t)))
 
@@ -2272,8 +2279,6 @@ With directories under project root using find."
 (global-set-key (kbd "M-s p") (lambda () (interactive) (my/repeat-thing #'my/previous-thing)))
 (bind-key* (kbd "C-x j") (lambda () (interactive) (my/repeat-thing #'tab-bar-history-back)))
 (bind-key* (kbd "C-x k") (lambda () (interactive) (my/repeat-thing #'tab-bar-history-forward)))
-(global-set-key (kbd "C-x u") (lambda () (interactive) (my/repeat-thing #'my/window-shrink)))
-(global-set-key (kbd "C-x i") (lambda () (interactive) (my/repeat-thing #'my/window-enlarge)))
 
 ;;
 ;; -> tab-bar
@@ -2310,13 +2315,10 @@ With directories under project root using find."
   (defun my-tab-bar-tab-name-format (tab i)
     (propertize
       (format " %d " i)
-      'face (funcall tab-bar-tab-face-function tab)))
-  :bind
-  (("M-u" . tab-bar-switch-to-prev-tab)
-    ("M-i" . tab-bar-switch-to-next-tab)
-    :repeat-map my/tab-bar-repeat-map
-    ("u" . tab-bar-switch-to-prev-tab)
-    ("i" . tab-bar-switch-to-next-tab)))
+      'face (funcall tab-bar-tab-face-function tab))))
+
+(bind-key* (kbd "M-u") #'tab-bar-switch-to-prev-tab)
+(bind-key* (kbd "M-i") #'tab-bar-switch-to-next-tab)
 
 ;;
 ;; -> finance
@@ -2634,6 +2636,7 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
              ,(expand-file-name "~/bin/PortableGit/usr/bin")
              ,(expand-file-name "~/bin/Apache-Subversion/bin/")
              ,(expand-file-name "~/bin/svn2git-2.4.0/bin")
+             ,(expand-file-name "~/bin/clang/bin")
              ,(expand-file-name "~/bin/find")
              ,(expand-file-name "~/bin/omnisharp-win-x64")
              "c:/GnuWin32/bin"
@@ -2662,15 +2665,14 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
   (define-key my-jump-keymap (kbd "c") (lambda () (interactive) (find-file "~/DCIM/Camera")))
   (define-key my-jump-keymap (kbd "g") (lambda () (interactive) (find-file "~/.config")))
   (define-key my-jump-keymap (kbd "j") (lambda () (interactive) (find-file "~/DCIM/content/aaa--todo.org")))
-  (define-key my-jump-keymap (kbd "y") #'emms)
-  (define-key my-jump-keymap (kbd "q") #'cfw:open-org-calendar)
   (define-key my-jump-keymap (kbd "n") (lambda () (interactive) (find-file "~/DCIM/Screenshots")))
   (define-key my-jump-keymap (kbd "w") (lambda () (interactive) (find-file "~/DCIM/content/")))
+  (define-key my-jump-keymap (kbd "y") #'emms)
 
   (setq diary-file "~/DCIM/content/diary.org")
 
   ;; (setq font-general "Noto Sans Mono 11")
-  (setq font-general "Source Code Pro 12")
+  (setq font-general "Source Code Pro 11")
   ;; (setq font-general "Source Code Pro Light 11")
   ;; (setq font-general "Nimbus Mono PS 11")
   ;; (setq font-general "Monospace 11")
@@ -2899,37 +2901,6 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
       (kill-buffer html-buffer) ;; Clean up the temporary HTML buffer
       (message "Exported to %s" html-file-name))))
 
-(defun my/toggle-org-kanban-compressed-and-refresh ()
-  "Toggle the :compressed state for the first org-kanban directive found in the buffer and refresh the table."
-  (interactive)
-  (save-excursion
-    (goto-char (point-min))
-    (let ((found nil)
-          (begin-pos nil))
-      (while (and (not found)
-                  (search-forward "#+begin: kanban" nil t))
-        (setq begin-pos (point-at-bol)) ;; Capture the beginning for later use
-        (let ((line-end (point-at-eol)))
-          (when (search-forward ":compressed" line-end t)
-            (let ((start (point)))
-              (if (search-forward-regexp "nil\\|t" line-end t)
-                  (let ((value (match-string 0)))
-                    (replace-match (if (string= value "nil") "t" "nil") t t)
-                    (setq found t))
-                ;; If :compressed is not found, add it as `:compressed t`.
-                (goto-char start)
-                (insert " t")
-                (setq found t))))))
-      (if (not found)
-          (message "No org-kanban directive with a :compressed keyword found.")
-        (progn
-          ;; If a kanban was found and modified, re-evaluate it
-          (goto-char begin-pos)
-          (org-ctrl-c-ctrl-c)
-          (message "Toggled :compressed and refreshed the kanban table."))))))
-
-(bind-key* (kbd "M-s m") #'my/toggle-org-kanban-compressed-and-refresh)
-
 (defvar consult--xref-history nil
   "History for the `consult-recent-xref' results.")
 
@@ -3131,7 +3102,7 @@ If ARG is provided, it sets the counter."
 
 (transient-define-prefix build-transient ()
   "Build and Diagnostic transient commands."
-  ["Build"
+  [:description (lambda () (project-root (project-current t)))
    ["CMake"
     ("p" "Set Preset" transient-select-cmake-preset)
     ("c" "Configure"
@@ -3148,7 +3119,8 @@ If ARG is provided, it sets the counter."
        (run-cmake-command (format "cmake --preset %s --fresh" cmake-preset))))
     ("x" "Clean"
      (lambda () (interactive)
-       (run-cmake-command "rm -rf build")))
+       (if (y-or-n-p "Are you sure you want to proceed? ")
+           (run-cmake-command "rm -rf build"))))
     ;; ("m" "Toggle compilation"
     ;;   (lambda () (interactive)
     ;;     (let ((buffer (get-buffer "*compilation*")))
@@ -3328,9 +3300,6 @@ easy pasting."
               ("j" . next-line)
               ("k" . previous-line)))
 
-(use-package my-dired-diff
-  :load-path "~/source/my-dired-diff")
-
 (setq vc-handled-backends '(SVN Git))
 
 ;; (use-package magit-svn
@@ -3423,8 +3392,6 @@ easy pasting."
           (insert org-content))))
     (kill-buffer output-buffer)))
 
-(use-package ox-pandoc)
-
 (defun highlight-long-sentences (limit)
   "Highlight sentences that are longer than LIMIT words."
   (interactive "nSentence word limit: ")
@@ -3502,26 +3469,34 @@ easy pasting."
       ((pred (lambda (sel) (member sel bookmarks))) (bookmark-jump selection))
       (_ (find-file selection)))))
 
-(use-package hl-sentence-long-lines
-  :load-path "~/source/repos/hl-sentence-long-lines")
+(when (file-exists-p "~/source/repos/hl-sentence-long-lines")
+  (use-package hl-sentence-long-lines
+    :load-path "~/source/repos/hl-sentence-long-lines")
 
-(eval-after-load 'hl-sentence-long-lines
-  '(progn
-     (define-key global-map (kbd "C-c l") 'hl-sentence-long-lines-transient)))
+  (eval-after-load 'hl-sentence-long-lines
+    '(progn
+       (define-key global-map (kbd "C-c l") 'hl-sentence-long-lines-transient)))
+  )
 
 (defun my/repeat-window-size ()
   "Call FUNC and set up a sparse keymap for repeating actions."
   (interactive)
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "h") (lambda () (interactive)
-                                (my/window-shrink)
+                                (my/resize-window 2 t)
                                 (my/repeat-window-size)))
     (define-key map (kbd "l") (lambda () (interactive)
-                                (my/window-enlarge)
+                                (my/resize-window -2 t)
+                                (my/repeat-window-size)))
+    (define-key map (kbd "j") (lambda () (interactive)
+                                (my/resize-window 1 nil)
+                                (my/repeat-window-size)))
+    (define-key map (kbd "k") (lambda () (interactive)
+                                (my/resize-window -1 nil)
                                 (my/repeat-window-size)))
     (set-transient-map map t)))
 
-(global-set-key (kbd "C-c r") #'my/repeat-window-size)
+(bind-key* (kbd "C-c r") #'my/repeat-window-size)
 
 (when (file-exists-p "~/source/repos/indent-bars")
   (use-package indent-bars
@@ -3532,3 +3507,44 @@ easy pasting."
 (defun without-gc (&rest args)
   (let ((gc-cons-threshold most-positive-fixnum))
     (apply args)))
+
+(when (file-exists-p "~/source/repos/dired-compare")
+  (use-package dired-compare
+    :load-path "~/source/repos/dired-compare"
+    :bind
+    (:map dired-mode-map
+          (("C-c p" . dired-compare)))))
+
+(setq flymake-show-diagnostics-at-end-of-line t)
+
+(use-package helpful)
+
+;; Note that the built-in `describe-function' includes both functions
+;; and macros. `helpful-function' is functions only, so we provide
+;; `helpful-callable' as a drop-in replacement.
+(global-set-key (kbd "C-h f") #'helpful-callable)
+
+(global-set-key (kbd "C-h v") #'helpful-variable)
+(global-set-key (kbd "C-h k") #'helpful-key)
+(global-set-key (kbd "C-h x") #'helpful-command)
+
+(use-package activities
+  :init
+  (activities-mode)
+  (activities-tabs-mode)
+  ;; Prevent `edebug' default bindings from interfering.
+  (setq edebug-inhibit-emacs-lisp-mode-bindings t)
+  :bind
+  (("C-x C-a C-n" . activities-new)
+   ("C-x C-a C-d" . activities-define)
+   ("C-x C-a C-a" . activities-resume)
+   ("C-x C-a C-s" . activities-suspend)
+   ("C-x C-a C-k" . activities-discard)
+   ("C-x C-a RET" . activities-switch)
+   ("C-x C-a b" . activities-switch-buffer)
+   ("C-x C-a g" . activities-revert)
+   ("C-x C-a l" . activities-list)))
+
+(bind-key* (kbd "C--") (lambda ()(interactive)(text-scale-adjust -1)))
+(bind-key* (kbd "C-+") (lambda ()(interactive)(text-scale-adjust 1)))
+(bind-key* (kbd "C-=") (lambda ()(interactive)(text-scale-adjust 1)))
