@@ -497,7 +497,6 @@
 (bind-key* (kbd "C-z") #'undo)
 (bind-key* (kbd "C-@") #'my/shell-create)
 (bind-key* (kbd "M-9") #'my/complete)
-(bind
 
 (global-set-key (kbd "M-g o") 'consult-outline)
 (global-set-key (kbd "M-g i") 'consult-imenu)

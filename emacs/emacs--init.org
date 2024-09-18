@@ -660,7 +660,6 @@ Note that occasionally I use the use-package related bind-key for a set all mode
 (bind-key* (kbd "C-z") #'undo)
 (bind-key* (kbd "C-@") #'my/shell-create)
 (bind-key* (kbd "M-9") #'my/complete)
-(bind
 
 #+end_src
 
