@@ -3,10 +3,12 @@
 #+DATE: Date
 
 * Introduction
+
 This repository contains various configuration files and directories for different applications and tools. It is intended to be a backup and a reference for setting up a similar environment on another system.
 
 * Directory Structure
-Here is an overview of the files and folders located in your `.config` directory.
+
+Here is an overview of the files and folders located in the `.config` directory.
 
 ** .gitignore
 Git ignore file specifying which files and directories to ignore when committing to the repository.
