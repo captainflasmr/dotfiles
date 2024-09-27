@@ -9,7 +9,7 @@
     "margin-bottom": -5,
     "margin-right": 8,
     "margin-left": 8,
-    "include": ["~/.config/waybar/modules.json"],
+    "include": ["~/.config/waybar_jdyer/modules.json"],
     "modules-left": [
         "custom/recorder",
         "idle_inhibitor",

@@ -9,7 +9,7 @@
     "margin-bottom": -2,
     "margin-right": 8,
     "margin-left": 8,
-    "include": ["~/.config/waybar/modules.json"],
+    "include": ["~/.config/waybar_garuda/modules.json"],
     "modules-left": [
         // "custom/updates",
         "custom/recorder",
