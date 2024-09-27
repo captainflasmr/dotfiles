@@ -95,8 +95,8 @@ bindsym $mod+Shift+$right move right
 #
 # -> Workspaces
 #
-# bindsym $mod+u workspace prev
-# bindsym $mod+i workspace next
+bindsym $mod+u workspace prev
+bindsym $mod+i workspace next
 
 bindsym $mod+1 workspace number 1
 bindsym $mod+2 workspace number 2
