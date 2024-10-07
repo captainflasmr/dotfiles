@@ -272,7 +272,6 @@
 (define-key my-jump-keymap (kbd "-") #'tab-close)
 (define-key my-jump-keymap (kbd "=") (lambda () (interactive) (tab-bar-new-tab-to -1)))
 (define-key my-jump-keymap (kbd "e") (lambda () (interactive) (find-file (concat user-emacs-directory "init.el"))))
-;; (define-key my-jump-keymap (kbd "f") #'my/find-file)
 (define-key my-jump-keymap (kbd "h") (lambda () (interactive) (find-file "~")))
 (define-key my-jump-keymap (kbd "k") (lambda () (interactive) (find-file (concat user-emacs-directory "emacs--init.org"))))
 (define-key my-jump-keymap (kbd "l") #'recentf-open)
@@ -1058,7 +1057,8 @@ as search term for Google search in web browser."
       '("ConvertNoSpace" "AudioConvert" "AudioInfo" "AudioNormalise"
          "AudioTrimSilence" "PictureAutoColour" "PictureConvert"
          "PictureCrush" "PictureFrompdf" "PictureInfo" "PictureMontage"
-         "PictureOrganise" "PictureCrop" "PictureRotateFlip"
+         "PictureOrganise" "PictureCrop" "PictureRotateFlip" "PictureEmail"
+         "PictureUpdateFromCreateDate"
          "PictureRotateLeft" "PictureRotateRight" "PictureScale"
          "PictureUpscale" "PictureGetText" "PictureOrientation"
          "PictureUpdateToCreateDate" "VideoConcat" "VideoConvert" "VideoConvertToGif"
@@ -1166,8 +1166,7 @@ as search term for Google search in web browser."
             ("k" . dired-previous-line)
             ("-" . dired-jump)
             ("b" . my/dired-file-to-org-link)
-            ("_" . my/dired-create-empty-file)
-            ("+" . my/dired-create-directory)
+            ("_" . dired-create-empty-file)
             ("C-c i" . my/image-dired-sort)
             ("C-c u" . my/dired-du)
             ("C-c d" . my/dired-duplicate-file)))
@@ -1340,8 +1339,8 @@ as search term for Google search in web browser."
 
 (setq-default truncate-partial-width-windows 120)
 
-(set-frame-parameter nil 'alpha-background 60)
-(add-to-list 'default-frame-alist '(alpha-background . 60))
+(set-frame-parameter nil 'alpha-background 80)
+(add-to-list 'default-frame-alist '(alpha-background . 80))
 
 (set-fringe-mode '(20 . 20))
 (set-display-table-slot standard-display-table 0 ?\ )
@@ -1519,8 +1518,8 @@ as search term for Google search in web browser."
                        (if (eq action 'metadata)
                          `(metadata . ,metadata)
                          (complete-with-action action file-list str pred)))
-                     nil t nil 'file-name-history)))
-      (when file (find-file (expand-file-name file))))))
+                     nil t nil 'file-name-history))))
+      (when file (find-file (expand-file-name file)))))
 
 ;;
 ;; -> grep
@@ -3547,3 +3546,8 @@ easy pasting."
 (bind-key* (kbd "C--") (lambda ()(interactive)(text-scale-adjust -1)))
 (bind-key* (kbd "C-+") (lambda ()(interactive)(text-scale-adjust 1)))
 (bind-key* (kbd "C-=") (lambda ()(interactive)(text-scale-adjust 1)))
+
+(defun my/after-theme-loaded(theme)
+  (my/sync-tab-bar-to-theme))
+
+(add-hook 'enable-theme-functions 'my/after-theme-loaded)
