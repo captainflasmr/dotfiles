@@ -811,13 +811,6 @@ as search term for Google search in web browser."
 
 (setq org-capture-templates
   '(
-     ("c" "Calendar" plain
-       (file+function
-         "~/DCIM/content/aab--calendar.org"
-         my-capture-top-level)
-       "* TODO %?\n SCHEDULED: %(cfw:org-capture-day)\n"
-       :prepend t :jump-to-captured t)
-
      ("t" "Tagged" plain
        (file+function
          "~/DCIM/content/tags--all.org"
@@ -838,7 +831,7 @@ as search term for Google search in web browser."
        (file+function
          "~/DCIM/content/blog--all.org"
          my-capture-top-level)
-       "* TODO %^{title} :2024:
+       "* TODO %^{title} :%(format-time-string \"%Y\"):
 :PROPERTIES:
 :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>-blog--%\\1
 :EXPORT_HUGO_SECTION: blog
@@ -848,11 +841,26 @@ as search term for Google search in web browser."
 %?
 " :prepend t :jump-to-captured t)
 
+     ("g" "Gallery" plain
+       (file+function
+         "~/DCIM/content/blog--all.org"
+         my-capture-top-level)
+       "* TODO %^{title} :%(format-time-string \"%Y\"):
+:PROPERTIES:
+:EXPORT_FILE_NAME: index
+:EXPORT_HUGO_SECTION: blog/%<%Y%m%d%H%M%S>-blog--%\\1
+:EXPORT_HUGO_LASTMOD: <%<%Y-%m-%d %H:%M>>
+:EXPORT_HUGO_TYPE: gallery
+:EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :thumbnail /blog/%<%Y%m%d%H%M%S>-blog--%\\1.jpg
+:END:
+%?
+" :prepend t :jump-to-captured t)
+
      ("e" "Emacs" plain
        (file+function
          "~/DCIM/content/emacs--all.org"
          my-capture-top-level)
-       "* TODO %^{title} :emacs:2024:
+       "* TODO %^{title} :emacs:%(format-time-string \"%Y\"):
 :PROPERTIES:
 :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>-emacs--%\\1
 :EXPORT_HUGO_SECTION: emacs
@@ -866,7 +874,7 @@ as search term for Google search in web browser."
        (file+function
          "~/DCIM/content/linux--all.org"
          my-capture-top-level)
-       "* TODO %^{title} :2024:
+       "* TODO %^{title} :%(format-time-string \"%Y\"):
 :PROPERTIES:
 :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>-linux--%\\1
 :EXPORT_HUGO_SECTION: linux
@@ -882,7 +890,7 @@ as search term for Google search in web browser."
        (file+function
          "~/DCIM/content/art--all.org"
          my-capture-top-level)
-       "* TODO %^{title} :videos:painter:krita:artrage:2024:
+       "* TODO %^{title} :videos:painter:krita:artrage:%(format-time-string \"%Y\"):
 :PROPERTIES:
 :EXPORT_FILE_NAME: %<%Y%m%d%H%M%S>--%\\1-%\\2
 :EXPORT_HUGO_SECTION: art--videos
@@ -900,7 +908,7 @@ as search term for Google search in web browser."
        (file+function
          "~/DCIM/content/art--all.org"
          my-capture-top-level)
-       "* TODO %^{title} :painter:krita:artrage:2024:
+       "* TODO %^{title} :painter:krita:artrage:%(format-time-string \"%Y\"):
 :PROPERTIES:
 :EXPORT_FILE_NAME: %\\1
 :EXPORT_HUGO_SECTION: art--all
