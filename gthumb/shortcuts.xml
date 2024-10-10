@@ -38,22 +38,22 @@
   <shortcut accelerator="minus" action="image-zoom-out"/>
   <shortcut accelerator="&lt;Shift&gt;x" action="image-zoom-fit"/>
   <shortcut accelerator="&lt;Shift&gt;h" action="image-zoom-fit-height"/>
-  <shortcut accelerator="h" action="image-zoom-fit-height-if-larger"/>
+  <shortcut accelerator="" action="image-zoom-fit-height-if-larger"/>
   <shortcut accelerator="x" action="image-zoom-fit-if-larger"/>
   <shortcut accelerator="&lt;Shift&gt;w" action="image-zoom-fit-width"/>
   <shortcut accelerator="w" action="image-zoom-fit-width-if-larger"/>
-  <shortcut accelerator="Down" action="scroll-step-down"/>
+  <shortcut accelerator="j" action="scroll-step-down"/>
   <shortcut accelerator="&lt;Shift&gt;Down" action="scroll-page-down"/>
-  <shortcut accelerator="Left" action="scroll-step-left"/>
+  <shortcut accelerator="h" action="scroll-step-left"/>
   <shortcut accelerator="&lt;Shift&gt;Left" action="scroll-page-left"/>
-  <shortcut accelerator="Right" action="scroll-step-right"/>
+  <shortcut accelerator="l" action="scroll-step-right"/>
   <shortcut accelerator="&lt;Shift&gt;Right" action="scroll-page-right"/>
   <shortcut accelerator="&lt;Alt&gt;Down" action="scroll-to-center"/>
-  <shortcut accelerator="Up" action="scroll-step-up"/>
+  <shortcut accelerator="k" action="scroll-step-up"/>
   <shortcut accelerator="&lt;Shift&gt;Up" action="scroll-page-up"/>
   <shortcut accelerator="a" action="file-tool-adjust-contrast"/>
   <shortcut accelerator="&lt;Shift&gt;c" action="file-tool-crop"/>
-  <shortcut accelerator="l" action="file-tool-flip"/>
+  <shortcut accelerator="" action="file-tool-flip"/>
   <shortcut accelerator="m" action="file-tool-mirror"/>
   <shortcut accelerator="&lt;Primary&gt;&lt;Shift&gt;z" action="image-redo"/>
   <shortcut accelerator="&lt;Shift&gt;s" action="file-tool-resize"/>
