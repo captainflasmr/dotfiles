@@ -1,4 +1,8 @@
 configuration {
+    kb-row-left: "Control+Page_Up,Alt+h";
+	 kb-row-right: "Control+Page_Down,Alt+l";
+    kb-row-up: "Up,Control+p,Alt+k";
+	 kb-row-down: "Down,Control+n,Alt+j";
     display-drun: "Applications:";
     display-window: "Windows:";
     drun-display-format: "{name}";
@@ -21,6 +25,10 @@ configuration {
         action: "kb-cancel";
         delay:  0;
     }
+    filebrowser {
+      directories-first: true;
+      sorting-method:    "name";
+  }
 }
 
 @theme "theme.rasi"
