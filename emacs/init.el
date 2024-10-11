@@ -563,6 +563,7 @@
 (setq enable-local-variables :all)
 (setq european-calendar-style t)
 (setq fit-window-to-buffer-horizontally t)
+(setq flymake-show-diagnostics-at-end-of-line t)
 (setq frame-inhibit-implied-resize t)
 (setq global-auto-revert-non-file-buffers t)
 (setq grep-command "grep -ni ")
@@ -570,6 +571,7 @@
 (setq kill-buffer-query-functions nil)
 (setq kill-whole-line t)
 (setq large-file-warning-threshold nil)
+(setq native-comp-async-report-warnings-errors nil)
 (setq reb-re-syntax 'string)
 (setq sentence-end-double-space nil)
 (setq shr-ignore-cache t)
@@ -874,6 +876,29 @@ If ARG is provided, it sets the counter."
       (setq counter (1+ counter)))
     (message (concat "Backed " new-file))
     (copy-file name new-file)))
+
+(defun my/save-buffer-as-html ()
+  (interactive)
+  ;; Define the export file name by appending .html to the current buffer name
+  (let* ((original-buffer-name (buffer-name))
+         (html-file-name (concat (file-name-sans-extension original-buffer-name) ".html"))
+         (html-buffer (htmlize-buffer (current-buffer))))
+    ;; Check if the file exists, and if so, ask the user if they want to overwrite it
+    (if (file-exists-p html-file-name)
+        (if (y-or-n-p (format "File %s already exists. Overwrite? " html-file-name))
+            (progn
+              ;; User chose to overwrite: Save the HTML buffer to the file
+              (with-current-buffer html-buffer
+                (write-file html-file-name))
+              (kill-buffer html-buffer) ;; Clean up the temporary HTML buffer
+              (message "Exported to %s" html-file-name))
+          ;; User chose not to overwrite: Just clean up
+          (kill-buffer html-buffer))
+      ;; File doesn't exist: Save directly
+      (with-current-buffer html-buffer
+        (write-file html-file-name))
+      (kill-buffer html-buffer) ;; Clean up the temporary HTML buffer
+      (message "Exported to %s" html-file-name))))
 
 ;;
 ;; -> window-positioning
@@ -3268,31 +3293,6 @@ programming modes based on basic space / tab indentation."
     (message "Native compilation is available")
   (message "Native complation is *not* available"))
 
-(setq native-comp-async-report-warnings-errors nil)
-
-(defun my/save-buffer-as-html ()
-  (interactive)
-  ;; Define the export file name by appending .html to the current buffer name
-  (let* ((original-buffer-name (buffer-name))
-         (html-file-name (concat (file-name-sans-extension original-buffer-name) ".html"))
-         (html-buffer (htmlize-buffer (current-buffer))))
-    ;; Check if the file exists, and if so, ask the user if they want to overwrite it
-    (if (file-exists-p html-file-name)
-        (if (y-or-n-p (format "File %s already exists. Overwrite? " html-file-name))
-            (progn
-              ;; User chose to overwrite: Save the HTML buffer to the file
-              (with-current-buffer html-buffer
-                (write-file html-file-name))
-              (kill-buffer html-buffer) ;; Clean up the temporary HTML buffer
-              (message "Exported to %s" html-file-name))
-          ;; User chose not to overwrite: Just clean up
-          (kill-buffer html-buffer))
-      ;; File doesn't exist: Save directly
-      (with-current-buffer html-buffer
-        (write-file html-file-name))
-      (kill-buffer html-buffer) ;; Clean up the temporary HTML buffer
-      (message "Exported to %s" html-file-name))))
-
 (defvar consult--xref-history nil
   "History for the `consult-recent-xref' results.")
 
@@ -3383,47 +3383,13 @@ The symbol at point is added to the future history."
 ;; Call the function now to set the faces initially
 (my/sync-tab-bar-to-theme)
 
-(defun highlight-long-sentences (limit)
-  "Highlight sentences that are longer than LIMIT words."
-  (interactive "nSentence word limit: ")
-  (save-excursion
-    (goto-char (point-min))
-    (while (re-search-forward "[.!?:]" nil t)
-      (let ((my-end (point)))
-        (backward-sentence)
-        (let ((my-start (point)))
-          (save-excursion
-            (goto-char my-start)
-            (let ((word-count 0))
-              (while (and (< (point) my-end)
-                          (re-search-forward "\\w+" my-end t))
-                (setq word-count (1+ word-count)))
-              (when (> word-count limit)
-                (highlight-region my-start my-end 'highlight)))))
-        ;; Move point forward to avoid re-processing the same sentence
-        (goto-char my-end)))))
-
-(defun highlight-region (my-start my-end face)
-  "Highlight region from MY-START to MY-END with FACE. Tag the overlay."
-  (let ((ov (make-overlay my-start my-end)))
-    (overlay-put ov 'face face)
-    (overlay-put ov 'highlight-long-sentences t)))
-
-(defun remove-highlighted-long-sentences ()
-  "Remove overlays created by `highlight-long-sentences` function."
-  (interactive)
-  (remove-overlays nil nil 'highlight-long-sentences t))
-
-(add-hook 'flyspell-mode-hook 'flyspell-check-long-sentences)
-
 (when (file-exists-p "~/source/repos/hl-sentence-long-lines")
   (use-package hl-sentence-long-lines
     :load-path "~/source/repos/hl-sentence-long-lines")
 
   (eval-after-load 'hl-sentence-long-lines
     '(progn
-       (define-key global-map (kbd "C-c l") 'hl-sentence-long-lines-transient)))
-  )
+       (define-key global-map (kbd "C-c l") 'hl-sentence-long-lines-transient))))
 
 (when (file-exists-p "~/source/repos/indent-bars")
   (use-package indent-bars
@@ -3441,8 +3407,6 @@ The symbol at point is added to the future history."
     :bind
     (:map dired-mode-map
           (("C-c p" . dired-compare)))))
-
-(setq flymake-show-diagnostics-at-end-of-line t)
 
 ;;
 ;; helpful
