@@ -3562,194 +3562,12 @@ Curates configurations specific to Linux, making adjustments for paths, fonts, a
 
 #+end_src
 
-* development
-
-Shares miscellaneous development tools, tips, and functions, showcasing the versatility and extensibility of Emacs for a wide range of development tasks and personal workflows.
+* transients
 
 #+begin_src elisp
 ;;
-;; -> development
+;; -> transients
 ;;
-
-(defun subtract-weight (weight-str avg-loss)
-  "Subtract AVG-LOSS pounds from WEIGHT-STR given in 'stones:pounds' format."
-  (let* ((stones-pounds (split-string weight-str ":"))
-         (stones (string-to-number (car stones-pounds)))
-         (pounds (string-to-number (cadr stones-pounds)))
-         (total-pounds (+ pounds (* stones 14)))
-         (new-total-pounds (- total-pounds avg-loss))
-         (new-stones (truncate (/ new-total-pounds 14)))
-         (new-pounds (mod new-total-pounds 14)))
-    (format "%d:%d" new-stones new-pounds)))
-
-(defun extrapolate-weight-loss (num-weeks)
-  "Extrapolate weight loss for NUM-WEEKS using 'av/pd' value in org-table."
-  (interactive "p")
-  (save-excursion
-    (let ((last-weight)
-          (last-avg-loss 2.9)
-          (last-date "")
-          (week 0)
-          (next-date ""))
-      (print num-weeks)
-      (when (org-at-table-p)
-        (goto-char (org-table-end))
-        ;; Find the last date and week number
-        (search-backward-regexp "|\\s-?\\([0-9]+\\)\\s-?|\\s-?<\\([0-9-]+\\)" nil t)
-        (setq week (string-to-number (match-string 1)))
-        (setq last-date (match-string 2))
-        (setq last-weight "16:10")
-        (goto-char (org-table-end))
-        ;; Loop for num-weeks to generate new lines
-        (dotimes (i num-weeks)
-          (setq next-date
-                (format-time-string "<%Y-%m-%d %a>"
-                                    (time-add (org-time-string-to-time last-date)
-                                              (days-to-time (+ (* i 7) 7))))) ;; add 7 days per week
-          (setq week (+ week 1))
-          (insert (format "| %d | %s | %s | | | | | | |\n"
-                          week next-date (subtract-weight last-weight (* (+ i 1) last-avg-loss))))))))
-  (org-table-align))
-
-(setq org-icalendar-use-deadline
-      '(event-if-not-todo event-if-todo event-if-todo-not-done todo-due))
-
-(setq org-icalendar-use-scheduled
-      '(event-if-not-todo event-if-todo event-if-todo-not-done todo-start))
-
-(defun my/calc-subscription-cost ()
-  (interactive)
-  (let ((sum 0))
-    (save-excursion
-      (goto-char (point-min))
-      ;; Search for the numeric pattern.
-      (while (re-search-forward "\\([0-9]+\\.[0-9]+\\)" nil t)
-        ;; Check if the current line does not contain "DONE"
-        (unless (save-excursion
-                  (beginning-of-line)
-                  (re-search-forward "DONE" (line-end-position) t))
-          ;; If "DONE" is not found on the line, process the number.
-          (let ((amount (string-to-number (substring-no-properties (match-string 1)))))
-            (setq sum (+ sum amount))
-            (message "Adding: %.2f, Total: %.2f" amount sum)))))
-    (message "Total: %.2f" sum)))
-
-(if (and (fboundp 'native-comp-available-p)
-         (native-comp-available-p))
-    (message "Native compilation is available")
-  (message "Native complation is *not* available"))
-
-(setq native-comp-async-report-warnings-errors nil)
-
-(defun my/save-buffer-as-html ()
-  (interactive)
-  ;; Define the export file name by appending .html to the current buffer name
-  (let* ((original-buffer-name (buffer-name))
-         (html-file-name (concat (file-name-sans-extension original-buffer-name) ".html"))
-         (html-buffer (htmlize-buffer (current-buffer))))
-    ;; Check if the file exists, and if so, ask the user if they want to overwrite it
-    (if (file-exists-p html-file-name)
-        (if (y-or-n-p (format "File %s already exists. Overwrite? " html-file-name))
-            (progn
-              ;; User chose to overwrite: Save the HTML buffer to the file
-              (with-current-buffer html-buffer
-                (write-file html-file-name))
-              (kill-buffer html-buffer) ;; Clean up the temporary HTML buffer
-              (message "Exported to %s" html-file-name))
-          ;; User chose not to overwrite: Just clean up
-          (kill-buffer html-buffer))
-      ;; File doesn't exist: Save directly
-      (with-current-buffer html-buffer
-        (write-file html-file-name))
-      (kill-buffer html-buffer) ;; Clean up the temporary HTML buffer
-      (message "Exported to %s" html-file-name))))
-
-(defvar consult--xref-history nil
-  "History for the `consult-recent-xref' results.")
-
-(defun consult-recent-xref (&optional markers)
-  "Jump to a marker in MARKERS list (defaults to `xref--history'.
-The command supports preview of the currently selected marker position.
-The symbol at point is added to the future history."
-  (interactive)
-  (consult--read
-   (consult--global-mark-candidates
-    (or markers (flatten-list xref--history)))
-   :prompt "Go to Xref: "
-   :annotate (consult--line-prefix)
-   :category 'consult-location
-   :sort nil
-   :require-match t
-   :lookup #'consult--lookup-location
-   :history '(:input consult--xref-history)
-   :add-history (thing-at-point 'symbol)
-   :state (consult--jump-state)))
-
-(defun copy-vcxproj-and-sln-files (src-dir dst-dir)
-  "Copy .vcxproj, .vcxproj.filters, and .sln files from SRC-DIR to DST-DIR recursively."
-  (let ((files (directory-files-recursively src-dir
-                                            "\\.\\(vcxproj\\|sln\\)$"
-                                            nil
-                                            (lambda (dir)
-                                              (not
-                                               (or
-                                                (string-match "CMakeFiles" dir)
-                                                ))))))
-    ;; (prin1 files)
-    (dolist (file files)
-      (message file)
-      (let* ((relative-path (file-relative-name file src-dir))
-             (new-file (expand-file-name relative-path dst-dir)))
-        (unless (file-directory-p (file-name-directory new-file))
-          (make-directory (file-name-directory new-file) t))
-        (copy-file file new-file t)))))
-
-;; Usage example:
-;; (copy-vcxproj-and-sln-files "c:/Users/jimbo/source/cigi-ccl_4_0/build/windows/debug" "c:/Users/jimbo/source/cigi-ccl_4_0")
-
-(defun my/org-replace-inactive-timestamps ()
-  "Replace all inactive timestamps in the current buffer with CLOSED and DEADLINE timestamps."
-  (interactive)
-  (save-excursion
-    ;; (goto-char (point-min))
-    (while (re-search-forward "\\[\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}.*\\)\\]" nil t)
-      (let ((timestamp (match-string 1)))
-        (replace-match (format "CLOSED: [%s] SCHEDULED: <%s>" timestamp timestamp))))))
-
-(require 'cus-edit)
-
-(defun my/summarize-customize-group ()
-  "Summarize the customization options of a group with their descriptions."
-  (interactive)
-  (let* ((all-groups (mapcar 'symbol-name (custom-group-members 'custom-group nil)))
-         (group-name (completing-read "Select customization group: " all-groups))
-         (group-symbol (intern group-name))
-         (output-buffer (get-buffer-create "*Customize Group Summary*")))
-    (with-current-buffer output-buffer
-      (read-only-mode -1)
-      (erase-buffer)
-      (insert (format "Summary of Customize Group: %s\n\n" group-name))
-      (dolist (item (custom-group-members group-symbol nil))
-        (let ((symbol (car item))
-              (type (cadr item))
-              (description "No description available."))
-          (cond
-           ((custom-variable-p symbol)
-            (setq description (or (documentation-property symbol 'variable-documentation)
-                                  "No description available.")))
-           ((get symbol 'face-documentation)
-            (setq description (get symbol 'face-documentation)))
-           ((custom-group-p symbol)
-            (setq description (or (documentation-property symbol 'group-documentation)
-                                  "No description available."))))
-          (insert (format "** %s\n\n%s\n\n"
-                          symbol
-                          description))))
-      (read-only-mode 1)
-      (goto-char (point-min)))
-    (display-buffer output-buffer)))
-
-(setq native-comp-verbose 3)
 
 (defvar cmake-preset
   "build/linux/debug"
@@ -3981,6 +3799,198 @@ programming modes based on basic space / tab indentation."
    ])
 
 (global-set-key (kbd "C-c g") 'chatgpt-shell-transient)
+
+#+end_src
+
+
+* development
+
+Shares miscellaneous development tools, tips, and functions, showcasing the versatility and extensibility of Emacs for a wide range of development tasks and personal workflows.
+
+#+begin_src elisp
+;;
+;; -> development
+;;
+
+(defun subtract-weight (weight-str avg-loss)
+  "Subtract AVG-LOSS pounds from WEIGHT-STR given in 'stones:pounds' format."
+  (let* ((stones-pounds (split-string weight-str ":"))
+         (stones (string-to-number (car stones-pounds)))
+         (pounds (string-to-number (cadr stones-pounds)))
+         (total-pounds (+ pounds (* stones 14)))
+         (new-total-pounds (- total-pounds avg-loss))
+         (new-stones (truncate (/ new-total-pounds 14)))
+         (new-pounds (mod new-total-pounds 14)))
+    (format "%d:%d" new-stones new-pounds)))
+
+(defun extrapolate-weight-loss (num-weeks)
+  "Extrapolate weight loss for NUM-WEEKS using 'av/pd' value in org-table."
+  (interactive "p")
+  (save-excursion
+    (let ((last-weight)
+          (last-avg-loss 2.9)
+          (last-date "")
+          (week 0)
+          (next-date ""))
+      (print num-weeks)
+      (when (org-at-table-p)
+        (goto-char (org-table-end))
+        ;; Find the last date and week number
+        (search-backward-regexp "|\\s-?\\([0-9]+\\)\\s-?|\\s-?<\\([0-9-]+\\)" nil t)
+        (setq week (string-to-number (match-string 1)))
+        (setq last-date (match-string 2))
+        (setq last-weight "16:10")
+        (goto-char (org-table-end))
+        ;; Loop for num-weeks to generate new lines
+        (dotimes (i num-weeks)
+          (setq next-date
+                (format-time-string "<%Y-%m-%d %a>"
+                                    (time-add (org-time-string-to-time last-date)
+                                              (days-to-time (+ (* i 7) 7))))) ;; add 7 days per week
+          (setq week (+ week 1))
+          (insert (format "| %d | %s | %s | | | | | | |\n"
+                          week next-date (subtract-weight last-weight (* (+ i 1) last-avg-loss))))))))
+  (org-table-align))
+
+(setq org-icalendar-use-deadline
+      '(event-if-not-todo event-if-todo event-if-todo-not-done todo-due))
+
+(setq org-icalendar-use-scheduled
+      '(event-if-not-todo event-if-todo event-if-todo-not-done todo-start))
+
+(defun my/calc-subscription-cost ()
+  (interactive)
+  (let ((sum 0))
+    (save-excursion
+      (goto-char (point-min))
+      ;; Search for the numeric pattern.
+      (while (re-search-forward "\\([0-9]+\\.[0-9]+\\)" nil t)
+        ;; Check if the current line does not contain "DONE"
+        (unless (save-excursion
+                  (beginning-of-line)
+                  (re-search-forward "DONE" (line-end-position) t))
+          ;; If "DONE" is not found on the line, process the number.
+          (let ((amount (string-to-number (substring-no-properties (match-string 1)))))
+            (setq sum (+ sum amount))
+            (message "Adding: %.2f, Total: %.2f" amount sum)))))
+    (message "Total: %.2f" sum)))
+
+(if (and (fboundp 'native-comp-available-p)
+         (native-comp-available-p))
+    (message "Native compilation is available")
+  (message "Native complation is *not* available"))
+
+(setq native-comp-async-report-warnings-errors nil)
+
+(defun my/save-buffer-as-html ()
+  (interactive)
+  ;; Define the export file name by appending .html to the current buffer name
+  (let* ((original-buffer-name (buffer-name))
+         (html-file-name (concat (file-name-sans-extension original-buffer-name) ".html"))
+         (html-buffer (htmlize-buffer (current-buffer))))
+    ;; Check if the file exists, and if so, ask the user if they want to overwrite it
+    (if (file-exists-p html-file-name)
+        (if (y-or-n-p (format "File %s already exists. Overwrite? " html-file-name))
+            (progn
+              ;; User chose to overwrite: Save the HTML buffer to the file
+              (with-current-buffer html-buffer
+                (write-file html-file-name))
+              (kill-buffer html-buffer) ;; Clean up the temporary HTML buffer
+              (message "Exported to %s" html-file-name))
+          ;; User chose not to overwrite: Just clean up
+          (kill-buffer html-buffer))
+      ;; File doesn't exist: Save directly
+      (with-current-buffer html-buffer
+        (write-file html-file-name))
+      (kill-buffer html-buffer) ;; Clean up the temporary HTML buffer
+      (message "Exported to %s" html-file-name))))
+
+(defvar consult--xref-history nil
+  "History for the `consult-recent-xref' results.")
+
+(defun consult-recent-xref (&optional markers)
+  "Jump to a marker in MARKERS list (defaults to `xref--history'.
+The command supports preview of the currently selected marker position.
+The symbol at point is added to the future history."
+  (interactive)
+  (consult--read
+   (consult--global-mark-candidates
+    (or markers (flatten-list xref--history)))
+   :prompt "Go to Xref: "
+   :annotate (consult--line-prefix)
+   :category 'consult-location
+   :sort nil
+   :require-match t
+   :lookup #'consult--lookup-location
+   :history '(:input consult--xref-history)
+   :add-history (thing-at-point 'symbol)
+   :state (consult--jump-state)))
+
+(defun copy-vcxproj-and-sln-files (src-dir dst-dir)
+  "Copy .vcxproj, .vcxproj.filters, and .sln files from SRC-DIR to DST-DIR recursively."
+  (let ((files (directory-files-recursively src-dir
+                                            "\\.\\(vcxproj\\|sln\\)$"
+                                            nil
+                                            (lambda (dir)
+                                              (not
+                                               (or
+                                                (string-match "CMakeFiles" dir)
+                                                ))))))
+    ;; (prin1 files)
+    (dolist (file files)
+      (message file)
+      (let* ((relative-path (file-relative-name file src-dir))
+             (new-file (expand-file-name relative-path dst-dir)))
+        (unless (file-directory-p (file-name-directory new-file))
+          (make-directory (file-name-directory new-file) t))
+        (copy-file file new-file t)))))
+
+;; Usage example:
+;; (copy-vcxproj-and-sln-files "c:/Users/jimbo/source/cigi-ccl_4_0/build/windows/debug" "c:/Users/jimbo/source/cigi-ccl_4_0")
+
+(defun my/org-replace-inactive-timestamps ()
+  "Replace all inactive timestamps in the current buffer with CLOSED and DEADLINE timestamps."
+  (interactive)
+  (save-excursion
+    ;; (goto-char (point-min))
+    (while (re-search-forward "\\[\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}.*\\)\\]" nil t)
+      (let ((timestamp (match-string 1)))
+        (replace-match (format "CLOSED: [%s] SCHEDULED: <%s>" timestamp timestamp))))))
+
+(require 'cus-edit)
+
+(defun my/summarize-customize-group ()
+  "Summarize the customization options of a group with their descriptions."
+  (interactive)
+  (let* ((all-groups (mapcar 'symbol-name (custom-group-members 'custom-group nil)))
+         (group-name (completing-read "Select customization group: " all-groups))
+         (group-symbol (intern group-name))
+         (output-buffer (get-buffer-create "*Customize Group Summary*")))
+    (with-current-buffer output-buffer
+      (read-only-mode -1)
+      (erase-buffer)
+      (insert (format "Summary of Customize Group: %s\n\n" group-name))
+      (dolist (item (custom-group-members group-symbol nil))
+        (let ((symbol (car item))
+              (type (cadr item))
+              (description "No description available."))
+          (cond
+           ((custom-variable-p symbol)
+            (setq description (or (documentation-property symbol 'variable-documentation)
+                                  "No description available.")))
+           ((get symbol 'face-documentation)
+            (setq description (get symbol 'face-documentation)))
+           ((custom-group-p symbol)
+            (setq description (or (documentation-property symbol 'group-documentation)
+                                  "No description available."))))
+          (insert (format "** %s\n\n%s\n\n"
+                          symbol
+                          description))))
+      (read-only-mode 1)
+      (goto-char (point-min)))
+    (display-buffer output-buffer)))
+
+(setq native-comp-verbose 3)
 
 ;; Call the function now to set the faces initially
 (my/sync-tab-bar-to-theme)
