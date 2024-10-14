@@ -827,15 +827,24 @@ Demonstrates the use of hooks for automatically executing code upon entering spe
 ;; -> hooks
 ;;
 
+;; (defun get-subtle-highlight-color ()
+;;   "Retrieve a subtle highlight color based on the current background."
+;;   (let* ((bg (face-attribute 'default :background))
+;;          (color (color-lighten-name bg 50)))
+;;     color))
+
 (defun my/after-theme-loaded(theme)
+  ;; (let ((highlight-color (get-subtle-highlight-color)))
+  ;;   (custom-set-faces
+  ;;    `(org-transclusion ((t (:background ,highlight-color))))))
   (my/sync-tab-bar-to-theme))
 
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-(add-hook 'calendar-mode-hook 'diary-mark-entries)
-(add-hook 'chatgpt-shell-mode-hook 'visual-line-mode)
-(add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
-(add-hook 'diary-mark-entries-hook 'diary-mark-included-diary-files)
-(add-hook 'enable-theme-functions 'my/after-theme-loaded)
+(add-hook 'before-save-hook #'delete-trailing-whitespace)
+(add-hook 'calendar-mode-hook #'diary-mark-entries)
+(add-hook 'chatgpt-shell-mode-hook #'visual-line-mode)
+(add-hook 'diary-list-entries-hook #'diary-include-other-diary-files)
+(add-hook 'diary-mark-entries-hook #'diary-mark-included-diary-files)
+(add-hook 'enable-theme-functions #'my/after-theme-loaded)
 (add-hook 'next-error-hook #'org-fold-show-all)
 
 #+end_src
@@ -1249,7 +1258,7 @@ Customizes Org Capture templates for quickly capturing notes, tasks, and other i
          (file+function
           "~/DCIM/content/blog--all.org"
           my-capture-top-level)
-         "* TODO %^{title} :%(format-time-string \"%Y\"):
+         "* DONE %^{title} :%(format-time-string \"%Y\"):
 :PROPERTIES:
 :EXPORT_FILE_NAME: index
 :EXPORT_HUGO_SECTION: blog/%<%Y%m%d%H%M%S>-blog--%\\1
@@ -1447,8 +1456,7 @@ Customizes the Org Agenda for a personalized task management and calendar view, 
                       "~/DCIM/content/aab--calendar.org"
                       "~/DCIM/content/aac--baby.org"
                       "~/DCIM/content/aaf--kate.org"
-                      "~/DCIM/content/emacs--todo.org"
-                      "~/DCIM/content/subs.org"
+                      "~/DCIM/content/aah--subs.org"
                       ))
   :config
   (with-eval-after-load 'org-agenda
@@ -1571,6 +1579,14 @@ Applies customizations to text appearance through face settings, allowing for de
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(org-transclusion ((t (:weight regular :height 1.0 :box (:line-width 1 :style released-button)))))
+ '(org-transclusion-fringe ((t (:weight bold :height 1.0))))
+ '(org-level-1 ((t (:inherit default :weight bold :height 1.1))))
+ '(org-level-2 ((t (:inherit default :weight light :height 1.0))))
+ '(org-level-3 ((t (:inherit default :weight light :height 1.0))))
+ '(org-level-4 ((t (:inherit default :weight light :height 1.0))))
+ '(org-level-5 ((t (:inherit default :weight light :height 1.0))))
+ '(org-level-6 ((t (:inherit default :weight light :height 1.0))))
  '(diredfl-date-time ((t (:foreground "#8d909b"))))
  '(diredfl-dir-heading ((t (:foreground "#aa5555" :weight bold))))
  '(diredfl-dir-priv ((t (:foreground "DarkRed"))))
@@ -3432,7 +3448,7 @@ Curates configurations specific to Linux, making adjustments for paths, fonts, a
   (setq diary-file "~/DCIM/content/diary.org")
 
   ;; (setq font-general "Noto Sans Mono 11")
-  (setq font-general "Source Code Pro 11")
+  (setq font-general "Source Code Pro 10")
   ;; (setq font-general "Source Code Pro Light 11")
   ;; (setq font-general "Nimbus Mono PS 11")
   ;; (setq font-general "Monospace 11")
@@ -4055,5 +4071,79 @@ The symbol at point is added to the future history."
    ("C-x C-a b" . activities-switch-buffer)
    ("C-x C-a g" . activities-revert)
    ("C-x C-a l" . activities-list)))
+
+(use-package org-transclusion)
+
+(add-hook 'org-mode-hook 'org-indent-mode)
+
+(setq org-indent-indentation-per-level 3)
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((shell . t)))
+
+(use-package org-ql
+  :ensure t)
+
+(require 'org)
+(require 'dired)
+
+(defun my-copy-marked-images-to-blog (dir thumb)
+  "Copy the marked files in dired buffer to a new directory named TITLE."
+  (let* ((target-dir (concat "~/DCIM/content/" dir))
+         (copied-files '())) ;; List to accumulate copied files.
+
+    (message "THUMB : %s" thumb)
+
+        ;; Create target directory if it doesn't exist.
+    (make-directory target-dir t)
+
+    ;; Copy the thumbnail image.
+    (copy-file thumb (concat "~/DCIM/content/" dir ".jpg"))
+
+    ;; Process each marked file.
+    (dolist (file my/org-dired-marked-files)
+      (let ((target-file (expand-file-name (file-name-nondirectory file) target-dir)))
+        (copy-file file target-file)
+        (push target-file copied-files)
+        (message "Copied: %s to %s" file target-file)))
+
+    ;; After copying, run PictureCrush on all copied files in one shell command.
+    (when copied-files
+      (let ((command (concat "PictureCrush " (mapconcat 'identity copied-files " "))))
+        (async-shell-command command "*convert*")
+        (message "Executed PictureCrush on: %s" (string-join copied-files ", "))))))
+
+(defvar my/org-dired-marked-files nil
+  "Stores the current dired marked files.")
+
+(defun my/test-finalize ()
+  (let ((key (plist-get org-capture-plist :key))
+        (desc (plist-get org-capture-plist :description))
+        (template (plist-get org-capture-plist :template))
+        (thumb (nth (random (length my/org-dired-marked-files)) my/org-dired-marked-files))
+        (export-hugo-section nil))
+
+    (when (string-match ":EXPORT_HUGO_SECTION: \\(.*\\)$" template)
+      (setq export-hugo-section (match-string 1 template)))
+
+    (prin1 my/org-dired-marked-files)
+
+    (message "Extracted %s : %s" export-hugo-section thumb)
+
+    (if org-note-abort
+        (progn
+          (message "Template with key %s and description “%s” aborted" key desc))
+      (progn
+        (message "Template with key %s and description “%s” run successfully" key desc)
+        (my-copy-marked-images-to-blog export-hugo-section thumb)))))
+
+(add-hook 'org-capture-after-finalize-hook 'my/test-finalize)
+
+(defun my/org-capture-blog-with-gallery ()
+  "Capture gallery triggering gallery image storage."
+  (interactive)
+  (setq my/org-dired-marked-files (dired-get-marked-files))
+  (org-capture nil "g"))
 
 #+end_src
