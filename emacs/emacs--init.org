@@ -1258,16 +1258,8 @@ Customizes Org Capture templates for quickly capturing notes, tasks, and other i
          (file+function
           "~/DCIM/content/blog--all.org"
           my-capture-top-level)
-         "* DONE %^{title} :%(format-time-string \"%Y\"):
-:PROPERTIES:
-:EXPORT_FILE_NAME: index
-:EXPORT_HUGO_SECTION: blog/%<%Y%m%d%H%M%S>-blog--%\\1
-:EXPORT_HUGO_LASTMOD: <%<%Y-%m-%d %H:%M>>
-:EXPORT_HUGO_TYPE: gallery
-:EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :thumbnail /blog/%<%Y%m%d%H%M%S>-blog--%\\1.jpg
-:END:
-%?
-" :prepend t :jump-to-captured t)
+         (function my/org-hugo-new-subtree-post-capture-template)
+         :prepend t :jump-to-captured t)
 
         ("e" "Emacs" plain
          (file+function
@@ -4136,7 +4128,8 @@ The symbol at point is added to the future history."
           (message "Template with key %s and description “%s” aborted" key desc))
       (progn
         (message "Template with key %s and description “%s” run successfully" key desc)
-        (my-copy-marked-images-to-blog export-hugo-section thumb)))))
+        (when (string= desc "Gallery")
+          (my-copy-marked-images-to-blog export-hugo-section thumb))))))
 
 (add-hook 'org-capture-after-finalize-hook 'my/test-finalize)
 
@@ -4145,5 +4138,22 @@ The symbol at point is added to the future history."
   (interactive)
   (setq my/org-dired-marked-files (dired-get-marked-files))
   (org-capture nil "g"))
+
+(defun my/org-hugo-new-subtree-post-capture-template ()
+  (let* ((date (format-time-string (org-time-stamp-format  :inactive) (org-current-time)))
+         (title (read-from-minibuffer "Post Title: "))
+         (fname (org-hugo-slug title)))
+    (mapconcat #'identity
+               `(
+                 ,(concat "* DONE " title " :" (format-time-string "%Y") ":")
+                 ":PROPERTIES:"
+                 ":EXPORT_FILE_NAME: index"
+                 ,(concat ":EXPORT_HUGO_SECTION: blog/%<%Y%m%d%H%M%S>-blog--" fname)
+                 ,(concat ":EXPORT_HUGO_LASTMOD: " date)
+                 ":EXPORT_HUGO_TYPE: gallery"
+                 ,(concat ":EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :thumbnail /blog/%<%Y%m%d%H%M%S>-blog--" fname ".jpg")
+                 ":END:"
+                 "%?\n")
+               "\n")))
 
 #+end_src
