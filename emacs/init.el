@@ -1181,11 +1181,12 @@ If ARG is provided, it sets the counter."
   (org-agenda-include-diary nil)
   (org-agenda-show-all-dates t)
   (org-refile-targets '((org-agenda-files :maxlevel . 1)))
-  (org-agenda-files '("~/DCIM/content/aaa--todo.org"
+  (org-agenda-files '("~/DCIM/content/aaa--aaa.org"
+                      "~/DCIM/content/aaa--todo.org"
                       "~/DCIM/content/aab--calendar.org"
                       "~/DCIM/content/aac--baby.org"
                       "~/DCIM/content/aaf--kate.org"
-                      "~/DCIM/content/aah--subs.org"
+                      "~/DCIM/content/aag--emacs-todo.org"
                       ))
   :config
   (with-eval-after-load 'org-agenda
@@ -1289,7 +1290,7 @@ If ARG is provided, it sets the counter."
  ;; If there is more than one, they won't work right.
  '(org-transclusion ((t (:weight regular :height 1.0 :box (:line-width 1 :style released-button)))))
  '(org-transclusion-fringe ((t (:weight bold :height 1.0))))
- '(org-level-1 ((t (:inherit default :weight bold :height 1.1))))
+ '(org-level-1 ((t (:inherit default :weight regular :height 1.1))))
  '(org-level-2 ((t (:inherit default :weight light :height 1.0))))
  '(org-level-3 ((t (:inherit default :weight light :height 1.0))))
  '(org-level-4 ((t (:inherit default :weight light :height 1.0))))
@@ -1517,8 +1518,8 @@ If ARG is provided, it sets the counter."
 
 (setq-default truncate-partial-width-windows 120)
 
-(set-frame-parameter nil 'alpha-background 80)
-(add-to-list 'default-frame-alist '(alpha-background . 80))
+(set-frame-parameter nil 'alpha-background 95)
+(add-to-list 'default-frame-alist '(alpha-background . 95))
 
 (set-fringe-mode '(20 . 20))
 (set-display-table-slot standard-display-table 0 ?\ )
@@ -1601,7 +1602,7 @@ If ARG is provided, it sets the counter."
 
 (set-face-attribute 'mode-line-active nil :height 130 :underline nil :overline nil :box nil
                     :background "#a7a7a7" :foreground "#000000")
-(set-face-attribute 'mode-line-inactive nil :height 130 :underline nil :overline nil
+(set-face-attribute 'mode-line-inactive nil :height 110 :underline nil :overline nil
                     :background "#151515" :foreground "#cacaca")
 
 (defun my-tab-bar-number ()
@@ -1650,7 +1651,16 @@ If ARG is provided, it sets the counter."
 ;; "-%-"))
 
 (setq-default mode-line-format my/mode-line-format)
-(setq frame-title-format "%f")
+
+(defun my-frame-title-format ()
+  "Return the buffer's file path with home replaced by `~`."
+  (let ((filename (or (buffer-file-name) dired-directory default-directory)))
+    (if filename
+        (abbreviate-file-name filename)  ; Use ~ for home directory
+      "%b")))  ; If no file, show the buffer name (%b)
+
+(setq frame-title-format '(:eval (my-frame-title-format)))
+;; (setq frame-title-format "%f")
 
 (defun my/toggle-mode-line ()
   "Toggle the visibility of the mode-line by checking its current state."
@@ -1734,30 +1744,23 @@ If ARG is provided, it sets the counter."
       ("a" "Antonyms" powerthesaurus-lookup-antonyms-dwim)]
      ["Spelling Tools"
       ("l" "Jinx" (lambda ()(interactive)
+                    (flymake-proselint-setup)
                     (call-interactively 'jinx-mode)
-                    (call-interactively 'writegood-mode)))
+                    (call-interactively 'writegood-mode)
+                    (call-interactively 'flymake-mode)))
       ("j" "Jinx correct" jinx-correct)
       ("s" "Jinx correct" jinx-correct)]
      ["Dictionary"
       ("d" "Lookup" dictionary-lookup-definition)]
-     ["Miscellaneous"
-      ("q" "Quit" transient-quit-one)]])
+     ["languagetool"
+      ("m" "Server Mode" languagetool-server-mode)
+      ("c" "Correct" languagetool-correct-at-point)
+      ("e" "Server Start" languagetool-server-start)
+      ("p" "Server Stop" languagetool-server-stop)
+     ]]
+    )
   :bind
   ("C-c s" . my/transient-spelling))
-
-;; (bind-key* (kbd "C-c s")
-;;   #'(lambda ()(interactive)
-;;       (if (not flyspell-mode)
-;;         (progn
-;;           (flyspell-buffer)
-;;           (flyspell-mode 1)
-;;           (message "Spell Check ENABLED"))
-;;         (progn
-;;           (flyspell-mode -1)
-;;           (message "Spell Check DISABLED")))))
-;; (bind-key* (kbd "C-c j") #'ispell-word)
-;; (bind-key* (kbd "C-c l") #'dictionary-lookup-definition)
-;; (bind-key* (kbd "C-c y") #'powerthesaurus-lookup-synonyms-dwim)
 
 (setq ispell-local-dictionary "en_GB")
 (setq ispell-program-name "hunspell")
@@ -2849,8 +2852,13 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
 
   (setq diary-file "~/DCIM/content/diary.org")
 
+  (custom-theme-set-faces
+   'user
+   '(variable-pitch ((t (:family "DejaVu Sans" :height 120 :weight normal))))
+   '(fixed-pitch ((t ( :family "Source Code Pro" :height 110)))))
+
   ;; (setq font-general "Noto Sans Mono 11")
-  (setq font-general "Source Code Pro 10")
+  (setq font-general "Source Code Pro 12")
   ;; (setq font-general "Source Code Pro Light 11")
   ;; (setq font-general "Nimbus Mono PS 11")
   ;; (setq font-general "Monospace 11")
@@ -2974,7 +2982,7 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
 ;; -> casual
 ;;
 
-(use-package casual-dired
+(use-package casual
   :ensure t
   :custom
   (casual-dired-listing-switches
@@ -2983,16 +2991,6 @@ Or indeed other filters as defined in the main unless from RSTART and REND."
               ("M-s a" . #'casual-dired-tmenu)
               ("s" . #'casual-dired-sort-by-tmenu)
               ("/" . #'casual-dired-search-replace-tmenu)))
-
-(use-package casual-calc
-  :ensure nil
-  :bind (:map
-         calc-mode-map
-         ("M-s a" . casual-calc-tmenu)
-         :map
-         calc-alg-map
-         ("M-s a" . casual-calc-tmenu))
-  :after (calc))
 
 ;;
 ;; -> transients
@@ -3286,11 +3284,11 @@ programming modes based on basic space / tab indentation."
       (goto-char (point-min))
       ;; Search for the numeric pattern.
       (while (re-search-forward "\\([0-9]+\\.[0-9]+\\)" nil t)
-        ;; Check if the current line does not contain "DONE"
+        ;; Check if the current line does not contain "CANCELLED"
         (unless (save-excursion
                   (beginning-of-line)
-                  (re-search-forward "DONE" (line-end-position) t))
-          ;; If "DONE" is not found on the line, process the number.
+                  (re-search-forward "CANCELLED" (line-end-position) t))
+          ;; If "CANCELLED" is not found on the line, process the number.
           (let ((amount (string-to-number (substring-no-properties (match-string 1)))))
             (setq sum (+ sum amount))
             (message "Adding: %.2f, Total: %.2f" amount sum)))))
@@ -3475,7 +3473,7 @@ The symbol at point is added to the future history."
 
     (message "THUMB : %s" thumb)
 
-        ;; Create target directory if it doesn't exist.
+    ;; Create target directory if it doesn't exist.
     (make-directory target-dir t)
 
     ;; Copy the thumbnail image.
@@ -3533,7 +3531,7 @@ The symbol at point is added to the future history."
          (fname (org-hugo-slug title)))
     (mapconcat #'identity
                `(
-                 ,(concat "* DONE " title " :" (format-time-string "%Y") ":")
+                 ,(concat "* DONE Photos " title " " (format-time-string "%Y-%m-%d") " :" (format-time-string "%Y") ":")
                  ":PROPERTIES:"
                  ":EXPORT_FILE_NAME: index"
                  ,(concat ":EXPORT_HUGO_SECTION: blog/%<%Y%m%d%H%M%S>-blog--" fname)
@@ -3541,5 +3539,68 @@ The symbol at point is added to the future history."
                  ":EXPORT_HUGO_TYPE: gallery"
                  ,(concat ":EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :thumbnail /blog/%<%Y%m%d%H%M%S>-blog--" fname ".jpg")
                  ":END:"
-                 "%?\n")
+                 "%?\n\n")
                "\n")))
+
+(use-package uniline)
+
+(flycheck-define-checker proselint
+  "A linter for prose."
+  :command ("proselint" source-inplace)
+  :error-patterns
+  ((warning line-start (file-name) ":" line ":" column ": "
+            (id (one-or-more (not (any " "))))
+            (message) line-end))
+  :modes (gfm-mode
+          markdown-mode
+          org-mode
+          text-mode))
+
+(add-to-list 'flycheck-checkers 'proselint)
+
+(use-package flymake-proselint)
+
+(use-package flymake
+  :bind (:map flymake-mode-map
+              ("C-c ! l" . flymake-show-buffer-diagnostics)))
+
+(setq global-eldoc-mode 1)
+
+(server-mode 1)
+
+(setq org-reverse-note-order t)
+
+(use-package languagetool
+  :ensure t
+  :defer t
+  :commands (languagetool-check
+             languagetool-clear-suggestions
+             languagetool-correct-at-point
+             languagetool-correct-buffer
+             languagetool-set-language
+             languagetool-server-mode
+             languagetool-server-start
+             languagetool-server-stop)
+  :config
+  (setq languagetool-java-arguments '("-Dfile.encoding=UTF-8"
+                                      "-cp" "/usr/share/languagetool:/usr/share/java/languagetool/*")
+        languagetool-console-command "org.languagetool.commandline.Main"
+        languagetool-server-command "org.languagetool.server.HTTPServer"))
+
+(defun my/org-ql-tags-search-in-current-buffer ()
+  "Prompt the user for a tag from the current buffer and generate a TODO list ordered by timestamp."
+  (interactive)
+  ;; Check if the buffer is in 'org-mode'
+  (if (derived-mode-p 'org-mode)
+      (let* ((tags (mapcar #'car (org-global-tags-completion-table (list (buffer-file-name)))))
+             (chosen-tag (completing-read
+                          "Choose a tag from the current buffer: "
+                          tags)))
+        (org-ql-search
+          (current-buffer)
+          `(and (tags ,chosen-tag))
+          :title (format "tag: %s" chosen-tag)
+          :sort 'todo))
+    (message "This command must be run in an Org buffer.")))
+
+(bind-key* (kbd "M-s s") #'my/org-ql-tags-search-in-current-buffer)
