@@ -38,20 +38,6 @@ Notification daemon configuration.
 
 - =dunst/dunstrc=: Configuration for Dunst notifications.
 
-** Emacs
-Emacs configuration files and directory structure.
-
-- =emacs/bookmarks=: Bookmarks file for Emacs.
-- =emacs/early-init.el=: Early initialization file for Emacs.
-- =emacs/emacs--init.org=: Main initialization configuration for Emacs.
-- =emacs/emacs--simple.org=: Simplified initialization configuration.
-- =emacs/emacs--straight.org=: Configuration using straight.el package manager.
-- =emacs/eshell/=: Directory for eshell-related settings.
-  - =emacs/eshell/alias=: Alias definitions for eshell.
-- =emacs/init.el=: Main init file for Emacs.
-- =emacs/plantuml.jar=: PlantUML JAR file.
-- =emacs/templates=: Templates directory for Emacs.
-
 ** Fish Shell
 Configuration files for Fish shell.
 
