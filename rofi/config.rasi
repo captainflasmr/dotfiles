@@ -1,4 +1,6 @@
 configuration {
+    disable-history: false;
+    // max-history-size: 25;
     kb-row-left: "Control+Page_Up,Alt+h";
 	 kb-row-right: "Control+Page_Down,Alt+l";
     kb-row-up: "Up,Control+p,Alt+k";

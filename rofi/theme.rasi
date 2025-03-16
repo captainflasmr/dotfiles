@@ -1,5 +1,5 @@
 * {
-    bg: #27272d;
+    bg: #27272daa;
     bg-alt: #7c7f94;
     bg-selected: #3f4052;
 
@@ -55,7 +55,7 @@ inputbar {
 listview {
     background-color: @bg;
     columns: 2;
-    lines: 10;
+    lines: 6;
 }
 
 mainbox {
