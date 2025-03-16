@@ -15,9 +15,6 @@ exec $HOME/bin/startup.sh
 # Set default terminal emulator
 set $term footclient
 
-# Application launcher
-set $launcher fuzzel
-
 exec swayidle -w \
    timeout 240 'swaymsg "output * dpms off"' \
    resume 'swaymsg "output * dpms on"' \
@@ -40,25 +37,22 @@ bindsym XF86MonBrightnessDown exec brightnessctl set 2%-
 #
 # -> Key bindings
 #
-bindsym $mod+a exec exec nwg-drawer
+bindsym $mod+Shift+space exec switch_waybar.sh
 bindsym $mod+Tab exec swayr switch-to-urgent-or-lru-window
 bindsym $mod+b exec firefox
-# bindsym $mod+bracketleft exec swayr switch-window
 bindsym $mod+bracketright exec wallpaper_change.sh
 bindsym $mod+c exec screen-record.sh
 bindsym $mod+e exec thunar ~/DCIM/Camera
-bindsym $mod+f exec thunar ~/DCIM/Camera
 bindsym $mod+g floating toggle
+bindsym $mod+n exec thunderbird
 bindsym $mod+p exec wl-color-picker
 bindsym $mod+q kill
 bindsym $mod+return exec $term
 bindsym $mod+shift+s exec screenshot.sh
-bindsym $mod+shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
 bindsym $mod+slash exec rofi -matching regex -show "drun"
+bindsym $mod+space exec toggle_waybar.sh
 bindsym $mod+t exec $term
 bindsym $mod+w exec swayr switch-window
-bindsym $mod+y exec toggle_waybar.sh
-bindsym $mod+z exec switch_waybar.sh
 bindsym Mod1+4 kill
 bindsym control+Mod1+t exec $term
 # bindsym $mod+o exec swayr next-tiled-window current-workspace
@@ -69,24 +63,20 @@ bindsym control+Mod1+t exec $term
 # Moving around:
 #
 # Change window focus
-# Vim key support
 bindsym $mod+Left focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
 bindsym $mod+Right focus right
-# bindsym $mod+$left focus left
-bindsym $mod+$left exec /home/jdyer/bin/sway_prev.sh
+bindsym $mod+$left focus left
 bindsym $mod+$down focus down
 bindsym $mod+$up focus up
-# bindsym $mod+$right focus right
-bindsym $mod+$right exec /home/jdyer/bin/sway_next.sh
+bindsym $mod+$right focus right
 
 # Move the focused window
 bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
-# Vim key support
 bindsym $mod+Shift+$left move left
 bindsym $mod+Shift+$down move down
 bindsym $mod+Shift+$up move up
@@ -102,8 +92,10 @@ bindsym $mod+1 workspace number 1
 bindsym $mod+2 workspace number 2
 bindsym $mod+3 workspace number 3
 bindsym $mod+4 workspace number 4
-Bindsym $mod+5 workspace number 5
+bindsym $mod+5 workspace number 5
 bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
 
 # Move focused container to workspace
 bindsym $mod+shift+1 move container to workspace number 1
@@ -112,6 +104,8 @@ bindsym $mod+shift+3 move container to workspace number 3
 bindsym $mod+shift+4 move container to workspace number 4
 bindsym $mod+shift+5 move container to workspace number 5
 bindsym $mod+shift+6 move container to workspace number 6
+bindsym $mod+shift+7 move container to workspace number 7
+bindsym $mod+shift+8 move container to workspace number 8
 
 #
 # -> full screen

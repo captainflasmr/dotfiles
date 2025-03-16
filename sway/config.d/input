@@ -20,6 +20,7 @@ Bindgesture swipe:4:up floating toggle
 bindgesture swipe:3:up exec nwg-drawer
 bindgesture swipe:3:down exec wtype -P "Escape"
 
+# back and forwards
 bindgesture swipe:3:right exec ydotool key 56:1 105:1 56:0 105:0
 bindgesture swipe:3:left exec ydotool key 56:1 106:1 56:0 106:0
 
@@ -30,9 +31,9 @@ focus_wrapping no
 input type:keyboard {
    events enabled
    xkb_layout gb
-   repeat_delay 400
-   repeat_rate 50
-   xkb_file $HOME/.config/keymap_sway.xkb
+   repeat_delay 350
+   repeat_rate 60
+   xkb_file $HOME/.emacs.d/keymap_with_sticky_modifiers.xkb
    # xkb_options "compose:caps"
    # xkb_options ctrl:nocaps
 }

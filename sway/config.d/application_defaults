@@ -25,8 +25,11 @@ for_window [title="sway_config"] floating enable, resize set width 80 ppt height
 # Inhibit idle
 for_window [app_id="firefox"] inhibit_idle fullscreen
 
-for_window [app_id="thunar"] opacity 0.9
-for_window [app_id="dolphin"] opacity 0.96
-for_window [app_id="gnome-terminal"] opacity 0.8
+for_window [class="Pcmanfm"] opacity 0.90
+for_window [app_id="thunar"] opacity 0.90
+for_window [app_id="dolphin"] opacity 0.90
+for_window [app_id="gnome-terminal"] opacity 0.90
 for_window [app_id="thunderbird"] opacity 0.90
-for_window [app_id="foot"] opacity 0.9
+for_window [app_id="foot"] opacity 0.90
+for_window [app_id="rofi"] opacity 0.60
+for_window [class="rofi"] opacity 0.60
