@@ -98,8 +98,9 @@
     },
 
     "sway/window": {
+        "format": "{title}",
         "min-length": 1,
-        "max-length": 50,
+        "max-length": 80,
     },
 
     "custom/recorder": {

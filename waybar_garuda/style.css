@@ -1,4 +1,4 @@
-@define-color foreground rgba(255, 255, 255, 1.0);
+@define-color foreground rgba(255, 255, 255, 0.8);
 @define-color background rgba(35, 35, 35, 0.8);
 @define-color border-theme rgba(0, 0, 0, 1.0);
 @define-color recording-color  #841B1B;
@@ -7,9 +7,9 @@
 /* Reset all styles */
 
 * {
-    color: #eceff4;
+    color: @foreground;
     border: 1px;
-    border-radius: 0px;
+    border-radius: 20px;
     padding: 1px 0px;
     font-family: SourceCodePro;
     font-size: 16px;
@@ -200,11 +200,15 @@ window#waybar {
 }
 
 #battery.warning {
-    background-color: #6C5454;
+    padding: 0em 0.5em;
+    background-color: #ff4444;
+    color: #ffffff;
 }
 
 #battery.critical {
+    padding: 0em 0.5em;
     background-color: #ff0000;
+    color: #ffffff;
 }
 
 #custom-keyboard_leds.caps {

@@ -1,14 +1,14 @@
 {
     "layer": "top",
     "position": "top",
-    // "height": 40,
+    "height": 10,
     // "output": "DP-1",
     // "width": 1920,
     "spacing": 0,
     "margin-top": 4,
-    "margin-bottom": -2,
-    "margin-right": 8,
-    "margin-left": 8,
+    "margin-bottom": -10,
+    "margin-right": 16,
+    "margin-left": 16,
     "include": ["~/.config/waybar_garuda/modules.json"],
     "modules-left": [
         // "custom/updates",
@@ -123,7 +123,7 @@
         "tooltip-format-deactivated": "Idle Inhibitor Deactivated"
     },
     "backlight": {
-        "scroll-step": 4,
+        "scroll-step": 2,
         "format": "{icon}{percent: >3}%",
         "format-icons": ["", ""],
         "tooltip-format": "Backlight (Scroll): {percent: >3}%",
@@ -161,7 +161,7 @@
     },
     "clock": {
         "on-click": "footclient -T waybar_calcurse -e calcurse",
-        "format": "{:%m-%d %H:%M}",
+        "format": "{:%Y-%m-%d %H:%M}",
         "tooltip-format": " {:%A %m/%d}\n\n<tt><small>{calendar}</small></tt>",
         "calendar": {
             "on-scroll": 1,

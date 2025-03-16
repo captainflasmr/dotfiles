@@ -59,12 +59,14 @@
 
 #battery.warning {
     padding: 0em 0.5em;
-    background-color: #6C5454;
+    background-color: #ff4444;
+    color: #ffffff;
 }
 
 #battery.critical {
     padding: 0em 0.5em;
     background-color: #b70000;
+    color: #ffffff;
 }
 
 #custom-keyboard_leds.caps {
