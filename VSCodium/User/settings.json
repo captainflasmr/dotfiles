@@ -2,7 +2,7 @@
     "ada.projectFile": "/home/jdyer/examples/gnat-examples/menace/menace.gpr",
     "editor.cursorBlinking": "solid",
     "editor.cursorStyle": "block",
-    "editor.fontFamily": "Source Code Pro Light",
+    "editor.fontFamily": "Source Code Pro",
     "workbench.colorCustomizations": {
         "[Default Dark+]":
         {
@@ -13,8 +13,6 @@
     "ada.trace.server": "verbose",
     "editor.minimap.enabled": false,
     "breadcrumbs.enabled": false,
-    "editor.fontSize": 15,
-    "workbench.colorTheme": "Solarized Dark",
     "gpr.trace.server": "verbose",
     "security.workspace.trust.untrustedFiles": "open",
     "cmake.options.advanced": {
@@ -32,5 +30,6 @@
         }
     },
     "git.openRepositoryInParentFolders": "never",
-    "cmake.showOptionsMovedNotification": false
+    "cmake.showOptionsMovedNotification": false,
+    "window.zoomLevel": 1.1
 }
