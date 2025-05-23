@@ -13,7 +13,7 @@ set $right l
 exec $HOME/bin/startup.sh
 
 # Set default terminal emulator
-set $term footclient
+set $term alacritty
 
 exec swayidle -w \
    timeout 240 'swaymsg "output * dpms off"' \
@@ -40,7 +40,7 @@ bindsym XF86MonBrightnessDown exec brightnessctl set 2%-
 bindsym $mod+Shift+space exec switch_waybar.sh
 bindsym $mod+Tab exec swayr switch-to-urgent-or-lru-window
 bindsym $mod+b exec firefox
-bindsym $mod+bracketright exec wallpaper_change.sh
+bindsym $mod+plus exec wallpaper_change.sh
 bindsym $mod+c exec screen-record.sh
 bindsym $mod+e exec thunar ~/DCIM/Camera
 bindsym $mod+g floating toggle
@@ -50,6 +50,8 @@ bindsym $mod+q kill
 bindsym $mod+return exec $term
 bindsym $mod+shift+s exec screenshot.sh
 bindsym $mod+slash exec rofi -matching regex -show "drun"
+# bindsym $mod+d exec "wofi --show drun"
+bindsym $mod+d exec "bemenu-run"
 bindsym $mod+space exec toggle_waybar.sh
 bindsym $mod+t exec $term
 bindsym $mod+w exec swayr switch-window
@@ -63,10 +65,10 @@ bindsym control+Mod1+t exec $term
 # Moving around:
 #
 # Change window focus
-bindsym $mod+Left focus left
+bindsym $mod+bracketleft focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
-bindsym $mod+Right focus right
+bindsym $mod+bracketright focus right
 bindsym $mod+$left focus left
 bindsym $mod+$down focus down
 bindsym $mod+$up focus up
