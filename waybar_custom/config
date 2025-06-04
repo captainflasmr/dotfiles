@@ -1,0 +1,265 @@
+{
+    "layer": "top",
+    "position": "top",
+    "margin-left": 12,
+    "margin-right": 12,
+    "margin-top": 4,
+    "margin-bottom": -6,
+    "height": 40,
+    // Choose the order of the modules
+    //###################// Modules //###################//
+    "modules-left": [
+        "sway/workspaces",
+        "sway/mode"
+    ],
+    "modules-center": [
+        "sway/window"
+        // "group/music"
+    ],
+    "modules-right": [
+        "cpu",
+        "custom/separator",
+        "memory",
+        "custom/separator",
+        "temperature",
+        "group/light",
+        "group/audio",
+        // "group/wifi",
+        // "custom/separator",
+        "battery",
+        "group/tray",
+        "group/clock-date"
+    ],
+    //##################// Workspace //##################//
+    "sway/workspaces": {
+        "format": "{icon}",
+        "format-icons": {
+            "default": "",
+            "focused": ""
+        }
+    },
+    //####################// Light //####################//
+    "group/light": {
+        "orientation": "inherit",
+        "drawer": {
+            "transition-duration": 500,
+            "children-class": "light-drawer",
+            "transition-left-to-right": true
+        },
+        "modules": [
+            "backlight"
+            // "backlight/slider"
+        ]
+    },
+    "backlight": {
+        // "device": "amdgpu_bl1",
+        "scroll-step": 4,
+        "format": "",
+        "format": " {percent}",
+        "format-icons": ["☀️"],
+        "tooltip-format": "brightness at {percent}%"
+    },
+    "backlight/slider": {
+        // "device": "amdgpu_bl1",
+        "min": 0,
+        "max": 100,
+        "orientation": "horizontal"
+    },
+    //####################// Audio //####################//
+    "group/audio": {
+        "orientation": "inherit",
+        "drawer": {
+            "transition-duration": 500,
+            "children-class": "audio-drawer",
+            "transition-left-to-right": true
+        },
+        "modules": [
+            "pulseaudio"
+            // "pulseaudio/slider"
+        ]
+    },
+    "pulseaudio": {
+        "scroll-step": 0.2,
+        "format": "{volume}",
+        "format-muted": "🔇 {format_source}",
+        "format-source": "% {volume}",
+        "format-source-muted": "",
+        "format-icons": {
+            "headphone": "",
+            "hands-free": "",
+            "headset": "",
+            "phone": "",
+            "portable": "",
+            "car": "",
+            "default": ["🔊"]
+        },
+        "tooltip-format": "volume at {volume}%",
+        "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+    },
+    "pulseaudio/slider": {
+        "min": 0,
+        "max": 100,
+        "orientation": "horizontal"
+    },
+    //###################// Network //###################//
+    "group/wifi": {
+        "orientation": "inherit",
+        "drawer": {
+            "transition-duration": 500,
+            "children-class": "network-drawer",
+            "transition-left-to-right": true
+        },
+        "modules": [
+            "network",
+            "custom/essid"
+        ]
+    },
+    "network": {
+        "interface": "wlan0",
+        "format": "󰤨",
+        "format-disconnected": "󰤭",
+        "tooltip": false
+    },
+    "custom/essid": {
+        "format": "{}",
+        "exec": "nmcli c | grep wlan0 | awk '{print ($1)}'",
+        "interval": 5,
+        "tooltip": false
+    },
+    //####################// Clock //####################//
+    "group/clock-date": {
+        "orientation": "inherit",
+        "drawer": {
+            "transition-duration": 500,
+            "children-class": "clock-drawer",
+            "transition-left-to-right": true
+        },
+        "modules": [
+            "group/clock",
+            "custom/date"
+        ]
+    },
+    "group/clock": {
+        "orientation": "inherit",
+        "modules": [
+            "custom/clock-hours",
+            "custom/clock-separator",
+            "custom/clock-minutes"
+        ]
+    },
+    "custom/clock-hours": {
+        "format": "{}",
+        "exec": "date '+%H'",
+        "tooltip": false,
+        "interval": 1
+    },
+    "custom/clock-separator": {
+        "format": "󰇙",
+        "tooltip": false
+    },
+    "custom/clock-minutes": {
+        "format": "{}",
+        "exec": "date '+%M'",
+        "tooltip": false,
+        "interval": 1
+    },
+    "custom/date": {
+        "format": "{}",
+        "exec": "date '+%d/%m'",
+        "on-click": "~/.config/eww/calendar/launch_bar",
+        "tooltip": false,
+        "interval": 30
+    },
+    "custom/music": {
+        "format": "{}",
+        "escape": true,
+        "interval": 5,
+        "tooltip": false,
+        "exec": "playerctl metadata --format='{{ title }}'",
+        "max-length": 50
+    },
+    "custom/prev": {
+        "format": "",
+        "on-click": "playerctl previous",
+        "tooltip": false
+    },
+    "custom/play-pause": {
+        "format": "",
+        "on-click": "playerctl play-pause",
+        "tooltip": false
+    },
+    "custom/next": {
+        "format": "",
+        "on-click": "playerctl next",
+        "tooltip": false
+    },
+    "battery": {
+        "interval": 1,
+        "states": {
+            "good": 95,
+            "warning": 12,
+            "critical": 6
+        },
+        "format-icons": {
+            "charging": ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+            "default": ["", "", "", "", "", "", "", "", "", ""],
+        },
+        "format": "{capacity}",
+        "format-charging": "{capacity}",
+        "format-plugged": "{capacity}",
+        "format-alt": "{time} {icon} ",
+        "format-full": "",
+        "min-length": 3,
+        "max-length": 30,
+        // "align": 2,
+    },
+    //####################// Memory //###################//
+    "custom/ram": {
+        "format": " {used:0.1f}G",
+        "interval": 1,
+        "on-click": "footclient -T waybar_btop -e btop"
+    },
+    //#####################// Tray //####################//
+    "group/tray": {
+        "orientation": "inherit",
+        "drawer": {
+            "transition-duration": 500,
+            "children-class": "tray-drawer",
+            "transition-left-to-right": true
+        },
+        "modules": [
+            "custom/separator",
+            "tray"
+        ]
+    },
+    "tray": {
+        "icon-size": 21,
+        "spacing": 10
+    },
+    //################// Notifications //################//
+    "custom/notification": {
+        "tooltip": false,
+        "format": " ",
+        "exec-if": "which swaync-client",
+        "exec": "swaync-client -swb",
+        "on-click": "swaync-client -t -sw",
+        "on-click-right": "swaync-client -d -sw",
+        "escape": true
+    },
+    //####################// Lock //#####################//
+    "custom/lock": {
+        "tooltip": false,
+        "on-click": "hyprlock &",
+        "format": " "
+    },
+    //###################// Power //####################//
+    "custom/power": {
+        "tooltip": false,
+        "on-click": "wlogout &",
+        "format": "⏻ "
+    },
+    "custom/separator": {
+        "format": "〡",
+        "tooltip": false
+    }
+}
