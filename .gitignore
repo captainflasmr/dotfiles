@@ -1,5 +1,6 @@
 alire
 calibre
+BraveSoftware/
 Upscayl
 FontBase
 QtProject
@@ -66,6 +67,7 @@ arkrc
 audacity/
 autostart/
 balena-etcher/
+balenaEtcher/
 baloofileinformationrc
 baloofilerc
 bleachbit/
@@ -217,6 +219,7 @@ libaccounts-glib/
 libinput-gestures.conf
 libreoffice/
 lightlyrc
+LM Studio/
 mailtransports
 menus/
 microsoft-edge-beta/
