@@ -98,12 +98,14 @@
     "cpu": {
         "format": "{usage}%",
         "on-click": "footclient -T waybar_btop -e btop",
+        "interval": 4,
         "min-length": 2,
         "max-length": 4,
 
     },
     "memory": {
         "format": " {used:0.1f}G",
+        "interval": 1,
         "on-click": "footclient -T waybar_btop -e btop"
     },
     "temperature": {

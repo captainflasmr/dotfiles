@@ -1,5 +1,5 @@
 @define-color foreground rgba(255, 255, 255, 0.8);
-@define-color background rgba(35, 35, 35, 0.8);
+@define-color background rgba(35, 35, 40, 0.9);
 @define-color border-theme rgba(0, 0, 0, 1.0);
 @define-color recording-color  #841B1B;
 @Define-color workspace-color rgba(100, 100, 100, 0.1);
@@ -9,12 +9,12 @@
 * {
     color: @foreground;
     border: 1px;
-    border-radius: 20px;
-    padding: 1px 0px;
+    border-radius: 10px;
+    padding: 2px 0px;
     font-family: SourceCodePro;
     font-size: 16px;
     margin-right: 2px;
-    margin-left: 2px;
+    margin-left: 0px;
    }
 
 window#waybar {
@@ -66,7 +66,7 @@ window#waybar {
     padding: 0px 4px;
     border: 0px;
     border-style: solid;
-    border-radius: 0px;
+    border-radius: 10px;
     margin: 0px 2px;
 }
 
@@ -201,13 +201,13 @@ window#waybar {
 
 #battery.warning {
     padding: 0em 0.5em;
-    background-color: #ff4444;
+    background-color: #e15757;
     color: #ffffff;
 }
 
 #battery.critical {
     padding: 0em 0.5em;
-    background-color: #ff0000;
+    background-color: #e15b5b;
     color: #ffffff;
 }
 
