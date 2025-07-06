@@ -1,0 +1,163 @@
+// Place your key bindings in this file to override the defaults
+[
+    {
+        "key": "ctrl+`",
+        "command": "workbench.action.terminal.toggleTerminal",
+        "when": "terminal.active"
+    },
+    {
+        "key": "alt+shift+/",
+        "command": "editor.action.goToReferences",
+        "when": "editorHasReferenceProvider && editorTextFocus && !inReferenceSearchEditor && !isInEmbeddedEditor"
+    },
+    {
+        "key": "alt+shift+u",
+        "command": "workbench.action.moveEditorLeftInGroup"
+    },
+    {
+        "key": "alt+shift+i",
+        "command": "workbench.action.moveEditorRightInGroup"
+    },
+    {
+        "key": "alt+s i",
+        "command": "workbench.action.moveEditorToNextGroup"
+    },
+    {
+        "key": "alt+s u",
+        "command": "workbench.action.moveEditorToPreviousGroup"
+    },
+    {
+        "key": "alt+;",
+        "command": "workbench.action.navigateEditorGroups",
+        "when": "!terminalFocus"
+    },
+    {
+        "key": "p",
+        "command": "runCommands",
+        "args": {
+            "commands": [
+                "emacs-mcx.previousLine",
+                "emacs-mcx.moveEndOfLine"
+            ]
+        },
+        "when": "dired.open && !findWidgetVisible && !inQuickOpen"
+    },
+    {
+        "key": "n",
+        "command": "runCommands",
+        "args": {
+            "commands": [
+                "emacs-mcx.nextLine",
+                "emacs-mcx.moveEndOfLine"
+            ]
+        },
+        "when": "dired.open && !findWidgetVisible && !inQuickOpen"
+    },
+    {
+        "key": "alt+e",
+        "command": "extension.dired.goUpDir",
+        "when": "dired.open && !findWidgetVisible && !inQuickOpen"
+    },
+    {
+        "key": "+",
+        "command": "extension.dired.createDir",
+        "when": "dired.open && !findWidgetVisible && !inQuickOpen"
+    },
+    {
+        "key": "-",
+        "command": "extension.dired.createFile",
+        "when": "dired.open && !findWidgetVisible && !inQuickOpen"
+    },
+    {
+        "key": "f",
+        "command": "extension.dired.enter",
+        "when": "dired.open && !findWidgetVisible && !inQuickOpen"
+    },
+    {
+        "key": "ctrl+x d",
+        "command": "extension.dired.open",
+        "when": "editorTextFocus && !inDebugRepl"
+    },
+    {
+        "key": "ctrl+i",
+        "command": "editor.action.formatDocument",
+        "when": "editorHasDocumentFormattingProvider && editorTextFocus && !editorReadonly && !inCompositeEditor"
+    },
+    {
+        "key": "alt+enter k",
+        "command": "workbench.action.debug.disconnect",
+        "when": "focusedSessionIsAttach && inDebugMode"
+    },
+    {
+        "key": "ctrl+z",
+        "command": "workbench.action.files.save"
+    },
+    {
+        "key": "alt+enter r",
+        "command": "workbench.action.debug.start",
+        "when": "debuggersAvailable && debugState == 'inactive'"
+    },
+    {
+        "key": "alt+enter b",
+        "command": "workbench.action.tasks.build",
+        "when": "taskCommandsRegistered"
+    },
+    {
+        "key": "alt+w",
+        "command": "editor.action.clipboardCopyAction",
+        "when": "editorTextFocus && !editorHasSelection"
+    },
+    {
+        "key": "alt+j",
+        "command": "cursorMove",
+        // "command": "editorScroll",
+        "args": {
+            "to": "down",
+            "by": "line",
+            "value": 5
+        },
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "alt+k",
+        "command": "cursorMove",
+        // "command": "editorScroll",
+        "args": {
+            "to": "up",
+            "by": "line",
+            "value": 5
+        },
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "alt+g i",
+        "command": "workbench.action.gotoSymbol",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "alt+,",
+        "command": "workbench.action.navigateBack",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "alt+.",
+        "command": "editor.action.goToDeclaration",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "alt+i",
+        "command": "workbench.action.nextEditor"
+    },
+    {
+        "key": "ctrl+x right",
+        "command": "-workbench.action.nextEditor"
+    },
+    {
+        "key": "alt+u",
+        "command": "workbench.action.previousEditor"
+    },
+    {
+        "key": "ctrl+x left",
+        "command": "-workbench.action.previousEditor"
+    }
+]
