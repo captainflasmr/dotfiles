@@ -1,0 +1,10 @@
+[Print Settings]
+scale=100
+n-copies=1
+number-up=1
+reverse=false
+lpr-commandline=lpr
+page-set=all
+printer=Print to LPR
+print-pages=all
+collate=false

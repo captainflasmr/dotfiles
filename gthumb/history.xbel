@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xbel version="1.0"
+      xmlns:bookmark="http://www.freedesktop.org/standards/desktop-bookmarks"
+      xmlns:mime="http://www.freedesktop.org/standards/shared-mime-info"
+>
+  <bookmark href="file:///home/jdyer/DCIM/Screenshots" added="2025-07-05T18:50:51.588838Z" modified="2025-07-05T18:50:51.588849Z" visited="2025-07-05T18:50:51.588840Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <bookmark:applications>
+          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2025-07-05T18:50:51.588844Z" count="1"/>
+        </bookmark:applications>
+        <bookmark:private/>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/jdyer/source/repos/simply-annotate/img" added="2025-07-05T18:50:51.588852Z" modified="2025-07-05T18:50:51.588863Z" visited="2025-07-05T18:50:51.588852Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <bookmark:applications>
+          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2025-07-05T18:50:51.588854Z" count="1"/>
+        </bookmark:applications>
+        <bookmark:private/>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/jdyer/Videos" added="2025-07-05T18:50:51.588866Z" modified="2025-07-05T18:50:51.588902Z" visited="2025-07-05T18:50:51.588866Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <bookmark:applications>
+          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2025-07-05T18:50:51.588901Z" count="1"/>
+        </bookmark:applications>
+        <bookmark:private/>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/jdyer/DCIM/content/blog" added="2025-07-05T18:50:51.588905Z" modified="2025-07-05T18:50:51.588910Z" visited="2025-07-05T18:50:51.588905Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <bookmark:applications>
+          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2025-07-05T18:50:51.588907Z" count="1"/>
+        </bookmark:applications>
+        <bookmark:private/>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/jdyer/nas/OneDrive" added="2025-07-05T18:50:51.588912Z" modified="2025-07-05T18:50:51.588917Z" visited="2025-07-05T18:50:51.588912Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <bookmark:applications>
+          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2025-07-05T18:50:51.588915Z" count="1"/>
+        </bookmark:applications>
+        <bookmark:private/>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/jdyer/source/repos/ollama-buddy/img" added="2025-07-05T18:50:51.588919Z" modified="2025-07-05T18:50:51.588927Z" visited="2025-07-05T18:50:51.588919Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <bookmark:applications>
+          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2025-07-05T18:50:51.588921Z" count="1"/>
+        </bookmark:applications>
+        <bookmark:private/>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/jdyer/DCIM/Camera" added="2025-07-05T18:50:51.588929Z" modified="2025-07-05T18:50:51.588938Z" visited="2025-07-05T18:50:51.588929Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <bookmark:applications>
+          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2025-07-05T18:50:51.588934Z" count="1"/>
+        </bookmark:applications>
+        <bookmark:private/>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/jdyer/DCIM/content/emacs" added="2025-07-05T18:50:51.588943Z" modified="2025-07-05T18:50:51.588948Z" visited="2025-07-05T18:50:51.588943Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <bookmark:applications>
+          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2025-07-05T18:50:51.588944Z" count="1"/>
+        </bookmark:applications>
+        <bookmark:private/>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/jdyer/DCIM/GIF" added="2025-07-05T18:50:51.588950Z" modified="2025-07-05T18:50:51.588953Z" visited="2025-07-05T18:50:51.588950Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <bookmark:applications>
+          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2025-07-05T18:50:51.588951Z" count="1"/>
+        </bookmark:applications>
+        <bookmark:private/>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/jdyer/Downloads" added="2025-07-05T18:50:51.588954Z" modified="2025-07-05T18:50:51.588962Z" visited="2025-07-05T18:50:51.588955Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <bookmark:applications>
+          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2025-07-05T18:50:51.588958Z" count="1"/>
+        </bookmark:applications>
+        <bookmark:private/>
+      </metadata>
+    </info>
+  </bookmark>
+</xbel>
