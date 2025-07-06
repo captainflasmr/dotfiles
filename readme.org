@@ -1,0 +1,77 @@
+#+TITLE: Configuration Files Overview
+#+AUTHOR: Your Name
+#+DATE: Date
+
+Welcome to my collection of Linux dotfiles! This repository contains configuration files for various applications, window managers, and utilities I use on my Linux system. These dotfiles are tailored for a highly customized setup with tools like Sway (Wayland compositor), Waybar, and other modern Linux utilities.
+
+The goal of this repository is to version control my configurations, make them easily reproducible across systems, and share them with others who might find them useful or inspiring.
+
+* Overview
+
+This repository includes dotfiles for:
+
+- *Window Manager*: Sway (Wayland) with custom scripts and configurations.
+- *Status Bars*: Waybar (multiple custom configurations).
+- *Launchers*: Rofi and Wofi.
+- *File Managers*: Thunar and PCManFM.
+- *Media and Graphics*: MPV, DigiKam, GThumb, and Krita.
+- *Development*: Visual Studio Code (User settings and keybindings).
+- *Keyboard Customization*: KMonad, XRemap, and custom keymaps.
+- *Other Utilities*: Dunst (notifications), Fusuma (touchpad gestures), KeepassXC, and more.
+
+These configurations are primarily designed for a modern Linux environment running on Wayland with a focus on productivity and aesthetics.
+
+* Included Configurations
+
+Below is a categorized list of the dotfiles and configurations included in this repository:
+
+** Core System Configurations
+- =.profile= - Shell profile settings.
+- =user-dirs.dirs= & =user-dirs.locale= - User directory configurations.
+
+** Window Manager: Sway
+- =sway/config= - Main Sway configuration.
+- =sway/config.d/*= - Modular Sway configurations for inputs, outputs, themes, etc.
+- =sway/scripts/*= - Custom scripts for workspace management, screenshots, and more.
+- =swaylock/config= & =swaylock/swaylock.png= - Swaylock screen locker settings.
+- =swayr/config.toml= & =swayr/waybar_config.toml= - Swayr window switcher settings.
+
+** Status Bars: Waybar
+- =waybar/config= & =waybar/style.css= - Default Waybar configuration.
+- =waybar_custom/*=, =waybar_garuda/*=, =waybar_jdyer/*= - Custom Waybar setups with scripts.
+- =WAYBAR= - Additional Waybar-related file.
+
+** Launchers and Menus
+- =rofi/*= - Rofi configuration and themes.
+- =wofi/*= - Wofi configuration and styles.
+
+** File Managers
+- =Thunar/accels.scm= & =Thunar/uca.xml= - Thunar shortcuts and actions.
+- =pcmanfm/default/pcmanfm.conf= - PCManFM configuration.
+
+** Development Tools
+- =Code/User/keybindings.json= & =Code/User/settings.json= - Visual Studio Code user settings and keybindings.
+
+** Media and Graphics
+- =mpv/mpv.conf= - MPV media player settings.
+- =digikamrc= & =digikam_systemrc= - DigiKam photo management settings.
+- =gthumb/*= - GThumb image viewer configurations.
+- =kritarc=, =kritadisplayrc=, =kritashortcutsrc= - Krita digital painting settings.
+- =kdenliverc= & =kdenlive-layoutsrc= - Kdenlive video editor settings.
+
+** Keyboard and Input Customization
+- =kmonad/*= - KMonad keyboard remapping configurations and binaries.
+- =xremap/*= - XRemap key remapping configurations.
+- =keymap_current=, =keymap_sway.xkb=, etc. - Custom XKB keymaps.
+- =fusuma/config.yml= - Touchpad gesture configurations.
+
+** Notifications and Themes
+- =dunst/dunstrc= - Dunst notification daemon settings.
+- =gtk-3.0/*= - GTK3 theme and settings (bookmarks, CSS, etc.).
+
+** Other Utilities
+- =keepassxc/keepassxc.ini= - KeepassXC password manager settings.
+- =pacseek/config.json= - Pacseek package search tool settings.
+- =polybar/*= - Polybar configuration files (for X11 setups).
+- =environment.d/*= - Environment variable configurations for Firefox and Garuda.
+
