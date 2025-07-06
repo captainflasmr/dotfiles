@@ -1,0 +1,29 @@
+(defcfg
+  input (low-level-hook)
+  output (send-event-sink)
+  fallthrough true)
+
+(defalias
+  sct (around-next lctl)
+  sls (around-next lsft)
+  slm (around-next lmet)
+  sla (around-next lalt)
+  ctg (multi-tap 300 C-g 300 #(C-c P50 C-c P50) C-g)
+  slk scrlck
+  srs (around-next rsft))
+
+(defsrc
+  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+  caps a    s    d    f    g    h    j    k    l    ;    '    ret
+  lsft z    x    c    v    b    n    m    ,    .    /    rsft
+  lctl lmet lalt           spc            ralt rctl
+)
+
+(deflayer main
+  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+  @sct a    s    d    f    g    h    j    k    l    ;    '    ret
+  @sls z    x    c    v    b    n    m    ,    .    /    @srs
+  @sct @slm @sla           spc            @ctg @sct
+  )
