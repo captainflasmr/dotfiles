@@ -1,0 +1,186 @@
+# Logo key. Use Mod1 for Alt.
+set $mod Mod4
+
+# Add Vim key support
+set $left h
+set $down j
+set $up k
+set $right l
+
+#
+# -> startup
+#
+exec $HOME/bin/startup.sh
+
+# Set default terminal emulator
+set $term alacritty
+
+exec swayidle -w \
+   timeout 240 'swaymsg "output * dpms off"' \
+   resume 'swaymsg "output * dpms on"' \
+   before-sleep 'swaymsg "output * dpms off"' \
+   after-resume 'swaymsg "output * dpms on"'
+
+## Lock Screen
+bindsym Mod4+f1 exec ~/.config/sway/scripts/lockman.sh
+
+#
+# -> keys
+#
+bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +2%
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -2%
+
+bindsym XF86MonBrightnessUp exec brightnessctl set +2%
+bindsym XF86MonBrightnessDown exec brightnessctl set 2%-
+
+#
+# -> Key bindings
+#
+bindsym $mod+Shift+space exec switch_waybar.sh
+bindsym $mod+Tab exec swayr switch-to-urgent-or-lru-window
+bindsym $mod+b exec firefox
+bindsym $mod+plus exec wallpaper_change.sh
+bindsym $mod+c exec screen-record.sh
+bindsym $mod+e exec thunar ~/DCIM/Camera
+bindsym $mod+g floating toggle
+bindsym $mod+n exec thunderbird
+bindsym $mod+p exec wl-color-picker
+bindsym $mod+q kill
+bindsym $mod+return exec $term
+bindsym $mod+shift+s exec screenshot.sh
+bindsym $mod+slash exec rofi -matching regex -show "drun"
+bindsym $mod+d exec bemenu-run \
+    -f "Monospace 16" \
+    --nb "#282828" --nf "#ebdbb2" \
+    --tb "#458588" --tf "#ffffff" \
+    --hb "#b16286" --hf "#ffffff"
+bindsym $mod+space exec toggle_waybar.sh
+bindsym $mod+t exec $term
+bindsym $mod+w exec swayr switch-window
+bindsym Mod1+4 kill
+bindsym control+Mod1+t exec $term
+bindsym $mod+period exec rofimoji
+# bindsym $mod+o exec swayr next-tiled-window current-workspace
+# bindsym $mod+Shift+c exec swayr execute-swayr-command
+# bindsym $mod+v exec swayr move-focused-to-workspace
+
+#
+# Moving around:
+#
+# Change window focus
+bindsym $mod+bracketleft focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+bracketright focus right
+bindsym $mod+$left focus left
+bindsym $mod+$down focus down
+bindsym $mod+$up focus up
+bindsym $mod+$right focus right
+
+# Move the focused window
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+bindsym $mod+Shift+$left move left
+bindsym $mod+Shift+$down move down
+bindsym $mod+Shift+$up move up
+bindsym $mod+Shift+$right move right
+
+#
+# -> Workspaces
+#
+bindsym $mod+u workspace prev
+bindsym $mod+i workspace next
+
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+
+# Move focused container to workspace
+bindsym $mod+shift+1 move container to workspace number 1
+bindsym $mod+shift+2 move container to workspace number 2
+bindsym $mod+shift+3 move container to workspace number 3
+bindsym $mod+shift+4 move container to workspace number 4
+bindsym $mod+shift+5 move container to workspace number 5
+bindsym $mod+shift+6 move container to workspace number 6
+bindsym $mod+shift+7 move container to workspace number 7
+bindsym $mod+shift+8 move container to workspace number 8
+
+#
+# -> full screen
+#
+bindsym $mod+m fullscreen
+
+#
+# -> reload
+#
+bindsym $mod+o reload
+
+#
+# -> resize
+#
+bindsym $mod+equal resize shrink width 25px
+bindsym $mod+minus resize grow width 25px
+
+#
+# -> other
+#
+smart_borders on
+
+#
+# -> floating
+#
+# Drag floating windows by holding down $mod and left mouse button.
+# Resize them with right mouse button + $mod.  Despite the name, also
+# works for non-floating windows.  Change normal to inverse to use
+# left mouse button for resizing and right mouse button for dragging.
+floating_modifier $mod
+
+# Toggle the current focus between tiling and floating mode
+# bindsym $mod+space floating toggle
+
+# Press $mod+Shift+g to enter the gap mode. Choose o or i for
+# modifying outer/inner gaps. Press one of + / - (in-/decrement for
+# current workspace) or 0 (remove gaps for current workspace). If you
+# also press Shift with these keys, the change will be global for all
+# workspaces.
+set $mode_gaps Gaps: (o) outer, (i) inner
+set $mode_gaps_outer Outer : u/i/0 (local), U/I/Shift+0 (global)
+set $mode_gaps_inner Inner : u/i/0 (local), U/I/Shift+0 (global)
+bindsym $mod+r mode "$mode_gaps"
+
+mode "$mode_gaps" {
+        bindsym o mode "$mode_gaps_outer"
+        bindsym i mode "$mode_gaps_inner"
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+mode "$mode_gaps_inner" {
+        bindsym u gaps inner current plus 5
+        bindsym i gaps inner current minus 5
+        bindsym 0 gaps inner current set 0
+        bindsym Shift+u gaps inner all plus 5
+        bindsym Shift+i gaps inner all minus 5
+        bindsym Shift+0 gaps inner all set 0
+        bindsym Return  mode "default"
+        bindsym Escape  mode "default"
+}
+mode "$mode_gaps_outer" {
+        bindsym u gaps outer current plus 5
+        bindsym i gaps outer current minus 5
+        bindsym 0 gaps outer current set 0
+        bindsym Shift+u gaps outer all plus 5
+        bindsym Shift+i gaps outer all minus 5
+        bindsym Shift+0 gaps outer all set 0
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+include /etc/sway/config.d/*

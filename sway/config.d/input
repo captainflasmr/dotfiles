@@ -1,0 +1,51 @@
+### Input configuration
+#
+# Example configuration:
+# You can get the names of your inputs by running: swaymsg -t get_inputs
+# Put your touchpad's ID to replace "Touchpad-ID" (keep the quotation marks)
+
+input type:touchpad {
+   events enabled
+   tap enabled
+   natural_scroll enabled
+   pointer_accel 0.7
+   drag_lock disabled
+}
+
+bindgesture swipe:right workspace prev
+bindgesture swipe:4:left workspace next
+# bindgesture swipe:left exec ~/.config/sway/scripts/advance_workspace.sh
+
+Bindgesture swipe:4:up floating toggle
+
+bindgesture swipe:3:up exec nwg-drawer
+bindgesture swipe:3:down exec wtype -P "Escape"
+
+# back and forwards
+bindgesture swipe:3:right exec ydotool key 56:1 105:1 56:0 105:0
+bindgesture swipe:3:left exec ydotool key 56:1 106:1 56:0 106:0
+
+focus_wrapping no
+
+# Read `man 5 sway-input` for more information about this section.
+
+input type:keyboard {
+   events enabled
+   xkb_layout gb
+   repeat_delay 350
+   repeat_rate 60
+   xkb_file $HOME/.emacs.d/keymap_with_sticky_modifiers.xkb
+   # xkb_options "compose:caps"
+   # xkb_options ctrl:nocaps
+}
+
+exec_always keyboard-reset.sh
+
+# input type:tablet_tool {
+input 11551:337:WCOM014A:00_2D1F:0151_Stylus {
+   events enabled
+   tap enabled
+   drag enabled
+   middle_emulation disabled
+   # drag_lock enabled
+}
