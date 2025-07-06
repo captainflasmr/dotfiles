@@ -1,0 +1,13 @@
+mode=drun
+allow_images=true
+image_size=20
+width=650
+insensitive=true
+term=alacritty
+columns=2
+image_size=20
+key_exit=Control_L-g
+key_up=Control_L-p
+key_down=Control_L-n
+key_left=Control_L-b
+key_right=Control_L-f

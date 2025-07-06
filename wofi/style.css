@@ -1,0 +1,25 @@
+* {
+    border-radious: 10px;
+    padding: 2px;
+}
+
+window {
+    font-size: 16px;
+    margin: 5px;
+    border: 0px solid #fff;
+    background-color: #222;
+    color: #eee;
+}
+
+#entry:selected {
+    background-color: #aaa;
+}
+
+#text:selected {
+    color: #222 ;
+}
+
+image {
+    margin-left: .25em;
+    margin-right: .25em;
+}
