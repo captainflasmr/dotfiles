@@ -1,0 +1,36 @@
+configuration {
+    disable-history: false;
+    // max-history-size: 25;
+    kb-row-left: "Control+Page_Up,Alt+h";
+	 kb-row-right: "Control+Page_Down,Alt+l";
+    kb-row-up: "Up,Control+p,Alt+k";
+	 kb-row-down: "Down,Control+n,Alt+j";
+    display-drun: "Applications:";
+    display-window: "Windows:";
+    drun-display-format: "{name}";
+    font: "SourceCodePro 12";
+    modes: "drun,window,ssh,run";
+    click-to-exit: true;
+    show-icons: true;
+    sort: true;
+    sorting-method: "fzf";
+    case-sensitive: false;
+    cycle: true;
+    sidebar-mode: true;
+    sidebar-mode: true;
+    window-thumbnail: true;
+    drun-use-desktop-cache: true;
+    drun-reload-desktop-cache: true;
+    sidebar-mode: true;
+    combi-hide-mode-prefix: true;
+    timeout {
+        action: "kb-cancel";
+        delay:  0;
+    }
+    filebrowser {
+      directories-first: true;
+      sorting-method:    "name";
+  }
+}
+
+@theme "theme.rasi"
