@@ -1,0 +1,279 @@
+@define-color foreground rgba(255, 255, 255, 0.8);
+@define-color background rgba(35, 35, 40, 0.9);
+@define-color border-theme rgba(0, 0, 0, 1.0);
+@define-color recording-color  #841B1B;
+@Define-color workspace-color rgba(100, 100, 100, 0.1);
+
+/* Reset all styles */
+
+* {
+    color: @foreground;
+    border: 1px;
+    border-radius: 10px;
+    padding: 2px 0px;
+    font-family: SourceCodePro;
+    font-size: 16px;
+    margin-right: 2px;
+    margin-left: 0px;
+   }
+
+window#waybar {
+    background: @background;
+    background-color: @background;
+}
+
+#workspaces button {
+    border: 0px;
+    padding: 0px 8px;
+    border-style: solid;
+    border-radius: 5px;
+}
+
+#workspaces button.focused {
+    border: 1px;
+    border-style: solid;
+    border-color: #B7B7B7;
+}
+
+#mode {
+    color: #ebcb8b;
+}
+
+#custom-launcher,
+#mode,
+#window,
+#network,
+#custom-updates,
+#custom-keyboard-layout,
+#cpu,
+#temperature,
+#memory,
+#idle_inhibitor,
+#backlight,
+#pulseaudio,
+#battery,
+#clock,
+#tray,
+#custom-exit,
+#custom-recorder,
+#custom-screenshot,
+#custom-krita,
+#custom-browser,
+#custom-files,
+#custom-terminal,
+#custom-keyboard,
+#custom-power {
+    padding: 0px 4px;
+    border: 0px;
+    border-style: solid;
+    border-radius: 10px;
+    margin: 0px 2px;
+}
+
+#custom-screenshot,
+#custom-krita,
+#custom-browser,
+#custom-files,
+#custom-terminal,
+#custom-keyboard
+{
+    padding: 0px 0px;
+}
+
+#window
+{
+    padding: 0px 4px;
+}
+
+#custom-togglesticky
+{
+    padding: 2px 4px;
+    border: 0px;
+    border-style: solid;
+    border-radius: 20px;
+    margin-top: 1px;
+}
+
+/* -----------------------------------------------------------------------------
+ * Module styles
+ * -------------------------------------------------------------------------- */
+
+
+#custom-launcher {
+    border-style: hidden;
+    margin-top:2px;
+}
+
+#mode{
+    margin-bottom:3px;
+}
+
+#window{
+    border-style: hidden;
+    margin-top:1px;
+}
+
+#network {
+    color:#81a1c1;
+}
+
+#network.disabled,#network.disconnected {
+    color:#bf616a;
+}
+
+#custom-updates{
+	color: #ebcb8b;
+}
+
+#custom-keyboard-layout{
+   color:#d08770;
+}
+
+#cpu {
+    color:#a3be8c;
+}
+
+#temperature {
+    color: #8fbcbb;
+}
+
+#temperature.critical {
+    color: #bf616a;
+}
+
+#memory {
+    color: #b48ead;
+}
+
+#idle_inhibitor {
+   color: #81a1c1;
+}
+
+#backlight {
+    color: #ebcb8b;
+}
+
+#pulseaudio {
+    color: #b48ead;
+}
+
+#pulseaudio.muted {
+    color: #3b4252;
+}
+
+#battery {
+    color: #C3C9D4;
+}
+
+#battery.charging {
+    color: #C18481;
+}
+
+@keyframes blink {
+    to {
+        color: #4c566a;
+        background-color: #eceff4;
+    }
+}
+
+#battery.critical:not(.charging) {
+    background: #bf616a;
+    color: #eceff4;
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+#clock {
+ color: #a3be8c;
+}
+
+#tray {
+    color: #a3be8c;
+}
+
+#custom-power{
+    border-style: hidden;
+    margin-top:2px;
+}
+
+#battery.warning {
+    padding: 0em 0.5em;
+    background-color: #e15757;
+    color: #ffffff;
+}
+
+#battery.critical {
+    padding: 0em 0.5em;
+    background-color: #e15b5b;
+    color: #ffffff;
+}
+
+#custom-keyboard_leds.caps {
+    color: green;
+}
+
+/* General LED styling */
+#custom-caps_lock,
+#custom-num_lock,
+#custom-scroll_lock {
+    padding: 0em 0.2em;
+}
+
+/* Active LED styling */
+#custom-caps_lock.active,
+#custom-num_lock.active,
+#custom-scroll_lock.active {
+    border-radius: 10px;
+    /* background-color: @recording-color; */
+    /* color: @foreground; */
+}
+
+.recording {
+    color: @background;
+    background-color: @recording-color;
+    padding: 0em 1em 0em 1em;
+}
+
+.not-recording {
+    color: @foreground;
+    padding: 0em 0em 0em 0.4em;
+}
+
+#custom-recorder {
+    color:#929292;
+}
+
+#custom-screenshot {
+    color:#9DC4E4;
+}
+
+#custom-krita{
+	color: #DCA5C2;
+}
+
+#custom-browser{
+   color:#87B2D2;
+}
+
+#custom-files {
+    color:#DCC3A7;
+}
+
+#custom-terminal {
+    color: #85ADAC;
+}
+
+#custom-keyboard {
+    color: #BBBBBB;
+}
+
+#custom-togglesticky {
+    color: #ffffff;
+}
+
+#custom-exit {
+    color: #9677F0;
+}
