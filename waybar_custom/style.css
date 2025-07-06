@@ -1,0 +1,43 @@
+* {
+  border: none;
+  border-radius: 14px;
+  font-size: 16px;
+}
+
+window#waybar {
+  background-color: rgba(30, 30, 40, 0.8);
+  border: 2px solid rgba(255, 255, 255, 0.7);
+}
+
+#backlight {
+  margin: 0px 10px 0px 10px;
+}
+
+#custom-separator {
+  font-weight: bold;
+}
+
+#battery {
+  border-radius: 16px;
+  margin: 0px 10px 0px 5px;
+}
+
+#workspaces {
+  font-weight: bold;
+  margin: 0px 0px 0px 6px;
+}
+
+#workspaces button {
+  background: transparent;
+  margin: 0px 5px 0px 0px;
+}
+
+#workspaces button.focused {
+  background: transparent;
+}
+
+#tray {
+  margin: 0px 20px 0px 5px;
+}
+
+/*# sourceMappingURL=style.css.map */

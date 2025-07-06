@@ -1,0 +1,40 @@
+{
+    "layer": "top",
+    "position": "top",
+    "margin-left": 12,
+    "margin-right": 12,
+    "margin-top": 4,
+    "margin-bottom": -8,
+    "height": 40,
+    "modules-left": [
+        "sway/workspaces",
+        "idle_inhibitor",
+        "sway/mode"
+    ],
+    "modules-center": [
+        "sway/window"
+    ],
+    "modules-right": [
+        "cpu",
+        "custom/separator",
+        "memory",
+        "custom/separator",
+        "temperature",
+        "backlight",
+        "wireplumber",
+        "battery",
+        "clock",
+        "tray"
+    ],
+    "sway/workspaces": {
+        "format": "{icon}",
+        "format-icons": {
+            "default": "",
+            "focused": ""
+        }
+    },
+    "custom/separator": {
+        "format": "     ",
+        "tooltip": false
+    }
+}
