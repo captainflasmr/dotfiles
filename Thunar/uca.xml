@@ -1,0 +1,599 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+<action>
+	<icon>utilities-terminal</icon>
+	<name>Open Terminal Here</name>
+	<submenu></submenu>
+	<unique-id>1699629335985900-1</unique-id>
+	<command>footclient %f</command>
+	<description>Example for a custom action</description>
+	<range></range>
+	<patterns>*</patterns>
+	<startup-notify/>
+	<directories/>
+</action>
+<action>
+	<icon></icon>
+	<name>MoveFile</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole MoveFile %F</command>
+	<description>MoveFile</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<image-files/>
+	<video-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>Picture2pdf</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole Picture2pdf %F</command>
+	<description>Picture2pdf</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>PictureAutoColour</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole PictureAutoColour %F</command>
+	<description>PictureAutoColour</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>PictureConvert</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole PictureConvert %F</command>
+	<description>PictureConvert</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>PictureCorrect</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole PictureCorrect %F</command>
+	<description>PictureCorrect</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>PictureCrop</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole PictureCrop %F</command>
+	<description>PictureCrop</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>PictureCrush</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole PictureCrush %F</command>
+	<description>PictureCrush</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>PictureEmail</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole PictureEmail %F</command>
+	<description>PictureEmail</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>PictureFrompdf</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole PictureFrompdf %F</command>
+	<description>PictureFrompdf</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>PictureGetText</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole PictureGetText %F</command>
+	<description>PictureGetText</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>PictureInfo</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole PictureInfo %F</command>
+	<description>PictureInfo</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>PictureMontage</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole PictureMontage %F</command>
+	<description>PictureMontage</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>PictureOrganise</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole PictureOrganise %F</command>
+	<description>PictureOrganise</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>PictureOrientation</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole PictureOrientation %F</command>
+	<description>PictureOrientation</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>PictureRotateFlip</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole PictureRotateFlip %F</command>
+	<description>PictureRotateFlip</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>PictureRotateLeft</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole PictureRotateLeft %F</command>
+	<description>PictureRotateLeft</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>PictureRotateRight</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole PictureRotateRight %F</command>
+	<description>PictureRotateRight</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>PictureScale</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole PictureScale %F</command>
+	<description>PictureScale</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>PictureTagRename</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole PictureTagRename %F</command>
+	<description>PictureTagRename</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>PictureTagAndRenameEmacs</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole PictureTagAndRenameEmacs %F</command>
+	<description>PictureTagAndRenameEmacs</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>PictureToEmacs</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole PictureToEmacs %F</command>
+	<description>PictureToEmacs</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>PictureTag</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole PictureTag %F</command>
+	<description>PictureTag</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>PictureToCapture</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole PictureToCapture %F</command>
+	<description>PictureToCapture</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>PictureUpdateFromCreateDate</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole PictureUpdateFromCreateDate %F</command>
+	<description>PictureUpdateFromCreateDate</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>PictureUpdateToCreateDate</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole PictureUpdateToCreateDate %F</command>
+	<description>PictureUpdateToCreateDate</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>PictureUpscale</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole PictureUpscale %F</command>
+	<description>PictureUpscale</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>PictureSplit</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole PictureSplit %F</command>
+	<description>PictureSplit</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>AudioConvert</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole AudioConvert %F</command>
+	<description>AudioConvert</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<audio-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>AudioInfo</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole AudioInfo %F</command>
+	<description>AudioInfo</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<audio-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>AudioNormalise</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole AudioNormalise %F</command>
+	<description>AudioNormalise</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<audio-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>AudioTrimSilence</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole AudioTrimSilence %F</command>
+	<description>AudioTrimSilence</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<audio-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>VideoConcat</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole VideoConcat %F</command>
+	<description>VideoConcat</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<video-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>VideoConvert</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole VideoConvert %F</command>
+	<description>VideoConvert</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<video-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>VideoConvertToGif</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole VideoConvertToGif %F</command>
+	<description>VideoConvertToGif</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<video-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>VideoCut</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole VideoCut %F</command>
+	<description>VideoCut</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<video-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>VideoExtractAudio</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole VideoExtractAudio %F</command>
+	<description>VideoExtractAudio</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<video-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>VideoExtractFrames</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole VideoExtractFrames %F</command>
+	<description>VideoExtractFrames</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<video-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>VideoFilter</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole VideoFilter %F</command>
+	<description>VideoFilter</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<video-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>VideoFromFrames</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole VideoFromFrames %F</command>
+	<description>VideoFromFrames</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<video-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>VideoInfo</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole VideoInfo %F</command>
+	<description>VideoInfo</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<video-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>VideoRemoveAudio</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole VideoRemoveAudio %F</command>
+	<description>VideoRemoveAudio</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<video-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>VideoReplaceAudio</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole VideoReplaceAudio %F</command>
+	<description>VideoReplaceAudio</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<video-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>VideoReplaceVideoAudio</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole VideoReplaceVideoAudio %F</command>
+	<description>VideoReplaceVideoAudio</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<video-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>VideoRescale</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole VideoRescale %F</command>
+	<description>VideoRescale</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<video-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>VideoReverse</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole VideoReverse %F</command>
+	<description>VideoReverse</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<video-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>VideoRotate</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole VideoRotate %F</command>
+	<description>VideoRotate</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<video-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>VideoRotateLeft</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole VideoRotateLeft %F</command>
+	<description>VideoRotateLeft</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<video-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>VideoRotateRight</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole VideoRotateRight %F</command>
+	<description>VideoRotateRight</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<video-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>VideoShrink</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole VideoShrink %F</command>
+	<description>VideoShrink</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<video-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>VideoSlowDown</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole VideoSlowDown %F</command>
+	<description>VideoSlowDown</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<video-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>VideoSpeedUp</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole VideoSpeedUp %F</command>
+	<description>VideoSpeedUp</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<video-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>VideoZoom</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole VideoZoom %F</command>
+	<description>VideoZoom</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<video-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>VideoRemoveFlips</name>
+	<submenu></submenu>
+	<unique-id>1688724015024216-1</unique-id>
+	<command>ServiceConsole VideoRemoveFlips %F</command>
+	<description>VideoRemoveFlips</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<video-files/>
+</action>
+</actions>
