@@ -1,0 +1,29 @@
+{
+    "dotnet.defaultSolution": "test-csharp.sln",
+    "files.exclude": {
+        "**/bin": true,
+        "**/obj": true
+    },
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.patterns": {
+        "*.csproj": "$(capture).cs,$(capture).*.cs"
+    },
+    "terminal.integrated.cwd": "${workspaceFolder}",
+    "dotnet.completion.showCompletionItemsFromUnimportedNamespaces": true,
+    "omnisharp.enableEditorConfigSupport": true,
+    "omnisharp.enableRoslynAnalyzers": true,
+    "omnisharp.loggingLevel": "debug",
+    "dotnet.server.trace": "verbose",
+    "git.enableSmartCommit": true,
+    "workbench.colorTheme": "Visual Studio Dark",
+    "editor.minimap.enabled": false,
+    "editor.renderLineHighlight": "none",
+    "editor.cursorStyle": "block",
+    "editor.guides.highlightActiveIndentation": false,
+    "editor.guides.indentation": false,
+    "editor.cursorSurroundingLines": 10,
+    "editor.occurrencesHighlight": "off",
+    "editor.lineNumbers": "on",
+    "breadcrumbs.enabled": true,
+    "breadcrumbs.filePath": "on"
+}
