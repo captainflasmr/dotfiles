@@ -1,0 +1,48 @@
+{
+    "layer": "bottom",
+    "position": "top",
+    "mode": "dock",
+    "height": 35,
+    "width": 1920,
+    "spacing": 15,
+    "margin-top": 0,
+    "margin-bottom": -5,
+    "margin-right": 8,
+    "margin-left": 8,
+    "include": ["~/.config/waybar_jdyer/modules.json"],
+    "modules-left": [
+        "custom/recorder",
+        "idle_inhibitor",
+        // "custom/screenshot",
+        // "custom/krita",
+        // "custom/browser",
+        // "custom/files",
+        // "custom/terminal",
+        "custom/keyboard",
+        "sway/workspaces",
+        "sway/mode",
+        "sway/window"
+    ],
+    //    "modules-center": [
+    //        "sway/window"
+    //    ],
+    "modules-right": [
+        "cpu",
+        "temperature",
+        "memory",
+        // "custom/toolbar/undo",
+        // "custom/toolbar/redo",
+        // "network",
+        "backlight",
+        "pulseaudio",
+        "clock",
+        "tray",
+        "battery"
+        // "custom/num_lock",
+        // "custom/caps_lock",
+        // "custom/scroll_lock"
+        // "custom/togglesticky"
+        // "custom/power"
+        // "custom/exit"
+    ],
+}

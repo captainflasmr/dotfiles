@@ -1,0 +1,295 @@
+{
+    "sway/workspaces": {
+        "disable-scroll": true,
+        "all-outputs": true,
+        // "format": "{name} {icon}",
+        "format": "{name}",
+        "format-icons": {
+            "1": "😃",
+            "2": "🐱",
+            "3": "😠",
+            "4": "🤓",
+            "urgent": "",
+            "default": "😖"
+        }
+    },
+
+    "custom/spacer": {
+        "format": " ",
+        "min-length": 1,
+        "max-length": 1
+    },
+
+    "custom/emacs": {
+        // "format": "ε",
+        // "format": "",
+        "format": "✏️",
+        "on-click": "emacs",
+        "min-length": 2,
+        "max-length": 2,
+        "tooltip": false
+    },
+
+    "custom/krita": {
+        "format": "🎨",
+        "on-click": "krita",
+        "min-length": 2,
+        "max-length": 2,
+        "tooltip": false
+    },
+
+    "custom/browser": {
+        "format": "🌎",
+        // "format": "🌐",
+        // "format": "",
+        // "on-click": "flatpak run com.microsoft.Edge",
+        "on-click": "firefox",
+        "min-length": 2,
+        "max-length": 2,
+        "tooltip": false
+    },
+
+    "custom/files": {
+        "format": "🗂️",
+        // "format": "",
+        "on-click": "thunar ~/DCIM/Camera",
+        "min-length": 2,
+        "max-length": 2,
+        "tooltip": false
+    },
+
+    "custom/terminal": {
+        // "format": "◼️",
+        "format": "💻",
+        "on-click": "gnome-terminal",
+        "min-length": 2,
+        "max-length": 2,
+        "tooltip": false
+    },
+
+    "custom/toolbar/undo": {
+        "format": "",
+        "on-click": "exec ydotool key 29:1 44:1 29:0 44:0",
+        "tooltip": false,
+        "min-length": 2,
+        "max-length": 2
+    },
+
+    "custom/toolbar/redo": {
+        "format": "",
+        "on-click": "exec ydotool key 29:1 21:1 29:0 21:0",
+        "tooltip": false,
+        "min-length": 2,
+        "max-length": 2
+    },
+
+    "custom/appmenu": {
+        "format": "🗄️",
+        "on-click": "rofi -show drun -l 10",
+        "tooltip": false
+    },
+
+    "custom/exit": {
+        "format": "⭕",
+        "on-click": "powermenu.sh",
+        "tooltip": false
+    },
+
+    "custom/power": {
+        "format":"⏏️",
+        "on-click": "nwg-bar",
+        "tooltip": false,
+        "min-length": 1,
+        "max-length": 3,
+    },
+
+    "custom/launcher": {
+    	  "format":"🚀️",
+    	  "on-click": "exec nwg-drawer -c 7 -is 70 -spacing 23",
+    	  "tooltip": false,
+        "min-length": 2,
+        "max-length": 4
+    },
+
+    "tray": {
+        "icon-size": 20,
+        "spacing": 10,
+        "min-length": 1,
+        "max-length": 6
+    },
+
+    "clock": {
+        // "timezone": "America/New_York",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+        "format": "{:%Y-%m-%d %H:%M}",
+        "format-alt": "{:%H:%M}",
+        "min-length": 1,
+        "max-length": 18,
+    },
+
+    "cpu": {
+        "format": "{usage}%",
+        "tooltip": false,
+        "interval": 1,
+        "min-length": 1,
+        "max-length": 6,
+    },
+
+    "memory": {
+        "format": "{used:0.1f}G",
+        "interval": 2,
+        "min-length": 1,
+        "max-length": 10,
+    },
+
+    "temperature": {
+        // "thermal-zone": 2,
+        //"hwmon-path": "/sys/class/hwmon/hwmon6/temp1_input",
+        "critical-threshold": 90,
+        // "format-critical": "{temperatureC}°C {icon}",
+        // "format": "{temperatureC}°C {icon}",
+        "format": "{icon} {temperatureC}",
+        // "format-icons": ["❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "❄", "⛅", "⛅", "⛅", "🌞", "🌞", "🌞", "🔥"],
+        "format-icons": ["❄️", "❄️", "❄️", "❄️", "❄️", "❄️", "❄️", "❄️", "❄️", "❄️", "❄️", "❄️", "❄️", "⛅", "⛅", "⛅", "🌞", "🌞", "🌞", "🔥"],
+        "min-length": 4,
+        "max-length": 10,
+        "interval" : 4
+    },
+
+    "custom/keyboard": {
+	     "format": "🎹",
+        "min-length": 1,
+        "max-length": 15,
+	     "interval": 10,
+	     "on-click": "toggle_wlr_keyboard.sh",
+    },
+
+    "battery": {
+        "interval": 1,
+        "states": {
+            "good": 95,
+            "warning": 12,
+            "critical": 6
+        },
+        "format-icons": {
+            "charging": ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+            "default": ["", "", "", "", "", "", "", "", "", ""],
+        },
+        "format": "{icon} {capacity}",
+        "format-charging": "{capacity} 🔌",
+        "format-plugged": "{capacity} 🔌",
+        "format-alt": "{time} {icon} ",
+        "format-full": "",
+        "min-length": 3,
+        "max-length": 30,
+        // "align": 2,
+    },
+
+    "pulseaudio": {
+        "scroll-step": 0.2,
+        "format": "{icon} {volume}",
+        "format-muted": "🔇 {format_source}",
+        "format-source": "% {volume}",
+        "format-source-muted": "",
+        "format-icons": {
+            "headphone": "",
+            "hands-free": "",
+            "headset": "",
+            "phone": "",
+            "portable": "",
+            "car": "",
+            "default": ["🔊"]
+        },
+        "on-click": "pavucontrol",
+        "min-length": 1,
+        "max-length": 6
+    },
+
+    "user": {
+        "format": "{user}",
+        "interval": 60,
+        "height": 30,
+        "width": 30,
+        "icon": false,
+    },
+
+    "backlight": {
+        "scroll-step": 8,
+        "format": "{icon} {percent}",
+        "format-icons": ["☀️"],
+        "min-length": 1,
+        "max-length": 6
+    },
+
+    "sway/window": {
+        "min-length": 1,
+        "max-length": 50,
+    },
+
+    "hyprland/window": {
+        "min-length": 1,
+        "max-length": 50,
+    },
+
+    "network": {
+        "format-wifi": " {essid}",
+        "format-disconnected": " Disconnected",
+        "format-disabled": " Disabled",
+        "interval": 5,
+        "min-length": 1,
+        "max-length": 6
+    },
+
+    "idle_inhibitor": {
+	     "format": "{icon}",
+	     "format-icons": {
+		      "activated": "👀",
+		      "deactivated": "🌜"
+	     },
+        "min-length": 2,
+        "max-length": 4,
+	     "timeout": 6000.0,
+    },
+
+    "custom/recorder": {
+        // "format": " ",
+        "on-click": "screen-record.sh",
+        "return-type": "json",
+        "interval": 1,
+        "exec": "screen-record-check-status.sh",
+        "min-length": 1,
+        "max-length": 6,
+    },
+
+    "custom/screenshot": {
+        // "format": "🎬",
+        "format": "📸",
+        "on-click": "screenshot_wayland.sh",
+        "min-length": 2,
+        "max-length": 2,
+        "tooltip": false
+    },
+
+    "custom/caps_lock": {
+        "exec": "led-monitor.sh --caps",
+        "interval": 1,
+        "return-type": "json"
+    },
+    "custom/num_lock": {
+        "exec": "led-monitor.sh --num",
+        "interval": 1,
+        "return-type": "json"
+    },
+    "custom/scroll_lock": {
+        "exec": "led-monitor.sh --scroll",
+        "interval": 1,
+        "return-type": "json"
+    },
+
+    "custom/togglesticky": {
+        "exec": "keymap-monitor.sh",
+        "interval": 1,
+        "return-type": "json",
+        "on-click": "keymap-toggle.sh",
+    }
+}
