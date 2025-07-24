@@ -7,6 +7,9 @@ set $down j
 set $up k
 set $right l
 
+bindsym $mod+z exec emacsclient --eval '(thanos/type)'
+for_window [app_id="emacs" title="emacs-float"] floating enable
+
 #
 # -> startup
 #
@@ -31,8 +34,8 @@ bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
 bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +2%
 bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -2%
 
-bindsym XF86MonBrightnessUp exec brightnessctl set +2%
-bindsym XF86MonBrightnessDown exec brightnessctl set 2%-
+bindsym XF86MonBrightnessUp exec brightnessctl set +1%
+bindsym XF86MonBrightnessDown exec brightnessctl set 1%-
 
 #
 # -> Key bindings
@@ -49,6 +52,7 @@ bindsym $mod+p exec wl-color-picker
 bindsym $mod+q kill
 bindsym $mod+return exec $term
 bindsym $mod+shift+s exec screenshot.sh
+bindsym $mod+shift+t exec screenshot_wayland_text.sh
 bindsym $mod+slash exec rofi -matching regex -show "drun"
 bindsym $mod+d exec bemenu-run \
     -f "Monospace 16" \
