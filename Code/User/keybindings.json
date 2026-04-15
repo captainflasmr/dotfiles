@@ -182,12 +182,17 @@
         "when": "listFocus"
     },
     {
+        "key": "ctrl+i",
+        "command": "list.select",
+        "when": "listFocus"
+    },
+    {
         "key": "alt+z",
         "command": "editor.action.toggleWordWrap",
         "when": "editorTextFocus"
     },
     {
-        "key": "ctrl+x ;",
+        "key": "ctrl+x '",
         "command": "workbench.action.toggleAuxiliaryBar"
     },
     {
