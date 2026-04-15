@@ -1,11 +1,6 @@
 // Place your key bindings in this file to override the defaults
 [
     {
-        "key": "ctrl+`",
-        "command": "workbench.action.terminal.toggleTerminal",
-        "when": "terminal.active"
-    },
-    {
         "key": "alt+shift+/",
         "command": "editor.action.goToReferences",
         "when": "editorHasReferenceProvider && editorTextFocus && !inReferenceSearchEditor && !isInEmbeddedEditor"
@@ -29,7 +24,12 @@
     {
         "key": "alt+;",
         "command": "workbench.action.navigateEditorGroups",
-        "when": "!terminalFocus"
+        "when": "multipleEditorGroups && !terminalFocus"
+    },
+    {
+        "key": "alt+;",
+        "command": "workbench.action.splitEditorRight",
+        "when": "!multipleEditorGroups && !terminalFocus"
     },
     {
         "key": "p",
@@ -84,23 +84,8 @@
         "when": "editorHasDocumentFormattingProvider && editorTextFocus && !editorReadonly && !inCompositeEditor"
     },
     {
-        "key": "alt+enter k",
-        "command": "workbench.action.debug.disconnect",
-        "when": "focusedSessionIsAttach && inDebugMode"
-    },
-    {
         "key": "ctrl+z",
         "command": "workbench.action.files.save"
-    },
-    {
-        "key": "alt+enter r",
-        "command": "workbench.action.debug.start",
-        "when": "debuggersAvailable && debugState == 'inactive'"
-    },
-    {
-        "key": "alt+enter b",
-        "command": "workbench.action.tasks.build",
-        "when": "taskCommandsRegistered"
     },
     {
         "key": "alt+w",
@@ -149,15 +134,66 @@
         "command": "workbench.action.nextEditor"
     },
     {
-        "key": "ctrl+x right",
-        "command": "-workbench.action.nextEditor"
-    },
-    {
         "key": "alt+u",
         "command": "workbench.action.previousEditor"
     },
     {
-        "key": "ctrl+x left",
-        "command": "-workbench.action.previousEditor"
+        "key": "alt+i",
+        "command": "workbench.action.nextPanelView",
+        "when": "activePanel != ''"
+    },
+    {
+        "key": "alt+u",
+        "command": "workbench.action.previousPanelView",
+        "when": "activePanel != ''"
+    },
+    {
+        "key": "alt+m",
+        "command": "workbench.action.selectTheme"
+    },
+    {
+        "key": "alt+shift+m",
+        "command": "workbench.actions.view.problems",
+        "when": "workbench.panel.markers.view.active"
+    },
+    {
+        "key": "alt+shift+l",
+        "command": "workbench.action.decreaseViewSize"
+    },
+    {
+        "key": "alt+shift+h",
+        "command": "workbench.action.increaseViewSize"
+    },
+    {
+        "key": "alt+shift+k",
+        "command": "workbench.action.increaseViewSize"
+    },
+    {
+        "key": "alt+shift+j",
+        "command": "workbench.action.decreaseViewSize"
+    },
+    {
+        "key": "ctrl+q",
+        "command": "workbench.action.toggleMenuBar"
+    },
+    {
+        "key": "ctrl+m",
+        "command": "list.select",
+        "when": "listFocus"
+    },
+    {
+        "key": "alt+z",
+        "command": "editor.action.toggleWordWrap",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+x ;",
+        "command": "workbench.action.toggleAuxiliaryBar"
+    },
+    {
+        "key": "ctrl+alt+b",
+        "command": "-workbench.action.toggleAuxiliaryBar"
     }
 ]
+
+ 
