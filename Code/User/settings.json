@@ -61,5 +61,15 @@
                 "emacs-mcx.moveEndOfLine"
             ]
         }
-    ]
+    ],
+    "editor.fontSize": 15,
+    "window.enableMenuBarMnemonics": false,
+    "editor.quickSuggestions": {
+        "other": "off",
+        "comments": "off",
+        "strings": "off"
+    },
+    "editor.suggestOnTriggerCharacters": false,
+    "editor.wordBasedSuggestions": "off",
+    "editor.parameterHints.enabled": false
 }

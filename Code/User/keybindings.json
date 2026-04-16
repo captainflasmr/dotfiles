@@ -313,6 +313,35 @@
         "key": "alt+[",
         "command": "workbench.action.terminal.toggleTerminal"
     },
+    // Manual completion — match Emacs C-c TAB and C-M-i
+    {
+        "key": "ctrl+c tab",
+        "command": "editor.action.triggerSuggest",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "ctrl+alt+i",
+        "command": "editor.action.triggerSuggest",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    // Bookmarks — match Emacs M-o (bookmark-jump) and C-x r {m,b,l}
+    {
+        "key": "alt+o",
+        "command": "bookmarks.listFromAllFiles"
+    },
+    {
+        "key": "ctrl+x r m",
+        "command": "bookmarks.toggle",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+x r b",
+        "command": "bookmarks.listFromAllFiles"
+    },
+    {
+        "key": "ctrl+x r l",
+        "command": "bookmarks.list"
+    },
     // Accept selection in command palette / quick open
     {
         "key": "ctrl+j",
