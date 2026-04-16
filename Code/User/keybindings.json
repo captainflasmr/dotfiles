@@ -70,7 +70,8 @@
     },
     {
         "key": "ctrl+x d",
-        "command": "extension.dired.open",
+        "command": "extension.multiCommand.execute",
+        "args": { "command": "multiCommand.diredOpen" },
         "when": "editorTextFocus && !inDebugRepl"
     },
     {
@@ -253,12 +254,14 @@
     },
     {
         "key": "alt+e",
-        "command": "extension.dired.open",
+        "command": "extension.multiCommand.execute",
+        "args": { "command": "multiCommand.diredOpen" },
         "when": "editorTextFocus && !editorHasSelection"
     },
     {
         "key": "alt+e",
-        "command": "extension.dired.goUpDir",
+        "command": "extension.multiCommand.execute",
+        "args": { "command": "multiCommand.diredGoUp" },
         "when": "dired.open && !findWidgetVisible && !inQuickOpen"
     },
     {

@@ -35,5 +35,31 @@
     },
     "dired.ask_directory": false,
     "explorer.excludeGitIgnore": true,
-    "editor.inlineSuggest.showToolbar": "never"
+    "editor.inlineSuggest.showToolbar": "never",
+    "multiCommand.commands": [
+        {
+            "command": "multiCommand.diredOpen",
+            "interval": 50,
+            "sequence": [
+                "extension.dired.open",
+                "cursorTop",
+                "emacs-mcx.nextLine",
+                "emacs-mcx.nextLine",
+                "emacs-mcx.nextLine",
+                "emacs-mcx.moveEndOfLine"
+            ]
+        },
+        {
+            "command": "multiCommand.diredGoUp",
+            "interval": 50,
+            "sequence": [
+                "extension.dired.goUpDir",
+                "cursorTop",
+                "emacs-mcx.nextLine",
+                "emacs-mcx.nextLine",
+                "emacs-mcx.nextLine",
+                "emacs-mcx.moveEndOfLine"
+            ]
+        }
+    ]
 }
