@@ -52,7 +52,7 @@
             ]
         },
         "when": "dired.open && !findWidgetVisible && !inQuickOpen"
-    },,
+    },
     {
         "key": "+",
         "command": "extension.dired.createDir",
@@ -90,7 +90,6 @@
     {
         "key": "alt+j",
         "command": "cursorMove",
-        // "command": "editorScroll",
         "args": {
             "to": "down",
             "by": "line",
@@ -101,7 +100,6 @@
     {
         "key": "alt+k",
         "command": "cursorMove",
-        // "command": "editorScroll",
         "args": {
             "to": "up",
             "by": "line",
@@ -140,7 +138,7 @@
     {
         "key": "ctrl+w l",
         "command": "workbench.action.nextEditor"
-    }
+    },
     {
         "key": "alt+i",
         "command": "workbench.action.nextEditor"
@@ -159,21 +157,22 @@
         "command": "workbench.actions.view.problems",
         "when": "workbench.panel.markers.view.active"
     },
+    // Window resize — match Emacs M-{H,J,K,L}: h=narrower, l=wider, j=shorter, k=taller
     {
-        "key": "alt+shift+l",
+        "key": "alt+shift+h",
         "command": "workbench.action.decreaseViewSize"
     },
     {
-        "key": "alt+shift+h",
-        "command": "workbench.action.increaseViewSize"
-    },
-    {
-        "key": "alt+shift+k",
+        "key": "alt+shift+l",
         "command": "workbench.action.increaseViewSize"
     },
     {
         "key": "alt+shift+j",
         "command": "workbench.action.decreaseViewSize"
+    },
+    {
+        "key": "alt+shift+k",
+        "command": "workbench.action.increaseViewSize"
     },
     {
         "key": "ctrl+q",
@@ -203,25 +202,55 @@
         "command": "-workbench.action.toggleAuxiliaryBar"
     },
     {
-		"key": "alt+0",
-		"command": "workbench.action.closeEditorsInGroup",
-		"when": "!terminalFocus && !auxiliaryBarFocus"
-	},
+        "key": "alt+0",
+        "command": "workbench.action.closeEditorsInGroup",
+        "when": "!terminalFocus && !auxiliaryBarFocus"
+    },
+    // Window splits — match Emacs M-1/2/3
     {
-		"key": "ctrl+w s",
-		"command": "workbench.action.splitEditorDown",
-		"when": "!terminalFocus"
-	},
+        "key": "alt+1",
+        "command": "workbench.action.closeEditorsInOtherGroups"
+    },
     {
-		"key": "ctrl+w v",
-		"command": "workbench.action.splitEditorRight",
-		"when": "!terminalFocus"
-	},
+        "key": "alt+2",
+        "command": "workbench.action.splitEditorDown"
+    },
     {
-		"key": "ctrl+w o",
-		"command": "workbench.action.closeEditorsInOtherGroups",
-		"when": "!terminalFocus"
-	}
+        "key": "alt+3",
+        "command": "workbench.action.splitEditorRight"
+    },
+    {
+        "key": "ctrl+w s",
+        "command": "workbench.action.splitEditorDown",
+        "when": "!terminalFocus"
+    },
+    {
+        "key": "ctrl+w v",
+        "command": "workbench.action.splitEditorRight",
+        "when": "!terminalFocus"
+    },
+    {
+        "key": "ctrl+w o",
+        "command": "workbench.action.closeEditorsInOtherGroups",
+        "when": "!terminalFocus"
+    },
+    // Windmove between editor groups — match Emacs C-M-{h,j,k,l}
+    {
+        "key": "ctrl+alt+h",
+        "command": "workbench.action.focusLeftGroup"
+    },
+    {
+        "key": "ctrl+alt+l",
+        "command": "workbench.action.focusRightGroup"
+    },
+    {
+        "key": "ctrl+alt+j",
+        "command": "workbench.action.focusBelowGroup"
+    },
+    {
+        "key": "ctrl+alt+k",
+        "command": "workbench.action.focusAboveGroup"
+    },
     {
         "key": "alt+e",
         "command": "extension.dired.open",
@@ -231,17 +260,48 @@
         "key": "alt+e",
         "command": "extension.dired.goUpDir",
         "when": "dired.open && !findWidgetVisible && !inQuickOpen"
-    }
-    {
-        "key": "ctrl-c j",
-        "command": "workbench.action.navigateBack",
     },
     {
-        "key": "ctrl-c k",
-        "command": "workbench.action.navigateForward",
+        "key": "ctrl+c j",
+        "command": "workbench.action.navigateBack"
+    },
+    {
+        "key": "ctrl+c k",
+        "command": "workbench.action.navigateForward"
     },
     {
         "key": "ctrl+x m",
         "command": "workbench.view.explorer"
+    },
+    // Comment toggle — match Emacs C-;
+    {
+        "key": "ctrl+;",
+        "command": "editor.action.commentLine",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    // Beginning/end of buffer — match Emacs C-x [ / C-x ]
+    {
+        "key": "ctrl+x [",
+        "command": "cursorTop",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+x ]",
+        "command": "cursorBottom",
+        "when": "editorTextFocus"
+    },
+    // Find file / grep — match Emacs C-c f / C-c g
+    {
+        "key": "ctrl+c f",
+        "command": "workbench.action.quickOpen"
+    },
+    {
+        "key": "ctrl+c g",
+        "command": "workbench.action.findInFiles"
+    },
+    // Shell — match Emacs M-[
+    {
+        "key": "alt+[",
+        "command": "workbench.action.terminal.toggleTerminal"
     }
 ]

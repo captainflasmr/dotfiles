@@ -23,7 +23,7 @@
     "explorer.decorations.badges": false,
     "explorer.decorations.colors": false,
     "workbench.tree.indent": 16,
-    "workbench.colorTheme": "Dark Modern",
+    "workbench.colorTheme": "Dracula Refined",
     "window.menuBarVisibility": "compact",
     "workbench.iconTheme": "vs-minimal",
     "workbench.tree.renderIndentGuides": "always",
@@ -35,5 +35,5 @@
     },
     "dired.ask_directory": false,
     "explorer.excludeGitIgnore": true,
-    "editor.fontSize": 13
+    "editor.inlineSuggest.showToolbar": "never"
 }
