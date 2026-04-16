@@ -271,7 +271,13 @@
     },
     {
         "key": "ctrl+x m",
-        "command": "workbench.view.explorer"
+        "command": "workbench.action.toggleSidebarVisibility",
+        "when": "explorerViewletVisible"
+    },
+    {
+        "key": "ctrl+x m",
+        "command": "workbench.view.explorer",
+        "when": "!explorerViewletVisible"
     },
     // Comment toggle — match Emacs C-;
     {
@@ -303,5 +309,11 @@
     {
         "key": "alt+[",
         "command": "workbench.action.terminal.toggleTerminal"
+    },
+    // Accept selection in command palette / quick open
+    {
+        "key": "ctrl+j",
+        "command": "workbench.action.acceptSelectedQuickOpenItem",
+        "when": "inQuickOpen"
     }
 ]
