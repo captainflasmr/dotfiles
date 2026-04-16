@@ -52,12 +52,7 @@
             ]
         },
         "when": "dired.open && !findWidgetVisible && !inQuickOpen"
-    },
-    {
-        "key": "alt+e",
-        "command": "extension.dired.goUpDir",
-        "when": "dired.open && !findWidgetVisible && !inQuickOpen"
-    },
+    },,
     {
         "key": "+",
         "command": "extension.dired.createDir",
@@ -130,21 +125,29 @@
         "when": "editorTextFocus"
     },
     {
-        "key": "alt+i",
-        "command": "workbench.action.nextEditor"
+        "key": "ctrl+w h",
+        "command": "workbench.action.previousEditor"
     },
     {
         "key": "alt+u",
         "command": "workbench.action.previousEditor"
     },
     {
-        "key": "alt+i",
-        "command": "workbench.action.nextPanelView",
+        "key": "alt+u",
+        "command": "workbench.action.previousPanelView",
         "when": "activePanel != ''"
     },
     {
-        "key": "alt+u",
-        "command": "workbench.action.previousPanelView",
+        "key": "ctrl+w l",
+        "command": "workbench.action.nextEditor"
+    }
+    {
+        "key": "alt+i",
+        "command": "workbench.action.nextEditor"
+    },
+    {
+        "key": "alt+i",
+        "command": "workbench.action.nextPanelView",
         "when": "activePanel != ''"
     },
     {
@@ -198,7 +201,47 @@
     {
         "key": "ctrl+alt+b",
         "command": "-workbench.action.toggleAuxiliaryBar"
+    },
+    {
+		"key": "alt+0",
+		"command": "workbench.action.closeEditorsInGroup",
+		"when": "!terminalFocus && !auxiliaryBarFocus"
+	},
+    {
+		"key": "ctrl+w s",
+		"command": "workbench.action.splitEditorDown",
+		"when": "!terminalFocus"
+	},
+    {
+		"key": "ctrl+w v",
+		"command": "workbench.action.splitEditorRight",
+		"when": "!terminalFocus"
+	},
+    {
+		"key": "ctrl+w o",
+		"command": "workbench.action.closeEditorsInOtherGroups",
+		"when": "!terminalFocus"
+	}
+    {
+        "key": "alt+e",
+        "command": "extension.dired.open",
+        "when": "editorTextFocus && !editorHasSelection"
+    },
+    {
+        "key": "alt+e",
+        "command": "extension.dired.goUpDir",
+        "when": "dired.open && !findWidgetVisible && !inQuickOpen"
+    }
+    {
+        "key": "ctrl-c j",
+        "command": "workbench.action.navigateBack",
+    },
+    {
+        "key": "ctrl-c k",
+        "command": "workbench.action.navigateForward",
+    },
+    {
+        "key": "ctrl+x m",
+        "command": "workbench.view.explorer"
     }
 ]
-
- 

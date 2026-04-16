@@ -11,11 +11,10 @@
     "java.trace.server": "verbose",
     "task.verboseLogging": true,
     // "editor.fontFamily": "Fira Code, DejaVu Sans Mono, monospace",
-    "editor.fontFamily": "Nimbus Mono B",
+    "editor.fontFamily": "Nimbus Mono",
     "editor.fontWeight": "400",
     "editor.fontLigatures": true,
     "editor.inlayHints.enabled": "off",
-    "editor.find.seedSearchStringFromSelection": "never",
     "workbench.browser.showInTitleBar": false,
     "workbench.navigationControl.enabled": false,
     "workbench.activityBar.location": "top",
@@ -23,10 +22,18 @@
     "workbench.activityBar.compact": true,
     "explorer.decorations.badges": false,
     "explorer.decorations.colors": false,
-    "explorer.excludeGitIgnore": true,
     "workbench.tree.indent": 16,
-    "workbench.colorTheme": "Evondev Dracula Author High Contrast",
+    "workbench.colorTheme": "Dark Modern",
     "window.menuBarVisibility": "compact",
-    "workbench.iconTheme": null,
-    "workbench.tree.renderIndentGuides": "always"
+    "workbench.iconTheme": "vs-minimal",
+    "workbench.tree.renderIndentGuides": "always",
+    "workbench.editor.highlightModifiedTabs": true,
+    // "dired.ask_directory": false,
+    "workbench.colorCustomizations": {
+        "tab.activeBorderTop": "#ffffff"
+        // "tab.activeBorder": "#ffffff"
+    },
+    "dired.ask_directory": false,
+    "explorer.excludeGitIgnore": true,
+    "editor.fontSize": 13
 }
