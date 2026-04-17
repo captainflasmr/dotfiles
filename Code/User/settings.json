@@ -62,7 +62,6 @@
             ]
         }
     ],
-    "editor.fontSize": 15,
     "window.enableMenuBarMnemonics": false,
     "editor.quickSuggestions": {
         "other": "off",

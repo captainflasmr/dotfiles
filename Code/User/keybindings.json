@@ -160,11 +160,11 @@
     },
     // Window resize — match Emacs M-{H,J,K,L}: h=narrower, l=wider, j=shorter, k=taller
     {
-        "key": "alt+shift+h",
+        "key": "alt+shift+l",
         "command": "workbench.action.decreaseViewSize"
     },
     {
-        "key": "alt+shift+l",
+        "key": "alt+shift+h",
         "command": "workbench.action.increaseViewSize"
     },
     {
