@@ -2,6 +2,12 @@
 #
 # Read `man 5 sway` for a complete reference.
 
+# XDG Desktop Portal configuration for Wayland
+# Make sure you have xdg-desktop-portal and xdg-desktop-portal-wlr installed!
+exec_always --no-startup-id /usr/lib/xdg-desktop-portal-wlr -r
+exec_always --no-startup-id /usr/lib/xdg-desktop-portal
+exec_always export XDG_CURRENT_DESKTOP=sway
+
 # user config directory
 include $HOME/.config/sway/config.d/*
 
