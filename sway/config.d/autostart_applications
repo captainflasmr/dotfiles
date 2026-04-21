@@ -8,3 +8,6 @@ exec env RUST_BACKTRACE=1 RUST_LOG=swayr=debug swayrd > /tmp/swayrd.log 2>&1
 
 # Start foot server
 exec --no-startup-id foot --server
+
+# Blue light filter (auto-location via geoclue2)
+exec gammastep -l geoclue2 -t 6500:3500

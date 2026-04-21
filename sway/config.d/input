@@ -33,7 +33,7 @@ input type:keyboard {
    events enabled
    xkb_layout gb
    repeat_delay 350
-   repeat_rate 60
+   repeat_rate 40
    xkb_file $HOME/.emacs.d/keymap_with_sticky_modifiers.xkb
    # xkb_options "compose:caps"
    # xkb_options ctrl:nocaps

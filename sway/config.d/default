@@ -9,6 +9,9 @@ set $right l
 
 bindsym $mod+z exec emacsclient --eval '(thanos/type)'
 for_window [app_id="emacs" title="emacs-float"] floating enable
+# This forces everything to be opaque regardless of app settings
+for_window [app_id="thunar"] opacity 1.0
+for_window [app_id="spicy"] shortcuts_inhibitor disable
 
 #
 # -> startup
@@ -27,21 +30,37 @@ exec swayidle -w \
 ## Lock Screen
 bindsym Mod4+f1 exec ~/.config/sway/scripts/lockman.sh
 
+# Toggle GTK theme (light/dark) via darkman
+bindsym Mod4+f2 exec darkman toggle
+
 #
 # -> keys
 #
+# Volume controls (function keys)
 bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
 bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +2%
 bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -2%
 
+# Brightness controls (function keys)
 bindsym XF86MonBrightnessUp exec brightnessctl set +1%
 bindsym XF86MonBrightnessDown exec brightnessctl set 1%-
+
+# Volume controls (Super + function keys)
+bindsym $mod+XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym $mod+XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +2%
+bindsym $mod+XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -2%
+
+# Brightness controls (Super + function keys)
+bindsym $mod+XF86MonBrightnessUp exec brightnessctl set +1%
+bindsym $mod+XF86MonBrightnessDown exec brightnessctl set 1%-
 
 #
 # -> Key bindings
 #
 bindsym $mod+Shift+space exec switch_waybar.sh
 bindsym $mod+Tab exec swayr switch-to-urgent-or-lru-window
+bindsym Alt+Tab exec swayr switch-to-urgent-or-lru-window
+bindsym $mod+semicolon exec swayr switch-to-urgent-or-lru-window
 bindsym $mod+b exec firefox
 bindsym $mod+plus exec wallpaper_change.sh
 bindsym $mod+c exec screen-record.sh
@@ -62,17 +81,23 @@ bindsym $mod+d exec bemenu-run \
 bindsym $mod+space exec toggle_waybar.sh
 bindsym $mod+t exec $term
 bindsym $mod+w exec swayr switch-window
-bindsym Mod1+4 kill
+bindsym $mod+x exec emacsclient -c -a emacs
+# bindsym Mod1+4 kill
 bindsym control+Mod1+t exec $term
 bindsym $mod+period exec rofimoji
 # bindsym $mod+o exec swayr next-tiled-window current-workspace
 # bindsym $mod+Shift+c exec swayr execute-swayr-command
 # bindsym $mod+v exec swayr move-focused-to-workspace
+bindsym Mod1+F2 exec bemenu-run \
+    "Monospace 16" \
+    --nb "#282828" --nf "#ebdbb2" \
+    --tb "#458588" --tf "#ffffff" \
+    --hb "#b16286" --hf "#ffffff"
 
 #
 # Moving around:
 #
-# Change window focus
+# Change window focusp
 bindsym $mod+bracketleft focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
@@ -97,6 +122,9 @@ bindsym $mod+Shift+$right move right
 #
 bindsym $mod+u workspace prev
 bindsym $mod+i workspace next
+
+# bindsym $mod+u exec swayr prev-window all-workspaces
+# bindsym $mod+i exec swayr next-window all-workspaces
 
 bindsym $mod+1 workspace number 1
 bindsym $mod+2 workspace number 2
