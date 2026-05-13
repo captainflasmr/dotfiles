@@ -60,7 +60,7 @@ bindsym $mod+XF86MonBrightnessDown exec brightnessctl set 1%-
 bindsym $mod+Shift+space exec switch_waybar.sh
 bindsym $mod+Tab exec swayr switch-to-urgent-or-lru-window
 bindsym Alt+Tab exec swayr switch-to-urgent-or-lru-window
-bindsym $mod+semicolon exec swayr switch-to-urgent-or-lru-window
+# bindsym $mod+semicolon exec swayr switch-to-urgent-or-lru-window
 bindsym $mod+b exec firefox
 bindsym $mod+plus exec wallpaper_change.sh
 bindsym $mod+c exec screen-record.sh
