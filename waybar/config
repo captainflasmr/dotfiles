@@ -69,7 +69,8 @@
         "wireplumber",
         "battery",
         "group/settings",
-        "clock",
+        "clock#date",
+        "clock#time",
         "group/power",
     ],
 
@@ -271,8 +272,8 @@
         "spacing":10
     },
 
-    "clock": {
-        "format": "󰅐 {:%OI:%M %p}",
+    "clock#date": {
+        "format": "{:%b %d}",
         "on-click": "footclient -T waybar_calcurse -e calcurse",
         // Uncomment to enable right-click calcurse-caldav sync (you need to set it up in calcurse config)
         //"on-click-right": "notify-send \"Running calcurse-caldav...\" \"$(calcurse-caldav)\"",
@@ -291,6 +292,10 @@
             "on-scroll-up": "shift_up",
             "on-scroll-down": "shift_down"
         },
+    },
+    "clock#time": {
+        "format": "{:%I:%M %p}",
+        "tooltip": false,
     },
 
     "group/power": {

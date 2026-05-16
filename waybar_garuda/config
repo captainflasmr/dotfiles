@@ -3,12 +3,12 @@
     "position": "top",
     // "height": 10,
     // "output": "DP-1",
-    // "width": 1920,
+    // "width": 60,
     "spacing": 0,
-    "margin-top": 4,
-    "margin-bottom": -10,
-    "margin-right": 16,
-    "margin-left": 16,
+    "margin-top": 3,
+    "margin-bottom": -4,
+    "margin-right": 4,
+    "margin-left": 4,
     "include": ["~/.config/waybar_garuda/modules.json"],
     "modules-left": [
         // "custom/updates",
@@ -64,7 +64,8 @@
         "memory",
         "backlight",
         "pulseaudio",
-        "clock",
+        "clock#date",
+        "clock#time",
         "tray",
         "battery"
         // "custom/num_lock",
@@ -161,9 +162,9 @@
         "format-charging": "{icon} {capacity}",
         "format-plugged": "{icon} {capacity}"
     },
-    "clock": {
+    "clock#date": {
         "on-click": "footclient -T waybar_calcurse -e calcurse",
-        "format": "{:%Y-%m-%d %H:%M}",
+        "format": "{:%b %d}",
         "tooltip-format": " {:%A %m/%d}\n\n<tt><small>{calendar}</small></tt>",
         "calendar": {
             "on-scroll": 1,
@@ -179,6 +180,10 @@
             "on-scroll-up": "shift_up",
             "on-scroll-down": "shift_down"
         },
+    },
+    "clock#time": {
+        "format": "{:%H:%M}",
+        "tooltip": false,
     },
     "tray": {
         "icon-size": 22

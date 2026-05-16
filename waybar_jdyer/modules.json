@@ -118,13 +118,13 @@
         "max-length": 6
     },
 
-    "clock": {
-        // "timezone": "America/New_York",
+    "clock#date": {
+        "format": "{:%b %d}",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-        "format": "{:%Y-%m-%d %H:%M}",
-        "format-alt": "{:%H:%M}",
-        "min-length": 1,
-        "max-length": 18,
+    },
+    "clock#time": {
+        "format": "{:%H:%M}",
+        "tooltip": false,
     },
 
     "cpu": {

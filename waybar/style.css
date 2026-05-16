@@ -56,10 +56,10 @@ nord15 #b48ead - (180,142,173)
     transition: background 0.3s;
 }
 .modules-left > widget:first-child > * {
-    margin-left: 15px;
+    margin-left: 3px;
 }
 .modules-right > widget:last-child > * {
-    margin-right: 15px;
+    margin-right: 3px;
 }
 tooltip label {
     font-family:JetBrainsMonoNerdFont;
@@ -98,7 +98,7 @@ tooltip label {
     background: rgba(129,161,193,0.4);
     border-radius: 4px;
     box-shadow: 0 0 10px rgba(0,0,0,0.8);
-    padding:.1rem 1rem;
+    padding:.1rem .3rem;
     margin: 1px 1px;
 }
 
@@ -140,7 +140,7 @@ tooltip label {
 
 #custom-launcher,
 #custom-power {
-    padding-right: 1.1rem;
+    padding-right: .3rem;
 }
 
 #workspaces:hover {

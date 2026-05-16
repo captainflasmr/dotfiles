@@ -2,7 +2,7 @@
 exec_always ~/.config/sway/scripts/import-gsettings
 
 # Set inner/outer gaps
-gaps inner 8
+gaps inner 5
 # gaps outer 20
 gaps top 10
 gaps bottom 0
@@ -10,7 +10,7 @@ gaps left 10
 gaps right 10
 
 # Hide titlebar on windows:
-default_border pixel 3
+default_border pixel 5
 
 # Default Font
 font pango:Noto Sans Regular 10

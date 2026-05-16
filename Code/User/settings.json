@@ -4,7 +4,6 @@
     "java.import.maven.offline.enabled": true,
     "editor.cursorStyle": "block",
     "terminal.integrated.fontSize": 15,
-    "editor.minimap.enabled": false,
     "chat.fontSize": 15,
     "debug.console.fontSize": 15,
     "scm.inputFontSize": 15,
@@ -23,8 +22,7 @@
     "explorer.decorations.badges": false,
     "explorer.decorations.colors": false,
     "workbench.tree.indent": 16,
-    "workbench.colorTheme": "Dracula Refined",
-    "window.menuBarVisibility": "compact",
+    "workbench.colorTheme": "Evondev Dracula High Contrast",
     "workbench.iconTheme": "vs-minimal",
     "workbench.tree.renderIndentGuides": "always",
     "workbench.editor.highlightModifiedTabs": true,
@@ -70,5 +68,6 @@
     },
     "editor.suggestOnTriggerCharacters": false,
     "editor.wordBasedSuggestions": "off",
-    "editor.parameterHints.enabled": false
+    "editor.parameterHints.enabled": false,
+    "window.commandCenter": false
 }

@@ -1,9 +1,9 @@
 {
     "layer": "top",
     "position": "top",
-    "margin-left": 12,
-    "margin-right": 12,
-    "margin-top": 4,
+    "margin-left": 6,
+    "margin-right": 6,
+    "margin-top": 2,
     "margin-bottom": -8,
     "height": 40,
     "modules-left": [
@@ -23,7 +23,8 @@
         "backlight",
         "wireplumber",
         "battery",
-        "clock",
+        "clock#date",
+        "clock#time",
         "tray"
     ],
     "sway/workspaces": {
@@ -32,6 +33,14 @@
             "default": "",
             "focused": ""
         }
+    },
+    "clock#date": {
+        "format": "{:%b %d}",
+        "tooltip": false,
+    },
+    "clock#time": {
+        "format": "{:%H:%M}",
+        "tooltip": false,
     },
     "custom/separator": {
         "format": "     ",

@@ -1,7 +1,9 @@
 *
 !.gitignore
+!alacritty/
 !emacs/
 !Code/User
+!sway/scripts/
 !darktable/
 !digikamrc
 !digikam_systemrc
