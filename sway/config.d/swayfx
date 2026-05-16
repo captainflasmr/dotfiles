@@ -1,7 +1,7 @@
 # SwayFX config options
 
 # Appearance
-corner_radius 20
+corner_radius 10
 blur enable
 blur_xray off
 blur_passes 8
