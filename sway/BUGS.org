@@ -8,9 +8,3 @@
 This document contains the current bugs/improvements, this is just for me mainly but does include any Issues reported.
 
 * Bugs/Improvements
-
-** DOING better inactive duller borders with pywal
-
-** TODO waybar colours with pywal
-
-** TODO toggle lockscreen timer on/off
