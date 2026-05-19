@@ -48,7 +48,7 @@ window#waybar {
 #cpu,
 #temperature,
 #memory,
-#idle_inhibitor,
+#custom-idle_inhibitor,
 #backlight,
 #pulseaudio,
 #battery,
@@ -145,8 +145,16 @@ window#waybar {
     color: #b48ead;
 }
 
-#idle_inhibitor {
+#custom-idle_inhibitor {
    color: #81a1c1;
+}
+
+#custom-idle_inhibitor.activated {
+   color: #a3be8c;
+}
+
+#custom-idle_inhibitor.deactivated {
+   color: #bf616a;
 }
 
 #backlight {

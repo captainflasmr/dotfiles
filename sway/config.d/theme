@@ -3,11 +3,11 @@ exec_always ~/.config/sway/scripts/import-gsettings
 
 # Set inner/outer gaps
 gaps inner 10
-# gaps outer 20
-gaps top 10
-gaps bottom 0
-gaps left 10
-gaps right 10
+gaps outer 10
+# gaps top 10
+# gaps bottom 0
+# gaps left 10
+# gaps right 10
 
 # Hide titlebar on windows:
 default_border pixel 3
@@ -24,6 +24,11 @@ for_window [shell="x_wayland"] title_format "%class - %title"
 
 ## Window decoration — colors from pywal (see ~/.cache/wal/sway)
 include ~/.cache/wal/sway
+
+## Override unfocused colours to always be dark grey (pywal keeps focused bright)
+# class                 border    backgr.   text      indicator child_border
+client.unfocused        #555555   #222222   #777777   #555555   #555555
+client.focused_inactive #666666   #2a2a2a   #888888   #666666   #666666
 
 #
 # Status Bar:

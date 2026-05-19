@@ -224,7 +224,7 @@
         },
         "modules": [
             "custom/settings",
-            "idle_inhibitor",
+            "custom/idle_inhibitor",
             "backlight",
             "bluetooth",
             "tray",
@@ -235,14 +235,13 @@
         "tooltip-format": "Settings"
     },
 
-    "idle_inhibitor": {
-        "format": "{icon}",
-        "format-icons": {
-            "activated": " ",
-            "deactivated": " "
-        },
-        "tooltip-format-activated": "Idle Inhibitor Activated",
-        "tooltip-format-deactivated": "Idle Inhibitor Deactivated"
+    "custom/idle_inhibitor": {
+        "exec": "~/.config/waybar/scripts/idle_status.sh",
+        "return-type": "json",
+        "format": "{}",
+        "signal": 1,
+        "on-click": "~/.config/sway/scripts/toggle_idle.sh",
+        "tooltip": true
     },
 
     "backlight": {

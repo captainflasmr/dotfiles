@@ -33,6 +33,9 @@ bindsym Mod4+f1 exec ~/.config/sway/scripts/lockman.sh
 # Toggle GTK theme (light/dark) via darkman
 bindsym Mod4+f2 exec darkman toggle
 
+# Toggle idle inhibitor (swayidle on/off)
+bindsym Mod4+f3 exec ~/.config/sway/scripts/toggle_idle.sh
+
 #
 # -> keys
 #
@@ -63,6 +66,7 @@ bindsym Alt+Tab exec swayr switch-to-urgent-or-lru-window
 # bindsym $mod+semicolon exec swayr switch-to-urgent-or-lru-window
 bindsym $mod+b exec firefox
 bindsym $mod+plus exec wallpaper_change.sh
+bindsym $mod+Shift+minus exec wallpaper_reject.sh
 bindsym $mod+c exec screen-record.sh
 bindsym $mod+e exec thunar ~/DCIM/Camera
 bindsym $mod+g floating toggle

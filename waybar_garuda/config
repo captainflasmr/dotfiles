@@ -1,19 +1,19 @@
 {
     "layer": "top",
-    "position": "bottom",
+    "position": "left",
     // "height": 10,
     // "output": "DP-1",
-    // "width": 60,
+    "width": 60,
     "spacing": 0,
-    "margin-top": 0,
-    "margin-bottom": 6,
+    "margin-top": 8,
+    "margin-bottom": 8,
     "margin-right": 4,
     "margin-left": 4,
     "include": ["~/.config/waybar_garuda/modules.json"],
     "modules-left": [
         // "custom/updates",
         "custom/recorder",
-        "idle_inhibitor",
+        "custom/idle_inhibitor",
         // "custom/screenshot",
         // "custom/krita",
         // "custom/browser",
@@ -52,7 +52,7 @@
     },
     "sway/window": {
         //"all-outputs": true, // Uncomment for active window on all outputs
-        "format": "{}"
+        "format": "{app_id}"
     },
 
     // Configuration - modules-right
@@ -116,14 +116,13 @@
         "tooltip-format": "{temperatureC}° Celsius\n{temperatureF}° Fahrenheit\n{temperatureK}° Kelvin",
         "on-click": "footclient -T waybar_btop -e btop"
     },
-    "idle_inhibitor": {
-        "format": "{icon}",
-        "format-icons": {
-            "activated": "",
-            "deactivated": ""
-        },
-        "tooltip-format-activated": "Idle Inhibitor Activated",
-        "tooltip-format-deactivated": "Idle Inhibitor Deactivated"
+    "custom/idle_inhibitor": {
+        "exec": "~/.config/waybar/scripts/idle_status.sh",
+        "return-type": "json",
+        "format": "{}",
+        "signal": 1,
+        "on-click": "~/.config/sway/scripts/toggle_idle.sh",
+        "tooltip": true
     },
     "backlight": {
         "scroll-step": 2,
