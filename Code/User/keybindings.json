@@ -342,6 +342,17 @@
         "key": "ctrl+x r l",
         "command": "bookmarks.list"
     },
+    // Error/warning navigation — match IntelliJ Alt+Shift+N/P
+    {
+        "key": "alt+shift+n",
+        "command": "editor.action.marker.next",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "alt+shift+p",
+        "command": "editor.action.marker.prev",
+        "when": "editorTextFocus"
+    },
     // Accept selection in command palette / quick open
     {
         "key": "ctrl+j",

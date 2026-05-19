@@ -22,7 +22,6 @@
     "explorer.decorations.badges": false,
     "explorer.decorations.colors": false,
     "workbench.tree.indent": 16,
-    "workbench.colorTheme": "Dracula Theme",
     "workbench.iconTheme": "vs-minimal",
     "workbench.tree.renderIndentGuides": "always",
     "workbench.editor.highlightModifiedTabs": true,
