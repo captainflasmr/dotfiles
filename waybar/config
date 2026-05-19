@@ -67,6 +67,7 @@
         "group/resources",
         "memory",
         "wireplumber",
+        "custom/plug",
         "battery",
         "group/settings",
         "clock#date",
@@ -206,12 +207,19 @@
             "critical": 10
         },
         "format": "{icon} {capacity}%",
-        "format-charging": "{icon} {capacity}% ",
-        "format-plugged": "{icon} {capacity}% ",
-        "format-full": "{icon} {capacity}% ",
+        "format-charging": "{icon} {capacity}%",
+        "format-plugged": "{icon} {capacity}%",
+        "format-full": "{icon} {capacity}%",
         "format-icons": ["", "", "", "", ""],
         "tooltip-format": "󰍽: battop\n{timeTo}",
         "on-click": "footclient -T waybar_battop -e battop",
+    },
+
+    "custom/plug": {
+        "exec": "if [ $(cat /sys/class/power_supply/ADP1/online) = 1 ]; then echo ''; fi",
+        "interval": 5,
+        "format": "{}",
+        "tooltip": false,
     },
 
     "group/settings": {
