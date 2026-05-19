@@ -35,7 +35,7 @@
         }
     },
     "clock#date": {
-        "format": "{:%b %d}",
+        "format": "{:%d}",
         "tooltip": false,
     },
     "clock#time": {

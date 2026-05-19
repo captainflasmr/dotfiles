@@ -119,7 +119,7 @@
     },
 
     "clock#date": {
-        "format": "{:%b %d}",
+        "format": "{:%d}",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
     },
     "clock#time": {

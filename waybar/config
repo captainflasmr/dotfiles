@@ -272,7 +272,7 @@
     },
 
     "clock#date": {
-        "format": "{:%b %d}",
+        "format": "{:%d}",
         "on-click": "footclient -T waybar_calcurse -e calcurse",
         // Uncomment to enable right-click calcurse-caldav sync (you need to set it up in calcurse config)
         //"on-click-right": "notify-send \"Running calcurse-caldav...\" \"$(calcurse-caldav)\"",
