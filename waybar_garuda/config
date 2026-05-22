@@ -98,11 +98,11 @@
         "on-click": "footclient -T waybar_pacseek -e pacseek"
     },
     "cpu": {
-        "format": " {usage}%",
+        "format": "  {usage}%",
         "on-click": "footclient -T waybar_btop -e btop",
         "interval": 4,
-        "min-length": 2,
-        "max-length": 4,
+        "min-length": 4,
+        "max-length": 6,
 
     },
     "memory": {
