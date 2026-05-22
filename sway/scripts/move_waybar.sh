@@ -42,7 +42,7 @@ else
     sed -i '/"sway\/window"/,/format/s/"format": "{app_id}"/"format": "{}"/' "$CURRENT_CONFIG/config"
     # Restore icons in module formats for horizontal bar
     sed -i 's|"format": "{percentage_used}%"|"format": "󰋊 {percentage_used}%"|g' "$CURRENT_CONFIG/config"
-    sed -i 's|"format": "{usage}%"|"format": " {usage}%"|g' "$CURRENT_CONFIG/config"
+    sed -i 's|"format": "{usage}%"|"format": "  {usage}%"|g' "$CURRENT_CONFIG/config"
     sed -i 's|"format": "{temperatureC}°C"|"format": " {temperatureC}°C"|g' "$CURRENT_CONFIG/config"
     sed -i 's|"format": "{}%"|"format": " {}%"|g' "$CURRENT_CONFIG/config"
     sed -i 's|"format": "{volume}%"|"format": "{icon} {volume}%"|g' "$CURRENT_CONFIG/config"
