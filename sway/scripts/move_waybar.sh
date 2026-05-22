@@ -22,7 +22,7 @@ if [[ $POSITION == "left" || $POSITION == "right" ]]; then
     sed -i '/"sway\/window"/,/format/s/"format": "{}"/"format": "{app_id}"/' "$CURRENT_CONFIG/config"
     # Strip icons from module formats for narrow sidebar
     sed -i 's|"format": "󰋊 {percentage_used}%"|"format": "{percentage_used}%"|g' "$CURRENT_CONFIG/config"
-    sed -i 's|"format": " {usage}%"|"format": "{usage}%"|g' "$CURRENT_CONFIG/config"
+    sed -i 's|"format": "  {usage}%"|"format": "{usage}%"|g' "$CURRENT_CONFIG/config"
     sed -i 's|"format": " {temperatureC}°C"|"format": "{temperatureC}°C"|g' "$CURRENT_CONFIG/config"
     sed -i 's|"format": " {}%"|"format": "{}%"|g' "$CURRENT_CONFIG/config"
     sed -i 's|"format": "{icon} {volume}%"|"format": "{volume}%"|g' "$CURRENT_CONFIG/config"
