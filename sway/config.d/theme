@@ -2,8 +2,8 @@
 exec_always ~/.config/sway/scripts/import-gsettings
 
 # Set inner/outer gaps (outer 0 so waybar sits flush with windows)
-gaps inner 5
-gaps outer 0
+gaps inner 20
+gaps outer 20
 
 # Hide titlebar on windows:
 default_border pixel 2
@@ -12,7 +12,7 @@ default_border pixel 2
 font pango:Noto Sans Regular 10
 
 # Thin borders:
-smart_borders on
+smart_borders off
 
 # Title format for windows
 for_window [shell="xdg_shell"] title_format "%title (%app_id)"

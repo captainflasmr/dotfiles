@@ -3,141 +3,151 @@
       xmlns:bookmark="http://www.freedesktop.org/standards/desktop-bookmarks"
       xmlns:mime="http://www.freedesktop.org/standards/shared-mime-info"
 >
-  <bookmark href="file:///home/jdyer/DCIM/content/static/blog" added="2026-05-17T11:17:53.092650Z" modified="2026-05-17T11:17:53.092665Z" visited="2026-05-17T11:17:53.092652Z">
+  <bookmark href="file:///home/jdyer/DCIM/Screenshots" added="2026-06-06T07:46:06.079494Z" modified="2026-06-06T07:46:06.079513Z" visited="2026-06-06T07:46:06.079496Z">
     <info>
       <metadata owner="http://freedesktop.org">
         <bookmark:applications>
-          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2026-05-17T11:17:53.092655Z" count="1"/>
+          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2026-06-06T07:46:06.079508Z" count="1"/>
         </bookmark:applications>
         <bookmark:private/>
       </metadata>
     </info>
   </bookmark>
-  <bookmark href="file:///home/jdyer/Downloads" added="2026-05-17T11:17:53.092667Z" modified="2026-05-17T11:17:53.092671Z" visited="2026-05-17T11:17:53.092667Z">
+  <bookmark href="file:///home/jdyer/DCIM/content/static/blog" added="2026-06-06T07:46:06.079518Z" modified="2026-06-06T07:46:06.079523Z" visited="2026-06-06T07:46:06.079519Z">
     <info>
       <metadata owner="http://freedesktop.org">
         <bookmark:applications>
-          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2026-05-17T11:17:53.092668Z" count="1"/>
+          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2026-06-06T07:46:06.079520Z" count="1"/>
         </bookmark:applications>
         <bookmark:private/>
       </metadata>
     </info>
   </bookmark>
-  <bookmark href="file:///home/jdyer/DCIM/Camera" added="2026-05-17T11:17:53.092673Z" modified="2026-05-17T11:17:53.092682Z" visited="2026-05-17T11:17:53.092673Z">
+  <bookmark href="file:///home/jdyer/Downloads" added="2026-06-06T07:46:06.079526Z" modified="2026-06-06T07:46:06.079538Z" visited="2026-06-06T07:46:06.079526Z">
     <info>
       <metadata owner="http://freedesktop.org">
         <bookmark:applications>
-          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2026-05-17T11:17:53.092674Z" count="1"/>
+          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2026-06-06T07:46:06.079529Z" count="1"/>
         </bookmark:applications>
         <bookmark:private/>
       </metadata>
     </info>
   </bookmark>
-  <bookmark href="file:///home/jdyer/source/repos/ollama-buddy/img" added="2026-05-17T11:17:53.092684Z" modified="2026-05-17T11:17:53.092688Z" visited="2026-05-17T11:17:53.092685Z">
+  <bookmark href="file:///home/jdyer/DCIM/Camera" added="2026-06-06T07:46:06.079541Z" modified="2026-06-06T07:46:06.079544Z" visited="2026-06-06T07:46:06.079541Z">
     <info>
       <metadata owner="http://freedesktop.org">
         <bookmark:applications>
-          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2026-05-17T11:17:53.092686Z" count="1"/>
+          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2026-06-06T07:46:06.079542Z" count="1"/>
         </bookmark:applications>
         <bookmark:private/>
       </metadata>
     </info>
   </bookmark>
-  <bookmark href="file:///home/jdyer/Videos" added="2026-05-17T11:17:53.092689Z" modified="2026-05-17T11:17:53.092697Z" visited="2026-05-17T11:17:53.092689Z">
+  <bookmark href="file:///home/jdyer/source/repos/ollama-buddy/img" added="2026-06-06T07:46:06.079548Z" modified="2026-06-06T07:46:06.079557Z" visited="2026-06-06T07:46:06.079548Z">
     <info>
       <metadata owner="http://freedesktop.org">
         <bookmark:applications>
-          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2026-05-17T11:17:53.092690Z" count="1"/>
+          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2026-06-06T07:46:06.079550Z" count="1"/>
         </bookmark:applications>
         <bookmark:private/>
       </metadata>
     </info>
   </bookmark>
-  <bookmark href="file:///home/jdyer/Downloads/macbook" added="2026-05-17T11:17:53.092700Z" modified="2026-05-17T11:17:53.092712Z" visited="2026-05-17T11:17:53.092704Z">
+  <bookmark href="file:///home/jdyer/Videos" added="2026-06-06T07:46:06.079559Z" modified="2026-06-06T07:46:06.079574Z" visited="2026-06-06T07:46:06.079565Z">
     <info>
       <metadata owner="http://freedesktop.org">
         <bookmark:applications>
-          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2026-05-17T11:17:53.092710Z" count="1"/>
+          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2026-06-06T07:46:06.079572Z" count="1"/>
         </bookmark:applications>
         <bookmark:private/>
       </metadata>
     </info>
   </bookmark>
-  <bookmark href="file:///home/jdyer/publish/hugo-unified/static/images/banner" added="2026-05-17T11:17:53.092714Z" modified="2026-05-17T11:17:53.092720Z" visited="2026-05-17T11:17:53.092714Z">
+  <bookmark href="file:///home/jdyer/Downloads/macbook" added="2026-06-06T07:46:06.079576Z" modified="2026-06-06T07:46:06.079580Z" visited="2026-06-06T07:46:06.079577Z">
     <info>
       <metadata owner="http://freedesktop.org">
         <bookmark:applications>
-          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2026-05-17T11:17:53.092715Z" count="1"/>
+          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2026-06-06T07:46:06.079578Z" count="1"/>
         </bookmark:applications>
         <bookmark:private/>
       </metadata>
     </info>
   </bookmark>
-  <bookmark href="file:///home/jdyer/publish/hugo-unified/static/blog" added="2026-05-17T11:17:53.092727Z" modified="2026-05-17T11:17:53.092734Z" visited="2026-05-17T11:17:53.092728Z">
+  <bookmark href="file:///home/jdyer/publish/hugo-unified/static/images/banner" added="2026-06-06T07:46:06.079595Z" modified="2026-06-06T07:46:06.079604Z" visited="2026-06-06T07:46:06.079596Z">
     <info>
       <metadata owner="http://freedesktop.org">
         <bookmark:applications>
-          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2026-05-17T11:17:53.092729Z" count="1"/>
+          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2026-06-06T07:46:06.079597Z" count="1"/>
         </bookmark:applications>
         <bookmark:private/>
       </metadata>
     </info>
   </bookmark>
-  <bookmark href="file:///home/jdyer/DCIM/content/emacs" added="2026-05-17T11:17:53.092735Z" modified="2026-05-17T11:17:53.092737Z" visited="2026-05-17T11:17:53.092736Z">
+  <bookmark href="file:///home/jdyer/publish/hugo-unified/static/blog" added="2026-06-06T07:46:06.079607Z" modified="2026-06-06T07:46:06.079610Z" visited="2026-06-06T07:46:06.079607Z">
     <info>
       <metadata owner="http://freedesktop.org">
         <bookmark:applications>
-          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2026-05-17T11:17:53.092736Z" count="1"/>
+          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2026-06-06T07:46:06.079609Z" count="1"/>
         </bookmark:applications>
         <bookmark:private/>
       </metadata>
     </info>
   </bookmark>
-  <bookmark href="file:///home/jdyer/Downloads/card" added="2026-05-17T11:17:53.092739Z" modified="2026-05-17T11:17:53.092750Z" visited="2026-05-17T11:17:53.092739Z">
+  <bookmark href="file:///home/jdyer/DCIM/content/emacs" added="2026-06-06T07:46:06.079612Z" modified="2026-06-06T07:46:06.079627Z" visited="2026-06-06T07:46:06.079613Z">
     <info>
       <metadata owner="http://freedesktop.org">
         <bookmark:applications>
-          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2026-05-17T11:17:53.092740Z" count="1"/>
+          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2026-06-06T07:46:06.079614Z" count="1"/>
         </bookmark:applications>
         <bookmark:private/>
       </metadata>
     </info>
   </bookmark>
-  <bookmark href="file:///home/jdyer/.emacs.d/image-dired" added="2026-05-17T11:17:53.092751Z" modified="2026-05-17T11:17:53.092753Z" visited="2026-05-17T11:17:53.092752Z">
+  <bookmark href="file:///home/jdyer/Downloads/card" added="2026-06-06T07:46:06.079629Z" modified="2026-06-06T07:46:06.079632Z" visited="2026-06-06T07:46:06.079630Z">
     <info>
       <metadata owner="http://freedesktop.org">
         <bookmark:applications>
-          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2026-05-17T11:17:53.092752Z" count="1"/>
+          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2026-06-06T07:46:06.079631Z" count="1"/>
         </bookmark:applications>
         <bookmark:private/>
       </metadata>
     </info>
   </bookmark>
-  <bookmark href="file:///home/jdyer/Downloads/tmp" added="2026-05-17T11:17:53.092755Z" modified="2026-05-17T11:17:53.092762Z" visited="2026-05-17T11:17:53.092755Z">
+  <bookmark href="file:///home/jdyer/.emacs.d/image-dired" added="2026-06-06T07:46:06.079635Z" modified="2026-06-06T07:46:06.079638Z" visited="2026-06-06T07:46:06.079635Z">
     <info>
       <metadata owner="http://freedesktop.org">
         <bookmark:applications>
-          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2026-05-17T11:17:53.092756Z" count="1"/>
+          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2026-06-06T07:46:06.079636Z" count="1"/>
         </bookmark:applications>
         <bookmark:private/>
       </metadata>
     </info>
   </bookmark>
-  <bookmark href="file:///home/jdyer/source/repos/dired-video-thumbnail/img" added="2026-05-17T11:17:53.092764Z" modified="2026-05-17T11:17:53.092766Z" visited="2026-05-17T11:17:53.092764Z">
+  <bookmark href="file:///home/jdyer/Downloads/tmp" added="2026-06-06T07:46:06.079640Z" modified="2026-06-06T07:46:06.079644Z" visited="2026-06-06T07:46:06.079641Z">
     <info>
       <metadata owner="http://freedesktop.org">
         <bookmark:applications>
-          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2026-05-17T11:17:53.092765Z" count="1"/>
+          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2026-06-06T07:46:06.079642Z" count="1"/>
         </bookmark:applications>
         <bookmark:private/>
       </metadata>
     </info>
   </bookmark>
-  <bookmark href="file:///run/media/jdyer/6665-3063/tmp3/kate" added="2026-05-17T11:17:53.092771Z" modified="2026-05-17T11:17:53.092773Z" visited="2026-05-17T11:17:53.092772Z">
+  <bookmark href="file:///home/jdyer/source/repos/dired-video-thumbnail/img" added="2026-06-06T07:46:06.079646Z" modified="2026-06-06T07:46:06.079657Z" visited="2026-06-06T07:46:06.079647Z">
     <info>
       <metadata owner="http://freedesktop.org">
         <bookmark:applications>
-          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2026-05-17T11:17:53.092772Z" count="1"/>
+          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2026-06-06T07:46:06.079654Z" count="1"/>
+        </bookmark:applications>
+        <bookmark:private/>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///run/media/jdyer/6665-3063/tmp3/kate" added="2026-06-06T07:46:06.079659Z" modified="2026-06-06T07:46:06.079671Z" visited="2026-06-06T07:46:06.079660Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <bookmark:applications>
+          <bookmark:application name="gThumb" exec="&apos;org.gnome.gThumb %u&apos;" modified="2026-06-06T07:46:06.079663Z" count="1"/>
         </bookmark:applications>
         <bookmark:private/>
       </metadata>

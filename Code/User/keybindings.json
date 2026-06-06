@@ -299,6 +299,11 @@
         "command": "cursorBottom",
         "when": "editorTextFocus"
     },
+    // Source Control / git — match Emacs C-x g (magit-status)
+    {
+        "key": "ctrl+x g",
+        "command": "workbench.view.scm"
+    },
     // Find file / grep — match Emacs C-c f / C-c g
     {
         "key": "ctrl+c f",
