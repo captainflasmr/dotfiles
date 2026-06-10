@@ -9,8 +9,7 @@ set $right l
 
 bindsym $mod+z exec emacsclient --eval '(thanos/type)'
 for_window [app_id="emacs" title="emacs-float"] floating enable
-# This forces everything to be opaque regardless of app settings
-for_window [app_id="thunar"] opacity 1.0
+# Thunar opacity is set to 0.90 in config.d/application_defaults
 for_window [app_id="spicy"] shortcuts_inhibitor disable
 
 #
@@ -70,7 +69,7 @@ bindsym $mod+Shift+minus exec wallpaper_reject.sh
 bindsym $mod+c exec screen-record.sh
 bindsym $mod+e exec thunar ~/DCIM/Camera
 bindsym $mod+g floating toggle
-bindsym $mod+n exec thunderbird
+bindsym $mod+n exec env MOZ_ENABLE_WAYLAND=1 thunderbird
 bindsym $mod+p exec wl-color-picker
 bindsym $mod+q kill
 bindsym $mod+return exec $term
