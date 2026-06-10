@@ -9,5 +9,3 @@ This document contains the current bugs/improvements, this is just for me mainly
 
 * Bugs/Improvements
 
-** TODO alacritty to not change colour with pywall when wallpaper changes
-
