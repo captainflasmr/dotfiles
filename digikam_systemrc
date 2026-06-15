@@ -1,10 +1,10 @@
 [System]
 dnnOpenCLTested=false
-enableAIAutoTools=true
-enableAesthetic=true
-enableAutoTags=true
+enableAIAutoTools=false
+enableAesthetic=false
+enableAutoTags=false
 enableDnnOpenCL=false
-enableFaceEngine=true
+enableFaceEngine=false
 enableHWTConv=false
 enableHWVideo=false
 enableLogging=false
