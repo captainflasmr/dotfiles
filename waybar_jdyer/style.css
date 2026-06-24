@@ -92,3 +92,16 @@
     /* background-color: @recording-color; */
     /* color: @background; */
 }
+
+/* Idle inhibitor styling */
+#idle_inhibitor {
+    padding: 0em 0.4em;
+}
+
+#idle_inhibitor.activated {
+    color: #a3be8c;
+}
+
+#idle_inhibitor.deactivated {
+    color: #bf616a;
+}

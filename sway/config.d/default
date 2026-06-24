@@ -47,8 +47,8 @@ bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -2%
 bindsym $mod+Shift+a exec ~/.config/sway/scripts/audio_toggle.sh
 
 # Brightness controls (function keys)
-bindsym XF86MonBrightnessUp exec brightnessctl set +1%
-bindsym XF86MonBrightnessDown exec brightnessctl set 1%-
+bindsym XF86MonBrightnessUp exec brightnessctl set +4%
+bindsym XF86MonBrightnessDown exec brightnessctl set 4%-
 
 # Volume controls (Super + function keys)
 bindsym $mod+XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
