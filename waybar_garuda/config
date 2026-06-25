@@ -164,7 +164,7 @@
     },
 
     "custom/plug": {
-        "exec": "if [ $(cat /sys/class/power_supply/ADP1/online) = 1 ]; then echo ''; fi",
+        "exec": "if [ $(cat /sys/class/power_supply/AC/online) = 1 ]; then echo ''; fi",
         "interval": 5,
         "format": "{}",
         "tooltip": false,

@@ -178,6 +178,10 @@ window#waybar {
     color: #C18481;
 }
 
+#custom-plug {
+    color: #C18481;
+}
+
 @keyframes blink {
     to {
         color: #4c566a;
