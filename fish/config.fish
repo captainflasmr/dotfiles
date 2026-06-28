@@ -3,9 +3,12 @@ if status is-interactive
 set -g fish_greeting ""
 end
 
-# Add ~/bin to PATH if it's not already included
+# Add ~/bin and the bootstrap repo to PATH if not already included
 if not contains "~/bin" $PATH
 set -x PATH ~/bin $PATH
+end
+if not contains "~/bin/bootstrap" $PATH
+set -x PATH ~/bin/bootstrap $PATH
 end
 
 alias l='exa -al --color=always --group-directories-first --icons' # preferred listing
