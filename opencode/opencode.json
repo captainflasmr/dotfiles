@@ -1,0 +1,42 @@
+{
+    "$schema": "https://opencode.ai/config.json",
+    "model": "opencode-go/deepseek-v4-flash",
+    "default_agent": "build",
+    "snapshot": false,
+    "agent": {
+        "plan": {
+            "description": "Architectural planner. Uses heavy reasoning to map out file changes and logic loops.",
+            "mode": "primary",
+            "model": "opencode-go/glm-5.2",
+            "steps": 10,
+            "temperature": 0.2,
+            "reasoningEffort": "max",
+            "prompt": "{file:prompts/glm-advisor.md}",
+            "permission": {
+                "read": "allow",
+                "glob": "allow",
+                "grep": "allow",
+                "list": "allow",
+                "webfetch": "allow",
+                "edit": "deny",
+                "write": "deny",
+                "bash": "deny",
+                "task": "deny",
+                "question": "allow",
+                "todowrite": "deny"
+            }
+        },
+        "build": {
+            "description": "Execution driver. Fast, low-latency implementation of the established plan.",
+            "mode": "primary",
+            "model": "opencode-go/deepseek-v4-flash",
+            "steps": 30,
+            "permission": {
+                "read": "allow",
+                "edit": "allow",
+                "write": "allow",
+                "bash": "allow"
+            }
+        }
+    }
+}
