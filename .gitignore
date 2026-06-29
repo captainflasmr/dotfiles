@@ -22,7 +22,9 @@
 !kmonad/
 !kritadisplayrc
 !mpv/
-!opencode
+!.opencode/
+!opencode/
+!opencode/**
 !pacseek/
 !pcmanfm/
 !polybar/
