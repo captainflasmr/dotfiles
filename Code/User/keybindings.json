@@ -80,7 +80,7 @@
         "when": "editorHasDocumentFormattingProvider && editorTextFocus && !editorReadonly && !inCompositeEditor"
     },
     {
-        "key": "ctrl+z",
+        "key": "alt+a",
         "command": "workbench.action.files.save"
     },
     {
