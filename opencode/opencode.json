@@ -8,7 +8,7 @@
             "description": "Architectural planner. Uses heavy reasoning to map out file changes and logic loops.",
             "mode": "primary",
             "model": "opencode-go/glm-5.2",
-            "steps": 20,
+            "steps": 30,
             "temperature": 0.2,
             "reasoningEffort": "max",
             "prompt": "{file:prompts/glm-advisor.md}",
@@ -30,7 +30,8 @@
             "description": "Execution driver. Fast, low-latency implementation of the established plan.",
             "mode": "primary",
             "model": "opencode-go/deepseek-v4-flash",
-            "steps": 30,
+            "steps": 100,
+            "reasoningEffort": "max",
             "permission": {
                 "read": "allow",
                 "edit": "allow",
