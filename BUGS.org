@@ -13,4 +13,4 @@ This document contains the current bugs/improvements, this is just for me mainly
 
 ** TODO opencode how to enable LSP
 
-** TODO opencode keybindings
+** DOING opencode keybindings

@@ -7,7 +7,7 @@ set $down j
 set $up k
 set $right l
 
-bindsym $mod+z exec emacsclient --eval '(thanos/type)'
+bindsym $mod+semicolon exec emacsclient --eval '(thanos/type)'
 for_window [app_id="emacs" title="emacs-float"] floating enable
 # Thunar opacity is set to 0.90 in config.d/application_defaults
 for_window [app_id="spicy"] shortcuts_inhibitor disable
