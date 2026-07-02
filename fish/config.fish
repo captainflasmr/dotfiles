@@ -36,3 +36,5 @@ set --export --prepend PATH "/home/jdyer/.rd/bin"
 ### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
 fish_add_path ~/.npm-global/bin
 fish_add_path ~/.bun/bin
+
+set -gx EDITOR /usr/bin/emacs
