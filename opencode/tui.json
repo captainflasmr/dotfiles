@@ -1,7 +1,17 @@
 {
   "$schema": "https://opencode.ai/tui.json",
-  "keybinds": {
-    "messages_page_up": "pageup,ctrl+alt+b,alt+k",
-    "messages_page_down": "pagedown,ctrl+alt+f,alt+j"
+"keybinds": {
+    "messages_page_up": "alt+k",
+    "messages_page_down": "alt+j",
+    "session_background": "ctrl+o",
+    "messages_line_up": "ctrl+p",
+    "messages_line_down": "ctrl+n",
+    "messages_first": "<leader>[",
+    "messages_last": "<leader>]",
+    "session_interrupt": "escape,ctrl+g",
+    "command_list": "alt+x",
+    "history_previous": "up,alt+p",
+    "history_next": "down,alt+n",
+    "input_undo": "ctrl+/"
   }
 }
