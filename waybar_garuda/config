@@ -122,6 +122,7 @@
         "return-type": "json",
         "format": "{}",
         "signal": 1,
+        "interval": 2,
         "on-click": "~/.config/sway/scripts/toggle_idle.sh",
         "tooltip": true
     },

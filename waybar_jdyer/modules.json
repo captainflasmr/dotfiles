@@ -240,15 +240,14 @@
         "max-length": 6
     },
 
-    "idle_inhibitor": {
-	     "format": "{icon}",
-	     "format-icons": {
-		      "activated": "👀",
-		      "deactivated": "🌜"
-	     },
-        "min-length": 2,
-        "max-length": 4,
-	     "timeout": 6000.0,
+    "custom/idle_inhibitor": {
+        "exec": "~/.config/waybar/scripts/idle_status.sh",
+        "return-type": "json",
+        "format": "{}",
+        "signal": 1,
+        "interval": 2,
+        "on-click": "~/.config/sway/scripts/toggle_idle.sh",
+        "tooltip": true
     },
 
     "custom/recorder": {

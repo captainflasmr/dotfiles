@@ -148,6 +148,7 @@ window#waybar {
 
 #custom-idle_inhibitor {
    color: #81a1c1;
+   padding: 0em 0.4em;
 }
 
 #custom-idle_inhibitor.activated {

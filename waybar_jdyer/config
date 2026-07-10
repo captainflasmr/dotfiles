@@ -12,7 +12,7 @@
     "include": ["~/.config/waybar_jdyer/modules.json"],
     "modules-left": [
         "custom/recorder",
-        "idle_inhibitor",
+        "custom/idle_inhibitor",
         // "custom/screenshot",
         // "custom/krita",
         // "custom/browser",
