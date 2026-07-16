@@ -127,7 +127,7 @@
         "tooltip": true
     },
     "backlight": {
-        "scroll-step": 2,
+        "scroll-step": 0.4,
         "format": "{icon}{percent: >3}%",
         "format-icons": ["", ""],
         "tooltip-format": "Backlight (Scroll): {percent: >3}%",

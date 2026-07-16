@@ -214,7 +214,7 @@
     },
 
     "backlight": {
-        "scroll-step": 8,
+        "scroll-step": 0.5,
         "format": "{icon} {percent}",
         "format-icons": ["☀️"],
         "min-length": 1,
