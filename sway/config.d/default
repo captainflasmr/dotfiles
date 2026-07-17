@@ -35,9 +35,12 @@ bindsym Mod4+f2 exec darkman toggle
 # Toggle idle inhibitor (swayidle on/off)
 bindsym Mod4+f3 exec ~/.config/sway/scripts/toggle_idle.sh
 
-#
-# -> keys
-#
+# Quick volume and brightness controls
+bindsym $mod+a exec brightnessctl set +1%
+bindsym $mod+z exec brightnessctl set 1%-
+bindsym $mod+s exec pactl set-sink-volume @DEFAULT_SINK@ +2%
+bindsym $mod+x exec pactl set-sink-volume @DEFAULT_SINK@ -2%
+
 # Volume controls (function keys)
 bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
 bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +2%
@@ -94,7 +97,7 @@ bindsym $mod+Ctrl+Right exec ~/.config/sway/scripts/move_waybar.sh right
 
 bindsym $mod+t exec $term
 bindsym $mod+w exec swayr switch-window
-bindsym $mod+x exec emacsclient -c -a emacs
+bindsym $mod+c exec emacsclient -c -a emacs
 # bindsym Mod1+4 kill
 bindsym control+Mod1+t exec $term
 bindsym $mod+period exec rofimoji
