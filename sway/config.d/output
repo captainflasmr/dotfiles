@@ -5,8 +5,11 @@
 #   output HDMI-A-1 resolution 1920x1080 position 1920,0
 #
 # You can get the names of your outputs by running: swaymsg -t get_outputs
-# 
+#
 # Wacom Tablet - Example
 #   input "1386:884:Wacom_Intuos_S_Pad" map_to_output HDMI-A-1
 #   input "1386:884:Wacom_Intuos_S_Pen" map_to_output HDMI-A-1
-output eDP-1 scale 1.0
+
+# Auto-configure scaling based on each output's native resolution.
+# See ~/.config/sway/scripts/auto_output.sh for the resolution→scale mapping.
+exec_always --no-startup-id $HOME/.config/sway/scripts/auto_output.sh
