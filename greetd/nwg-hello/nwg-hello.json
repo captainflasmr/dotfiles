@@ -1,0 +1,33 @@
+{
+  "session_dirs": [
+    "/usr/share/wayland-sessions",
+    "/usr/share/xsessions"
+  ],
+  "custom_sessions": [
+    {
+      "name": "Shell",
+      "exec": "/usr/bin/bash"
+    }
+  ],
+  "monitor_nums": [],
+  "form_on_monitors": [],
+  "delay_secs": 1,
+  "cmd-sleep": "systemctl suspend",
+  "cmd-reboot": "systemctl reboot",
+  "cmd-poweroff": "systemctl poweroff",
+  "gtk-theme": "Nordic-darker",
+  "gtk-icon-theme": "Tela-circle-nord",
+  "gtk-cursor-theme": "Adwaita",
+  "prefer-dark-theme": true,
+  "template-name": "",
+  "lang": "",
+  "env-vars": [
+    "XDG_SESSION_TYPE=wayland",
+    "XDG_CURRENT_DESKTOP=sway",
+    "XDG_SESSION_DESKTOP=sway",
+    "QT_QPA_PLATFORM=wayland",
+    "QT_QPA_PLATFORMTHEME=gtk3",
+    "QT_STYLE_OVERRIDE=kvantum",
+    "GTK_THEME=Nordic-darker"
+  ]
+}

@@ -1,0 +1,9 @@
+[terminal]
+# VT to run the greeter on. "next", "current", or a number.
+vt = 1
+
+[default_session]
+# Greeter: sway launches nwg-hello (see /etc/nwg-hello/sway-config),
+# then exits when it closes. greetd restarts the greeter on logout.
+command = "sway -c /etc/nwg-hello/sway-config"
+user = "greeter"
