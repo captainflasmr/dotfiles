@@ -11,6 +11,8 @@
 !environment.d/
 !fish/
 !fusuma/
+!greetd/
+!greetd/**
 !kdenlive-layoutsrc
 !kdenliverc
 !keepassxc/
