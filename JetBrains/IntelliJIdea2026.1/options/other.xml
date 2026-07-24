@@ -1,0 +1,136 @@
+<application>
+  <component name="ActionHistoryManager">
+    <ids>
+      <option value="CompileDirty" />
+      <option value="ActivateRunToolWindow" />
+      <option value="ChooseRunConfiguration" />
+      <option value="ActivateBuildToolWindow" />
+      <option value="BreakpointActionsGroup" />
+      <option value="ShowRegistry" />
+      <option value="ActivateGradleToolWindow" />
+    </ids>
+  </component>
+  <component name="FileEditorProviderManager">{}</component>
+  <component name="LangManager">
+    <option name="languageName" value="JAVA" />
+  </component>
+  <component name="NotRoamableUiSettings">
+    <option name="fontFace" value="Noto Sans" />
+    <option name="fontSize" value="15.0" />
+    <option name="ideScale" value="1.1" />
+    <option name="presentationModeIdeScale" value="1.75" />
+  </component>
+  <component name="PropertyService"><![CDATA[{
+  "keyToString": {
+    "AFTER.DISTRACTION.MODE.ARE_GUTTER_ICONS_SHOWN": "false",
+    "AFTER.DISTRACTION.MODE.ARE_LINE_NUMBERS_SHOWN": "false",
+    "AFTER.DISTRACTION.MODE.EDITOR_TAB_PLACEMENT": "0",
+    "AFTER.DISTRACTION.MODE.HIDE_TOOL_STRIPES": "true",
+    "AFTER.DISTRACTION.MODE.IS_FOLDING_OUTLINE_SHOWN": "false",
+    "AFTER.DISTRACTION.MODE.IS_FOLDING_OUTLINE_SHOWN_ONLY_ON_HOVER": "false",
+    "AFTER.DISTRACTION.MODE.IS_INDENT_GUIDES_SHOWN": "false",
+    "AFTER.DISTRACTION.MODE.IS_RIGHT_MARGIN_SHOWN": "false",
+    "AFTER.DISTRACTION.MODE.IS_WHITESPACES_SHOWN": "false",
+    "AFTER.DISTRACTION.MODE.SHOW_BREADCRUMBS": "false",
+    "AFTER.DISTRACTION.MODE.SHOW_MAIN_TOOLBAR": "false",
+    "AFTER.DISTRACTION.MODE.SHOW_METHOD_SEPARATORS": "false",
+    "AFTER.DISTRACTION.MODE.SHOW_NAVIGATION_BAR": "false",
+    "AFTER.DISTRACTION.MODE.SHOW_NEW_MAIN_TOOLBAR": "false",
+    "AFTER.DISTRACTION.MODE.SHOW_STATUS_BAR": "false",
+    "BEFORE.DISTRACTION.MODE.ARE_GUTTER_ICONS_SHOWN": "true",
+    "BEFORE.DISTRACTION.MODE.ARE_LINE_NUMBERS_SHOWN": "true",
+    "BEFORE.DISTRACTION.MODE.EDITOR_TAB_PLACEMENT": "1",
+    "BEFORE.DISTRACTION.MODE.HIDE_TOOL_STRIPES": "false",
+    "BEFORE.DISTRACTION.MODE.IS_FOLDING_OUTLINE_SHOWN": "true",
+    "BEFORE.DISTRACTION.MODE.IS_FOLDING_OUTLINE_SHOWN_ONLY_ON_HOVER": "true",
+    "BEFORE.DISTRACTION.MODE.IS_INDENT_GUIDES_SHOWN": "true",
+    "BEFORE.DISTRACTION.MODE.IS_RIGHT_MARGIN_SHOWN": "true",
+    "BEFORE.DISTRACTION.MODE.IS_WHITESPACES_SHOWN": "false",
+    "BEFORE.DISTRACTION.MODE.SHOW_BREADCRUMBS": "true",
+    "BEFORE.DISTRACTION.MODE.SHOW_MAIN_TOOLBAR": "false",
+    "BEFORE.DISTRACTION.MODE.SHOW_METHOD_SEPARATORS": "false",
+    "BEFORE.DISTRACTION.MODE.SHOW_NAVIGATION_BAR": "true",
+    "BEFORE.DISTRACTION.MODE.SHOW_NEW_MAIN_TOOLBAR": "false",
+    "BEFORE.DISTRACTION.MODE.SHOW_STATUS_BAR": "true",
+    "BuildView.Splitter.Proportion": "0.22026181",
+    "DISTRACTION.MODE.ENTER.VALUE": "false",
+    "InstalledPluginsSearchHistory": "activate\nactiv\nac\na",
+    "JUnitSupport.hidePassedTests": "false",
+    "KEYMAP": "saveall",
+    "LAST_CALCULATED_COLOR_INDEX_KEY": "6",
+    "MarketplacePluginsSearchHistory": "/tag:Theme",
+    "NextRunPlatformUpdateBuild": "IU-261.26222.65",
+    "NextRunPlatformUpdateSelfBuild": "IU-261.25134.95",
+    "NextRunPlatformUpdateVersion": "2026.1.4",
+    "PluginConfigurable.selectionTab": "1",
+    "RegistryRecentKeys": "actionSystem.playback.delay=actionSystem.playback.typecommand.delay",
+    "RunOnceActivity.AIPromoWindowAdvisorPreheat": "true",
+    "RunOnceActivity.TerminalFontSettingsService.fixStoredNonMonospacedFonts": "true",
+    "RunOnceActivity.TerminalOptionsProvider.TerminalEngineMigration.2026.1": "true",
+    "RunOnceActivity.TerminalOptionsProvider.appTitleMigration.2026.1.1": "true",
+    "RunOnceActivity.VFSInitializationConditionsToFusReporter": "true",
+    "RunOnceActivity.gateway.wsl.native.mode.default.set": "true",
+    "RunOnceActivity.git.modal.commit.toggle": "true",
+    "RunOnceActivity.reset.auto.reparse.settings.to.default": "true",
+    "RunOnceActivity.set.default.devcontainer.project.open.action": "true",
+    "RunOnceActivity.terminal.escape.behavior.change.notification": "true",
+    "SettingsSearchHistory": "enable mn\nzen\nhide all\nactivat\noffline",
+    "WAYLAND_NOTIFICATION_ALREADY_SHOWN": "true",
+    "ask.about.ctrl.y.shortcut.v2": "true",
+    "build.toolwindow.Build Output.selection.state": "com.intellij.build.BuildTreeConsoleView",
+    "build.toolwindow.Sync.selection.state": "com.intellij.build.BuildTreeConsoleView",
+    "build.toolwindow.run.selection.state": "com.intellij.build.BuildTreeConsoleView",
+    "defaultJdkConfigured": "true",
+    "evlsprt3.261": "3",
+    "experimental.ui.first.switch": "true",
+    "experimental.ui.on.first.startup": "true",
+    "experimental.ui.used.version": "261.25134.95",
+    "fileTypeChangedCounter": "43",
+    "fontSizeToResetConsole": "13.0",
+    "fontSizeToResetEditor": "13.0",
+    "git.working.trees.stop.showing.new.badge": "true",
+    "got.it.tooltip.NewFeaturesWidget": "1",
+    "got.it.tooltip.Plugins Auto-Update": "1",
+    "got.it.tooltip.settings.sync.in.settings": "1",
+    "ide.islands.ab3": "true",
+    "ide.islands.new.darcula": "true",
+    "ide.restarted.to.free.mode.manually": "true",
+    "installed.kotlin.plugin.version": "261.25134.95-IJ",
+    "last_opened_file_path": "/home/jdyer/source/FedProClient-main",
+    "llm.installer.last.toolwindow.state": "LLM_INSTALLER",
+    "migrated.non.roamable.values.from.general.settings": "true",
+    "mt.NUMBER_OF_LAUNCHES": "12",
+    "previousColorScheme": "_@user_Darcula",
+    "registry.to.advanced.settings.migration.build": "IU-261.25134.95",
+    "tab_selection_count": "1",
+    "trial.state.free.trial.expiration.date": "1784070000000",
+    "trial.state.last.availability.check": "1784873143828",
+    "trial.state.last.availability.state": "true",
+    "trial.state.last.state": "TRIAL_AVAILABLE",
+    "ts.lib.d.ts.version": "5.9.3"
+  },
+  "keyToStringList": {
+    "file.chooser.recent.files": [
+      "/home/jdyer/source/FedProClient-main/java",
+      "/home/jdyer/source/FedProClient-main"
+    ],
+    "fileTypeDetectors": [
+      "com.intellij.ide.scratch.ScratchFileServiceImpl$Detector",
+      "com.intellij.database.vfs.DbStorageFileType$Detector",
+      "com.intellij.docker.dockerFile.DockerFileTypeDetector",
+      "org.jetbrains.plugins.textmate.TextMateFileType$TextMateFileDetector"
+    ],
+    "trial.active.editor.tab.shown.versions": [
+      "IU-2026.1"
+    ]
+  }
+}]]></component>
+  <component name="ReworkedTerminalUsage">{
+  &quot;enterKeyPressedTimes&quot;: 6,
+  &quot;firstIdeSessionMoment&quot;: {
+    &quot;type&quot;: &quot;org.jetbrains.plugins.terminal.TerminalFirstIdeSessionMoment.Version&quot;,
+    &quot;build&quot;: &quot;IC-261.24374.151&quot;
+  }
+}</component>
+  <component name="TerminalAgentsState">{}</component>
+</application>

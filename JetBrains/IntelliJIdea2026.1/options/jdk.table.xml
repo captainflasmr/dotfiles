@@ -1,0 +1,189 @@
+<application>
+  <component name="ProjectJdkTable">
+    <jdk version="2">
+      <name value="26" />
+      <type value="JavaSDK" />
+      <version value="Java 26.0.1" />
+      <homePath value="/usr/lib/jvm/java-26-openjdk" />
+      <roots>
+        <annotationsPath>
+          <root type="composite">
+            <root url="jar://$APPLICATION_HOME_DIR$/plugins/java/lib/resources/jdkAnnotations.jar!/" type="simple" />
+          </root>
+        </annotationsPath>
+        <classPath>
+          <root type="composite">
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/java.base" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/java.compiler" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/java.datatransfer" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/java.desktop" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/java.instrument" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/java.logging" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/java.management" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/java.management.rmi" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/java.naming" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/java.net.http" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/java.prefs" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/java.rmi" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/java.scripting" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/java.se" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/java.security.jgss" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/java.security.sasl" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/java.smartcardio" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/java.sql" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/java.sql.rowset" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/java.transaction.xa" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/java.xml" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/java.xml.crypto" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.accessibility" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.attach" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.charsets" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.compiler" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.crypto.cryptoki" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.crypto.ec" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.dynalink" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.editpad" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.graal.compiler" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.graal.compiler.management" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.hotspot.agent" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.httpserver" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.incubator.vector" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.internal.ed" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.internal.jvmstat" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.internal.le" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.internal.md" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.internal.opt" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.internal.vm.ci" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.jartool" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.javadoc" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.jcmd" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.jconsole" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.jdeps" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.jdi" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.jdwp.agent" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.jfr" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.jlink" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.jpackage" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.jshell" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.jstatd" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.localedata" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.management" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.management.agent" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.management.jfr" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.naming.dns" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.naming.rmi" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.net" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.nio.mapmode" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.sctp" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.security.auth" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.security.jgss" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.unsupported" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.unsupported.desktop" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.xml.dom" type="simple" />
+            <root url="jrt:///usr/lib/jvm/java-26-openjdk!/jdk.zipfs" type="simple" />
+          </root>
+        </classPath>
+        <javadocPath>
+          <root type="composite" />
+        </javadocPath>
+        <sourcePath>
+          <root type="composite" />
+        </sourcePath>
+      </roots>
+    </jdk>
+    <jdk version="2">
+      <name value="21" />
+      <type value="JavaSDK" />
+      <version value="java version &quot;21.0.11&quot;" />
+      <homePath value="/usr/lib/jvm/default" />
+      <roots>
+        <annotationsPath>
+          <root type="composite">
+            <root url="jar://$APPLICATION_HOME_DIR$/plugins/java/lib/resources/jdkAnnotations.jar!/" type="simple" />
+          </root>
+        </annotationsPath>
+        <classPath>
+          <root type="composite">
+            <root url="jrt:///usr/lib/jvm/default!/java.base" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/java.compiler" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/java.datatransfer" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/java.desktop" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/java.instrument" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/java.logging" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/java.management" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/java.management.rmi" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/java.naming" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/java.net.http" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/java.prefs" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/java.rmi" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/java.scripting" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/java.se" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/java.security.jgss" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/java.security.sasl" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/java.smartcardio" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/java.sql" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/java.sql.rowset" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/java.transaction.xa" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/java.xml" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/java.xml.crypto" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.accessibility" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.attach" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.charsets" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.compiler" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.crypto.cryptoki" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.crypto.ec" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.dynalink" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.editpad" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.hotspot.agent" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.httpserver" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.incubator.vector" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.internal.ed" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.internal.jvmstat" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.internal.le" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.internal.opt" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.internal.vm.ci" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.internal.vm.compiler" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.internal.vm.compiler.management" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.jartool" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.javadoc" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.jcmd" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.jconsole" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.jdeps" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.jdi" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.jdwp.agent" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.jfr" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.jlink" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.jpackage" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.jshell" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.jsobject" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.jstatd" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.localedata" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.management" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.management.agent" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.management.jfr" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.naming.dns" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.naming.rmi" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.net" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.nio.mapmode" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.random" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.sctp" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.security.auth" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.security.jgss" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.unsupported" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.unsupported.desktop" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.xml.dom" type="simple" />
+            <root url="jrt:///usr/lib/jvm/default!/jdk.zipfs" type="simple" />
+          </root>
+        </classPath>
+        <javadocPath>
+          <root type="composite">
+            <root url="https://docs.oracle.com/en/java/javase/21/docs/api/" type="simple" />
+          </root>
+        </javadocPath>
+        <sourcePath>
+          <root type="composite" />
+        </sourcePath>
+      </roots>
+    </jdk>
+  </component>
+</application>

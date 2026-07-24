@@ -1,0 +1,8 @@
+<application>
+  <component name="LafManager">
+    <laf themeId="Islands Darcula" />
+    <lafs-to-previous-schemes>
+      <laf-to-scheme laf="1a889165-3e3a-4b17-8191-668be6e1fdca" scheme="_@user_Darcula" />
+    </lafs-to-previous-schemes>
+  </component>
+</application>

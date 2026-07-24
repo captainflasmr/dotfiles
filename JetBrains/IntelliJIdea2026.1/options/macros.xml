@@ -1,0 +1,48 @@
+<application>
+  <component name="ActionMacroManager">
+    <macro name="ScrollDown5">
+      <action id="EditorScrollDown" />
+      <action id="EditorDown" />
+      <action id="EditorScrollDown" />
+      <action id="EditorDown" />
+      <action id="EditorScrollDown" />
+      <action id="EditorDown" />
+      <action id="EditorScrollDown" />
+      <action id="EditorDown" />
+      <action id="EditorScrollDown" />
+      <action id="EditorDown" />
+      <action id="EditorScrollDown" />
+      <action id="EditorDown" />
+      <action id="EditorScrollDown" />
+      <action id="EditorDown" />
+      <action id="EditorScrollDown" />
+      <action id="EditorDown" />
+      <action id="EditorScrollDown" />
+      <action id="EditorDown" />
+      <action id="EditorScrollDown" />
+      <action id="EditorDown" />
+    </macro>
+    <macro name="ScrollUp5">
+      <action id="EditorScrollUp" />
+      <action id="EditorUp" />
+      <action id="EditorScrollUp" />
+      <action id="EditorUp" />
+      <action id="EditorScrollUp" />
+      <action id="EditorUp" />
+      <action id="EditorScrollUp" />
+      <action id="EditorUp" />
+      <action id="EditorScrollUp" />
+      <action id="EditorUp" />
+      <action id="EditorScrollUp" />
+      <action id="EditorUp" />
+      <action id="EditorScrollUp" />
+      <action id="EditorUp" />
+      <action id="EditorScrollUp" />
+      <action id="EditorUp" />
+      <action id="EditorScrollUp" />
+      <action id="EditorUp" />
+      <action id="EditorScrollUp" />
+      <action id="EditorUp" />
+    </macro>
+  </component>
+</application>

@@ -1,0 +1,66 @@
+<application>
+  <component name="TimeBetweenTyping">
+    <dailyDataMap>
+      <entry key="2026-05-18">
+        <DailyData>
+          <option name="count" value="667" />
+          <option name="totalTime" value="792534" />
+        </DailyData>
+      </entry>
+      <entry key="2026-05-19">
+        <DailyData>
+          <option name="count" value="327" />
+          <option name="totalTime" value="437199" />
+        </DailyData>
+      </entry>
+      <entry key="2026-05-29">
+        <DailyData>
+          <option name="count" value="43" />
+          <option name="totalTime" value="56256" />
+        </DailyData>
+      </entry>
+      <entry key="2026-06-02">
+        <DailyData>
+          <option name="count" value="507" />
+          <option name="totalTime" value="235898" />
+        </DailyData>
+      </entry>
+      <entry key="2026-06-03">
+        <DailyData>
+          <option name="count" value="454" />
+          <option name="totalTime" value="476994" />
+        </DailyData>
+      </entry>
+      <entry key="2026-06-04">
+        <DailyData>
+          <option name="count" value="248" />
+          <option name="totalTime" value="214841" />
+        </DailyData>
+      </entry>
+      <entry key="2026-06-15">
+        <DailyData>
+          <option name="count" value="10" />
+          <option name="totalTime" value="5959" />
+        </DailyData>
+      </entry>
+      <entry key="2026-06-21">
+        <DailyData>
+          <option name="count" value="12" />
+          <option name="totalTime" value="9569" />
+        </DailyData>
+      </entry>
+      <entry key="2026-06-29">
+        <DailyData>
+          <option name="count" value="190" />
+          <option name="totalTime" value="318596" />
+        </DailyData>
+      </entry>
+      <entry key="2026-07-24">
+        <DailyData>
+          <option name="count" value="9" />
+          <option name="totalTime" value="8532" />
+        </DailyData>
+      </entry>
+    </dailyDataMap>
+  </component>
+</application>
