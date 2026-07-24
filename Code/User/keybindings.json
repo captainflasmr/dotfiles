@@ -80,7 +80,7 @@
         "when": "editorHasDocumentFormattingProvider && editorTextFocus && !editorReadonly && !inCompositeEditor"
     },
     {
-        "key": "alt+a",
+        "key": "ctrl+w",
         "command": "workbench.action.files.save"
     },
     {
@@ -124,7 +124,7 @@
         "when": "editorTextFocus"
     },
     {
-        "key": "ctrl+w h",
+        "key": "ctrl+o",
         "command": "workbench.action.previousEditor"
     },
     {
@@ -137,7 +137,7 @@
         "when": "activePanel != ''"
     },
     {
-        "key": "ctrl+w l",
+        "key": "alt+o",
         "command": "workbench.action.nextEditor"
     },
     {
@@ -331,7 +331,7 @@
     },
     // Bookmarks — match Emacs M-o (bookmark-jump) and C-x r {m,b,l}
     {
-        "key": "alt+o",
+        "key": "ctrl+c o",
         "command": "bookmarks.listFromAllFiles"
     },
     {
