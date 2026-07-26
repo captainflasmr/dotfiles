@@ -1,0 +1,976 @@
+-*- mode: org; fill-column: 100; org-tags-column: 0; line-spacing: 0 -*-
+#+author: James Dyer
+#+html_head: <link rel="stylesheet" type="text/css" href="custom-styles_001.css" />
+#+options: toc:nil author:t title:t date:nil tex:t tags:nil todo:t
+#+startup: noinlineimages overview
+#+hugo_base_dir: .
+#+latex_class_options: [a4paper,portrait,11pt,twocolumn]
+#+latex_header: \fancyhead[C]{Jasspa MicroEmacs Blog}
+#+exclude_tags: noexport
+#+filetags: :@jasspa:@linux:@emacs:
+
+* Preface
+
+This document is a working notebook on configuring Jasspa's MicroEmacs (meaning =mesw=, the X11 GUI variant; the console variant is =mesc=). It records a session of incremental customisation of the user setup file [[file:~/.config/jasspa/meuser/meuser.emf][meuser.emf]], including the dead-ends, the diagnosis steps, and the underlying MicroEmacs concepts that each fix taught us.
+
+The aim is not just "what was changed" but /why/ the change works and /what was learned about MicroEmacs/ along the way so the knowledge survives longer than the config edit that produced it.
+
+MicroEmacs has a small surface area but a deep layering model: the same concept (key bindings, modes, hooks) can be set globally, per-buffer, per file-type, or per-session, and the rules about which layer wins are not always obvious. Most of this document is about untangling those layers.
+
+** How this document is organised
+
+Each top-level section is a self-contained story that could be spun off into a blog post:
+
+- The *problem* as it appeared at the keyboard.
+- *What we tried*, including attempts that failed and why they failed (these are often more instructive than the final fix).
+- The *root cause* once uncovered.
+- The *solution* as it now sits in =meuser.emf=.
+- A *concepts* subsection covering the MicroEmacs mechanism in general terms, so it transfers to future problems.
+
+A [[*Key Concepts Reference][Key Concepts Reference]] section collects the general mechanisms in one place, and a [[*Current Customisations Summary][Current Customisations Summary]] section lists every binding we ended up with.
+
+** The binary in use
+
+Single-file build =mesw= dated 2026-06-01 (=mesw -V= → "MicroEmacs 26 - Date 2026-06-01 - linux"), installed at =~/bin/mesw=. This build has all the standard macro files (=.emb=, the compiled form of =.emf=) embedded inside the binary; there is no separate =~/MicroEmacs/macros/= tree on this machine, which matters for the autoload discussion below.
+
+* The Three Configuration Files
+
+MicroEmacs user configuration lives in a directory pointed at by =$MEUSERPATH= (defaulting to =~/.config/jasspa/<user-name>/=). The user name defaults to =meuser= unless overridden with =mesw -u <name>=, so on this machine the directory is =~/.config/jasspa/meuser/=.
+
+Three files in that directory do different jobs and it is essential to know which is which before changing anything:
+
+| File         | Loaded at                           | Holds                                                                                           | Edit by hand?                                                                             |
+|--------------+-------------------------------------+-------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------|
+| =meuser.emf= | Startup                             | Macro definitions, key bindings, global modes                                                   | Yes                                                                                       |
+| =meuser.erf= | Startup (before =.emf=) and on save | Registry of saved settings (fhook flags, file-tool commands, mouse bindings, platform settings) | Usually via =user-setup= / =Tools > User Setup=, but can be edited when ME is not running |
+| =meuser.esf= | Session load / save                 | Saved session: open buffers, window layout, =kill= ring of executed commands, mark positions    | No — managed by =read-session= / =update-session=                                         |
+
+A fourth class of files, =meuser.eff= (favourites) and =meuser_001.emf= (an alternate setup file), exist on this machine but are not loaded by the default startup.
+
+** Load order (simplified)
+
+1. =mesw= starts, loads embedded macros, runs =me.emf= (the main startup macro).
+2. =me.emf= installs default key bindings, e.g. =esc q= → =ifill-paragraph=.
+3. =me.emf= reads the registry file =meuser.erf= (via the platform =execute-file $platform= step), which restores file-hook setup strings, mouse config, etc.
+4. =me.emf= calls =execute-file= on the user setup file =meuser.emf= (pointed at by the registry key =/history/setup-file=). Our customisations run here, *after* the default bindings from step 2, so our =global-bind-key= calls can override defaults.
+5. =me.emf= calls =execute-file "session"= which loads =meuser.esf=, restoring buffers and windows. Existing buffers created in step 4 get their file hooks fired, which may install *buffer-local* bindings.
+6. Editor enters interactive event loop.
+
+The order matters: anything =meuser.emf= does can be overridden by a file hook later in the same startup (because =buffinit= runs *after* the buffer is created, which is after our setup file). Several of the dead-ends below are because of exactly that.
+
+** Why =.erf= can bite you
+
+The =.erf= is normally edited through the =user-setup= dialog (=esc m= → =Start-Up= tab, etc.), but some settings (notably the per-file-type hook setup strings like ="emf" = "bdfgnopxhIe"=) are not exposed in the dialog and only show up by reading the registry file. Worse, the =.erf= is rewritten by ME on certain exits, so editing it by hand /while ME is running/ is ineffective. The rule we learned: stop ME, edit the =.erf=, start ME fresh.
+
+* TODO The Autoload System: define-macro-file :@jasspa:@macros:
+
+MicroEmacs can delay loading a macro file (=.emf= source / =.emb= compiled) until a command it defines is first invoked. This is registered with the =define-macro-file= command:
+
+#+begin_src emf
+define-macro-file <basename> <command-1> <command-2> ... <command-n>
+#+end_src
+
+This tells ME: "if any of =command-1=…=command-n= is called and not yet defined, load the macro file =<basename>= (searching =$MEUSERPATH= then =$MEPATH=) before resolving the call." The commands are not /defined/ by this line — they're /promised/ by it. The actual definitions live in the named file.
+
+On this machine, the single-file =mesw= has all the standard =.emb= files embedded, so =execute-file "hkdirlst"= (for example) loads the directory list hook from inside the binary, not from disk. The autoload registration still has to be correct: it tells ME *which* embedded file provides *which* commands.
+
+** Debugging autoload problems
+
+The error =[No such command "<name>")]= at startup usually means a =global-bind-key= (or =buffer-bind-key=) referenced a command that no =define-macro-file= has promised. ME doesn't know where to fetch it from, so the binding fails.
+
+The fix is always to add a =define-macro-file= line that registers the command against the file that actually defines it. Finding that file requires either reading the ME sources (on GitHub at =https://github.com/bjasspa/jasspa= under =microemacs/macros/=) or grepping the binary strings (=strings mesw | grep <command-name>=).
+
+* TODO Startup Error: "No such command xml-goto-matching-tag" :@jasspa:@macros:
+
+** The problem
+
+On startup =mesw= printed:
+
+#+begin_example
+[No such command "xml-goto-matching-tag"]
+[global-bind-key xml-goto-matching-tag "C-A-n":: Error executing
+/home/jdyer/.config/jasspa/meuser/meuser.emf, line 72]
+#+end_example
+
+Line 72 of =meuser.emf= was:
+
+#+begin_src emf
+global-bind-key xml-goto-matching-tag "C-A-n"
+#+end_src
+
+** What we tried
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
+
+We confirmed the binding was the only thing on the failing line and that =xml-goto-matching-tag= was indeed the command name we wanted (we had been using it interactively in XML files before).
+
+We then searched the ME sources on GitHub. The command is defined in =microemacs/macros/xmlutil.emf=. The XML file hook (=hkxml.emf=) has a line like:
+
+#+begin_src emf
+!iif &not &exist xml-forward-tag  execute-file "xmlutil"
+#+end_src
+
+So the command only becomes available *after* =hkxml= runs — which only happens when you open a file with a =.xml= extension or set the buffer to =xml-mode=. At startup, with no XML buffer open, the command is unknown.
+
+** Root cause
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
+
+=global-bind-key= requires the command name to be resolvable at the time the binding is installed. The autoload for =xmlutil= was not registered, only implicitly triggered by the file hook.
+
+** Solution
+
+Added a =define-macro-file= line just before the binding:
+
+#+begin_src emf
+define-macro-file xmlutil xml-forward-tag xml-backward-tag xml-goto-matching-tag xml-find-tag xml-collapse-tag xml-verify
+global-bind-key xml-goto-matching-tag "C-A-n"
+global-bind-key xml-collapse-tag "C-A-i"
+global-bind-key xml-collapse-tag "A-tab"
+global-bind-key xml-collapse-tag "esc tab"
+#+end_src
+
+=define-macro-file= registers all six =xml-*= commands as living in =xmlutil=, so =global-bind-key= accepts the names and ME will pull in =xmlutil= the first time one is actually invoked.
+
+** Concepts
+
+- [[*The Autoload System: define-macro-file][The Autoload System]] — the promise/resolve model.
+- Bindings are resolved at install time, not at invocation time. A =global-bind-key= for a non-existent command fails immediately; a =global-bind-key= for an autoloaded command name succeeds, and the file load is deferred until first use.
+- File hooks are /lazy/ — they only run when a matching buffer is created.  Anything you want available /before/ any matching buffer exists must be registered via =define-macro-file= or =execute-file=.
+
+* TODO Customising the Directory Listing (dirlst) Mode :@jasspa:@dirlst:
+
+MicroEmacs' directory browser (open it with =file-browser=, bound here to =C-x m=) is implemented in =hkdirlst.emf=. The buffer is called =*files*= (or =*directory*= for the tree view), is in =view= mode (read-only), and gets its key bindings from a set of parallel list variables defined in the hook. This section is the longest because we customised dirlst extensively and each customisation taught a different MicroEmacs concept.
+
+The goal bindings we wanted, dired-style:
+
+| Key | Default action      | Wanted action          |
+|-----+---------------------+------------------------|
+| =f= | Toggle filter       | Open file under cursor |
+| =F= | (unbound)           | Toggle filter          |
+| =w= | Search by order col | File-tool menu         |
+| =n= | New folder          | Next file line         |
+| =p= | (unbound)           | Previous file line     |
+
+** The dirlst command-table system
+
+=hkdirlst.emf= defines five parallel =|= (pipe)-delimited list variables:
+
+#+begin_example
+.fhook-dirlst.command-flag   "thbio|thbio|...|"
+.fhook-dirlst.command-name   "file-browser-swap-buffers|file-browser-close|dirlst-up-dir|..."
+.fhook-dirlst.command-nbind  "||||||...|"
+.fhook-dirlst.command-kbind  "tab|f10|backspace|l|f5|f|s|w|...|"
+.fhook-dirlst.command-desc   "Swap Browser Windows|Close File Browser|..."
+#+end_example
+
+Position /i/ in each list describes one command:
+- =command-name= - the macro/command to invoke
+- =command-kbind= - the key to bind it to (empty = no key binding)
+- =command-nbind= - the numeric argument to pass (empty = no numeric arg)
+- =command-flag= - flags: =b= view-mode allowed, =i= interactive, =o= only-in-this-buffer, =t= toolbar, =h= hilighted line, etc.
+- =command-desc=  - text shown in the menu
+
+When a =*files*= buffer is created (or revisited), =buffinit= (the generic buffer-initialisation macro) walks these lists and calls =buffer-bind-create= for each non-empty =command-kbind= entry, installing the binding *buffer-locally*.
+
+This is the crucial fact: the bindings are installed /every time the buffer is initialised/, from the lists. Anything you =buffer-bind-key= by hand into a dirlst buffer will be overwritten the next time the buffer's init-hooks run.
+
+** Attempt 1 (failed): buffer-bind-key in wrapper macros
+
+We already had a wrapper macro, =my-dirlst-up-dir=, that called =dirlst-up-dir= and then bound =w= to =file-tool-menu= buffer-locally. We extended it:
+
+#+begin_src emf
+define-macro my-dirlst-up-dir
+  dirlst-up-dir
+  buffer-bind-key "file-tool-menu" "w"
+  buffer-bind-key "dirlst-find-file" "f"
+  -1 buffer-bind-key "file-browser-set-filter" "F"
+!emacro
+global-bind-key my-dirlst-up-dir "A-e"
+#+end_src
+
+We bound the same things in =my-file-browser= (which calls =find-file=, creating the =*files*= buffer). Result: =F= worked (the default binding for =F= in the lists was empty, so ours wasn't overridden) but =f= still filtered — the dirlst hook reinstalled =f= → =file-browser-set-filter= from the list at position 6, /after/ our wrapper ran.
+
+** Attempt 2 (worked): patch the lists
+
+The robust fix is to modify the list variables themselves, so =buffinit= installs the /wanted/ bindings in the first place. We add this to =meuser.emf=:
+
+#+begin_src emf
+execute-file "hkdirlst"
+set-variable .fhook-dirlst.command-name &lset .fhook-dirlst.command-name 6 "dirlst-find-file"
+set-variable .fhook-dirlst.command-nbind &lset .fhook-dirlst.command-nbind 6 ""
+set-variable .fhook-dirlst.command-kbind &lset .fhook-dirlst.command-kbind 25 "F"
+set-variable .fhook-dirlst.command-name &lset .fhook-dirlst.command-name 25 "file-browser-set-filter"
+set-variable .fhook-dirlst.command-nbind &lset .fhook-dirlst.command-nbind 25 "-1"
+set-variable .fhook-dirlst.command-name &lset .fhook-dirlst.command-name 8 "file-tool-menu"
+set-variable .fhook-dirlst.command-nbind &lset .fhook-dirlst.command-nbind 8 ""
+#+end_src
+
+The =execute-file "hkdirlst"= is needed because the list variables are only created when =hkdirlst= is loaded (otherwise =&lset= runs against an empty variable).
+
+=&lset= edits position /n/ of a pipe-delimited list (1-indexed). Position 6 is =f=; position 8 is =w=; position 25 was previously empty (we put =F= there). The matching =command-nbind= for the =F= entry is set to ="-1"= because — as we discovered separately — =file-browser-set-filter= needs a -1 numeric argument to take its toggle branch (see [[*Numeric arguments to bound commands][Numeric arguments to bound commands]]).
+
+** The "w" / file-tool-menu mystery
+
+While doing the above, =w= suddenly started emitting:
+
+#+begin_example
+[file-macro file-tool-menu not defined]
+#+end_example
+
+The /pre-existing/ line in =meuser.emf= was:
+
+#+begin_src emf
+define-macro-file hkdirlst file-browser file-browser-close dirlst-up-dir file-tool-menu
+#+end_src
+
+This /claimed/ =file-tool-menu= lived in =hkdirlst=. But it doesn't — a GitHub search found =define-macro file-tool-menu= in =osdmisc.emf=. By lying to ME about where to find it, we made the autoload fetch the wrong file, which of course doesn't define the command, leading to the placeholder error.
+
+**Solution*: split into two honest registrations:
+
+#+begin_src emf
+define-macro-file hkdirlst  file-browser file-browser-close dirlst-up-dir dirlst-find-file file-browser-set-filter
+define-macro-file osdmisc  file-tool-menu
+#+end_src
+
+*Lesson*: =define-macro-file= doesn't define the commands — it /promises/ them. If the promise names the wrong file, the file load succeeds but the command stays undefined, producing this error instead of "No such command".  Always verify which file actually contains =define-macro <name>= before registering.
+
+** Numeric arguments to bound commands
+
+Our first attempt at rebound =F= → =file-browser-set-filter= failed with:
+
+#+begin_example
+[Failed to get argument for function &lef in macro file-browser-set-filter]
+#+end_example
+
+Looking at =file-browser-set-filter= in =hkdirlst.emf=:
+
+#+begin_src emf
+0 define-macro file-browser-set-filter
+  !if &not @?
+    set-variable @# &seq &lef @1 1 "N"     ; <-- crashes here
+  !elif &les @# 0
+    set-variable @# &bxor 1 &lget .fhook-dirlst.mode 2
+  !endif
+  ...
+!emacro
+#+end_src
+
+- =@?= is truthy when a numeric argument was supplied to the command (=universal-argument= / prefix arg). =@1= is the first string argument.
+- The default dirlst binding for =f= used =command-nbind[6] = "-1"=, so the toggle branch was used.
+- Our =buffer-bind-key "file-browser-set-filter" "F"= supplied /no/ numeric argument, so =@?= was false and the macro tried =&lef @1 1= on an empty =@1=, which errors.
+
+The fix in the list-patching approach was to set =command-nbind= for the =F= entry to ="-1"=. The mechanism: =buffinit= calls =buffer-bind-create= which calls =buffer-bind-key= with the numeric argument from =command-nbind=, ensuring the bound command sees =@# = -1=.
+
+In general, when you bind a command that branches on =@?= / =@#=, you must match the numeric arg the default binding used. The =command-nbind= list is where these defaults live.
+
+** n and p navigation, and view-mode command flags
+
+For dired-style =n= / =p= we defined two small macros:
+
+#+begin_src emf
+define-macro dirlst-next-line
+  forward-line
+  !if &les $window-line 5
+    set-variable $window-line 5
+  !endif
+!emacro
+define-macro dirlst-prev-line
+  !if &gre $window-line 5
+    backward-line
+  !endif
+!emacro
+#+end_src
+
+Line 5 is the first file line in a dirlst buffer (lines 1–4 are header). The clamps keep the cursor in the file listing.
+
+We patched =n= (position 36, was =dirlst-new-folder=) and appended =p=:
+
+#+begin_src emf
+set-variable .fhook-dirlst.command-name &lset .fhook-dirlst.command-name 36 "dirlst-next-line"
+set-variable .fhook-dirlst.command-nbind &lset .fhook-dirlst.command-nbind 36 ""
+set-variable .fhook-dirlst.command-name &cat .fhook-dirlst.command-name "dirlst-prev-line|"
+set-variable .fhook-dirlst.command-kbind &cat .fhook-dirlst.command-kbind "p|"
+set-variable .fhook-dirlst.command-nbind &cat .fhook-dirlst.command-nbind "|"
+set-variable .fhook-dirlst.command-flag   &cat .fhook-dirlst.command-flag   "bio|"
+#+end_src
+
+The =n= entry at position 36 inherited the original =dirlst-new-folder= flag string ="bio"=, so it was already view-mode-safe. The appended =p= entry, however, needed its own flag — and the first attempt only set ="h|"= (hilight, no view-mode bit). Result on first use:
+
+#+begin_example
+[Command illegal in VIEW mode]
+#+end_example
+
+The fix: use ="bio|"= for the appended entry. The flag letters:
+
+| Letter | Meaning                        |
+|--------+--------------------------------|
+| =b=    | Permitted in view-mode buffers |
+| =i=    | Interactive                    |
+| =o=    | Only-this-buffer               |
+| =t=    | Appears in toolbar menu        |
+| =h=    | Hilight line pre/post          |
+
+*Lesson*: every command in the table needs the right flag letters, especially =b= for view-mode buffers like dirlst. When you append a new entry you must supply a flag string — an empty or insufficient flag defaults to "edit-mode only".
+
+** Concepts
+
+- File hooks own their bindings; patching the hook's tables is more robust than =buffer-bind-key= after the fact.
+- Pipe-delimited lists and the =&lset= / =&cat= operators.
+- Numeric argument semantics: =@?=, =@#=, =@1=, the =universal-argument= connection, and the =command-nbind= list.
+- View-mode command flags in =command-flag=, specifically the =b= bit.
+
+* TODO Window Management Customisation :@jasspa:@windows:
+
+We added four window-management shortcuts:
+
+| Key                 | Action                                  |
+|---------------------+-----------------------------------------|
+| =A-H= / =esc H=     | Shrink window horizontally (width)      |
+| =A-L= / =esc L=     | Enlarge window horizontally (width)     |
+| =A-C-k= / =esc C-k= | Shrink window vertically (depth)        |
+| =A-C-j= / =esc C-j= | Enlarge window vertically (depth)       |
+| =A-m= / =esc m=     | Split vertically and move to new window |
+| =A-q= / =esc q=     | Delete current window                   |
+
+There are two primitives:
+
+- =change-window-width= — horizontal (width). Negative shrinks, positive enlarges; the number is the column count to change by.
+- =change-window-depth= — vertical (depth). Same sign convention.
+
+The existing =split-and-switch= macro in =meuser.emf= was a useful template for =A-m=: call the split primitive, then =next-window= to move into the new pane.
+
+#+begin_src emf
+define-macro split-vertical-and-switch
+  split-window-vertically
+  next-window
+!emacro
+global-bind-key split-vertical-and-switch "A-m"
+global-bind-key split-vertical-and-switch "esc m"
+#+end_src
+
+** The A-J / A-K case-folding collision
+
+Our first attempt at vertical resize used =A-J= (enlarge) and =A-K= (shrink). After adding those, the existing cursor-move bindings =A-j= / =A-k= (down-some / up-some, 5-line moves) stopped working and instead reported =[Only one vertical window]=.
+
+The cause: MicroEmacs *case-folds its key name lookup*. =A-j= and =A-J= share one binding slot — whoever registers last wins. Our =my-enlarge-window-vert=, bound to =A-J=, clobbered =down-some= on =A-j= because the resize macro was registered later. Calling =A-j= then tried =change-window-depth=, which fails with that error when there is only one window.
+
+Fix: move vertical resize to =A-C-j= / =A-C-k= (Alt+Ctrl), which don't collide with the lowercase cursor bindings. This is also why horizontal =A-H= / =A-L= worked fine — there were no =A-h= / =A-l= bindings to collide with.
+
+** The ESC-prefix variant requirement
+
+The =A-C-j= binding alone still failed:
+
+#+begin_example
+[Key not found "esc C-j"]
+#+end_example
+
+In the terminal, ME encodes the Alt modifier as a literal =ESC= byte before the key, so =A-C-j= is actually received by ME as =esc C-j=. The ME key-binding lookup, however, treats =A-…= and =esc …= as *different key names* unless you register both.
+
+The existing bindings in =meuser.emf= all follow the pattern of registering both forms, e.g.:
+
+#+begin_src emf
+global-bind-key next-window "A-n"
+global-bind-key next-window "esc n"
+#+end_src
+
+So we did the same for the resize bindings:
+
+#+begin_src emf
+global-bind-key my-shrink-window-vert "A-C-k"
+global-bind-key my-shrink-window-vert "esc C-k"
+global-bind-key my-enlarge-window-vert "A-C-j"
+global-bind-key my-enlarge-window-vert "esc C-j"
+#+end_src
+
+This applied only to keys where we introduced a new modifier combination; for plain =A-H= / =A-L= / =A-m= / =A-q= we registered the =esc= variant at the same time, which is the standard ME convention.
+
+** Concepts
+
+- =change-window-width= vs =change-window-depth= plus sign convention.
+- [[*Key name case folding][Key name case folding]]
+- [[*Terminal Alt = ESC prefix][Terminal Alt = ESC prefix]]
+
+* TODO The comment-restyle / esc q Mystery :@jasspa:@bindings:
+
+We wanted =A-q= (and its terminal alias =esc q=) to delete the current window. Bindings:
+
+#+begin_src emf
+global-bind-key delete-window "A-q"
+global-bind-key delete-window "esc q"
+#+end_src
+
+But =esc q= kept invoking =comment-restyle= / =ifill-paragraph= even after we added the global binding. The cause turns out to be /three/ independent layers of binding, each of which had to be defused.
+
+** Layer 1: me.emf installs the default
+
+=me.emf= (the main startup macro) line 241:
+
+#+begin_src emf
+1 global-bind-key ifill-paragraph "esc q"
+#+end_src
+
+Our =meuser.emf= runs after =me.emf= in startup, so a plain =global-bind-key delete-window "esc q"= at the end of =meuser.emf= overrides this layer successfully — we verified [esc q](cmd) → =delete-window= at the end of startup, before any buffer is loaded.
+
+So this wasn't the actual problem, but it's where we initially suspected it. The lesson: if a global binding doesn't "stick", check that some *buffer-local* binding isn't shadowing it.
+
+** Layer 2: EMF file-hook binds A-q buffer-locally
+
+=hkemf.emf= (the EMF file hook) sets up:
+
+#+begin_src emf
+set-variable .fhook-emf.command-name  "|expand-abbrev-handle|emf-quote-command|emf-quote-command||execute-buffer|restyle-buffer|"
+set-variable .fhook-emf.command-kbind "||A-q|C-c C-q||C-c C-x|C-c f|"
+#+end_src
+
+Position 3 of this layout binds =A-q= → =emf-quote-command= in any EMF-mode buffer. Because ME case-folds key names, this also overrides any =esc q= binding in the same buffer (since =esc q= and =A-q= share the slot).
+
+This explained why =esc q= worked in non-EMF buffers but fired =restyle-buffer= / =ifill-paragraph= (depending on path) in EMF buffers — the buffer-local binding installed by the file hook wins over the global one.
+
+We defused it by clearing position 3 of the kbind list:
+
+#+begin_src emf
+execute-file "hkemf"
+set-variable .fhook-emf.command-kbind &lset .fhook-emf.command-kbind 3 ""
+#+end_src
+
+** Layer 3: buffinit rebinds esc o / esc q to comment-restyle
+
+After fixing layer 2 we restarted, and =esc q= /still/ fired =comment-restyle= in EMF buffers. The cause was in [[file:~/.config/jasspa/meuser/meuser.emf][comment.emf]]'s comment system, invoked by the generic =buffinit.emf=:
+
+#+begin_src emf
+!if &sin "r" &lget #l5 6
+  buffer-bind-create "bo" "esc o" "" comment-restyle
+  buffer-bind-create "bo" "esc q" "" comment-restyle
+!endif
+#+end_src
+
+=#l5= is the per-file-type =.fhook-<type>.comment= string. Its 6th =|-delimited field is the flag set, and the =r= flag means "rebind the fill-paragraph keys to =comment-restyle=". For EMF buffers the registry (=meuser.erf=) and =hkemf= both set:
+
+#+begin_example
+"emf" = "bdfghnopxhIe"
+.fhook-emf.comment = "|;||;|; | ;|r|"
+#+end_example
+
+The trailing =r= triggers exactly the buffinit block above. So even with the file-hook's own command table cleaned up (layer 2), buffinit still installed =esc q= → =comment-restyle= *buffer-locally* for every EMF buffer at creation time.
+
+Fix: strip the =r= flag from the comment definition:
+
+#+begin_src emf
+set-variable .fhook-emf.comment "|;||;|; | ;||"
+#+end_src
+
+(The trailing field is now empty instead of =r=.)
+
+** Why three layers?
+
+MicroEmacs has at least three independent mechanisms for installing buffer-local bindings:
+
+1. The file hook's own command table (=.fhook-<type>.command-*=), processed
+   by =buffinit= into per-buffer =buffer-bind-create= calls.
+2. =buffinit='s special-case comment handling, which reads
+   =.fhook-<type>.comment= and installs =esc o= / =esc q= bindings
+   separately from the command table.
+3. =buffer-bind-key= calls you make yourself in a wrapper macro.
+
+All three stack — the last one to run for a given buffer wins. The file hook command table runs /inside/ =buffinit= before the comment block, so you must defuse both. Our final block in =meuser.emf=:
+
+#+begin_src emf
+execute-file "hkemf"
+set-variable .fhook-emf.command-kbind &lset .fhook-emf.command-kbind 3 ""
+set-variable .fhook-emf.comment "|;||;|; | ;||"
+global-bind-key delete-window "A-q"
+global-bind-key delete-window "esc q"
+#+end_src
+
+** Concepts
+
+- [[*Key binding layers][Key binding layers]] — global, buffer-local (file-hook command table), buffer-local (buffinit special cases).
+- =buffinit= semantics: =.fhook-<type>.comment= flag letters, the =r= flag, and the comment-restyle rebinding.
+- File hook setup strings and their character meanings (see [[*File hook setup string character meanings][File hook setup string character meanings]]).
+
+* TODO Case-Insensitive Searching :@jasspa:@search:
+
+We wanted isearch (=C-s= / =C-r=) and friends to be case-insensitive in all buffers by default. This turned out to be a three-step journey with one trap that the docs don't make obvious.
+
+** Attempt 1 (failed): wrap isearch in a macro
+
+Our first idea was a wrapper macro:
+
+#+begin_src emf
+define-macro my-isearch-forward
+  -1 buffer-mode "exact"
+  isearch-forward
+!emacro
+global-bind-key my-isearch-forward "C-s"
+#+end_src
+
+The mechanism is right — =isearch= respects the buffer's =exact= mode, and =-1 buffer-mode "exact"= turns exact mode /off/ (case-insensitive).  Verified empirically:
+
+| Buffer exact mode | Search for "HELLO" in text "hello" | Result  |
+|-------------------+------------------------------------+---------|
+| ON                | search-buffer "m" "HELLO"          | found=0 |
+| OFF               | search-buffer "m" "HELLO"          | found=1 |
+
+But the wrapper doesn't work interactively: =isearch-forward='s docs say "When invoked from a macro then the string argument =arg= specifies the search string... =isearch= is primarily designed for interactive use."  Called from inside a macro, it doesn't read interactive key input — it uses whatever was in the search string and immediately reports =[FOUND]=.  The incremental typing experience is lost.
+
+*Lesson*: interactive primitives (=isearch=, =occur=, anything that pops a minibuffer dialog) cannot be usefully called from inside a wrapper macro.
+
+** Attempt 2 (partly worked): global-mode
+
+The =global-mode(2)= manual page's own example says:
+
+#+begin_quote
+The following example globally disables =exact= and =magic= modes, if these lines are copied to the user setup file then are searches will be simple and case insensitive by default:
+
+#+begin_src emf
+-1 global-mode "exact"
+-1 global-mode "magic"
+#+end_src
+#+end_quote
+
+=global-mode= sets the default for /all newly-created buffers/; isearch respects the buffer's exact mode, so this changes the default. We added just =-1 global-mode "exact"= (we want to keep =magic= for regex search).
+
+Probing with a non-EMF buffer at end of startup confirmed =search-buffer= became case-insensitive. But in EMF buffers it was still case-sensitive.
+
+** Root cause: the EMF file hook enables exact mode
+
+=[[file:~/.config/jasspa/meuser/meuser.erf][meuser.erf]] line 30 had:
+
+#+begin_example
+"emf" = "bdfgnopxhIe"
+#+end_example
+
+This is the registry-saved value of =.fhook-emf.setup=. Each character is a flag for a feature the EMF file hook should enable — and the trailing =e= enables exact mode for every EMF buffer, overriding the global default.
+
+The full flag alphabet for =.fhook-emf.setup= is defined in =hkemf.emf=:
+
+| Letter | Effect                                       |
+|--------+----------------------------------------------|
+| =b=    | Backup mode                                  |
+| =d=    | Indent (auto-indent on return)               |
+| =f=    | Folding                                      |
+| =g=    | Abbreviations (=abbrev-list=)                |
+| =h=    | Hilighting (syntax colouring)                |
+| =n=    | Line numbers in margin? (not currently used) |
+| =o=    | Auto-format (overwrite/no-wrap behaviour)    |
+| =p=    | Paragraph fill                               |
+| =x=    | =execute-buffer= (allow script execution)    |
+| =I=    | Item-list                                    |
+| =e=    | Exact mode (case-sensitive search & sort)    |
+
+(These letters correspond to bits in the =.fhook-*.setup-mask= — see =hkemf.emf= line 21 for the canonical mask.)
+
+The =e= was the culprit. Removing it from the =.erf= setting and restarting gave us case-insensitive search in EMF buffers too.
+
+We edited the =.erf= by hand (=meuser.erf= line 30 → "bdfgnopxhI") while ME was not running. The =meuser.erf= file is rewritten by ME on certain exits, so hand-editing it *while ME is running* may have no effect — stop the binary first.
+
+Final state in =meuser.emf= (belt and braces, in case the registry loses the setting):
+
+#+begin_src emf
+-1 global-mode "exact"
+#+end_src
+
+And in =meuser.erf=:
+
+#+begin_example
+"emf" = "bdfgnopxhI"
+#+end_example
+
+** Concepts
+
+- [[*global-mode vs buffer-mode][global-mode vs buffer-mode]]
+- [[*File hook setup string character meanings][File hook setup string character meanings]] — the per-file-type =setup= string is a packed feature bitmask, and it overrides the global default for matching buffers.
+- The =.erf= registry is ME's persistent store for these settings; they're not in =meuser.emf= because they're managed by the =user-setup= dialog.
+
+* TODO Buffer Start/End in the GUI: A-< and A-> :@jasspa:@bindings:
+:PROPERTIES:
+:EXPORT_FILE_NAME: 20260726-jasspa--a-lt-a-gt
+:EXPORT_HUGO_SECTION: jasspa
+:END:
+
+** The problem
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
+
+In the GUI (=mesw= under X11) pressing =Alt+<= reported:
+
+#+begin_example
+[Key not bound "A-<"]
+#+end_src
+
+and likewise for =Alt+>=. The default =beginning-of-buffer= / =end-of-buffer= bindings (in =me.emf=) are =esc <= / =esc >=, which work in the terminal (where Alt is encoded as an =ESC= prefix) but /not/ in the GUI, where =Alt+<= is a distinct key event named =A-<=.
+
+** What we tried
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
+
+Inspection of the saved session =meuser.esf= found a kill-ring replay line:
+
+#+begin_src emf
+global-bind-key beginning-of-buffer "A-<"
+#+end_src
+
+This was presumably a binding we'd added interactively in a previous session, which got recorded into the session's =kill= section and replayed on session load. But relying on the session replay is fragile — the binding only exists for sessions that contain that replay line, and the session kill-ring is easy to lose (e.g. on a crash, or when the session is saved from a different state).
+
+** Root cause
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
+
+The setup file =meuser.emf= never had an =A-<= / =A->= binding. The defaults (=esc <= / =esc >=) cover the terminal but not the GUI's distinct =A-<= key event. ME's key-name lookup treats =A-<= and =esc <= as *different* keys (see [[*Terminal Alt = ESC prefix][Terminal Alt = ESC prefix]]), so the default =esc <= binding does not match a GUI =Alt+<= press.
+
+** Solution
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
+
+Added to =meuser.emf= next to the other window/buffer movement bindings:
+
+#+begin_src emf
+global-bind-key beginning-of-buffer "A-<"
+global-bind-key end-of-buffer "A->"
+#+end_src
+
+The =esc <= / =esc >= defaults stay in place for terminal use; these new =A-<= / =A->= bindings cover the GUI. No =esc= alias needed because =esc <= is already a default binding (re-registering it would be redundant, not harmful).
+
+** Concepts
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
+
+- [[*Terminal Alt = ESC prefix][Terminal Alt = ESC prefix]] — why GUI and terminal need separate =A-x= / =esc x= registrations for the same logical key combo.
+- The session file's =kill= section is a replay of previously executed commands, not a reliable place to store bindings. Bindings you want to keep must live in =meuser.emf=, not in the session.
+- For non-letter keys like =<= / =>= / =,= / =.=, the case-folding rule (see [[*Key name case folding][Key name case folding]]) does not apply — =A-<= and =A->= are unambiguous single bindings.
+
+* TODO Disabling Scroll Bars in mesw (GUI) but not mesc (terminal) :@jasspa:@platform:
+:PROPERTIES:
+:EXPORT_FILE_NAME: 20260726-jasspa--scrollbar-disable
+:EXPORT_HUGO_SECTION: jasspa
+:END:
+
+** The problem
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
+
+Scroll bars were visible in the GUI build =mesw= but not in the terminal
+build =mesc=. We wanted them off in =mesw= as well — they take screen
+real estate and we use keyboard navigation exclusively.
+
+** What we tried
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
+
+Inspection of the =.erf= registry showed:
+
+#+begin_example
+"linux"  { ... "scroll-bar" = "0x1be" ... }    ; GUI / X11 (mesw)
+"linuxc" { "system" = "34666645" }              ; terminal (mesc) — no scroll-bar key
+#+end_src
+
+The =linuxc= block (used by =mesc=) carries no =scroll-bar= setting and
+inherits a no-scroll-bar default, which is why the terminal variant shows
+none. The =linux= block (used by =mesw=) is set to =0x1be=, which is a
+fully-populated scroll-bar configuration.
+
+Decoding =0x1be= against the =$scroll-bar= bit definitions
+(=https://bjasspa.github.io/jasspa/m5var055.html=):
+
+| Bit      | Mask   | Meaning                                    | In 0x1be? |
+|----------+--------+--------------------------------------------+-----------|
+| 0        | 0x001  | Vertical width (0=1col, 1=2col)           | yes       |
+| 1        | 0x002  | Upper end cap (up-arrow)                   | yes       |
+| 2        | 0x004  | Lower end cap (down-arrow)                 | yes       |
+| 3        | 0x008  | Corner character at mode-line intersection | yes       |
+| 4        | 0x010  | Scroll box enable                          | yes       |
+| 5        | 0x020  | Reverse-video scroll box                   | yes       |
+| 6        | 0x040  | Horizontal scroll bar width (OSD only)     | no        |
+| 7        | 0x080  | Splitter character at top of bar          | yes       |
+| /8/        | /0x100/  | /Master enable window scroll bars/           | /yes/       |
+| 9        | 0x200  | Each window gets a scroll bar             | no        |
+
+Bit 8 (=0x100=) is the master enable: when clear, scroll bars are absent
+from windows entirely, regardless of the other bits. That is the bit
+responsible for the visible bars.
+
+** Root cause
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
+
+The =mesw= (=linux= platform) registry default had bit 8 set along with
+decorative bits (box, caps, splitter, corner) producing the full
+scrollbar. The =mesc= (=linuxc=) platform has no =scroll-bar= setting, so
+it inherits a platform-specific default that doesn't include bit 8.
+
+** Solution (via user-setup dialog)
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
+
+We used the supported GUI path rather than hand-editing the =.erf=:
+
+1. =Esc == → =Tools= → =User Setup=.
+2. =Platform= tab → find the scroll-bar configuration popup.
+3. Set to "Off" / no scroll bar (the dialog handles the bitmask for you).
+4. Save session and exit; the registry was rewritten by ME on exit.
+
+After the change, the =linux= block now reads:
+
+#+begin_example
+"linux"  { ... "scroll-bar" = "0" ... }
+#+end_src
+
+Bit 8 is cleared (in fact all bits are cleared, so no separator is drawn
+between split windows either — that matches our preference; if we'd
+wanted a plain separator we could set e.g. =0x0be= to keep just the
+decoration bits without the master enable).
+
+** Why this matters when not hand-editing the erf
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
+
+MicroEmacs rewrites the =.erf= on exit / on =save-session= when settings
+change. Hand-editing the =.erf= while ME is running is therefore
+ineffective — your edit gets overwritten by the in-memory state on the
+next save. The =user-setup= dialog is the supported way to change
+platform settings because it updates the in-memory state that ME will
+then persist. If you ever do hand-edit a registry setting, stop all ME
+processes first.
+
+** Concepts
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
+
+- The =.erf= is partitioned per platform (=linux=, =linuxc=, =macos=,
+  =windows=, etc.) so the same setting can differ between the terminal and
+  GUI builds on the same machine. The platform name is matched at startup
+  against =$platform= (=linuxc= for =mesc=, =linux= for =mesw=).
+- =$scroll-bar= is a bitmask; bit 8 (=0x100=) is the master enable for
+  window scroll bars. The remaining bits configure the appearance of an
+  *enabled* scroll bar (caps, box, splitter, corner). Clearing bit 8 is
+  the simplest way to disable scroll bars.
+- =linuxc= is the terminal/console platform block (=c= suffix); =linux=
+  is the GUI/X11 platform block. The two are independent settings stores.
+- Use =Tools > User Setup > Platform= rather than editing the =.erf= by
+  hand whenever possible.
+
+* Key Concepts Reference :@jasspa:@reference:
+
+This section collects the general MicroEmacs mechanisms that came up across multiple customisations, so future debugging has one place to consult.
+
+** Key binding layers
+
+MicroEmacs has a stack of binding tables. From lowest to highest precedence for a given key in a given buffer:
+
+1. *Default =me.emf= bindings* — installed at startup before the user setup file runs.
+2. *Your =global-bind-key= calls* in =meuser.emf= — override the above because =meuser.emf= is loaded after =me.emf=.
+3. *File-hook command-table bindings* — installed by =buffinit= from the =.fhook-<type>.command-*= lists, *buffer-local*. These override globals for matching file types.
+4. *buffinit special-case bindings* — e.g. the =r=-flag comment block that binds =esc o= / =esc q= → =comment-restyle=. Also buffer-local.
+5. *Your own =buffer-bind-key= calls* in wrapper macros — also buffer-local, but fire after =buffinit= so they can shadow everything below them.
+
+For a global binding to "stick" everywhere, no layer above it may install a buffer-local binding for the same key. Otherwise you have to defuse that layer (as we did with the EMF =A-q= / =esc q= bindings).
+
+To probe what a key is bound to in the current buffer:
+
+#+begin_src emf
+ml-write &cbin "esc q"
+#+end_src
+
+To install a binding both globally and per-buffer you typically need to patch the file hook's lists, not just call =global-bind-key=. See [[*Customising the Directory Listing (dirlst) Mode][dirlst customisation]] for a worked example.
+
+** Key name case folding
+
+MicroEmacs folds the case of the /letter/ portion of key names when matching: =A-j= and =A-J= are the same binding slot, as are =C-a= and =C-A=. Whichever side registers last wins. Consequences:
+
+- You can't have both =A-j= (down-some) and =A-J= (vertical resize). We use =A-C-j= for the resize instead.
+- =A-q= (global) and the buffer-local =A-q= from the EMF file hook are the same key — the buffer-local one shadows the global.
+
+For keys where only one case is in use, you can freely use the other case: =A-H= / =A-L= for horizontal resize is fine because no =A-h= / =A-l= binding exists.
+
+** Terminal Alt = ESC prefix
+
+In the terminal (=mesc=, or =mesw= in a terminal-style frame), Alt is encoded as a literal =ESC= byte prefix. ME recognises the Alt binding either as =A-x= or =esc x=, but the two are *distinct key names* in the binding tables. So to make a single physical key-combo work in both GUI and terminal ME, you must register both names:
+
+#+begin_src emf
+global-bind-key next-window "A-n"
+global-bind-key next-window "esc n"
+#+end_src
+
+This is why every =A-…= binding in =meuser.emf= is paired with an =esc …= binding. Forgetting the =esc= form gives =[Key not found "esc X"]= when used in a terminal-style frame. (The =C-x= / =C-c= prefixes don't have this issue because they don't use the Alt modifier.)
+
+** Numeric arguments to bound commands
+
+Inside a macro, the special variables =@#=, =@?=, =@1=, =@2=… expose the numeric and string arguments the caller passed:
+
+- =@#= — the numeric argument (taken from =universal-argument= / prefix arg). 0 if not supplied.
+- =@?= — truthy iff a numeric argument was supplied.
+- =@1=, =@2=, … — string arguments.
+
+When a command is bound via =global-bind-key=, the user passes =@#= by typing =C-u N= before the key. When bound via the file-hook command table, the =command-nbind= entry supplies =@#= for every invocation — empty means "no numeric arg", ="-1"= means =@# = -1=, etc.
+
+Some commands branch on =@?= / =@#=. =file-browser-set-filter=, for example, uses =@? false= to mean "I was invoked with a name argument" (which it then tries to interpret via =@1= and crashes on if =@1= is empty). To safely bind such a command, match the =command-nbind= of the default binding.
+
+** File hook setup string character meanings
+
+Each file type has a =.fhook-<type>.setup= variable, persisted in the =.erf= registry, which is a string of feature-flag letters. The canonical mask (=.fhook-<type>.setup-mask=) defines which letters are available for that type; the setup string's letters enable those features. See the per-hook source (e.g. =hkemf.emf= line 21 for the EMF mask).
+
+For EMF, the important flag is =e= (exact mode) — removing it makes searches in EMF buffers case-insensitive. There is also a separate =.fhook-<type>.comment= string for the comment system, whose 6th =|-separated field can contain =r= (rebind fill keys to comment-restyle), =b= (box comment), =f= (footer), =h= (header), =j= (justify), etc. See =comment.emf= lines 13–27 for the canonical comment-flag list.
+
+** global-mode vs buffer-mode
+
+- =global-mode= (=esc m= by default, but we rebound that to vertical split) sets the default for /newly-created buffers/. Existing buffers are unchanged.
+- =buffer-mode= (=C-x m=) sets the mode on the /current/ buffer only.
+- The sign convention: =-1= removes the mode, =1= adds it, =0= toggles.
+- File hooks run /after/ the buffer is created, so file-hook features (=e= in =.fhook-<type>.setup=) override the global default for matching buffers.
+
+To make a mode globally default-off but per-file-type-on, set =global-mode= off and let file hooks turn it on for the types that need it. To make a mode globally default-on but per-file-type-off, set =global-mode= on and remove the corresponding flag letter from the file hook's =setup= string in the =.erf=.
+
+** The three user files, revisited
+
+- =meuser.emf= — your macro and binding code, executed at startup.
+- =meuser.erf= — the registry: persisted settings =meuser.emf= can read but doesn't own. Read by ME *before* =meuser.emf= runs; written by ME on exits that save settings. Hand-edit only while ME is not running.
+- =meuser.esf= — the session: open buffers, window layout, mark stack, recent commands. Managed by =read-session= / =update-session= (=Tools > Save Session= etc.). Never hand-edit.
+
+** Command discovery
+
+A few useful tools for finding your way around:
+
+- =strings mesw | grep <name>= — find which =.emb= file is embedded (but this only shows the file basename, not where the command is defined).
+- Browse =https://github.com/bjasspa/jasspa/tree/main/microemacs/macros= for the =.emf= sources. Search for =define-macro <name>=.
+- =https://bjasspa.github.io/jasspa/= — the rendered manual, including the command and variable glossaries and per-mode pages. Bookmarkable URLs of the form =m2cmd<NNN>.html= (commands) and =m5var<NNN>.html= (variables).
+- Inside ME: =C-h c= (=list-commands=), =C-h v= (=describe-variable=), =C-h b= (=describe-bindings=), =describe-key= (=C-x ?=).
+
+* Current Customisations Summary :@jasspa:@reference:
+
+A consolidated reference of the bindings and settings now in [[file:~/.config/jasspa/meuser/meuser.emf][meuser.emf]] and [[file:~/.config/jasspa/meuser/meuser.erf][meuser.erf]].
+
+** Global key bindings
+
+| Key                 | Command                                | Notes                                             |
+|---------------------+----------------------------------------+---------------------------------------------------|
+| =C-/=               | =undo=                                 |                                                   |
+| =C-;=               | =comment-line=                         |                                                   |
+| =C-c b=             | =my-copy-whole-buffer=                 | Copy whole buffer to kill ring                    |
+| =C-c c=             | =delete-other-windows=                 |                                                   |
+| =C-c o=             | =favorites=                            |                                                   |
+| =C-c w=             | =copy-region-and-deselect=             | Copy region, then unselect                        |
+| =C-q=               | =my-show-menu=                         | Popup menu (osd)                                  |
+| =C-s= / =C-r=       | =isearch-forward= / =isearch-backward= | Default bindings, unchanged                       |
+| =C-w=               | =save-buffer=                          |                                                   |
+| =C-x d=             | =my-file-browser=                      | (wrapper around =find-file=)                      |
+| =C-x g=             | =reread-file=                          |                                                   |
+| =C-x m=             | =file-browser=                         |                                                   |
+| =C-c C-k=           | =file-browser-close=                   |                                                   |
+| =C-x h=             | =my-select-whole-buffer=               |                                                   |
+| =C-x C-k=           | =kill-region=                          |                                                   |
+| =A-;= / =esc ;=     | =split-and-switch=                     | Horizontal split + move                           |
+| =A-m= / =esc m=     | =split-vertical-and-switch=            | Vertical split + move (overrides default =esc m=) |
+| =A-q= / =esc q=     | =delete-window=                        | Window kill (defused EMF hook layers)             |
+| =A-e= / =esc e=     | =dirlst-up-dir=                        | Direct binding (no wrapper)                       |
+| =A-j= / =esc j=     | =down-some=                            | 5 lines down                                      |
+| =A-k= / =esc k=     | =up-some=                              | 5 lines up                                        |
+| =A-n= / =esc n=     | =next-window=                          |                                                   |
+| =A-p= / =esc p=     | =previous-window=                      |                                                   |
+| =A-<=              | =beginning-of-buffer=                  | GUI only (=esc <= is the terminal default)       |
+| =A->=              | =end-of-buffer=                        | GUI only (=esc >= is the terminal default)       |
+| =A-H= / =esc H=     | =my-shrink-window=                     | Width -2                                          |
+| =A-L= / =esc L=     | =my-enlarge-window=                    | Width +2                                          |
+| =A-C-j= / =esc C-j= | =my-enlarge-window-vert=               | Depth +2                                          |
+| =A-C-k= / =esc C-k= | =my-shrink-window-vert=                | Depth -2                                          |
+| =A-c= / =esc c=     | =occur=                                |                                                   |
+| =A-tab= / =esc tab= | =xml-collapse-tag=                     | XML mode only                                     |
+| =C-A-n=             | =xml-goto-matching-tag=                | XML mode only                                     |
+| =C-A-i=             | =xml-collapse-tag=                     | XML mode only                                     |
+
+** Dirlst (file-browser) binding patches
+
+Applied to =.fhook-dirlst.command-*= at startup:
+
+| List position | Key | Command                   | Notes                         |
+|---------------+-----+---------------------------+-------------------------------|
+|             6 | =f= | =dirlst-find-file=        | Was =file-browser-set-filter= |
+|             8 | =w= | =file-tool-menu=          | Was =dirlst-search=           |
+|            25 | =F= | =file-browser-set-filter= | nbind ="-1"=                  |
+|            36 | =n= | =dirlst-next-line=        | Was =dirlst-new-folder=       |
+|      appended | =p= | =dirlst-prev-line=        | flag ="bio"=                  |
+
+** EMF file-hook patches
+
+| Variable                      | Change            | Effect                                                         |
+|-------------------------------+-------------------+----------------------------------------------------------------|
+| =.fhook-emf.command-kbind[3]= | set to =""=       | EMF buffers no longer bind =A-q= locally                       |
+| =.fhook-emf.comment=          | =r= flag stripped | =	esc q= no longer bound to =comment-restyle= in EMF buffers |
+
+** Registry edits (=meuser.erf=)
+
+| Setting                       | Was             | Now               | Reason                                                             |
+|-------------------------------+-----------------+-------------------+--------------------------------------------------------------------|
+| [101, 109, 102] = fhook setup | ="bdfgnopxhIe"=  | ="bdfgnopxhI"=    | Remove =e= (exact mode) for case-insensitive search in EMF buffers |
+| ="exact"= (global)            | ="0"=            | ="0"= (unchanged) | Already default-off at registry level                              |
+| ="scroll-bar"= (=linux= block) | ="0x1be"=        | ="0"=             | Disable window scroll bars in mesw (=linux= is the GUI/X11 platform block; bit 8 = 0x100 = master enable) |
+#+TBLFM: $1="emf"= (fhook setup)
+
+** Global mode change
+
+| Setting                  | Effect                                                   |
+|--------------------------+----------------------------------------------------------|
+| =-1 global-mode "exact"= | Newly-created buffers default to case-insensitive search |
+|                          |                                                          |
+
+** Autoload registrations added
+
+#+begin_src emf
+define-macro-file hkdirlst file-browser file-browser-close dirlst-up-dir dirlst-find-file file-browser-set-filter
+define-macro-file osdmisc  file-tool-menu
+define-macro-file xmlutil  xml-forward-tag xml-backward-tag xml-goto-matching-tag xml-find-tag xml-collapse-tag xml-verify
+#+end_src
+
+* TODO Future Ideas / Open Questions :@jasspa:@todo:
+
+Things to investigate next, in roughly the order they came up.
+
+** Line numbers in the left margin
+
+MicroEmacs has no built-in =linum-mode= / =display-line-numbers-mode= (I checked the modes list, command glossary, and =contribs/= directory). The closest built-in is =$mode-line= with =%l=, which shows the current line in the status bar — already on by default.
+
+A true left-margin gutter would require a custom macro: e.g. a narrow side-window mirroring the target buffer and rendering line numbers on every scroll/edit, or =line-scheme= annotations using user bits in =$line-flags= (0x0080-0x0800). Both approaches are non-trivial and fragile. Worth a blog post if attempted.
+
+** my-file-browser is now a no-op wrapper
+
+=my-file-browser= now just calls =find-file=. We could remove it and bind =C-x d= directly to =find-file= for consistency. Kept for now in case we want to put customisations back into the wrapper later.
+
+** Check whether =global-mode "magic"= should also be disabled
+
+The =global-mode= docs example disables both =exact= and =magic= for "simple and case insensitive by default" search. We left =magic= on because regex search is useful. Consider whether =magic= should be off for some file types (e.g. prose =.txt=) where regex specials cause surprises.
+
+** User-setup dialog re-binding =esc m=
+
+=esc m= was the default binding for =global-mode= (the user-setup menu dialog). We rebound it to =split-vertical-and-switch=. The dialog is still reachable via =Esc == (the menu bar) → =Tools= → =User Setup=, but it's worth noting the rebinding so we don't forget how to get back to user setup later.
+
+** Investigate =A-C-j= / =A-C-k= in the GUI variant
+
+The =A-C-j= / =A-C-k= vertical-resize bindings were chosen to avoid the case-fold collision with =A-j= / =A-k=. In the GUI (=mesw= as a true X11 window) the Alt modifier may be encoded differently and =A-C-j= alone might work without the =esc C-j= alias. Worth verifying once a Wayland X11 wrap is available.
+
+** Does =A-q= / =esc q= work in =mesc= (console) variant?
+
+All testing so far has been with =mesw= in pipe mode (=-P=). Worth verifying that the =esc q= binding survives in the real terminal variant =mesc=, where the Alt-modifier encoding may differ.
+
+* Local Variables Archives :noexport:
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
+
+# Local Variables:
+# mode: org
+# fill-column: 100
+# org-tags-column: 0
+# End:
