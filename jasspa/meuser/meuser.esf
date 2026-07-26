@@ -1,0 +1,191 @@
+enfs1CACGCAGAHCGABAFJAHAAFvars
+platformlinux
+system104578
+ownfavs1
+update1
+amark0
+kill1
+w-scroll1
+c-scroll1
+w-sbar0
+c-sbar0
+w-framew203
+c-framew183
+w-framed45
+c-framed41
+enfs1CACGCAGAHCGABAFJAHAAFhist
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0MicroEmacs User
+0meuser
+0300
+0
+0meuser_001.emf
+0meuser.emf
+00
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1EventLogAllowedList.xml
+2
+2
+2
+2
+2
+2
+2
+2
+2
+2
+2
+2
+2
+2
+2
+2
+2shell
+2init-session
+2create-session
+2execute-file
+3/home/jdyer/.config/JetBrains/IntelliJIdea2026.1/options/linux/
+3/home/jdyer/.config/JetBrains/IntelliJIdea2026.1/options/AIOnboardingPromoWindowAdvisor.xml
+3/home/jdyer/.config/JetBrains/IntelliJIdea2026.1/options/CommandCompletion.xml
+3/home/jdyer/.config/JetBrains/IntelliJIdea2026.1/options/DontShowAgainFeedbackService.xml
+3/home/jdyer/.config/JetBrains/IntelliJIdea2026.1/options/
+3/home/jdyer/.config/JetBrains/IntelliJIdea2026.1/options/EventLogAllowedList.xml
+3/home/jdyer/.config/jasspa/meuser/meuser_001.emf
+3/home/jdyer/.config/jasspa/meuser/meuser_002.emf
+3/home/jdyer/.config/jasspa/meuser/meuser.eff
+3/home/jdyer/.config/jasspa/meuser/meuser.esf
+3/home/jdyer/.config/jasspa/meuser/meuser_003.emf
+3/home/jdyer/.config/jasspa/meuser/meuser_004.emf
+3
+3/home/jdyer/.config/jasspa/meuser/meuser.emf
+3/home/jdyer/DCIM/content/
+3/home/jdyer/DCIM/content/jasspa.org
+3/home/jdyer/.emacs.d/early-init.el
+3/home/jdyer/.emacs.d/
+3/home/jdyer/.config/jasspa/meuser/meuser.erf
+3/home/jdyer/.config/jasspa/meuser/
+4prev
+4c-c
+4C-c b
+4a-
+40
+4c-x
+4jetb
+4my-select-whole-bu
+4beginin
+4beginn
+4next-window
+4previouw
+4comment
+4comment-region
+4a-n
+4shrink
+4dcim
+4init.el
+4menu
+4scroll
+enfs1CACGCAGAHCGABAFJAHAAFmchst
+enfs1CACGCAGAHCGABAFJAHAAFbuff
+/home/jdyer/.config/jasspa/meuser/meuser.emf
+meuser.emf155000aBlMTtU
+
+/home/jdyer/.config/jasspa/meuser/
+meuser/12060BlMTV
+
+enfs1CACGCAGAHCGABAFJAHAAFkill
+global-bind-key delete-window "A-0"
+global-bind-key delete-window "esc 0"
+
+enfs1CACGCAGAHCGABAFJAHAAFkill
+global-bind-key copy-region "C-c w"
+
+enfs1CACGCAGAHCGABAFJAHAAFkill
+global-bind-key find-file "C-x d"
+
+enfs1CACGCAGAHCGABAFJAHAAFkill
+global-bind-key xml-collapse-tag "C-A-i"
+enfs1CACGCAGAHCGABAFJAHAAFkill
+global-bind-key xml-collapse-tag "A-tab"
+enfs1CACGCAGAHCGABAFJAHAAFkill
+global-bind-key xml-goto-matching-tag "C-A-n"
+enfs1CACGCAGAHCGABAFJAHAAFkill
+global-bind-key xml-goto-matching-tag "A-n"
+global-bind-key xml-goto-matching-tag "C-A-n"
+
+enfs1CACGCAGAHCGABAFJAHAAFkill
+global-bind-key my-copy-whole-buffer "C-c b"
+enfs1CACGCAGAHCGABAFJAHAAFkill
+
+
+enfs1CACGCAGAHCGABAFJAHAAFkill
+global-bind-key previous-window "A-p"
+global-bind-key previous-window "esc p"
+
+enfs1CACGCAGAHCGABAFJAHAAFkill
+global-bind-key previous-window "A-p"
+global-bind-key previous-window "esc p"
+enfs1CACGCAGAHCGABAFJAHAAFkill
+previous
+enfs1CACGCAGAHCGABAFJAHAAFkill
+previous
+enfs1CACGCAGAHCGABAFJAHAAFkill
+global-bind-key beginning-of-buffer "A-<"
+
+enfs1CACGCAGAHCGABAFJAHAAFkill
+define-macro my-dirlst-up-dir
+enfs1CACGCAGAHCGABAFJAHAAFkill
+define-macro dirlst-next-line
+  forward-line
+  !if &les $window-line 5
+    set-variable $window-line 5
+  !endif
+!emacro
+define-macro dirlst-prev-line
+  !if &gre $window-line 5
+    backward-line
+  !endif
+!emacro
+execute-file "hkdirlst"
+set-variable .fhook-dirlst.command-name &lset .fhook-dirlst.command-name 6 "dirlst-find-file"
+set-variable .fhook-dirlst.command-nbind &lset .fhook-dirlst.command-nbind 6 ""
+set-variable .fhook-dirlst.command-kbind &lset .fhook-dirlst.command-kbind 25 "F"
+set-variable .fhook-dirlst.command-name &lset .fhook-dirlst.command-name 25 "file-browser-set-filter"
+set-variable .fhook-dirlst.command-nbind &lset .fhook-dirlst.command-nbind 25 "-1"
+
+enfs1CACGCAGAHCGABAFJAHAAFwin
+0020343
+100010021155000134meuser.emf
+0002210043155000134meuser.emf
+00101020343120000meuser/
+enfs1CACGCAGAHCGABAFJAHAAFend
+

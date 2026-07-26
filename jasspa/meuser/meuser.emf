@@ -1,0 +1,154 @@
+; -*- emf -*-
+; Add your own macros and definitions to this file.
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; The default key binding for Home/End is the beginning and end of the file.
+; Remove comments to change the default binding to the  end of the line
+; Alternatively enable Rebind Home keys in user-setup > Start-Up
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;global-bind-key beginning-of-line       "home"
+;global-bind-key end-of-line             "end"
+define-macro split-and-switch
+  split-window-horizontally
+  next-window
+!emacro
+define-macro down-some
+  5 forward-line
+!emacro
+define-macro up-some
+  5 backward-line
+!emacro
+global-bind-key undo "C-/"
+global-bind-key split-and-switch "A-;"
+global-bind-key split-and-switch "esc ;"
+define-macro split-vertical-and-switch
+  split-window-vertically
+  next-window
+!emacro
+global-bind-key split-vertical-and-switch "A-m"
+global-bind-key split-vertical-and-switch "esc m"
+global-bind-key kill-region "C-x C-k"
+global-bind-key favorites "C-c o"
+global-bind-key save-buffer "C-w"
+global-bind-key occur "A-c"
+global-bind-key occur "esc c"
+global-bind-key file-browser "C-x m"
+global-bind-key file-browser-close "C-c C-k"
+global-bind-key reread-file "C-x g"
+global-bind-key down-some "A-j"
+global-bind-key down-some "esc j"
+global-bind-key up-some "A-k"
+global-bind-key up-some "esc k"
+define-macro my-file-browser
+  find-file
+!emacro
+global-bind-key "my-file-browser" "C-x d"
+global-bind-key comment-line "C-;"
+define-macro copy-region-and-deselect
+  copy-region
+  -1 show-region
+!emacro
+global-bind-key "copy-region-and-deselect" "C-c w"
+global-bind-key delete-other-windows "A-a"
+global-bind-key delete-other-windows "esc a"
+global-bind-key previous-window "A-p"
+global-bind-key previous-window "esc p"
+global-bind-key next-window "A-n"
+global-bind-key next-window "esc n"
+global-bind-key beginning-of-buffer "A-<"
+global-bind-key end-of-buffer "A->"
+define-macro my-shrink-window
+  -2 change-window-width
+!emacro
+define-macro my-enlarge-window
+  2 change-window-width
+!emacro
+global-bind-key my-shrink-window "A-C-h"
+global-bind-key my-shrink-window "esc C-h"
+global-bind-key my-enlarge-window "A-C-l"
+global-bind-key my-enlarge-window "esc C-l"
+define-macro my-shrink-window-vert
+  -1 change-window-depth
+!emacro
+define-macro my-enlarge-window-vert
+  1 change-window-depth
+!emacro
+global-bind-key my-shrink-window-vert "A-C-k"
+global-bind-key my-shrink-window-vert "esc C-k"
+global-bind-key my-enlarge-window-vert "A-C-j"
+global-bind-key my-enlarge-window-vert "esc C-j"
+define-macro my-select-whole-buffer
+  beginning-of-buffer
+  set-mark
+  end-of-buffer
+!emacro
+global-bind-key my-select-whole-buffer "C-x h"
+define-macro my-copy-whole-buffer
+  beginning-of-buffer
+  set-mark
+  end-of-buffer
+  copy-region
+  -1 show-region
+  ;  beginning-of-buffer
+!emacro
+global-bind-key my-copy-whole-buffer "C-c b"
+define-macro-file hkdirlst file-browser file-browser-close dirlst-up-dir dirlst-find-file file-browser-set-filter
+define-macro-file osdmisc file-tool-menu
+; Customise dirlst key bindings (applies to every dirlst buffer):
+;   "f" opens the file under the cursor (was: toggle filter)
+;   "F" toggles the filter (the former "f" behaviour)
+;   "w" opens the file-tool menu (was: search by order column)
+;   "n" moves to next file line (was: dirlst-new-folder)
+;   "p" moves to previous file line (added)
+; Done by patching the .fhook-dirlst.command-* lists after forcing hkdirlst
+; to load, so every dirlst buffer picks up the new defaults via buffer-init.
+define-macro dirlst-next-line
+  forward-line
+  !if &les $window-line 5
+    set-variable $window-line 5
+  !endif
+!emacro
+define-macro dirlst-prev-line
+  !if &gre $window-line 5
+    backward-line
+  !endif
+!emacro
+execute-file "hkdirlst"
+set-variable .fhook-dirlst.command-name &lset .fhook-dirlst.command-name 6 "dirlst-find-file"
+set-variable .fhook-dirlst.command-nbind &lset .fhook-dirlst.command-nbind 6 ""
+set-variable .fhook-dirlst.command-kbind &lset .fhook-dirlst.command-kbind 25 "F"
+set-variable .fhook-dirlst.command-name &lset .fhook-dirlst.command-name 25 "file-browser-set-filter"
+set-variable .fhook-dirlst.command-nbind &lset .fhook-dirlst.command-nbind 25 "-1"
+set-variable .fhook-dirlst.command-name &lset .fhook-dirlst.command-name 8 "file-tool-menu"
+set-variable .fhook-dirlst.command-nbind &lset .fhook-dirlst.command-nbind 8 ""
+set-variable .fhook-dirlst.command-name &lset .fhook-dirlst.command-name 36 "dirlst-next-line"
+set-variable .fhook-dirlst.command-nbind &lset .fhook-dirlst.command-nbind 36 ""
+set-variable .fhook-dirlst.command-name &cat .fhook-dirlst.command-name "dirlst-prev-line|"
+set-variable .fhook-dirlst.command-kbind &cat .fhook-dirlst.command-kbind "p|"
+set-variable .fhook-dirlst.command-nbind &cat .fhook-dirlst.command-nbind "|"
+set-variable .fhook-dirlst.command-flag &cat .fhook-dirlst.command-flag "bio|"
+global-bind-key dirlst-up-dir "A-e"
+global-bind-key dirlst-up-dir "esc e"
+define-macro-file xmlutil xml-forward-tag xml-backward-tag xml-goto-matching-tag xml-find-tag xml-collapse-tag xml-verify
+global-bind-key xml-goto-matching-tag "C-A-n"
+global-bind-key xml-collapse-tag "C-A-i"
+global-bind-key xml-collapse-tag "A-tab"
+global-bind-key xml-collapse-tag "esc tab"
+;Menu
+define-macro my-show-menu
+  osd -1 1
+!emacro
+global-bind-key my-show-menu "C-q"
+execute-file "hkemf"
+; Remove the EMF file hook's buffer-local A-q binding (emf-quote-command)
+; so our global A-q -> delete-window isn't shadowed in EMF buffers.
+set-variable .fhook-emf.command-kbind &lset .fhook-emf.command-kbind 3 ""
+; Strip the "r" flag from .fhook-emf.comment so buffinit doesn't bind
+; esc q -> comment-restyle buffer-locally (would shadow A-q -> delete-window).
+set-variable .fhook-emf.comment "|;||;|; | ;||"
+global-bind-key delete-window "A-q"
+global-bind-key delete-window "esc q"
+; Make searches (including isearch) case-insensitive in all buffers.
+; isearch respects the buffer's exact mode, which is initialised from the
+; global mode at buffer-creation time (see global-mode(2) / exact(2m)).
+-1 global-mode "exact"
