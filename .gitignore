@@ -13,6 +13,12 @@
 !fusuma/
 !greetd/
 !greetd/**
+!JetBrains/
+!JetBrains/IntelliJIdea2026.1/
+!JetBrains/IntelliJIdea2026.1/keymaps/
+!JetBrains/IntelliJIdea2026.1/keymaps/**
+!JetBrains/IntelliJIdea2026.1/options/
+!JetBrains/IntelliJIdea2026.1/options/**
 !kdenlive-layoutsrc
 !kdenliverc
 !keepassxc/
@@ -31,6 +37,9 @@
 !pcmanfm/
 !polybar/
 !qBittorrent/
+!qBittorrent/**
+qBittorrent/ipc-socket
+qBittorrent/lockfile
 !.profile
 !rofi/
 !sway/
@@ -46,3 +55,8 @@
 !waybar_jdyer/
 !wofi
 !xremap/
+!jasspa/
+!jasspa/meuser/
+!jasspa/meuser/meuser.emf
+!jasspa/meuser/meuser.erf
+!jasspa/meuser/meuser.esf
