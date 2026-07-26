@@ -161,7 +161,9 @@
         },
         "format": "{icon}{capacity: >3}%",
         "format-charging": "{icon} {capacity}",
-        "format-plugged": "{icon} {capacity}"
+        "format-plugged": "{icon} {capacity}",
+        "format-alt": "{time} {icon} ",
+        "max-length": 12
     },
 
     "custom/plug": {
