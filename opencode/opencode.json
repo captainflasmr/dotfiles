@@ -47,7 +47,7 @@
         "explore": {
             "description": "Cheap codebase scanner (deepseek-v4-flash). Delegate broad searches here to keep planner token use low.",
             "model": "opencode-go/deepseek-v4-flash",
-            "reasoningEffort": "low"
+            "reasoningEffort": "max"
         },
         "general": {
             "description": "Complex research / multi-step tasks (GLM-5.2). Frontier thinking for non-trivial investigation.",
@@ -56,15 +56,15 @@
         },
         "title": {
             "model": "opencode-go/deepseek-v4-flash",
-            "reasoningEffort": "low"
+            "reasoningEffort": "max"
         },
         "summary": {
             "model": "opencode-go/deepseek-v4-flash",
-            "reasoningEffort": "low"
+            "reasoningEffort": "max"
         },
         "compaction": {
             "model": "opencode-go/deepseek-v4-flash",
-            "reasoningEffort": "low"
+            "reasoningEffort": "max"
         }
     }
 }
