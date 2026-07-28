@@ -1,0 +1,74 @@
+{
+    "$schema": "https://opencode.ai/config.json",
+    "model": "opencode-go/deepseek-v4-flash",
+    "small_model": "opencode-go/deepseek-v4-flash",
+    "default_agent": "plan",
+    "snapshot": false,
+    "subagent_depth": 1,
+    "lsp": true,
+    "agent": {
+        "plan": {
+            "description": "Lead planner + orchestrator (GLM-5.2). Reasons hard, maps file-level changes, then delegates implementation to the `build` worker and scans to `explore`.",
+            "mode": "primary",
+            "model": "opencode-go/glm-5.2",
+            "steps": 50,
+            "temperature": 0.2,
+            "reasoningEffort": "max",
+            "prompt": "{file:prompts/glm-planner.md}",
+            "permission": {
+                "read": "allow",
+                "glob": "allow",
+                "grep": "allow",
+                "list": "allow",
+                "webfetch": "allow",
+                "task": "allow",
+                "question": "allow",
+                "lsp": "allow",
+                "edit": "deny",
+                "write": "deny",
+                "bash": "deny",
+                "todowrite": "deny"
+            }
+        },
+        "build": {
+            "description": "Donkey-work implementer (deepseek-v4-flash). Fast, low-reasoning execution of delegated tasks; also directly selectable for quick edits.",
+            "mode": "all",
+            // "mode": "subagent",
+            "model": "opencode-go/deepseek-v4-flash",
+            "steps": 100,
+            "reasoningEffort": "max",
+            "permission": {
+                "read": "allow",
+                "glob": "allow",
+                "grep": "allow",
+                "list": "allow",
+                "edit": "allow",
+                "write": "allow",
+                "bash": "allow",
+                "lsp": "allow"
+            }
+        },
+        "explore": {
+            "description": "Cheap codebase scanner (deepseek-v4-flash). Delegate broad searches here to keep planner token use low.",
+            "model": "opencode-go/deepseek-v4-flash",
+            "reasoningEffort": "max"
+        },
+        "general": {
+            "description": "Complex research / multi-step tasks (GLM-5.2). Frontier thinking for non-trivial investigation.",
+            "model": "opencode-go/glm-5.2",
+            "reasoningEffort": "medium"
+        },
+        "title": {
+            "model": "opencode-go/deepseek-v4-flash",
+            "reasoningEffort": "max"
+        },
+        "summary": {
+            "model": "opencode-go/deepseek-v4-flash",
+            "reasoningEffort": "max"
+        },
+        "compaction": {
+            "model": "opencode-go/deepseek-v4-flash",
+            "reasoningEffort": "max"
+        }
+    }
+}
