@@ -40,6 +40,8 @@
 !qBittorrent/**
 qBittorrent/ipc-socket
 qBittorrent/lockfile
+!Kvantum/
+!Kvantum/**
 !.profile
 !rofi/
 !sway/
@@ -60,3 +62,4 @@ qBittorrent/lockfile
 !jasspa/meuser/meuser.emf
 !jasspa/meuser/meuser.erf
 !jasspa/meuser/meuser.esf
+!jasspa/meuser/jasspa.org
