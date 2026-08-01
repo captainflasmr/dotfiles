@@ -134,21 +134,10 @@ global-bind-key xml-goto-matching-tag "C-A-n"
 global-bind-key xml-collapse-tag "C-A-i"
 global-bind-key xml-collapse-tag "A-tab"
 global-bind-key xml-collapse-tag "esc tab"
-;Menu
 define-macro my-show-menu
   osd -1 1
 !emacro
 global-bind-key my-show-menu "C-q"
-execute-file "hkemf"
-; Remove the EMF file hook's buffer-local A-q binding (emf-quote-command)
-; so our global A-q -> delete-window isn't shadowed in EMF buffers.
-set-variable .fhook-emf.command-kbind &lset .fhook-emf.command-kbind 3 ""
-; Strip the "r" flag from .fhook-emf.comment so buffinit doesn't bind
-; esc q -> comment-restyle buffer-locally (would shadow A-q -> delete-window).
-set-variable .fhook-emf.comment "|;||;|; | ;||"
-global-bind-key delete-window "A-q"
-global-bind-key delete-window "esc q"
-; Make searches (including isearch) case-insensitive in all buffers.
-; isearch respects the buffer's exact mode, which is initialised from the
-; global mode at buffer-creation time (see global-mode(2) / exact(2m)).
+global-bind-key delete-window "A-'"
+global-bind-key delete-window "esc '"
 -1 global-mode "exact"
