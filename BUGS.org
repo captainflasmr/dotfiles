@@ -10,11 +10,3 @@ This document contains the current bugs/improvements, this is just for me mainly
 * Bugs/Improvements
 
 ** TODO opencode glm-5.2 running very slowly
-
-** DOING opencode to set itself up
-
-** DOING opencode to leverage subagents
-
-** DOING opencode how to enable LSP
-
-** DOING opencode keybindings
