@@ -7,7 +7,7 @@ set $down j
 set $up k
 set $right l
 
-bindsym $mod+semicolon exec emacsclient --eval '(thanos/type)'
+bindsym $mod+y exec emacsclient --eval '(thanos/type)'
 for_window [app_id="emacs" title="emacs-float"] floating enable
 # Thunar opacity is set to 0.90 in config.d/application_defaults
 for_window [app_id="spicy"] shortcuts_inhibitor disable
@@ -95,9 +95,13 @@ bindsym $mod+Ctrl+Down exec ~/.config/sway/scripts/move_waybar.sh bottom
 bindsym $mod+Ctrl+Left exec ~/.config/sway/scripts/move_waybar.sh left
 bindsym $mod+Ctrl+Right exec ~/.config/sway/scripts/move_waybar.sh right
 
+# Waybar scale (bigger/smaller)
+bindsym $mod+Ctrl+equal exec ~/.config/sway/scripts/waybar_scale.sh bigger
+bindsym $mod+Ctrl+minus exec ~/.config/sway/scripts/waybar_scale.sh smaller
+
 bindsym $mod+t exec $term
 bindsym $mod+w exec swayr switch-window
-bindsym $mod+c exec emacsclient -c -a emacs
+bindsym $mod+semicolon exec emacsclient -c -a emacs
 # bindsym Mod1+4 kill
 bindsym control+Mod1+t exec $term
 bindsym $mod+period exec rofimoji

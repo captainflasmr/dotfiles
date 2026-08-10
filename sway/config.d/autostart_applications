@@ -1,4 +1,8 @@
 # GTK3 applications take a long time to start
+# SSH_AUTH_SOCK is set for all systemd user services via
+# ~/.config/environment.d/ssh-agent.conf — Emacs runs as the emacs.service
+# user unit so it inherits the socket. Apps started directly from sway are
+# spawned too early to see the GNOME keyring socket.
 exec systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK
 exec hash dbus-update-activation-environment 2>/dev/null && \
      dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK
