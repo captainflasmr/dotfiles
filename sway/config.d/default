@@ -33,7 +33,7 @@ bindsym Mod4+f1 exec ~/.config/sway/scripts/lockman.sh
 bindsym Mod4+f2 exec darkman toggle
 
 # Toggle idle inhibitor (swayidle on/off)
-bindsym Mod4+f3 exec ~/.config/sway/scripts/toggle_idle.sh
+bindsym $mod+v exec ~/.config/sway/scripts/toggle_idle.sh
 
 # Quick volume and brightness controls
 bindsym $mod+a exec brightnessctl set +1%
