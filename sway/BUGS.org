@@ -8,3 +8,5 @@
 This document contains the current bugs/improvements, this is just for me mainly but does include any Issues reported.
 
 * Bugs/Improvements
+
+** TODO alt-tab to bring up osd in windows style showing windows
