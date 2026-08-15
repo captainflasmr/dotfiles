@@ -9,6 +9,8 @@ This document contains the current bugs/improvements, this is just for me mainly
 
 * Bugs/Improvements
 
+** TODO not sure dell laptops are hibernating correctly
+
 ** TODO better sway window moving
 
 ** TODO opencode glm-5.2 running very slowly
