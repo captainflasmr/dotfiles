@@ -48,8 +48,9 @@ Krita/Ocio/OcioConfigPath=
 Krita/Ocio/OcioLockColorVisualRepresentation=false
 Krita/Ocio/OcioLutPath=
 Krita/Ocio/UseOcio=false
-LastBackGroundColor=<!DOCTYPE LastBackGroundColor>\n<LastBackGroundColor>\n <RGB b="1" g="1" space="sRGB-elle-V2-srgbtrc.icc" r="1"/>\n</LastBackGroundColor>\n
-LastForeGroundColor=<!DOCTYPE LastForeGroundColor>\n<LastForeGroundColor>\n <RGB b="0.172549024224281" g="0.0745098069310188" space="sRGB-elle-V2-srgbtrc.icc" r="0.062745101749897"/>\n</LastForeGroundColor>\n
+LastBackGroundColor=<!DOCTYPE LastBackGroundColor>\n<LastBackGroundColor>\n <RGB b="1" g="1" r="1" space="sRGB-elle-V2-srgbtrc.icc"/>\n</LastBackGroundColor>\n
+LastColorHistory=<!DOCTYPE LastColorHistory>\n<colors/>\n
+LastForeGroundColor=<!DOCTYPE LastForeGroundColor>\n<LastForeGroundColor>\n <RGB b="0.172549024224281" g="0.0745098069310188" r="0.062745101749897" space="sRGB-elle-V2-srgbtrc.icc"/>\n</LastForeGroundColor>\n
 LastPreset=b) Basic-1
 LastPreset_-1=b) Basic-1
 LineSmoothingDelayDistance=50
@@ -256,6 +257,7 @@ popuppalette/size=385
 popuppalette/useDynamicSlotCount=true
 popuppalette/usevisualcolorselector=false
 presetIconSize=57
+presetStripVisible=true
 presethistory=j) WaterC Special Splats,j) Waterpaint Hard Edges,b) Basic-5 Size,b) Basic-1,b) Basic-2 Opacity,b) Airbrush Soft,b) Basic-5 Size Opacity,b) Basic-6 Details,y) Texture Random Particles,k) Blender Blur
 recorder/recordautomatically=true
 renameMergedLayers=true
@@ -283,6 +285,7 @@ toolbarslider_1=opacity
 toolbarslider_2=size
 toolbarslider_3=flow
 toolbarslider_4=flow
+toolbarslider_5=flow
 undoStackLimit=200
 useAnimationCacheFrameSizeLimit=true
 useAnimationCacheRegionOfInterest=true
@@ -768,6 +771,8 @@ workspaces=All
 
 [SvgSymbolCollection]
 currentCollection=0
+displayThumbnails=false
+iconSize=20
 
 [SvgTextTool]
 Geometry=AdnQywADAAAAAAIdAAAA1QAABWEAAAOMAAACHQAAANUAAAVhAAADjAAAAAAAAAAAB4AAAAIdAAAA1QAABWEAAAOM
@@ -784,6 +789,7 @@ LastReturnType=Custom Document
 colorSelectorConfiguration=1|0|6|0
 customSelectorBackgroundColor=160,160,164
 gamma=2.2
+lastUsedColorsPerDocument=false
 lumaG=0.7152
 lumaR=0.2126
 minimalShadeSelectorLineConfig=0|0.2|0|0|0|0|0;1|0|1|1|0|0|0;2|0|-1|1|0|0|0
@@ -869,7 +875,7 @@ Last Used=<!DOCTYPE params>\n<params version="1"/>\n
 Last Used=<!DOCTYPE params>\n<params version="1"/>\n
 
 [theme]
-Theme=Apricot Dark
+Theme=Krita dark
 
 [threshold_filter_bookmarks]
 Last Used=<!DOCTYPE params>\n<params version="1">\n <param type="internal" name="threshold">128</param>\n</params>\n

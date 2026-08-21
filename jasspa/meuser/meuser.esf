@@ -1,19 +1,19 @@
-enfs1CACGCAGAHCGABAFJAHAAFvars
+enfs1CACGCCAAIAJABEBIEDEAJvars
 platformlinux
-system104578
+system39069
 ownfavs1
 update1
 amark0
 kill1
-w-scroll1
 c-scroll1
-w-sbar0
+w-scroll1
 c-sbar0
+w-sbar0
+c-framew187
 w-framew203
-c-framew183
+c-framed43
 w-framed45
-c-framed41
-enfs1CACGCAGAHCGABAFJAHAAFhist
+enfs1CACGCCAAIAJABEBIEDEAJhist
 0
 0
 0
@@ -74,29 +74,26 @@
 2init-session
 2create-session
 2execute-file
-3/home/jdyer/.config/JetBrains/IntelliJIdea2026.1/options/linux/
-3/home/jdyer/.config/JetBrains/IntelliJIdea2026.1/options/AIOnboardingPromoWindowAdvisor.xml
+3
 3/home/jdyer/.config/JetBrains/IntelliJIdea2026.1/options/CommandCompletion.xml
 3/home/jdyer/.config/JetBrains/IntelliJIdea2026.1/options/DontShowAgainFeedbackService.xml
 3/home/jdyer/.config/JetBrains/IntelliJIdea2026.1/options/
 3/home/jdyer/.config/JetBrains/IntelliJIdea2026.1/options/EventLogAllowedList.xml
 3/home/jdyer/.config/jasspa/meuser/meuser_001.emf
 3/home/jdyer/.config/jasspa/meuser/meuser_002.emf
-3/home/jdyer/.config/jasspa/meuser/meuser.eff
 3/home/jdyer/.config/jasspa/meuser/meuser.esf
 3/home/jdyer/.config/jasspa/meuser/meuser_003.emf
 3/home/jdyer/.config/jasspa/meuser/meuser_004.emf
-3
-3/home/jdyer/.config/jasspa/meuser/meuser.emf
 3/home/jdyer/DCIM/content/
 3/home/jdyer/DCIM/content/jasspa.org
 3/home/jdyer/.emacs.d/early-init.el
 3/home/jdyer/.emacs.d/
 3/home/jdyer/.config/jasspa/meuser/meuser.erf
+3
+3/home/jdyer/.config/jasspa/meuser/jasspa.org
+3/home/jdyer/.config/jasspa/meuser/meuser.eff
 3/home/jdyer/.config/jasspa/meuser/
-4prev
-4c-c
-4C-c b
+3/home/jdyer/.config/jasspa/meuser/meuser.emf
 4a-
 40
 4c-x
@@ -112,58 +109,33 @@
 4shrink
 4dcim
 4init.el
-4menu
 4scroll
-enfs1CACGCAGAHCGABAFJAHAAFmchst
-enfs1CACGCAGAHCGABAFJAHAAFbuff
-/home/jdyer/.config/jasspa/meuser/meuser.emf
-meuser.emf155000aBlMTtU
-
-/home/jdyer/.config/jasspa/meuser/
-meuser/12060BlMTV
-
-enfs1CACGCAGAHCGABAFJAHAAFkill
-global-bind-key delete-window "A-0"
-global-bind-key delete-window "esc 0"
-
-enfs1CACGCAGAHCGABAFJAHAAFkill
-global-bind-key copy-region "C-c w"
-
-enfs1CACGCAGAHCGABAFJAHAAFkill
-global-bind-key find-file "C-x d"
-
-enfs1CACGCAGAHCGABAFJAHAAFkill
-global-bind-key xml-collapse-tag "C-A-i"
-enfs1CACGCAGAHCGABAFJAHAAFkill
-global-bind-key xml-collapse-tag "A-tab"
-enfs1CACGCAGAHCGABAFJAHAAFkill
-global-bind-key xml-goto-matching-tag "C-A-n"
-enfs1CACGCAGAHCGABAFJAHAAFkill
-global-bind-key xml-goto-matching-tag "A-n"
-global-bind-key xml-goto-matching-tag "C-A-n"
-
-enfs1CACGCAGAHCGABAFJAHAAFkill
-global-bind-key my-copy-whole-buffer "C-c b"
-enfs1CACGCAGAHCGABAFJAHAAFkill
+4delete
+4delete-window
+4menu
+4sspa
+enfs1CACGCCAAIAJABEBIEDEAJmchst
+enfs1CACGCCAAIAJABEBIEDEAJbuff
+enfs1CACGCCAAIAJABEBIEDEAJkill
 
 
-enfs1CACGCAGAHCGABAFJAHAAFkill
+enfs1CACGCCAAIAJABEBIEDEAJkill
 global-bind-key previous-window "A-p"
 global-bind-key previous-window "esc p"
 
-enfs1CACGCAGAHCGABAFJAHAAFkill
+enfs1CACGCCAAIAJABEBIEDEAJkill
 global-bind-key previous-window "A-p"
 global-bind-key previous-window "esc p"
-enfs1CACGCAGAHCGABAFJAHAAFkill
+enfs1CACGCCAAIAJABEBIEDEAJkill
 previous
-enfs1CACGCAGAHCGABAFJAHAAFkill
+enfs1CACGCCAAIAJABEBIEDEAJkill
 previous
-enfs1CACGCAGAHCGABAFJAHAAFkill
+enfs1CACGCCAAIAJABEBIEDEAJkill
 global-bind-key beginning-of-buffer "A-<"
 
-enfs1CACGCAGAHCGABAFJAHAAFkill
+enfs1CACGCCAAIAJABEBIEDEAJkill
 define-macro my-dirlst-up-dir
-enfs1CACGCAGAHCGABAFJAHAAFkill
+enfs1CACGCCAAIAJABEBIEDEAJkill
 define-macro dirlst-next-line
   forward-line
   !if &les $window-line 5
@@ -182,10 +154,54 @@ set-variable .fhook-dirlst.command-kbind &lset .fhook-dirlst.command-kbind 25 "F
 set-variable .fhook-dirlst.command-name &lset .fhook-dirlst.command-name 25 "file-browser-set-filter"
 set-variable .fhook-dirlst.command-nbind &lset .fhook-dirlst.command-nbind 25 "-1"
 
-enfs1CACGCAGAHCGABAFJAHAAFwin
-0020343
-100010021155000134meuser.emf
-0002210043155000134meuser.emf
-00101020343120000meuser/
-enfs1CACGCAGAHCGABAFJAHAAFend
+enfs1CACGCCAAIAJABEBIEDEAJkill
+global-bind-key previous-window "esc p"
+global-bind-key next-window "A-n"
+global-bind-key next-window "esc n"
+global-bind-key beginning-of-buffer "A-<"
+global-bind-key end-of-buffer "A->"
+define-macro my-shrink-window
+  -2 change-window-width
+!emacro
+define-macro my-enlarge-window
+  2 change-window-width
+!emacro
+global-bind-key my-shrink-window "A-C-h"
+
+enfs1CACGCCAAIAJABEBIEDEAJkill
+; esc q -> comment-restyle buffer-locally (would shadow A-q -> delete-window).
+
+enfs1CACGCCAAIAJABEBIEDEAJkill
+; Remove the EMF file hook's buffer-local A-q binding (emf-quote-command)
+; so our global A-q -> delete-window isn't shadowed in EMF buffers.
+set-variable .fhook-emf.command-kbind &lset .fhook-emf.command-kbind 3 ""
+; Strip the "r" flag from .fhook-emf.comment so buffinit doesn't bind
+
+enfs1CACGCCAAIAJABEBIEDEAJkill
+set-variable .fhook-emf.comment "|;||;|; | ;||"
+
+enfs1CACGCCAAIAJABEBIEDEAJkill
+execute-file "hkemf"
+
+enfs1CACGCCAAIAJABEBIEDEAJkill
+; Make searches (including isearch) case-insensitive in all buffers.
+; isearch respects the buffer's exact mode, which is initialised from the
+; global mode at buffer-creation time (see global-mode(2) / exact(2m)).
+
+enfs1CACGCCAAIAJABEBIEDEAJkill
+;Menu
+
+enfs1CACGCCAAIAJABEBIEDEAJkill
+global-bind-key split-vertical-and-switch "esc m"
+global-bind-key kill-region "C-x C-k"
+global-bind-key favorites "C-c o"
+global-bind-key save-buffer "C-w"
+global-bind-key occur "A-c"
+global-bind-key occur "esc c"
+global-bind-key file-browser "C-x m"
+
+enfs1CACGCCAAIAJABEBIEDEAJwin
+0018741
+10001874110000*scratch*
+enfs1CACGCCAAIAJABEBIEDEAJend
 

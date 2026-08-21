@@ -66,7 +66,7 @@ bindsym $mod+XF86MonBrightnessDown exec brightnessctl set 1%-
 # -> Key bindings
 #
 bindsym $mod+Shift+space exec switch_waybar.sh
-bindsym $mod+Tab exec swayr switch-to-urgent-or-lru-window
+bindsym $mod+Tab exec swayr switch-window
 bindsym Alt+Tab exec swayr switch-to-urgent-or-lru-window
 # bindsym $mod+semicolon exec swayr switch-to-urgent-or-lru-window
 bindsym $mod+b exec firefox

@@ -5,6 +5,8 @@ args = [
   "-i",
   "-show-icons",
   "-markup-rows",
+  "-theme",
+  "/home/jdyer/.config/rofi/window-switcher.rasi",
 ]
 
 [format]

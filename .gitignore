@@ -9,6 +9,10 @@
 !digikam_systemrc
 !dunst/
 !environment.d/
+!systemd/
+!systemd/user/
+!systemd/user/ssh-add-key.service
+!systemd/user/ssh-add-key.service
 !fish/
 !fusuma/
 !greetd/
@@ -63,3 +67,5 @@ qBittorrent/lockfile
 !jasspa/meuser/meuser.erf
 !jasspa/meuser/meuser.esf
 !jasspa/meuser/jasspa.org
+!gtk-4.0/
+!gtk-4.0/**
