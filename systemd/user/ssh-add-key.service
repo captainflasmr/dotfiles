@@ -1,0 +1,23 @@
+# Load the SSH key into the gcr-ssh-agent at login so git over ssh works
+# without typing the passphrase during repo refreshes (e.g. Emacs
+# project-overview pulls).
+#
+# The passphrase is already stored in the GNOME login keyring
+# (ssh-store:/home/jdyer/.ssh/id_ed25519), so gcr-ssh-agent unlocks the key
+# silently. If the stored passphrase is stale, ksshaskpass shows one dialog
+# at login instead of during pulls.
+#
+# SSH_AUTH_SOCK / SSH_ASKPASS come from ~/.config/environment.d/.
+[Unit]
+Description=Add SSH key to agent
+After=gcr-ssh-agent.socket
+Wants=gcr-ssh-agent.socket
+
+[Service]
+Type=oneshot
+# Give sway time to import WAYLAND_DISPLAY so the askpass dialog can show.
+ExecStartPre=/usr/bin/sleep 3
+ExecStart=/usr/bin/ssh-add /home/jdyer/.ssh/id_ed25519
+
+[Install]
+WantedBy=default.target
