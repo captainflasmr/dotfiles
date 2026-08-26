@@ -4,72 +4,37 @@
     "java.import.maven.offline.enabled": true,
     "editor.cursorStyle": "block",
     "terminal.integrated.fontSize": 15,
+    "editor.minimap.enabled": false,
     "chat.fontSize": 15,
     "debug.console.fontSize": 15,
     "scm.inputFontSize": 15,
     "java.trace.server": "verbose",
     "task.verboseLogging": true,
     // "editor.fontFamily": "Fira Code, DejaVu Sans Mono, monospace",
-    "editor.fontFamily": "Nimbus Mono",
+    "editor.fontFamily": "Nimbus Mono B",
     "editor.fontWeight": "400",
     "editor.fontLigatures": true,
     "editor.inlayHints.enabled": "off",
+    "editor.find.seedSearchStringFromSelection": "never",
+    "workbench.layoutControl.enabled": false,
     "workbench.browser.showInTitleBar": false,
     "workbench.navigationControl.enabled": false,
-    "workbench.activityBar.location": "top",
-    "editor.lineNumbers": "off",
-    "workbench.activityBar.compact": true,
+    "window.commandCenter": false,
     "explorer.decorations.badges": false,
     "explorer.decorations.colors": false,
-    "workbench.tree.indent": 16,
-    "workbench.iconTheme": "vs-minimal",
-    "workbench.tree.renderIndentGuides": "always",
-    "workbench.editor.highlightModifiedTabs": true,
-    // "dired.ask_directory": false,
-    "workbench.colorCustomizations": {
-        "tab.activeBorderTop": "#ffffff"
-        // "tab.activeBorder": "#ffffff"
-    },
-    "dired.ask_directory": false,
     "explorer.excludeGitIgnore": true,
-    "editor.inlineSuggest.showToolbar": "never",
-    "multiCommand.commands": [
-        {
-            "command": "multiCommand.diredOpen",
-            "interval": 50,
-            "sequence": [
-                "extension.dired.open",
-                "cursorTop",
-                "emacs-mcx.nextLine",
-                "emacs-mcx.nextLine",
-                "emacs-mcx.nextLine",
-                "emacs-mcx.moveEndOfLine"
-            ]
-        },
-        {
-            "command": "multiCommand.diredGoUp",
-            "interval": 50,
-            "sequence": [
-                "extension.dired.goUpDir",
-                "cursorTop",
-                "emacs-mcx.nextLine",
-                "emacs-mcx.nextLine",
-                "emacs-mcx.nextLine",
-                "emacs-mcx.moveEndOfLine"
-            ]
-        }
-    ],
-    "window.enableMenuBarMnemonics": false,
-    "editor.quickSuggestions": {
-        "other": "off",
-        "comments": "off",
-        "strings": "off"
-    },
-    "editor.suggestOnTriggerCharacters": false,
-    "editor.wordBasedSuggestions": "off",
-    "editor.parameterHints.enabled": false,
-    "window.commandCenter": false,
-    "editor.minimap.enabled": false,
-    "git.openRepositoryInParentFolders": "never",
-    "workbench.colorTheme": "Dracula Refined"
+    "workbench.tree.indent": 24,
+    "workbench.iconTheme": "vs-minimal",
+    "chat.viewSessions.orientation": "stacked",
+    "svn.path": "d:/SharedVM/Apache-Subversion-1.14.5-3/bin/svn.exe",
+    "diffEditor.hideUnchangedRegions.enabled": true,
+    "explorer.confirmDelete": false,
+    "zig.zls.enabled": "on",
+    "git.enableSmartCommit": true,
+    "editor.wordWrap": "on",
+    "editor.occurrencesHighlight": "off",
+    "Org-vscode.autoIndentNonHeaderText": true,
+    "workbench.colorTheme": "Visual Studio 2017 Dark - C++",
+    "editor.renderWhitespace": "none",
+    "zenMode.hideLineNumbers": false
 }
