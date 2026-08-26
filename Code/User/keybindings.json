@@ -54,34 +54,14 @@
         "when": "dired.open && !findWidgetVisible && !inQuickOpen"
     },
     {
-        "key": "+",
-        "command": "extension.dired.createDir",
-        "when": "dired.open && !findWidgetVisible && !inQuickOpen"
+        "key": "ctrl+x ctrl+k",
+        "command": "editor.action.clipboardCutAction",
+        "when": "editorTextFocus && !editorReadonly"
     },
     {
-        "key": "-",
-        "command": "extension.dired.createFile",
-        "when": "dired.open && !findWidgetVisible && !inQuickOpen"
-    },
-    {
-        "key": "f",
-        "command": "extension.dired.enter",
-        "when": "dired.open && !findWidgetVisible && !inQuickOpen"
-    },
-    {
-        "key": "ctrl+x d",
-        "command": "extension.multiCommand.execute",
-        "args": { "command": "multiCommand.diredOpen" },
-        "when": "editorTextFocus && !inDebugRepl"
-    },
-    {
-        "key": "ctrl+i",
+        "key": "ctrl+c i",
         "command": "editor.action.formatDocument",
         "when": "editorHasDocumentFormattingProvider && editorTextFocus && !editorReadonly && !inCompositeEditor"
-    },
-    {
-        "key": "ctrl+w",
-        "command": "workbench.action.files.save"
     },
     {
         "key": "alt+w",
@@ -124,7 +104,7 @@
         "when": "editorTextFocus"
     },
     {
-        "key": "ctrl+o",
+        "key": "alt+p",
         "command": "workbench.action.previousEditor"
     },
     {
@@ -137,7 +117,7 @@
         "when": "activePanel != ''"
     },
     {
-        "key": "alt+o",
+        "key": "alt+n",
         "command": "workbench.action.nextEditor"
     },
     {
@@ -150,7 +130,7 @@
         "when": "activePanel != ''"
     },
     {
-        "key": "alt+m",
+        "key": "alt+0",
         "command": "workbench.action.selectTheme"
     },
     {
@@ -160,19 +140,19 @@
     },
     // Window resize — match Emacs M-{H,J,K,L}: h=narrower, l=wider, j=shorter, k=taller
     {
-        "key": "alt+shift+l",
+        "key": "ctrl+alt+l",
         "command": "workbench.action.decreaseViewSize"
     },
     {
-        "key": "alt+shift+h",
+        "key": "ctrl+alt+h",
         "command": "workbench.action.increaseViewSize"
     },
     {
-        "key": "alt+shift+j",
+        "key": "ctrl+alt+j",
         "command": "workbench.action.decreaseViewSize"
     },
     {
-        "key": "alt+shift+k",
+        "key": "ctrl+alt+k",
         "command": "workbench.action.increaseViewSize"
     },
     {
@@ -199,70 +179,27 @@
         "command": "workbench.action.toggleAuxiliaryBar"
     },
     {
+        "key": "alt+'",
+        "command": "workbench.action.closeActiveEditor"
+    },
+    {
         "key": "ctrl+alt+b",
         "command": "-workbench.action.toggleAuxiliaryBar"
     },
     {
-        "key": "alt+0",
-        "command": "workbench.action.closeEditorsInGroup",
-        "when": "!terminalFocus && !auxiliaryBarFocus"
-    },
-    // Window splits — match Emacs M-1/2/3
-    {
-        "key": "alt+1",
-        "command": "workbench.action.closeEditorsInOtherGroups"
-    },
-    {
-        "key": "alt+2",
-        "command": "workbench.action.splitEditorDown"
-    },
-    {
-        "key": "alt+3",
-        "command": "workbench.action.splitEditorRight"
-    },
-    {
-        "key": "ctrl+w s",
+        "key": "alt+m",
         "command": "workbench.action.splitEditorDown",
         "when": "!terminalFocus"
     },
     {
-        "key": "ctrl+w v",
+        "key": "ctrl+;",
         "command": "workbench.action.splitEditorRight",
         "when": "!terminalFocus"
     },
     {
-        "key": "ctrl+w o",
+        "key": "alt+a",
         "command": "workbench.action.closeEditorsInOtherGroups",
         "when": "!terminalFocus"
-    },
-    // Windmove between editor groups — match Emacs C-M-{h,j,k,l}
-    {
-        "key": "ctrl+alt+h",
-        "command": "workbench.action.focusLeftGroup"
-    },
-    {
-        "key": "ctrl+alt+l",
-        "command": "workbench.action.focusRightGroup"
-    },
-    {
-        "key": "ctrl+alt+j",
-        "command": "workbench.action.focusBelowGroup"
-    },
-    {
-        "key": "ctrl+alt+k",
-        "command": "workbench.action.focusAboveGroup"
-    },
-    {
-        "key": "alt+e",
-        "command": "extension.multiCommand.execute",
-        "args": { "command": "multiCommand.diredOpen" },
-        "when": "editorTextFocus && !editorHasSelection"
-    },
-    {
-        "key": "alt+e",
-        "command": "extension.multiCommand.execute",
-        "args": { "command": "multiCommand.diredGoUp" },
-        "when": "dired.open && !findWidgetVisible && !inQuickOpen"
     },
     {
         "key": "ctrl+c j",
@@ -287,6 +224,101 @@
         "key": "ctrl+;",
         "command": "editor.action.commentLine",
         "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "ctrl+c o h",
+        "command": "editor.fold",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "ctrl+c o s",
+        "command": "editor.unfold",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "ctrl+c o r",
+        "command": "editor.unfold",
+        "args": {
+            "levels": 99,
+            "direction": "down"
+        },
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "ctrl+c o a",
+        "command": "editor.unfoldAll",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "ctrl+c o m",
+        "command": "editor.foldAll",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "ctrl+c o o",
+        "command": "editor.toggleFold",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "ctrl+i",
+        "command": "editor.toggleFold",
+        "when": "editorTextFocus && !editorReadonly && !inQuickOpen && !suggestWidgetVisible && !findWidgetVisible && !renameInputVisible"
+    },
+    {
+        "key": "ctrl+alt+n",
+        "command": "cursorPageDown",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+alt+p",
+        "command": "cursorPageUp",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "up",
+        "command": "editorScroll",
+        "args": {
+            "to": "up",
+            "by": "line"
+        },
+        "when": "editorTextFocus && sandbox.scrollLock"
+    },
+    {
+        "key": "down",
+        "command": "editorScroll",
+        "args": {
+            "to": "down",
+            "by": "line"
+        },
+        "when": "editorTextFocus && sandbox.scrollLock"
+    },
+    {
+        "key": "pageup",
+        "command": "editorScroll",
+        "args": {
+            "to": "up",
+            "by": "page"
+        },
+        "when": "editorTextFocus && sandbox.scrollLock"
+    },
+    {
+        "key": "pagedown",
+        "command": "editorScroll",
+        "args": {
+            "to": "down",
+            "by": "page"
+        },
+        "when": "editorTextFocus && sandbox.scrollLock"
+    },
+    {
+        "key": "alt+h",
+        "command": "editor.action.smartSelect.expand",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "ctrl+z e",
+        "command": "editor.action.toggleRenderWhitespace",
+        "when": "editorTextFocus"
     },
     // Beginning/end of buffer — match Emacs C-x [ / C-x ]
     {
@@ -331,7 +363,7 @@
     },
     // Bookmarks — match Emacs M-o (bookmark-jump) and C-x r {m,b,l}
     {
-        "key": "ctrl+c o",
+        "key": "alt+l l",
         "command": "bookmarks.listFromAllFiles"
     },
     {
