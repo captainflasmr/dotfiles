@@ -336,6 +336,11 @@
         "key": "ctrl+x g",
         "command": "workbench.view.scm"
     },
+    // Toggle chat session — match Emacs C-x ;
+    {
+        "key": "ctrl+x ;",
+        "command": "workbench.action.chat.toggle"
+    },
     // Find file / grep — match Emacs C-c f / C-c g
     {
         "key": "ctrl+c f",

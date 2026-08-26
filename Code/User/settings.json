@@ -34,7 +34,6 @@
     "editor.wordWrap": "on",
     "editor.occurrencesHighlight": "off",
     "Org-vscode.autoIndentNonHeaderText": true,
-    "workbench.colorTheme": "Visual Studio 2017 Dark - C++",
     "editor.renderWhitespace": "none",
     "zenMode.hideLineNumbers": false
 }
