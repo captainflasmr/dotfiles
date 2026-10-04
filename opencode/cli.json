@@ -4,7 +4,7 @@
         "name": "system"
     },
     "keybinds": {
-        "app.exit": false,
+        "app.exit": "<leader>ctrl+c",
         "command.palette.show": "alt+x",
         "session.interrupt": "escape,ctrl+g",
         "session.background": "ctrl+o",
