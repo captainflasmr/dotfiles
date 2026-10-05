@@ -14,6 +14,8 @@
 !systemd/user/ssh-add-key.service
 !systemd/user/ssh-add-key.service
 !fish/
+!foot/
+!foot/**
 !fusuma/
 !greetd/
 !greetd/**
@@ -38,6 +40,7 @@
 !.opencode/
 !opencode/
 !opencode/**
+opencode/service.json
 !pacseek/
 !pcmanfm/
 !polybar/
