@@ -2,8 +2,8 @@
 exec_always ~/.config/sway/scripts/import-gsettings
 
 # Set inner/outer gaps (outer 0 so waybar sits flush with windows)
-gaps inner 20
-gaps outer 20
+gaps inner 10
+gaps outer 10
 
 # Hide titlebar on windows:
 default_border pixel 3

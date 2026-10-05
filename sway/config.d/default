@@ -36,10 +36,10 @@ bindsym Mod4+f2 exec darkman toggle
 bindsym $mod+v exec ~/.config/sway/scripts/toggle_idle.sh
 
 # Quick volume and brightness controls
-bindsym $mod+a exec brightnessctl set +1%
-bindsym $mod+z exec brightnessctl set 1%-
-bindsym $mod+s exec pactl set-sink-volume @DEFAULT_SINK@ +2%
-bindsym $mod+x exec pactl set-sink-volume @DEFAULT_SINK@ -2%
+bindsym $mod+s exec brightnessctl set +1%
+bindsym $mod+x exec brightnessctl set 1%-
+bindsym $mod+a exec pactl set-sink-volume @DEFAULT_SINK@ +2%
+bindsym $mod+z exec pactl set-sink-volume @DEFAULT_SINK@ -2%
 
 # Volume controls (function keys)
 bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
@@ -101,7 +101,7 @@ bindsym $mod+Ctrl+minus exec ~/.config/sway/scripts/waybar_scale.sh smaller
 
 bindsym $mod+t exec $term
 bindsym $mod+w exec swayr switch-window
-bindsym $mod+semicolon exec emacsclient -c -a emacs
+bindsym $mod+semicolon exec /home/jdyer/emacs-versions/emacs-master/bin/emacsclient -c -a /home/jdyer/emacs-versions/emacs-master/bin/emacs
 # bindsym Mod1+4 kill
 bindsym control+Mod1+t exec $term
 bindsym $mod+period exec rofimoji
