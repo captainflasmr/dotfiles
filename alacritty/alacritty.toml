@@ -1,0 +1,41 @@
+general.import = ["~/.config/alacritty/theme.toml"]
+
+[font]
+size = 12.0
+
+[font.bold]
+family = "monospace"
+style = "Bold"
+
+[font.bold_italic]
+family = "monospace"
+style = "Bold Italic"
+
+[font.italic]
+family = "monospace"
+style = "Italic"
+
+[font.normal]
+family = "monospace"
+style = "Regular"
+
+[window]
+opacity = 0.8
+
+[[keyboard.bindings]]
+key = "Return"
+mods = "Shift"
+chars = "\u001B\r"
+
+# Emacs-style scrolling: Alt+j / Alt+k scroll the terminal scrollback.
+# j = scroll toward newer output (Emacs scroll-up, like vim/less j),
+# k = scroll back into history (Emacs scroll-down, like vim/less k).
+[[keyboard.bindings]]
+key = "J"
+mods = "Alt"
+action = "ScrollPageDown"
+
+[[keyboard.bindings]]
+key = "K"
+mods = "Alt"
+action = "ScrollPageUp"
