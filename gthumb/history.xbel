@@ -3,111 +3,111 @@
       xmlns:bookmark="http://www.freedesktop.org/standards/desktop-bookmarks"
       xmlns:mime="http://www.freedesktop.org/standards/shared-mime-info"
 >
-  <bookmark href="file:///home/jdyer/Downloads/Gallery/animals" added="2026-10-07T14:21:54.087554Z" modified="2026-10-07T14:21:54.087685Z" visited="2026-10-07T14:21:54.087555Z">
+  <bookmark href="file:///home/jdyer/Downloads/Gallery/animals" added="2026-10-07T14:54:42.075277Z" modified="2026-10-07T14:54:42.075281Z" visited="2026-10-07T14:54:42.075277Z">
     <info>
       <metadata owner="http://freedesktop.org">
         <bookmark:applications>
-          <bookmark:application name="gthumb" exec="&apos;gthumb %u&apos;" modified="2026-10-07T14:21:54.087683Z" count="2"/>
+          <bookmark:application name="gthumb" exec="&apos;gthumb %u&apos;" modified="2026-10-07T14:54:42.075279Z" count="1"/>
         </bookmark:applications>
         <bookmark:private/>
       </metadata>
     </info>
   </bookmark>
-  <bookmark href="file:///home/jdyer/Downloads/Gallery/buffy" added="2026-10-07T14:21:54.087607Z" modified="2026-10-07T14:21:54.087616Z" visited="2026-10-07T14:21:54.087607Z">
+  <bookmark href="file:///home/jdyer/Downloads/Gallery/doodles" added="2026-10-07T14:54:42.075282Z" modified="2026-10-07T14:54:42.075286Z" visited="2026-10-07T14:54:42.075282Z">
     <info>
       <metadata owner="http://freedesktop.org">
         <bookmark:applications>
-          <bookmark:application name="gthumb" exec="&apos;gthumb %u&apos;" modified="2026-10-07T14:21:54.087612Z" count="1"/>
+          <bookmark:application name="gthumb" exec="&apos;gthumb %u&apos;" modified="2026-10-07T14:54:42.075283Z" count="1"/>
         </bookmark:applications>
         <bookmark:private/>
       </metadata>
     </info>
   </bookmark>
-  <bookmark href="file:///home/jdyer/Downloads/Gallery/doodles" added="2026-10-07T14:21:54.087620Z" modified="2026-10-07T14:21:54.087629Z" visited="2026-10-07T14:21:54.087621Z">
+  <bookmark href="file:///home/jdyer/Downloads/Gallery/buffy" added="2026-10-07T14:54:42.075287Z" modified="2026-10-07T14:54:42.075289Z" visited="2026-10-07T14:54:42.075287Z">
     <info>
       <metadata owner="http://freedesktop.org">
         <bookmark:applications>
-          <bookmark:application name="gthumb" exec="&apos;gthumb %u&apos;" modified="2026-10-07T14:21:54.087624Z" count="1"/>
+          <bookmark:application name="gthumb" exec="&apos;gthumb %u&apos;" modified="2026-10-07T14:54:42.075288Z" count="1"/>
         </bookmark:applications>
         <bookmark:private/>
       </metadata>
     </info>
   </bookmark>
-  <bookmark href="file:///home/jdyer/Downloads/Gallery" added="2026-10-07T14:21:54.087633Z" modified="2026-10-07T14:21:54.087644Z" visited="2026-10-07T14:21:54.087635Z">
+  <bookmark href="file:///home/jdyer/Downloads/Scaled7632/animals" added="2026-10-07T14:54:42.075290Z" modified="2026-10-07T14:54:42.075297Z" visited="2026-10-07T14:54:42.075290Z">
     <info>
       <metadata owner="http://freedesktop.org">
         <bookmark:applications>
-          <bookmark:application name="gthumb" exec="&apos;gthumb %u&apos;" modified="2026-10-07T14:21:54.087638Z" count="1"/>
+          <bookmark:application name="gthumb" exec="&apos;gthumb %u&apos;" modified="2026-10-07T14:54:42.075292Z" count="1"/>
         </bookmark:applications>
         <bookmark:private/>
       </metadata>
     </info>
   </bookmark>
-  <bookmark href="file:///home/jdyer/Pictures" added="2026-10-07T14:21:54.087648Z" modified="2026-10-07T14:21:54.087656Z" visited="2026-10-07T14:21:54.087650Z">
+  <bookmark href="file:///home/jdyer/Downloads/Gallery" added="2026-10-07T14:54:42.075298Z" modified="2026-10-07T14:54:42.075303Z" visited="2026-10-07T14:54:42.075299Z">
     <info>
       <metadata owner="http://freedesktop.org">
         <bookmark:applications>
-          <bookmark:application name="gthumb" exec="&apos;gthumb %u&apos;" modified="2026-10-07T14:21:54.087653Z" count="1"/>
+          <bookmark:application name="gthumb" exec="&apos;gthumb %u&apos;" modified="2026-10-07T14:54:42.075300Z" count="1"/>
         </bookmark:applications>
         <bookmark:private/>
       </metadata>
     </info>
   </bookmark>
-  <bookmark href="file:///home/jdyer/DCIM/Screenshots" added="2026-10-07T14:21:54.087660Z" modified="2026-10-07T14:21:54.087667Z" visited="2026-10-07T14:21:54.087661Z">
+  <bookmark href="file:///home/jdyer/Pictures" added="2026-10-07T14:54:42.075305Z" modified="2026-10-07T14:54:42.075306Z" visited="2026-10-07T14:54:42.075305Z">
     <info>
       <metadata owner="http://freedesktop.org">
         <bookmark:applications>
-          <bookmark:application name="gthumb" exec="&apos;gthumb %u&apos;" modified="2026-10-07T14:21:54.087664Z" count="1"/>
+          <bookmark:application name="gthumb" exec="&apos;gthumb %u&apos;" modified="2026-10-07T14:54:42.075305Z" count="1"/>
         </bookmark:applications>
         <bookmark:private/>
       </metadata>
     </info>
   </bookmark>
-  <bookmark href="file:///home/jdyer/Downloads/Scaled7632/animals" added="2026-10-07T14:21:54.087672Z" modified="2026-10-07T14:21:54.087679Z" visited="2026-10-07T14:21:54.087672Z">
+  <bookmark href="file:///home/jdyer/DCIM/Screenshots" added="2026-10-07T14:54:42.075307Z" modified="2026-10-07T14:54:42.075309Z" visited="2026-10-07T14:54:42.075307Z">
     <info>
       <metadata owner="http://freedesktop.org">
         <bookmark:applications>
-          <bookmark:application name="gthumb" exec="&apos;gthumb %u&apos;" modified="2026-10-07T14:21:54.087675Z" count="1"/>
+          <bookmark:application name="gthumb" exec="&apos;gthumb %u&apos;" modified="2026-10-07T14:54:42.075309Z" count="1"/>
         </bookmark:applications>
         <bookmark:private/>
       </metadata>
     </info>
   </bookmark>
-  <bookmark href="file:///home/jdyer/Downloads/Scaled7632/monsters" added="2026-10-07T14:21:54.087693Z" modified="2026-10-07T14:21:54.087702Z" visited="2026-10-07T14:21:54.087694Z">
+  <bookmark href="file:///home/jdyer/Downloads/Scaled7632/monsters" added="2026-10-07T14:54:42.075312Z" modified="2026-10-07T14:54:42.075313Z" visited="2026-10-07T14:54:42.075312Z">
     <info>
       <metadata owner="http://freedesktop.org">
         <bookmark:applications>
-          <bookmark:application name="gthumb" exec="&apos;gthumb %u&apos;" modified="2026-10-07T14:21:54.087698Z" count="1"/>
+          <bookmark:application name="gthumb" exec="&apos;gthumb %u&apos;" modified="2026-10-07T14:54:42.075313Z" count="1"/>
         </bookmark:applications>
         <bookmark:private/>
       </metadata>
     </info>
   </bookmark>
-  <bookmark href="file:///home/jdyer/Downloads/Gallery/monsters" added="2026-10-07T14:21:54.087707Z" modified="2026-10-07T14:21:54.087715Z" visited="2026-10-07T14:21:54.087707Z">
+  <bookmark href="file:///home/jdyer/Downloads/Gallery/monsters" added="2026-10-07T14:54:42.075314Z" modified="2026-10-07T14:54:42.075317Z" visited="2026-10-07T14:54:42.075314Z">
     <info>
       <metadata owner="http://freedesktop.org">
         <bookmark:applications>
-          <bookmark:application name="gthumb" exec="&apos;gthumb %u&apos;" modified="2026-10-07T14:21:54.087711Z" count="1"/>
+          <bookmark:application name="gthumb" exec="&apos;gthumb %u&apos;" modified="2026-10-07T14:54:42.075316Z" count="1"/>
         </bookmark:applications>
         <bookmark:private/>
       </metadata>
     </info>
   </bookmark>
-  <bookmark href="file:///home/jdyer/Downloads/Gallery/misc" added="2026-10-07T14:21:54.087721Z" modified="2026-10-07T14:21:54.087730Z" visited="2026-10-07T14:21:54.087722Z">
+  <bookmark href="file:///home/jdyer/Downloads/Gallery/misc" added="2026-10-07T14:54:42.075318Z" modified="2026-10-07T14:54:42.075322Z" visited="2026-10-07T14:54:42.075318Z">
     <info>
       <metadata owner="http://freedesktop.org">
         <bookmark:applications>
-          <bookmark:application name="gthumb" exec="&apos;gthumb %u&apos;" modified="2026-10-07T14:21:54.087726Z" count="1"/>
+          <bookmark:application name="gthumb" exec="&apos;gthumb %u&apos;" modified="2026-10-07T14:54:42.075320Z" count="1"/>
         </bookmark:applications>
         <bookmark:private/>
       </metadata>
     </info>
   </bookmark>
-  <bookmark href="file:///home/jdyer/Downloads/Scaled7632/monsters-lite" added="2026-10-07T14:21:54.087738Z" modified="2026-10-07T14:21:54.087747Z" visited="2026-10-07T14:21:54.087739Z">
+  <bookmark href="file:///home/jdyer/Downloads/Scaled7632/monsters-lite" added="2026-10-07T14:54:42.075325Z" modified="2026-10-07T14:54:42.075326Z" visited="2026-10-07T14:54:42.075325Z">
     <info>
       <metadata owner="http://freedesktop.org">
         <bookmark:applications>
-          <bookmark:application name="gthumb" exec="&apos;gthumb %u&apos;" modified="2026-10-07T14:21:54.087744Z" count="1"/>
+          <bookmark:application name="gthumb" exec="&apos;gthumb %u&apos;" modified="2026-10-07T14:54:42.075325Z" count="1"/>
         </bookmark:applications>
         <bookmark:private/>
       </metadata>

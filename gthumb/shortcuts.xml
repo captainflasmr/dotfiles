@@ -1,45 +1,45 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <shortcuts version="1.0">
-  <shortcut action="editor.apply" accelerator="Return" />
-  <shortcut action="image.recenter" accelerator="&lt;Alt&gt;Down" />
-  <shortcut action="image.scroll-down" accelerator="j" />
-  <shortcut action="image.scroll-left" accelerator="h" />
-  <shortcut action="image.scroll-page-down" accelerator="&lt;Shift&gt;Down" />
-  <shortcut action="image.scroll-page-left" accelerator="&lt;Shift&gt;Left" />
-  <shortcut action="image.scroll-page-right" accelerator="&lt;Shift&gt;Right" />
-  <shortcut action="image.scroll-page-up" accelerator="&lt;Shift&gt;Up" />
-  <shortcut action="image.scroll-right" accelerator="l" />
-  <shortcut action="image.scroll-up" accelerator="k" />
-  <shortcut action="image.set-zoom('max-height')" accelerator="&lt;Shift&gt;h" />
-  <shortcut action="image.set-zoom('max-width')" accelerator="&lt;Shift&gt;w" />
-  <shortcut action="image.zoom-in" accelerator="&lt;Shift&gt;plus" />
-  <shortcut action="video.copy-frame" accelerator="&lt;Primary&gt;&lt;Shift&gt;c" />
-  <shortcut action="video.skip(-1)" accelerator="" />
-  <shortcut action="video.skip(-10)" accelerator="&lt;Alt&gt;Left" />
-  <shortcut action="video.skip(-300)" accelerator="&lt;Primary&gt;&lt;Alt&gt;Left" />
-  <shortcut action="video.skip(-5)" accelerator="&lt;Shift&gt;Left" />
-  <shortcut action="video.skip(-60)" accelerator="&lt;Primary&gt;Left" />
-  <shortcut action="video.skip(1)" accelerator="" />
-  <shortcut action="video.skip(10)" accelerator="&lt;Alt&gt;Right" />
-  <shortcut action="video.skip(300)" accelerator="&lt;Primary&gt;&lt;Alt&gt;Right" />
-  <shortcut action="video.skip(5)" accelerator="&lt;Shift&gt;Right" />
-  <shortcut action="video.skip(60)" accelerator="&lt;Primary&gt;Right" />
-  <shortcut action="viewer.adjust-contrast" accelerator="a" />
-  <shortcut action="viewer.crop" accelerator="&lt;Shift&gt;c" />
-  <shortcut action="viewer.resize" accelerator="&lt;Shift&gt;s" />
-  <shortcut action="viewer.rotate-left" accelerator="bracketleft" />
-  <shortcut action="viewer.rotate-right" accelerator="bracketright" />
-  <shortcut action="win.duplicate-files" accelerator="" />
-  <shortcut action="win.hidden-files" accelerator="h" />
-  <shortcut action="win.load-home" accelerator="&lt;Alt&gt;Home" />
-  <shortcut action="win.next-image" accelerator="space" />
-  <shortcut action="win.open-with-inkscape" accelerator="" />
-  <shortcut action="win.previous-image" accelerator="b" />
-  <shortcut action="win.sort-files" accelerator="s" />
-  <shortcut action="win.toggle-play" accelerator="p" />
-  <shortcut action="win.trash-files" accelerator="&lt;Primary&gt;d" />
-  <shortcut action="win.view-first" accelerator="Home" />
-  <shortcut action="win.view-last" accelerator="End" />
-  <shortcut action="win.view-next" accelerator="n" />
-  <shortcut action="win.view-previous" accelerator="p" />
+  <shortcut accelerator="&lt;Alt&gt;Home" action="win.load-home"/>
+  <shortcut accelerator="h" action="win.hidden-files"/>
+  <shortcut accelerator="s" action="win.sort-files"/>
+  <shortcut accelerator="" action="win.duplicate-files"/>
+  <shortcut accelerator="&lt;Control&gt;d" action="win.trash-files"/>
+  <shortcut accelerator="" action="win.open-with-inkscape"/>
+  <shortcut accelerator="n" action="win.view-next"/>
+  <shortcut accelerator="p" action="win.view-previous"/>
+  <shortcut accelerator="Home" action="win.view-first"/>
+  <shortcut accelerator="End" action="win.view-last"/>
+  <shortcut accelerator="&lt;Shift&gt;plus" action="image.zoom-in"/>
+  <shortcut accelerator="&lt;Shift&gt;w" action="image.set-zoom(&apos;max-width&apos;)"/>
+  <shortcut accelerator="&lt;Shift&gt;h" action="image.set-zoom(&apos;max-height&apos;)"/>
+  <shortcut accelerator="h" action="image.scroll-left"/>
+  <shortcut accelerator="l" action="image.scroll-right"/>
+  <shortcut accelerator="k" action="image.scroll-up"/>
+  <shortcut accelerator="j" action="image.scroll-down"/>
+  <shortcut accelerator="&lt;Shift&gt;Left" action="image.scroll-page-left"/>
+  <shortcut accelerator="&lt;Shift&gt;Right" action="image.scroll-page-right"/>
+  <shortcut accelerator="&lt;Shift&gt;Up" action="image.scroll-page-up"/>
+  <shortcut accelerator="&lt;Shift&gt;Down" action="image.scroll-page-down"/>
+  <shortcut accelerator="&lt;Alt&gt;Down" action="image.recenter"/>
+  <shortcut accelerator="a" action="viewer.adjust-contrast"/>
+  <shortcut accelerator="&lt;Shift&gt;c" action="viewer.crop"/>
+  <shortcut accelerator="bracketright" action="viewer.rotate-right"/>
+  <shortcut accelerator="bracketleft" action="viewer.rotate-left"/>
+  <shortcut accelerator="&lt;Shift&gt;s" action="viewer.resize"/>
+  <shortcut accelerator="Return" action="editor.apply"/>
+  <shortcut accelerator="p" action="win.toggle-play"/>
+  <shortcut accelerator="space" action="win.next-image"/>
+  <shortcut accelerator="b" action="win.previous-image"/>
+  <shortcut accelerator="" action="video.skip(1)"/>
+  <shortcut accelerator="&lt;Shift&gt;Right" action="video.skip(5)"/>
+  <shortcut accelerator="&lt;Alt&gt;Right" action="video.skip(10)"/>
+  <shortcut accelerator="&lt;Control&gt;Right" action="video.skip(60)"/>
+  <shortcut accelerator="&lt;Control&gt;&lt;Alt&gt;Right" action="video.skip(300)"/>
+  <shortcut accelerator="" action="video.skip(-1)"/>
+  <shortcut accelerator="&lt;Shift&gt;Left" action="video.skip(-5)"/>
+  <shortcut accelerator="&lt;Alt&gt;Left" action="video.skip(-10)"/>
+  <shortcut accelerator="&lt;Control&gt;Left" action="video.skip(-60)"/>
+  <shortcut accelerator="&lt;Control&gt;&lt;Alt&gt;Left" action="video.skip(-300)"/>
+  <shortcut accelerator="t" action="win.exec-script::xO0qC3Za"/>
 </shortcuts>
