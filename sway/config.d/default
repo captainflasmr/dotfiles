@@ -74,6 +74,7 @@ bindsym $mod+plus exec wallpaper_change.sh
 bindsym $mod+Shift+minus exec wallpaper_reject.sh
 bindsym $mod+Shift+g exec screen-record.sh
 bindsym $mod+e exec thunar ~/DCIM/Camera
+bindsym $mod+Shift+e exec gthumb
 bindsym $mod+g floating toggle
 bindsym $mod+n exec env MOZ_ENABLE_WAYLAND=1 thunderbird
 bindsym $mod+p exec wl-color-picker
@@ -88,6 +89,10 @@ bindsym $mod+d exec bemenu-run \
     --tb "#458588" --tf "#ffffff" \
     --hb "#b16286" --hf "#ffffff"
 bindsym $mod+space exec toggle_waybar.sh
+
+# Scratchpad (drop-down windows): show/cycle, and send focused window there
+bindsym $mod+grave scratchpad show
+bindsym $mod+Shift+grave move to scratchpad
 
 # Waybar position (top/bottom/left/right)
 bindsym $mod+Ctrl+Up exec ~/.config/sway/scripts/move_waybar.sh top
