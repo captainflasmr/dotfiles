@@ -10,11 +10,12 @@
     color: @foreground;
     border: 1px;
     border-radius: 10px;
-    padding: 2px 0px;
+    /* em-based so padding/margin shrink when waybar_scale.sh reduces font-size */
+    padding: 0.15em 0;
     font-family: SourceCodePro;
-    font-size: 13px;
-    margin-right: 2px;
-    margin-left: 0px;
+    font-size: 10px;
+    margin-right: 0.15em;
+    margin-left: 0;
    }
 
 window#waybar {
@@ -24,7 +25,7 @@ window#waybar {
 
 #workspaces button {
     border: 0px;
-    padding: 0px 8px;
+    padding: 0 0.62em;
     border-style: solid;
     border-radius: 5px;
 }
@@ -64,11 +65,11 @@ window#waybar {
 #custom-terminal,
 #custom-keyboard,
 #custom-power {
-    padding: 0px 4px;
+    padding: 0 0.31em;
     border: 0px;
     border-style: solid;
     border-radius: 10px;
-    margin: 0px 2px;
+    margin: 0 0.15em;
 }
 
 #custom-screenshot,
@@ -78,21 +79,21 @@ window#waybar {
 #custom-terminal,
 #custom-keyboard
 {
-    padding: 0px 0px;
+    padding: 0;
 }
 
 #window
 {
-    padding: 0px 4px;
+    padding: 0 0.31em;
 }
 
 #custom-togglesticky
 {
-    padding: 2px 4px;
+    padding: 0.15em 0.31em;
     border: 0px;
     border-style: solid;
     border-radius: 20px;
-    margin-top: 1px;
+    margin-top: 0.08em;
 }
 
 /* -----------------------------------------------------------------------------
@@ -102,16 +103,16 @@ window#waybar {
 
 #custom-launcher {
     border-style: hidden;
-    margin-top:2px;
+    margin-top: 0.15em;
 }
 
 #mode{
-    margin-bottom:3px;
+    margin-bottom: 0.23em;
 }
 
 #window{
     border-style: hidden;
-    margin-top:1px;
+    margin-top: 0.08em;
 }
 
 #network {
@@ -210,7 +211,7 @@ window#waybar {
 
 #custom-power{
     border-style: hidden;
-    margin-top:2px;
+    margin-top: 0.15em;
 }
 
 #battery.warning {

@@ -56,10 +56,10 @@ nord15 #b48ead - (180,142,173)
     transition: background 0.3s;
 }
 .modules-left > widget:first-child > * {
-    margin-left: 3px;
+    margin-left: 0.23em;
 }
 .modules-right > widget:last-child > * {
-    margin-right: 3px;
+    margin-right: 0.23em;
 }
 tooltip label {
     font-family:JetBrainsMonoNerdFont;
@@ -99,8 +99,9 @@ tooltip label {
     background: rgba(129,161,193,0.4);
     border-radius: 4px;
     box-shadow: 0 0 10px rgba(0,0,0,0.8);
-    padding:.1rem .3rem;
-    margin: 1px 1px;
+    /* em-based so padding/margin shrink when waybar_scale.sh reduces font-size */
+    padding: 0.1em 0.3em;
+    margin: 0.08em;
 }
 
 #window:hover,
@@ -142,7 +143,7 @@ tooltip label {
 
 #custom-launcher,
 #custom-power {
-    padding-right: .3rem;
+    padding-right: 0.3em;
 }
 
 #workspaces:hover {
@@ -151,9 +152,9 @@ tooltip label {
 
 #workspaces button {
     border-radius: 5px;
-    padding: 0px 6px;
-    margin-right: 2px;
-    margin-left: 2px;
+    padding: 0 0.46em;
+    margin-right: 0.15em;
+    margin-left: 0.15em;
 }
 
 #workspaces button.focused {
@@ -169,7 +170,7 @@ tooltip label {
 
 #window {
     border-style: hidden;
-    margin-top: 1px;
+    margin-top: 0.08em;
 }
 
 #privacy {

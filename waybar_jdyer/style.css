@@ -19,7 +19,8 @@
 
 #workspaces button {
     border: 0px;
-    padding: 2px 8px;
+    /* em-based so padding shrinks when waybar_scale.sh reduces font-size (0.14em≈2px, 0.57em≈8px at 14px) */
+    padding: 0.14em 0.57em;
     border-style: solid;
     border-radius: 5px;
 }
