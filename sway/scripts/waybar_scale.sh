@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# Dynamically scale waybar (font size, which drives bar height/width)
+# Dynamically scale waybar (font size, which drives bar height/width).
+# Module padding/margin are em-based in style.css so they scale automatically.
 # Usage: waybar_scale.sh bigger|smaller
 
 ACTION="${1:-bigger}"
