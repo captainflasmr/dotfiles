@@ -1,6 +1,7 @@
 *
 !.gitignore
 !alacritty/
+!alacritty/**
 !emacs/
 !Code/User
 !sway/scripts/
@@ -19,6 +20,9 @@
 !fusuma/
 !greetd/
 !greetd/**
+!GIMP/
+!GIMP/3.2/
+!GIMP/3.2/shortcutsrc
 !JetBrains/
 !JetBrains/IntelliJIdea2026.1/
 !JetBrains/IntelliJIdea2026.1/keymaps/
