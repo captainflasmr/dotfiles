@@ -1,0 +1,10 @@
+size = 3
+delay = 250
+
+[[boundaries]]
+boundary = "left"
+command = "swaymsg -q workspace prev_on_output"
+
+[[boundaries]]
+boundary = "right"
+command = "swaymsg -q workspace next_on_output"
