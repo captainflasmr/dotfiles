@@ -10,10 +10,13 @@
     color: @foreground;
     border: 1px;
     border-radius: 10px;
+    /* Reset GTK's default minimum sizes so bar height follows font-size */
+    min-height: 0;
+    min-width: 0;
     /* em-based so padding/margin shrink when waybar_scale.sh reduces font-size */
     padding: 0.15em 0;
     font-family: SourceCodePro;
-    font-size: 10px;
+    font-size: 11px;
     margin-right: 0.15em;
     margin-left: 0;
    }

@@ -7,8 +7,14 @@
 * {
     font-family: SourceCodePro;
     color: @foreground;
+    /* Reset GTK's default minimum sizes/padding so bar height follows font-size */
+    border: none;
     border-radius: 0px;
-    font-size: 14px;
+    min-height: 0;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 11px;
     /* border-radius: 10px; */
     /* padding: 0.2em 0.1em 0.1em 0.1em; */
 }

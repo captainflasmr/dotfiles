@@ -1,10 +1,12 @@
 size = 3
 delay = 250
 
+# edge_workspace.sh switches workspace, then warps the pointer to the
+# opposite edge so continued movement keeps crossing desktops.
 [[boundaries]]
 boundary = "left"
-command = "swaymsg -q workspace prev_on_output"
+command = "$HOME/.config/sway/scripts/edge_workspace.sh left"
 
 [[boundaries]]
 boundary = "right"
-command = "swaymsg -q workspace next_on_output"
+command = "$HOME/.config/sway/scripts/edge_workspace.sh right"
