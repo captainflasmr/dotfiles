@@ -27,7 +27,6 @@
     "workbench.iconTheme": "vs-minimal",
     "chat.viewSessions.orientation": "stacked",
     "svn.path": "d:/SharedVM/Apache-Subversion-1.14.5-3/bin/svn.exe",
-    "diffEditor.hideUnchangedRegions.enabled": true,
     "explorer.confirmDelete": false,
     "zig.zls.enabled": "on",
     "git.enableSmartCommit": true,
@@ -35,5 +34,6 @@
     "editor.occurrencesHighlight": "off",
     "Org-vscode.autoIndentNonHeaderText": true,
     "editor.renderWhitespace": "none",
-    "zenMode.hideLineNumbers": false
+    "zenMode.hideLineNumbers": false,
+    "git.openRepositoryInParentFolders": "never"
 }
