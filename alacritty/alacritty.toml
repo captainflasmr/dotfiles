@@ -1,7 +1,7 @@
 general.import = ["~/.config/alacritty/theme.toml"]
 
 [font]
-size = 12.0
+size = 9.0
 
 [font.bold]
 family = "monospace"
@@ -27,15 +27,20 @@ key = "Return"
 mods = "Shift"
 chars = "\u001B\r"
 
-# Emacs-style scrolling: Alt+j / Alt+k scroll the terminal scrollback.
+# Emacs-style scrofflling: Alt+j / Alt+k scroll the terminal scrollback
+# when the alternate screen is NOT active (i.e. at the shell prompt).
 # j = scroll toward newer output (Emacs scroll-up, like vim/less j),
 # k = scroll back into history (Emacs scroll-down, like vim/less k).
+# `mode = "~Alt"` leaves the keys untouched inside full-screen TUIs
+# (opencode, less, vim), where they are handled by the application.
 [[keyboard.bindings]]
 key = "J"
 mods = "Alt"
+mode = "~Alt"
 action = "ScrollPageDown"
 
 [[keyboard.bindings]]
 key = "K"
 mods = "Alt"
+mode = "~Alt"
 action = "ScrollPageUp"

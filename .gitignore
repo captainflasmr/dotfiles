@@ -5,6 +5,7 @@
 !emacs/
 !Code/User
 !sway/scripts/
+!sway/scripts/**
 !darktable/
 !digikamrc
 !digikam_systemrc
@@ -77,3 +78,5 @@ qBittorrent/lockfile
 !jasspa/meuser/jasspa.org
 !gtk-4.0/
 !gtk-4.0/**
+!waybound/
+!waybound/**
