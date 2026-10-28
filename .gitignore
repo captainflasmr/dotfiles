@@ -80,3 +80,5 @@ qBittorrent/lockfile
 !gtk-4.0/**
 !waybound/
 !waybound/**
+/opencode/plugins/
+/opencode/skills/
