@@ -18,3 +18,5 @@ exec sway-audio-idle-inhibit
 
 # Blue light filter (auto-location via geoclue2)
 exec gammastep -l geoclue2 -t 6500:3500
+
+exec --no-startup-id waybound

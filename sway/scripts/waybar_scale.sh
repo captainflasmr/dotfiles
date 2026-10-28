@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # Dynamically scale waybar (font size, which drives bar height/width).
-# Module padding/margin are em-based in style.css so they scale automatically.
+# Module padding/margin are em-based in style.css so they scale automatically;
+# fixed pixel values in config/modules.json (spacing, margins, tray icon size)
+# are rescaled here.
 # Usage: waybar_scale.sh bigger|smaller
 
 ACTION="${1:-bigger}"
@@ -21,6 +23,21 @@ if [[ ! -f $CSS ]]; then
     echo "Error: $CSS not found" >&2
     exit 1
 fi
+
+# Rescale pixel values (spacing, margins, tray icon size) in a JSON config so
+# fixed-size geometry shrinks/grows by the same ratio as the font.
+scale_config() {
+    local file=$1
+    [[ -f $file ]] || return 0
+
+    NEW="$NEW" CURRENT="$CURRENT" perl -0pi -e '
+        my $ratio = $ENV{NEW} / $ENV{CURRENT};
+        s{("(?:icon-size|icon-spacing|spacing|margin-top|margin-bottom|margin-right|margin-left)"\s*:\s*)(-?\d+)}{
+            my $v = $2 * $ratio;
+            $1 . ($v >= 0 ? int($v + 0.5) : -int(-$v + 0.5));
+        }ge;
+    ' "$file"
+}
 
 case $ACTION in
     bigger|+) DIRECTION=1 ;;
@@ -46,6 +63,9 @@ if [[ $NEW -eq $CURRENT ]]; then
 fi
 
 sed -i -E "s/font-size: *[0-9]+px/font-size: ${NEW}px/g" "$CSS"
+
+scale_config "$DIR/config"
+scale_config "$DIR/modules.json"
 
 killall waybar 2>/dev/null
 waybar -c "$DIR/config" -s "$CSS" &
