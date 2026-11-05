@@ -1,5 +1,5 @@
-size = 3
-delay = 250
+size = 1
+delay = 300
 
 # edge_workspace.sh switches workspace, then warps the pointer to the
 # opposite edge so continued movement keeps crossing desktops.
