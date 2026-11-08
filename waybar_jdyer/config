@@ -4,7 +4,7 @@
     "mode": "dock",
     // "height": 50,
     // "width": 40,
-    "spacing": 12,
+    "spacing": 11,
     "margin-top": 2,
     "margin-bottom": -2,
     "margin-right": 2,
@@ -19,6 +19,7 @@
         // "custom/files",
         // "custom/terminal",
         "custom/keyboard",
+        "custom/sticky_mods",
         "sway/workspaces",
         "sway/mode",
         "sway/window"

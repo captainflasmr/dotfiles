@@ -16,7 +16,7 @@
     /* em-based so padding/margin shrink when waybar_scale.sh reduces font-size */
     padding: 0.15em 0;
     font-family: SourceCodePro;
-    font-size: 11px;
+    font-size: 10px;
     margin-right: 0.15em;
     margin-left: 0;
    }
@@ -97,6 +97,26 @@ window#waybar {
     border-style: solid;
     border-radius: 20px;
     margin-top: 0.08em;
+}
+
+/* Live sticky-modifier indicator (Ctrl/Shift/Alt locked or latched) */
+#custom-sticky_mods {
+    padding: 0.15em 0.31em;
+    border-radius: 10px;
+    margin: 0.08em 0.15em;
+    color: #4c566a;
+}
+
+#custom-sticky_mods.latched {
+    background: rgba(235, 203, 139, 0.15);
+}
+
+#custom-sticky_mods.locked {
+    background: rgba(191, 97, 106, 0.25);
+}
+
+#custom-sticky_mods.error {
+    color: #bf616a;
 }
 
 /* -----------------------------------------------------------------------------

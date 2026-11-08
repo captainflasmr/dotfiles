@@ -112,8 +112,8 @@
     },
 
     "tray": {
-        "icon-size": 14,
-        "spacing": 9,
+        "icon-size": 13,
+        "spacing": 8,
         "min-length": 1,
         "max-length": 6
     },
@@ -290,5 +290,15 @@
         "interval": 1,
         "return-type": "json",
         "on-click": "keymap-toggle.sh",
+    },
+
+    // Live latched/locked XKB modifier state (sticky keys), written by
+    // ~/.config/waybar/scripts/sticky-modifiers-daemon.py
+    "custom/sticky_mods": {
+        "exec": "cat \"${XDG_RUNTIME_DIR:-/tmp}/waybar-sticky-modifiers.json\" 2>/dev/null || echo '{\"text\":\"\"}'",
+        "return-type": "json",
+        "signal": 2,
+        "interval": 30,
+        "tooltip": true
     }
 }
