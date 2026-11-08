@@ -20,3 +20,8 @@ exec sway-audio-idle-inhibit
 exec gammastep -l geoclue2 -t 6500:3500
 
 exec --no-startup-id waybound
+
+# Live sticky-modifier (latched/locked Ctrl, Shift, Alt...) indicator for waybar.
+# Sway does not expose modifier state over IPC, so the daemon reads the keyboard
+# through evdev and mirrors the compositor's XKB state with libxkbcommon.
+exec --no-startup-id $HOME/.config/waybar/scripts/sticky-modifiers-daemon.py
