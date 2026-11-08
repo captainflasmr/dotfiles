@@ -6,6 +6,10 @@
 exec systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK
 exec hash dbus-update-activation-environment 2>/dev/null && \
      dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK
+# The sway session gets GH_TOKEN from ~/bin/sway-github-session, which
+# sources ~/.config/gh/token.env at login.  Export it to systemd and DBus too.
+exec sh -c 'set -a; [ -r "$HOME/.config/gh/token.env" ] && . "$HOME/.config/gh/token.env"; set +a; [ -n "$GH_TOKEN" ] && systemctl --user import-environment GH_TOKEN'
+exec sh -c 'set -a; [ -r "$HOME/.config/gh/token.env" ] && . "$HOME/.config/gh/token.env"; set +a; [ -n "$GH_TOKEN" ] && dbus-update-activation-environment --systemd GH_TOKEN'
 exec env RUST_BACKTRACE=1 RUST_LOG=swayr=debug swayrd > /tmp/swayrd.log 2>&1
 # Sway Fader
 # exec python3 ~/.config/sway/scripts/swayfader.py
