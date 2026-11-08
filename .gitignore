@@ -11,10 +11,15 @@
 !digikam_systemrc
 !dunst/
 !environment.d/
+!environment.d/gh.conf
 !systemd/
 !systemd/user/
 !systemd/user/ssh-add-key.service
 !systemd/user/ssh-add-key.service
+!systemd/user/emacs.service.d/
+!systemd/user/emacs.service.d/10-github-token.conf
+# NOTE: gh/ is intentionally NOT whitelisted (it holds GH_TOKEN).
+# It is backed up to the NAS by do_backup's GIT_INCLUDE_OVERRIDES only.
 !fish/
 !foot/
 !foot/**
@@ -64,6 +69,8 @@ qBittorrent/lockfile
 !user-dirs.dirs
 !user-dirs.locale
 !waybar/
+!waybar/scripts/
+!waybar/scripts/sticky-modifiers-daemon.py
 !WAYBAR
 !waybar_custom/
 !waybar_garuda/
