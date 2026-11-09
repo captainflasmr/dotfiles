@@ -1,0 +1,794 @@
+#!/usr/bin/env python3
+"""Switch GTK theme, Sway border colours and Waybar palette together.
+
+The GTK palette is read from the selected theme's GTK CSS, so this works with
+any theme installed in ~/.themes or /usr/share/themes, not just the ones
+bundled with the dotfiles.
+
+Usage:
+    theme-switch                 # pick a theme from a menu
+    theme-switch THEME_NAME      # apply a theme directly
+    theme-switch --list          # list installed themes
+    theme-switch --current       # show the current theme
+    theme-switch --pywal         # give Sway borders back to wallpaper colours
+    theme-switch --dry-run ...   # preview without changing anything
+"""
+
+from __future__ import annotations
+
+import argparse
+import difflib
+import json
+import os
+import re
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
+from typing import Iterable
+
+HOME = Path.home()
+CONFIG = HOME / ".config"
+THEME_DIRS = (Path("/usr/share/themes"), HOME / ".themes")
+
+SWAY_DIR = CONFIG / "sway"
+SWAY_COLORS = SWAY_DIR / "theme-colors"
+SWAY_STATE = SWAY_DIR / "theme-active"
+
+PYWAL_MENU_ENTRY = "↩  Wallpaper colours (pywal)"
+
+GTK3_INI = CONFIG / "gtk-3.0" / "settings.ini"
+GTK4_INI = CONFIG / "gtk-4.0" / "settings.ini"
+
+# A few themes use a very muted selection colour. Use their recognisable
+# accent instead so Sway borders and Waybar are actually visible.
+ACCENT_OVERRIDES = {
+    "Nordic-darker": (129, 161, 193),       # Nord frost blue
+    "Gruvbox-Material-Dark": (215, 153, 33),  # Gruvbox yellow
+}
+
+
+NAMED_COLORS = {
+    "white": (255, 255, 255),
+    "black": (0, 0, 0),
+    "red": (255, 0, 0),
+    "green": (0, 128, 0),
+    "blue": (0, 0, 255),
+    "gray": (128, 128, 128),
+    "grey": (128, 128, 128),
+    "silver": (192, 192, 192),
+    "maroon": (128, 0, 0),
+    "purple": (128, 0, 128),
+    "teal": (0, 128, 128),
+    "navy": (0, 0, 128),
+    "yellow": (255, 255, 0),
+    "orange": (255, 165, 0),
+    "transparent": (0, 0, 0),
+}
+
+
+def split_args(value: str) -> list[str]:
+    """Split function arguments on commas, respecting nested parentheses."""
+    parts: list[str] = []
+    depth = 0
+    current = ""
+    for char in value:
+        if char == "(":
+            depth += 1
+        elif char == ")":
+            depth -= 1
+        if char == "," and depth == 0:
+            parts.append(current.strip())
+            current = ""
+        else:
+            current += char
+    if current.strip():
+        parts.append(current.strip())
+    return parts
+
+
+def read_theme_css(theme_dir: Path) -> dict[str, str]:
+    for subdir in ("gtk-3.0", "gtk-4.0"):
+        css = theme_dir / subdir / "gtk.css"
+        try:
+            text = css.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        # Ignore commented-out definitions; some themes keep alternative
+        # palettes in comments after the active one.
+        text = re.sub(r"/\*.*?\*/", "", text, flags=re.DOTALL)
+        values: dict[str, str] = {}
+        for match in re.finditer(
+            r"@define-color\s+([\w-]+)\s+([^;]+);", text, re.IGNORECASE
+        ):
+            values[match.group(1)] = match.group(2).strip()
+        if values:
+            return values
+    return {}
+
+
+def resolve_value(
+    value: str | None, values: dict[str, str], seen: set[str] | None = None
+) -> str | None:
+    if not value:
+        return None
+    if seen is None:
+        seen = set()
+    value = value.strip()
+    if value.startswith("@"):
+        name = value[1:]
+        if name in seen:
+            return None
+        return resolve_value(values.get(name), values, seen | {name})
+    if value.lower().startswith("mix("):
+        inner = value[4:].rstrip(")")
+        parts = split_args(inner)
+        if parts:
+            return resolve_value(parts[0], values, seen)
+        return None
+    return value
+
+
+def to_rgb(
+    value: str | None, values: dict[str, str], seen: set[str] | None = None
+) -> tuple[int, int, int] | None:
+    value = resolve_value(value, values, seen)
+    if not value:
+        return None
+    value = value.strip()
+
+    if value.startswith("#"):
+        digits = value[1:]
+        if len(digits) in (3, 4):
+            digits = "".join(char * 2 for char in digits[:3])
+        elif len(digits) in (6, 8):
+            digits = digits[:6]
+        else:
+            return None
+        try:
+            return tuple(int(digits[i : i + 2], 16) for i in (0, 2, 4))  # type: ignore[return-value]
+        except ValueError:
+            return None
+
+    match = re.match(r"rgba?\((.*)\)", value, re.IGNORECASE | re.DOTALL)
+    if match:
+        parts = split_args(match.group(1))
+        if len(parts) >= 3:
+            result = []
+            for part in parts[:3]:
+                part = part.strip()
+                try:
+                    if part.endswith("%"):
+                        result.append(round(float(part[:-1]) * 2.55))
+                    else:
+                        result.append(round(float(part)))
+                except ValueError:
+                    return None
+            return tuple(max(0, min(255, item)) for item in result)  # type: ignore[return-value]
+
+    if value.lower() in NAMED_COLORS:
+        return NAMED_COLORS[value.lower()]
+    return None
+
+
+def to_hex(rgb: tuple[int, int, int]) -> str:
+    return "#%02x%02x%02x" % rgb
+
+
+def luminance(rgb: tuple[int, int, int]) -> float:
+    def channel(value: int) -> float:
+        value = value / 255
+        return value / 12.92 if value <= 0.04045 else ((value + 0.055) / 1.055) ** 2.4
+
+    red, green, blue = (channel(item) for item in rgb)
+    return 0.2126 * red + 0.7152 * green + 0.0722 * blue
+
+
+def blend(first: tuple[int, int, int], second: tuple[int, int, int], amount: float):
+    return tuple(
+        round(left * (1 - amount) + right * amount)
+        for left, right in zip(first, second)
+    )
+
+
+def alpha_of(value: str | None) -> float | None:
+    if not value:
+        return None
+    match = re.match(r"rgba?\((.*)\)", value.strip(), re.IGNORECASE | re.DOTALL)
+    if not match:
+        return None
+    parts = split_args(match.group(1))
+    if len(parts) >= 4:
+        try:
+            return max(0.0, min(1.0, float(parts[3])))
+        except ValueError:
+            return None
+    return 1.0
+
+
+def css_color(rgb: tuple[int, int, int], alpha: float | None = None) -> str:
+    if alpha is not None and alpha < 1:
+        return "rgba(%d, %d, %d, %.2f)" % (*rgb, alpha)
+    return to_hex(rgb)
+
+
+def theme_name(theme_dir: Path) -> str:
+    index = theme_dir / "index.theme"
+    try:
+        for line in index.read_text(encoding="utf-8", errors="replace").splitlines():
+            if line.startswith("Name="):
+                return line.split("=", 1)[1].strip()
+    except OSError:
+        pass
+    return theme_dir.name
+
+
+def discover_themes() -> dict[str, Path]:
+    # System themes first, then user themes, so ~/.themes wins on duplicates.
+    themes: dict[str, Path] = {}
+    for base in THEME_DIRS:
+        if not base.is_dir():
+            continue
+        for theme_dir in sorted(base.iterdir()):
+            if not theme_dir.is_dir():
+                continue
+            if not (theme_dir / "gtk-3.0" / "gtk.css").is_file() and not (
+                theme_dir / "gtk-4.0" / "gtk.css"
+            ).is_file():
+                continue
+            themes[theme_name(theme_dir)] = theme_dir
+    return themes
+
+
+def is_light_name(name: str) -> bool:
+    lowered = name.lower()
+    return any(
+        word in lowered
+        for word in ("light", "latte", "polar", "sweet", "adwaita")
+    ) and "dark" not in lowered
+
+
+def make_palette(name: str, theme_dir: Path) -> dict[str, object]:
+    values = read_theme_css(theme_dir)
+
+    def pick(keys: Iterable[str], fallback: tuple[int, int, int]):
+        for key in keys:
+            rgb = to_rgb(values.get(key), values)
+            if rgb is not None:
+                return rgb
+        return fallback
+
+    light_hint = is_light_name(name)
+    default_bg = (245, 245, 245) if light_hint else (34, 34, 34)
+    default_fg = (32, 32, 32) if light_hint else (238, 238, 238)
+
+    background = pick(
+        ("theme_bg_color", "window_bg_color", "view_bg_color", "bg_color"),
+        default_bg,
+    )
+    foreground = pick(
+        ("theme_fg_color", "window_fg_color", "view_fg_color", "fg_color"),
+        default_fg,
+    )
+    accent = pick(
+        (
+            "theme_selected_bg_color",
+            "accent_bg_color",
+            "accent_color",
+            "selected_bg_color",
+        ),
+        (53, 132, 228),
+    )
+    accent = ACCENT_OVERRIDES.get(name, accent)
+    accent_fg = pick(
+        ("theme_selected_fg_color", "accent_fg_color", "selected_fg_color"),
+        (255, 255, 255) if luminance(accent) < 0.5 else (0, 0, 0),
+    )
+    urgent = pick(
+        ("error_color", "destructive_bg_color", "red"),
+        (224, 27, 36),
+    )
+
+    scheme = "dark" if luminance(background) < 0.45 else "light"
+    dim = blend(background, foreground, 0.30 if scheme == "dark" else 0.20)
+
+    return {
+        "name": name,
+        "background": background,
+        "foreground": foreground,
+        "accent": accent,
+        "accent_fg": accent_fg,
+        "urgent": urgent,
+        "dim": dim,
+        "scheme": scheme,
+    }
+
+
+def run(command: list[str], *, quiet: bool = True) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        command,
+        text=True,
+        stdout=subprocess.DEVNULL if quiet else None,
+        stderr=subprocess.DEVNULL if quiet else None,
+        check=False,
+    )
+
+
+def update_ini(path: Path, theme: str, dark: bool) -> None:
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return
+
+    lines = text.splitlines()
+    replaced_theme = False
+    replaced_dark = False
+    for index, line in enumerate(lines):
+        if line.startswith("gtk-theme-name="):
+            lines[index] = f"gtk-theme-name={theme}"
+            replaced_theme = True
+        elif line.startswith("gtk-application-prefer-dark-theme="):
+            lines[index] = f"gtk-application-prefer-dark-theme={1 if dark else 0}"
+            replaced_dark = True
+
+    if not replaced_theme:
+        lines.append(f"gtk-theme-name={theme}")
+    if not replaced_dark:
+        lines.append(f"gtk-application-prefer-dark-theme={1 if dark else 0}")
+
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def apply_gtk(palette: dict[str, object], dry_run: bool) -> None:
+    name = str(palette["name"])
+    dark = palette["scheme"] == "dark"
+    if dry_run:
+        print(f"  GTK: would set {name} ({palette['scheme']})")
+        return
+
+    run(["gsettings", "set", "org.gnome.desktop.interface", "gtk-theme", name])
+    run(
+        [
+            "gsettings",
+            "set",
+            "org.gnome.desktop.interface",
+            "color-scheme",
+            "prefer-dark" if dark else "prefer-light",
+        ]
+    )
+    update_ini(GTK3_INI, name, dark)
+    update_ini(GTK4_INI, name, dark)
+
+
+def sway_colors_text(palette: dict[str, object]) -> str:
+    name = str(palette["name"])
+    background = to_hex(palette["background"])  # type: ignore[arg-type]
+    foreground = to_hex(palette["foreground"])  # type: ignore[arg-type]
+    accent = to_hex(palette["accent"])  # type: ignore[arg-type]
+    accent_fg = to_hex(palette["accent_fg"])  # type: ignore[arg-type]
+    urgent = to_hex(palette["urgent"])  # type: ignore[arg-type]
+    dim = to_hex(palette["dim"])  # type: ignore[arg-type]
+
+    return "\n".join(
+        [
+            f"# Generated by theme-switch — theme: {name}",
+            "# class                 border    backgr.   text      indicator child_border",
+            f"client.focused          {accent} {background} {foreground} {accent} {accent}",
+            f"client.focused_inactive {dim} {background} {dim} {dim} {dim}",
+            f"client.unfocused        {dim} {background} {dim} {dim} {dim}",
+            f"client.urgent           {urgent} {background} {accent_fg} {urgent} {urgent}",
+            "",
+        ]
+    )
+
+
+def apply_sway(palette: dict[str, object], dry_run: bool) -> None:
+    content = sway_colors_text(palette)
+    if dry_run:
+        print("  Sway: would write ~/.config/sway/theme-colors:")
+        for line in content.splitlines():
+            print(f"    {line}")
+        return
+
+    SWAY_DIR.mkdir(parents=True, exist_ok=True)
+    SWAY_COLORS.write_text(content, encoding="utf-8")
+    SWAY_STATE.write_text(str(palette["name"]) + "\n", encoding="utf-8")
+
+    colors = {
+        "background": to_hex(palette["background"]),  # type: ignore[arg-type]
+        "foreground": to_hex(palette["foreground"]),  # type: ignore[arg-type]
+        "accent": to_hex(palette["accent"]),  # type: ignore[arg-type]
+        "accent_fg": to_hex(palette["accent_fg"]),  # type: ignore[arg-type]
+        "urgent": to_hex(palette["urgent"]),  # type: ignore[arg-type]
+        "dim": to_hex(palette["dim"]),  # type: ignore[arg-type]
+    }
+    commands = [
+        [
+            "client.focused",
+            colors["accent"],
+            colors["background"],
+            colors["foreground"],
+            colors["accent"],
+            colors["accent"],
+        ],
+        [
+            "client.focused_inactive",
+            colors["dim"],
+            colors["background"],
+            colors["dim"],
+            colors["dim"],
+            colors["dim"],
+        ],
+        [
+            "client.unfocused",
+            colors["dim"],
+            colors["background"],
+            colors["dim"],
+            colors["dim"],
+            colors["dim"],
+        ],
+        [
+            "client.urgent",
+            colors["urgent"],
+            colors["background"],
+            colors["accent_fg"],
+            colors["urgent"],
+            colors["urgent"],
+        ],
+    ]
+    for command in commands:
+        run(["swaymsg", *command])
+
+
+def define_color_alpha(
+    text: str, key: str, fallback: float | None = None
+) -> float | None:
+    match = re.search(
+        rf"@define-color\s+{re.escape(key)}\s+([^;]+);", text, re.IGNORECASE
+    )
+    if match:
+        alpha = alpha_of(match.group(1))
+        if alpha is not None:
+            return alpha
+    return fallback
+
+
+def selector_alpha(text: str, selector: str) -> float | None:
+    match = re.search(
+        rf"{re.escape(selector)}\s*\{{[^}}]*background(?:-color)?\s*:\s*([^;]+);",
+        text,
+        re.IGNORECASE | re.DOTALL,
+    )
+    if match:
+        return alpha_of(match.group(1))
+    return None
+
+
+def waybar_theme_css(style_text: str, palette: dict[str, object]) -> str:
+    background = to_hex(palette["background"])  # type: ignore[arg-type]
+    foreground = to_hex(palette["foreground"])  # type: ignore[arg-type]
+    accent = to_hex(palette["accent"])  # type: ignore[arg-type]
+    accent_fg = to_hex(palette["accent_fg"])  # type: ignore[arg-type]
+    urgent = to_hex(palette["urgent"])  # type: ignore[arg-type]
+    dim = to_hex(palette["dim"])  # type: ignore[arg-type]
+    name = str(palette["name"])
+
+    background_alpha = define_color_alpha(style_text, "background")
+    if background_alpha is None:
+        background_alpha = selector_alpha(style_text, "window#waybar")
+    if background_alpha is None:
+        background_alpha = selector_alpha(style_text, "#waybar")
+    if background_alpha is None:
+        background_alpha = 0.85
+    workspace_alpha = define_color_alpha(style_text, "workspace-color", 0.35)
+    background_css = css_color(palette["background"], background_alpha)  # type: ignore[arg-type]
+    workspace_css = css_color(palette["accent"], workspace_alpha)  # type: ignore[arg-type]
+
+    def replace_definition(match: re.Match[str]) -> str:
+        key = match.group(1).lower()
+        if key == "foreground":
+            return f"@define-color {match.group(1)} {foreground};"
+        if key == "background":
+            return f"@define-color {match.group(1)} {background_css};"
+        if key in ("workspace-color", "workspace_color"):
+            return f"@define-color {match.group(1)} {workspace_css};"
+        if key == "border-theme":
+            return f"@define-color {match.group(1)} {accent};"
+        if key == "recording-color":
+            return f"@define-color {match.group(1)} {urgent};"
+        return match.group(0)
+
+    themed = re.sub(
+        r"@define-color\s+([\w-]+)\s+[^;]+;",
+        replace_definition,
+        style_text,
+        flags=re.IGNORECASE,
+    )
+
+    override = f"""
+/* === theme-switch: {name} === */
+* {{
+    color: {foreground};
+}}
+window#waybar,
+#waybar {{
+    background-color: {background_css};
+    color: {foreground};
+}}
+#workspaces button {{
+    color: {foreground};
+    background: transparent;
+}}
+#workspaces button.focused,
+#workspaces button.active {{
+    background-color: {accent};
+    color: {accent_fg};
+    border-color: {accent};
+}}
+#workspaces button.urgent {{
+    background-color: {urgent};
+    color: {accent_fg};
+}}
+#workspaces button:hover {{
+    background-color: {dim};
+    color: {foreground};
+}}
+tooltip {{
+    background-color: {background};
+    border: 1px solid {accent};
+}}
+tooltip label {{
+    color: {foreground};
+}}
+"""
+
+    return themed.rstrip() + "\n" + override
+
+
+def waybar_dirs() -> list[Path]:
+    result = []
+    for path in sorted(CONFIG.glob("waybar*")):
+        if path.is_dir() and (path / "style.css").is_file():
+            result.append(path)
+    return result
+
+
+def apply_waybar(
+    palette: dict[str, object], dry_run: bool, no_restart: bool
+) -> None:
+    dirs = waybar_dirs()
+    if dry_run:
+        preview_root = Path(tempfile.mkdtemp(prefix="theme-switch-preview-"))
+        print(f"  Waybar: would theme {len(dirs)} config(s)")
+        for directory in dirs:
+            html = waybar_theme_css(
+                (directory / "style.css").read_text(encoding="utf-8"),
+                palette,
+            )
+            preview = preview_root / (directory.name + ".css")
+            preview.write_text(html, encoding="utf-8")
+            print(f"    {directory.name} -> {preview}")
+        return
+
+    for directory in dirs:
+        original = (directory / "style.css").read_text(encoding="utf-8")
+        themed = waybar_theme_css(original, palette)
+        (directory / "style.theme.css").write_text(themed, encoding="utf-8")
+
+    if no_restart:
+        print("  Waybar: style.theme.css updated; restart skipped")
+        return
+
+    launcher = HOME / "bin" / "launch_waybar"
+    if launcher.is_file() and os.access(launcher, os.X_OK):
+        try:
+            subprocess.run(
+                [str(launcher)],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                check=False,
+                timeout=20,
+            )
+        except (OSError, subprocess.TimeoutExpired):
+            pass
+        return
+
+    # Fallback for setups without launch_waybar.
+    try:
+        active = Path((CONFIG / "waybar_active").read_text(encoding="utf-8").strip())
+    except OSError:
+        active = CONFIG / "waybar"
+    css = active / "style.theme.css"
+    if not css.is_file():
+        css = active / "style.css"
+    if (active / "config").is_file():
+        run(["killall", "waybar"])
+        subprocess.Popen(
+            ["waybar", "-c", str(active / "config"), "-s", str(css)],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            start_new_session=True,
+        )
+
+
+def apply_pywal_sway(dry_run: bool) -> int:
+    colors_path = HOME / ".cache" / "wal" / "colors.json"
+    try:
+        colors = json.loads(colors_path.read_text(encoding="utf-8"))
+        foreground = colors["special"]["foreground"]
+        background = colors["special"]["background"]
+        red = colors["colors"]["color1"]
+        yellow = colors["colors"]["color5"]
+        blue = colors["colors"]["color6"]
+    except (OSError, ValueError, KeyError):
+        print(f"No usable pywal colours at {colors_path}", file=sys.stderr)
+        return 1
+
+    if dry_run:
+        print("Sway: would hand border colours back to pywal/wallpaper colours")
+        return 0
+
+    SWAY_DIR.mkdir(parents=True, exist_ok=True)
+    SWAY_COLORS.write_text(
+        "# Managed by theme-switch: border colours follow the wallpaper again.\n",
+        encoding="utf-8",
+    )
+    SWAY_STATE.write_text("pywal\n", encoding="utf-8")
+
+    commands = [
+        ["client.focused", foreground, background, foreground, yellow, blue],
+        [
+            "client.focused_inactive",
+            "#666666",
+            "#2a2a2a",
+            "#888888",
+            "#666666",
+            "#666666",
+        ],
+        ["client.unfocused", "#555555", "#222222", "#777777", "#555555", "#555555"],
+        ["client.urgent", red, red, background, foreground, red],
+    ]
+    for command in commands:
+        run(["swaymsg", *command])
+    run(["notify-send", "Sway borders", "Following wallpaper colours again"])
+    print("Sway borders now follow the pywal/wallpaper colours.")
+    return 0
+
+
+def choose_theme(themes: dict[str, Path]) -> str | None:
+    names = [PYWAL_MENU_ENTRY] + sorted(themes, key=str.lower)
+    input_text = "\n".join(names) + "\n"
+    menus = [
+        (["rofi", "-dmenu", "-i", "-p", "Theme"], True),
+        (["wofi", "--dmenu", "--prompt", "Theme"], False),
+        (["bemenu", "--prompt", "Theme"], False),
+        (["fuzzel", "--dmenu", "--prompt", "Theme"], False),
+    ]
+    for command, uses_stdin in menus:
+        try:
+            result = subprocess.run(
+                command,
+                input=input_text if uses_stdin else None,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+        except OSError:
+            continue
+        if result.returncode == 0:
+            selected = result.stdout.strip()
+            if selected:
+                return selected
+            return None
+    print("No menu launcher found. Installed themes:", file=sys.stderr)
+    for name in names:
+        print(f"  {name}", file=sys.stderr)
+    return None
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Switch GTK, Sway border and Waybar colours together."
+    )
+    parser.add_argument("theme", nargs="?", help="theme name (omit for a menu)")
+    parser.add_argument("--list", action="store_true", help="list installed themes")
+    parser.add_argument("--current", action="store_true", help="show current theme")
+    parser.add_argument(
+        "--dry-run", action="store_true", help="preview without changing anything"
+    )
+    parser.add_argument(
+        "--pywal",
+        action="store_true",
+        help="stop using static Sway borders; follow the wallpaper palette again",
+    )
+    parser.add_argument(
+        "--no-gtk", action="store_true", help="do not change GTK settings"
+    )
+    parser.add_argument(
+        "--no-sway", action="store_true", help="do not change Sway borders"
+    )
+    parser.add_argument(
+        "--no-waybar", action="store_true", help="do not change Waybar"
+    )
+    parser.add_argument(
+        "--no-restart", action="store_true", help="update Waybar CSS without restarting it"
+    )
+    args = parser.parse_args()
+
+    if args.pywal:
+        return apply_pywal_sway(args.dry_run)
+
+    themes = discover_themes()
+    if args.list:
+        for name in sorted(themes, key=str.lower):
+            print(name)
+        return 0
+
+    if args.current:
+        try:
+            active = SWAY_STATE.read_text(encoding="utf-8").strip()
+        except OSError:
+            active = ""
+        gtk = subprocess.run(
+            ["gsettings", "get", "org.gnome.desktop.interface", "gtk-theme"],
+            text=True,
+            capture_output=True,
+            check=False,
+        ).stdout.strip()
+        print(f"Active theme: {active or '(not set by theme-switch)'}")
+        print(f"GTK theme:    {gtk or '(unknown)'}")
+        return 0
+
+    if not themes:
+        print("No GTK themes found in ~/.themes or /usr/share/themes.", file=sys.stderr)
+        return 1
+
+    theme = args.theme
+    if not theme:
+        theme = choose_theme(themes)
+        if not theme:
+            return 0
+    if theme == PYWAL_MENU_ENTRY:
+        return apply_pywal_sway(args.dry_run)
+    if theme not in themes:
+        candidates = difflib.get_close_matches(theme, themes, n=3)
+        print(f"Unknown theme: {theme}", file=sys.stderr)
+        if candidates:
+            print("Did you mean:", ", ".join(candidates), file=sys.stderr)
+        print("Use --list to see installed themes.", file=sys.stderr)
+        return 1
+
+    palette = make_palette(theme, themes[theme])
+    print(
+        f"Theme: {theme}\n"
+        f"  background {to_hex(palette['background'])}  "  # type: ignore[arg-type]
+        f"foreground {to_hex(palette['foreground'])}  "  # type: ignore[arg-type]
+        f"accent {to_hex(palette['accent'])}  "
+        f"mode {palette['scheme']}"
+    )
+
+    if not args.no_gtk:
+        apply_gtk(palette, args.dry_run)
+    if not args.no_sway:
+        apply_sway(palette, args.dry_run)
+    if not args.no_waybar:
+        apply_waybar(palette, args.dry_run, args.no_restart)
+
+    if args.dry_run:
+        print("Dry run: nothing changed.")
+    else:
+        run(
+            [
+                "notify-send",
+                "Theme switched",
+                f"{theme} — Sway borders and Waybar updated",
+            ]
+        )
+    return 0
+
+
+if __name__ == "__main__":
+    try:
+        raise SystemExit(main())
+    except KeyboardInterrupt:
+        raise SystemExit(130)
