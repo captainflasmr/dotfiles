@@ -8,7 +8,7 @@ configuration {
     display-drun: "Applications:";
     display-window: "Windows:";
     drun-display-format: "{name}";
-    font: "SourceCodePro 12";
+    font: "SourceCodePro 10";
     modes: "drun,window,ssh,run";
     click-to-exit: true;
     show-icons: true;
