@@ -26,6 +26,9 @@ include ~/.cache/wal/sway
 client.unfocused        #555555   #222222   #777777   #555555   #555555
 client.focused_inactive #666666   #2a2a2a   #888888   #666666   #666666
 
+## Static theme colours chosen with Mod4+F3 (overrides the pywal colours above)
+include ~/.config/sway/theme-colors
+
 #
 # Status Bar:
 #

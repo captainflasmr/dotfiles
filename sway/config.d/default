@@ -32,6 +32,9 @@ bindsym Mod4+f1 exec ~/.config/sway/scripts/lockman.sh
 # Open GTK settings (theme, icons, cursors, fonts)
 bindsym Mod4+f2 exec nwg-look
 
+# Switch GTK + Sway borders + Waybar together
+bindsym Mod4+f3 exec ~/.config/sway/scripts/theme-switch
+
 # Toggle idle inhibitor (swayidle on/off)
 bindsym $mod+v exec ~/.config/sway/scripts/toggle_idle.sh
 
