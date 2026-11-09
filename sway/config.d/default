@@ -29,8 +29,8 @@ exec swayidle -w \
 ## Lock Screen
 bindsym Mod4+f1 exec ~/.config/sway/scripts/lockman.sh
 
-# Toggle GTK theme (light/dark) via darkman
-bindsym Mod4+f2 exec darkman toggle
+# Open GTK settings (theme, icons, cursors, fonts)
+bindsym Mod4+f2 exec nwg-look
 
 # Toggle idle inhibitor (swayidle on/off)
 bindsym $mod+v exec ~/.config/sway/scripts/toggle_idle.sh
