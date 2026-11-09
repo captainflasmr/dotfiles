@@ -63,6 +63,7 @@ qBittorrent/lockfile
 !.profile
 !rofi/
 !sway/
+!sway/theme-colors
 !swaylock/
 !swayr/
 !Thunar/

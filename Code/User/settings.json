@@ -35,5 +35,7 @@
     "Org-vscode.autoIndentNonHeaderText": true,
     "editor.renderWhitespace": "none",
     "zenMode.hideLineNumbers": false,
-    "git.openRepositoryInParentFolders": "never"
+    "git.openRepositoryInParentFolders": "never",
+    "diffEditor.renderSideBySide": false,
+    "workbench.colorTheme": "Visual Studio Dark"
 }

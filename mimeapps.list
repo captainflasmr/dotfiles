@@ -4,13 +4,14 @@ application/pdf=gimp.desktop;firefox.desktop;com.github.xournalpp.xournalpp.desk
 audio/mpeg=org.gnome.Rhythmbox3.desktop;mpv.desktop;
 audio/vnd.wave=mpv.desktop;
 image/gif=gimp.desktop;org.gnome.gThumb.desktop;
-image/jpeg=krita_jpeg.desktop;gimp.desktop;org.gnome.gThumb.desktop;org.darktable.darktable.desktop;gthumb.desktop;
+image/jpeg=gimp.desktop;krita_jpeg.desktop;org.gnome.gThumb.desktop;org.darktable.darktable.desktop;gthumb.desktop;
 image/svg+xml=org.inkscape.Inkscape.desktop;okularApplication_txt.desktop;
 text/x-emacs-lisp=emacs
 video/x-matroska=mpv.desktop;
 application/x-trash=org.gnome.gThumb.desktop;
 image/png=krita_png.desktop;
 text/org=code.desktop;
+application/x-krita=ai.storyteller.photocraft.desktop;krita_kra.desktop;
 
 [Default Applications]
 application/octet-stream=veracrypt.desktop

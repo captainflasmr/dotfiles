@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Switch GTK theme, Sway border colours and Waybar palette together.
+"""Switch GTK, Alacritty, Sway border and Waybar colours together.
 
 The GTK palette is read from the selected theme's GTK CSS, so this works with
 any theme installed in ~/.themes or /usr/share/themes, not just the ones
@@ -10,7 +10,7 @@ Usage:
     theme-switch THEME_NAME      # apply a theme directly
     theme-switch --list          # list installed themes
     theme-switch --current       # show the current theme
-    theme-switch --pywal         # give Sway borders back to wallpaper colours
+    theme-switch --pywal         # follow wallpaper colours (Sway + Alacritty)
     theme-switch --dry-run ...   # preview without changing anything
 """
 
@@ -24,6 +24,7 @@ import re
 import subprocess
 import sys
 import tempfile
+import tomllib
 from pathlib import Path
 from typing import Iterable
 
@@ -35,6 +36,10 @@ SWAY_DIR = CONFIG / "sway"
 SWAY_COLORS = SWAY_DIR / "theme-colors"
 SWAY_STATE = SWAY_DIR / "theme-active"
 
+ALACRITTY_DIR = CONFIG / "alacritty"
+ALACRITTY_THEME = ALACRITTY_DIR / "theme.toml"
+ALACRITTY_THEME_DIR = ALACRITTY_DIR / "themes"
+
 PYWAL_MENU_ENTRY = "↩  Wallpaper colours (pywal)"
 
 GTK3_INI = CONFIG / "gtk-3.0" / "settings.ini"
@@ -45,6 +50,50 @@ GTK4_INI = CONFIG / "gtk-4.0" / "settings.ini"
 ACCENT_OVERRIDES = {
     "Nordic-darker": (129, 161, 193),       # Nord frost blue
     "Gruvbox-Material-Dark": (215, 153, 33),  # Gruvbox yellow
+}
+
+# GTK theme name prefixes -> curated Alacritty palettes in
+# ~/.config/alacritty/themes. Matched against the normalised theme name;
+# longest/most specific prefixes come first. Themes without a match get a
+# palette generated from their GTK colours.
+ALACRITTY_THEME_ALIASES = (
+    ("catppuccin-mocha", "catppuccin-mocha"),
+    ("catppuccin-macchiato", "catppuccin-macchiato"),
+    ("catppuccin-frappe", "catppuccin-frappe"),
+    ("catppuccin-latte", "catppuccin-latte"),
+    ("gruvbox", "gruvbox-material-dark"),
+    ("nordic-polar", "nord-light"),
+    ("nordic", "nordic"),
+    ("dracula", "dracula"),
+    ("high-contrast", "high-contrast"),
+)
+
+ANSI_NAMES = ("black", "red", "green", "yellow", "blue", "magenta", "cyan", "white")
+
+# Fallback ANSI colours for themes that do not expose terminal colours.
+ANSI_DEFAULTS_DARK = {
+    "red": (224, 108, 117),
+    "green": (152, 195, 121),
+    "yellow": (229, 192, 123),
+    "blue": (97, 175, 239),
+    "magenta": (198, 120, 221),
+    "cyan": (86, 182, 194),
+}
+ANSI_DEFAULTS_LIGHT = {
+    "red": (190, 55, 65),
+    "green": (60, 130, 70),
+    "yellow": (160, 120, 0),
+    "blue": (30, 100, 190),
+    "magenta": (140, 50, 160),
+    "cyan": (0, 120, 130),
+}
+ANSI_HUES = {
+    "red": 0,
+    "green": 120,
+    "yellow": 60,
+    "blue": 220,
+    "magenta": 300,
+    "cyan": 180,
 }
 
 
@@ -288,6 +337,14 @@ def make_palette(name: str, theme_dir: Path) -> dict[str, object]:
         ("error_color", "destructive_bg_color", "red"),
         (224, 27, 36),
     )
+    success = pick(
+        ("success_color", "success_bg_color", "green"),
+        (46, 125, 50) if light_hint else (152, 195, 121),
+    )
+    warning = pick(
+        ("warning_color", "warning_bg_color", "yellow"),
+        (181, 137, 0) if light_hint else (229, 192, 123),
+    )
 
     scheme = "dark" if luminance(background) < 0.45 else "light"
     dim = blend(background, foreground, 0.30 if scheme == "dark" else 0.20)
@@ -299,9 +356,222 @@ def make_palette(name: str, theme_dir: Path) -> dict[str, object]:
         "accent": accent,
         "accent_fg": accent_fg,
         "urgent": urgent,
+        "success": success,
+        "warning": warning,
         "dim": dim,
         "scheme": scheme,
     }
+
+
+def normalized_name(name: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
+
+
+def hue(rgb: tuple[int, int, int]) -> float | None:
+    red, green, blue = (value / 255 for value in rgb)
+    highest = max(red, green, blue)
+    lowest = min(red, green, blue)
+    delta = highest - lowest
+    if delta == 0:
+        return None
+    if highest == red:
+        value = ((green - blue) / delta) % 6
+    elif highest == green:
+        value = (blue - red) / delta + 2
+    else:
+        value = (red - green) / delta + 4
+    return value * 60
+
+
+def hue_distance(first: float, second: float) -> float:
+    difference = abs(first - second) % 360
+    return min(difference, 360 - difference)
+
+
+def curated_alacritty_colors(name: str) -> dict[str, dict[str, str]] | None:
+    normalized = normalized_name(name)
+    for prefix, theme in ALACRITTY_THEME_ALIASES:
+        if not normalized.startswith(prefix):
+            continue
+        path = ALACRITTY_THEME_DIR / f"{theme}.toml"
+        try:
+            with path.open("rb") as handle:
+                data = tomllib.load(handle)
+        except (OSError, tomllib.TOMLDecodeError):
+            return None
+        normal = data.get("colors", {}).get("normal", {})
+        bright = data.get("colors", {}).get("bright", {})
+        if not all(isinstance(normal.get(key), str) for key in ANSI_NAMES):
+            return None
+        bright_colors = {}
+        for key in ANSI_NAMES:
+            value = bright.get(key)
+            bright_colors[key] = value if isinstance(value, str) else normal[key]
+        return {
+            "normal": {key: normal[key] for key in ANSI_NAMES},
+            "bright": bright_colors,
+        }
+    return None
+
+
+def generated_alacritty_colors(
+    palette: dict[str, object],
+) -> dict[str, dict[str, str]]:
+    background: tuple[int, int, int] = palette["background"]  # type: ignore[assignment]
+    foreground: tuple[int, int, int] = palette["foreground"]  # type: ignore[assignment]
+    accent: tuple[int, int, int] = palette["accent"]  # type: ignore[assignment]
+    dark = palette["scheme"] == "dark"
+    defaults = ANSI_DEFAULTS_DARK if dark else ANSI_DEFAULTS_LIGHT
+
+    def themed(key: str, value: object) -> tuple[int, int, int]:
+        if isinstance(value, tuple):
+            value_hue = hue(value)
+            if value_hue is not None and hue_distance(value_hue, ANSI_HUES[key]) <= 50:
+                return value
+        return defaults[key]
+
+    normal: dict[str, tuple[int, int, int]] = {
+        "black": blend(background, foreground, 0.20 if dark else 0.90),
+        "red": themed("red", palette["urgent"]),
+        "green": themed("green", palette["success"]),
+        "yellow": themed("yellow", palette["warning"]),
+        "blue": defaults["blue"],
+        "magenta": defaults["magenta"],
+        "cyan": defaults["cyan"],
+        "white": foreground if dark else blend(background, foreground, 0.25),
+    }
+
+    accent_hue = hue(accent)
+    if accent_hue is not None:
+        cool = {key: ANSI_HUES[key] for key in ("blue", "magenta", "cyan")}
+        closest = min(cool, key=lambda key: hue_distance(accent_hue, cool[key]))
+        if hue_distance(accent_hue, cool[closest]) <= 30:
+            normal[closest] = accent
+
+    bright = {
+        key: blend(normal[key], foreground, 0.30 if dark else 0.25)
+        for key in ANSI_NAMES
+    }
+    bright["black"] = blend(normal["black"], foreground, 0.45)
+    bright["white"] = (
+        foreground if dark else blend(normal["white"], foreground, 0.25)
+    )
+
+    return {
+        "normal": {key: to_hex(value) for key, value in normal.items()},
+        "bright": {key: to_hex(value) for key, value in bright.items()},
+    }
+
+
+def alacritty_colors(
+    palette: dict[str, object],
+) -> dict[str, dict[str, str]]:
+    return curated_alacritty_colors(
+        str(palette["name"])
+    ) or generated_alacritty_colors(palette)
+
+
+def alacritty_theme_text(
+    palette: dict[str, object], colors: dict[str, dict[str, str]]
+) -> str:
+    name = str(palette["name"])
+    background = to_hex(palette["background"])  # type: ignore[arg-type]
+    foreground = to_hex(palette["foreground"])  # type: ignore[arg-type]
+    accent = to_hex(palette["accent"])  # type: ignore[arg-type]
+    accent_fg = to_hex(palette["accent_fg"])  # type: ignore[arg-type]
+    dim = to_hex(palette["dim"])  # type: ignore[arg-type]
+
+    lines = [
+        f"# Generated by theme-switch — theme: {name}",
+        "# Rewritten whenever Mod4+F3 changes the theme; edits here are lost.",
+        "",
+        "[colors.primary]",
+        f'background = "{background}"',
+        f'foreground = "{foreground}"',
+        f'dim_foreground = "{dim}"',
+        f'bright_foreground = "{foreground}"',
+        "",
+        "[colors.cursor]",
+        f'text = "{background}"',
+        f'cursor = "{accent}"',
+        "",
+        "[colors.selection]",
+        f'text = "{accent_fg}"',
+        f'background = "{accent}"',
+        "",
+        "[colors.normal]",
+    ]
+    lines.extend(f'{key} = "{colors["normal"][key]}"' for key in ANSI_NAMES)
+    lines.extend(["", "[colors.bright]"])
+    lines.extend(f'{key} = "{colors["bright"][key]}"' for key in ANSI_NAMES)
+    return "\n".join(lines) + "\n"
+
+
+def pywal_alacritty_theme_text(pywal: dict[str, object]) -> str:
+    special: dict[str, str] = pywal["special"]  # type: ignore[assignment]
+    color_values: dict[str, str] = pywal["colors"]  # type: ignore[assignment]
+    background = special["background"]
+    foreground = special["foreground"]
+    accent = color_values["color4"]
+    background_rgb = to_rgb(background, {}) or (0, 0, 0)
+    foreground_rgb = to_rgb(foreground, {}) or (255, 255, 255)
+    accent_rgb = to_rgb(accent, {})
+    accent_fg = (
+        "#000000" if accent_rgb and luminance(accent_rgb) > 0.4 else "#ffffff"
+    )
+    dim = to_hex(blend(background_rgb, foreground_rgb, 0.30))
+
+    lines = [
+        "# Generated by theme-switch — pywal wallpaper colours",
+        "# Rewritten whenever Mod4+F3 changes the theme; edits here are lost.",
+        "",
+        "[colors.primary]",
+        f'background = "{background}"',
+        f'foreground = "{foreground}"',
+        f'dim_foreground = "{dim}"',
+        f'bright_foreground = "{foreground}"',
+        "",
+        "[colors.cursor]",
+        f'text = "{background}"',
+        f'cursor = "{accent}"',
+        "",
+        "[colors.selection]",
+        f'text = "{accent_fg}"',
+        f'background = "{accent}"',
+        "",
+        "[colors.normal]",
+    ]
+    lines.extend(
+        f'{key} = "{color_values[f"color{index}"]}"'
+        for index, key in enumerate(ANSI_NAMES)
+    )
+    lines.extend(["", "[colors.bright]"])
+    lines.extend(
+        f'{key} = "{color_values[f"color{index + 8}"]}"'
+        for index, key in enumerate(ANSI_NAMES)
+    )
+    return "\n".join(lines) + "\n"
+
+
+def apply_alacritty(palette: dict[str, object], dry_run: bool) -> None:
+    content = alacritty_theme_text(palette, alacritty_colors(palette))
+    if dry_run:
+        print("  Alacritty: would write ~/.config/alacritty/theme.toml")
+        return
+    ALACRITTY_DIR.mkdir(parents=True, exist_ok=True)
+    ALACRITTY_THEME.write_text(content, encoding="utf-8")
+
+
+def apply_pywal_alacritty(pywal: dict[str, object], dry_run: bool) -> None:
+    content = pywal_alacritty_theme_text(pywal)
+    if dry_run:
+        print(
+            "  Alacritty: would write pywal colours to "
+            "~/.config/alacritty/theme.toml"
+        )
+        return
+    ALACRITTY_DIR.mkdir(parents=True, exist_ok=True)
+    ALACRITTY_THEME.write_text(content, encoding="utf-8")
 
 
 def run(command: list[str], *, quiet: bool = True) -> subprocess.CompletedProcess[str]:
@@ -611,7 +881,7 @@ def apply_waybar(
         )
 
 
-def apply_pywal_sway(dry_run: bool) -> int:
+def apply_pywal_sway(dry_run: bool, no_alacritty: bool = False) -> int:
     colors_path = HOME / ".cache" / "wal" / "colors.json"
     try:
         colors = json.loads(colors_path.read_text(encoding="utf-8"))
@@ -626,6 +896,8 @@ def apply_pywal_sway(dry_run: bool) -> int:
 
     if dry_run:
         print("Sway: would hand border colours back to pywal/wallpaper colours")
+        if not no_alacritty:
+            apply_pywal_alacritty(colors, True)
         return 0
 
     SWAY_DIR.mkdir(parents=True, exist_ok=True)
@@ -650,7 +922,17 @@ def apply_pywal_sway(dry_run: bool) -> int:
     ]
     for command in commands:
         run(["swaymsg", *command])
-    run(["notify-send", "Sway borders", "Following wallpaper colours again"])
+    if not no_alacritty:
+        apply_pywal_alacritty(colors, False)
+        run(
+            [
+                "notify-send",
+                "Wallpaper colours",
+                "Alacritty and Sway borders now follow the wallpaper",
+            ]
+        )
+    else:
+        run(["notify-send", "Sway borders", "Following wallpaper colours again"])
     print("Sway borders now follow the pywal/wallpaper colours.")
     return 0
 
@@ -688,7 +970,7 @@ def choose_theme(themes: dict[str, Path]) -> str | None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Switch GTK, Sway border and Waybar colours together."
+        description="Switch GTK, Alacritty, Sway border and Waybar colours together."
     )
     parser.add_argument("theme", nargs="?", help="theme name (omit for a menu)")
     parser.add_argument("--list", action="store_true", help="list installed themes")
@@ -699,7 +981,7 @@ def main() -> int:
     parser.add_argument(
         "--pywal",
         action="store_true",
-        help="stop using static Sway borders; follow the wallpaper palette again",
+        help="follow the wallpaper palette again (Sway borders + Alacritty)",
     )
     parser.add_argument(
         "--no-gtk", action="store_true", help="do not change GTK settings"
@@ -711,12 +993,15 @@ def main() -> int:
         "--no-waybar", action="store_true", help="do not change Waybar"
     )
     parser.add_argument(
+        "--no-alacritty", action="store_true", help="do not change Alacritty"
+    )
+    parser.add_argument(
         "--no-restart", action="store_true", help="update Waybar CSS without restarting it"
     )
     args = parser.parse_args()
 
     if args.pywal:
-        return apply_pywal_sway(args.dry_run)
+        return apply_pywal_sway(args.dry_run, args.no_alacritty)
 
     themes = discover_themes()
     if args.list:
@@ -749,7 +1034,7 @@ def main() -> int:
         if not theme:
             return 0
     if theme == PYWAL_MENU_ENTRY:
-        return apply_pywal_sway(args.dry_run)
+        return apply_pywal_sway(args.dry_run, args.no_alacritty)
     if theme not in themes:
         candidates = difflib.get_close_matches(theme, themes, n=3)
         print(f"Unknown theme: {theme}", file=sys.stderr)
@@ -773,17 +1058,23 @@ def main() -> int:
         apply_sway(palette, args.dry_run)
     if not args.no_waybar:
         apply_waybar(palette, args.dry_run, args.no_restart)
+    if not args.no_alacritty:
+        apply_alacritty(palette, args.dry_run)
 
     if args.dry_run:
         print("Dry run: nothing changed.")
     else:
-        run(
-            [
-                "notify-send",
-                "Theme switched",
-                f"{theme} — Sway borders and Waybar updated",
-            ]
-        )
+        updated = []
+        if not args.no_gtk:
+            updated.append("GTK")
+        if not args.no_alacritty:
+            updated.append("Alacritty")
+        if not args.no_sway:
+            updated.append("Sway borders")
+        if not args.no_waybar:
+            updated.append("Waybar")
+        detail = ", ".join(updated) + " updated" if updated else "no targets updated"
+        run(["notify-send", "Theme switched", f"{theme} — {detail}"])
     return 0
 
 

@@ -5,6 +5,10 @@
   ],
   "custom_sessions": [
     {
+      "name": "Sway (GitHub)",
+      "exec": "/home/jdyer/bin/sway-github-session"
+    },
+    {
       "name": "Shell",
       "exec": "/usr/bin/bash"
     }
@@ -27,7 +31,6 @@
     "XDG_SESSION_DESKTOP=sway",
     "QT_QPA_PLATFORM=wayland",
     "QT_QPA_PLATFORMTHEME=gtk3",
-    "QT_STYLE_OVERRIDE=kvantum",
-    "GTK_THEME=Nordic-darker"
+    "QT_STYLE_OVERRIDE=kvantum"
   ]
 }

@@ -16,7 +16,7 @@
     /* em-based so padding/margin shrink when waybar_scale.sh reduces font-size */
     padding: 0.15em 0;
     font-family: SourceCodePro;
-    font-size: 10px;
+    font-size: 8px;
     margin-right: 0.15em;
     margin-left: 0;
    }

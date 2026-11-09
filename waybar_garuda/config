@@ -6,9 +6,9 @@
     // "width": 40,
     "spacing": 0,
     "margin-top": 3,
-    "margin-bottom": -6,
-    "margin-right": 6,
-    "margin-left": 6,
+    "margin-bottom": -4,
+    "margin-right": 4,
+    "margin-left": 4,
     "include": ["~/.config/waybar_garuda/modules.json"],
     "modules-left": [
         // "custom/updates",
@@ -197,6 +197,6 @@
         "tooltip": false,
     },
     "tray": {
-        "icon-size": 22
+        "icon-size": 18
     },
 }
