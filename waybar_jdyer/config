@@ -5,8 +5,8 @@
     // "height": 50,
     // "width": 40,
     "spacing": 11,
-    "margin-top": 2,
-    "margin-bottom": -2,
+    "margin-top": 3,
+    "margin-bottom": -4,
     "margin-right": 2,
     "margin-left": 2,
     "include": ["~/.config/waybar_jdyer/modules.json"],
@@ -19,7 +19,6 @@
         // "custom/files",
         // "custom/terminal",
         "custom/keyboard",
-        "custom/sticky_mods",
         "sway/workspaces",
         "sway/mode",
         "sway/window"
@@ -28,6 +27,7 @@
     //        "sway/window"
     //    ],
     "modules-right": [
+        "custom/sticky_mods",
         "cpu",
         "temperature",
         "memory",
