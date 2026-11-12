@@ -14,6 +14,8 @@
         "session.line.down": "ctrl+n",
         "session.first": "<leader>[",
         "session.last": "<leader>]",
+        "input.submit": "return,ctrl+j",
+        "input.newline": "shift+return,ctrl+return,alt+return",
         "input.undo": "ctrl+/",
         "prompt.history.previous": "up,alt+p",
         "prompt.history.next": "down,alt+n"
