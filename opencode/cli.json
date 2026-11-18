@@ -28,5 +28,12 @@
         "scrollbar": false,
         "thinking": "hide"
     },
-    "animations": true
+    "animations": true,
+    "attention": {
+        "notifications": true
+    },
+    "plugins": [
+        "-opencode.notifications",
+        "./tui-plugins/desktop-notifications"
+    ]
 }
