@@ -17,7 +17,13 @@ if [[ ! -f $CONFIG_FILE ]]; then
 fi
 
 DIR=$(cat "$CONFIG_FILE")
-CSS="$DIR/style.css"
+BASE_CSS="$DIR/style.css"
+THEME_CSS="$DIR/style.theme.css"
+
+# The bar runs with style.theme.css when theme-switch has generated one;
+# otherwise it runs with style.css. Scale whichever file is actually in use.
+CSS="$BASE_CSS"
+[[ -f $THEME_CSS ]] && CSS="$THEME_CSS"
 
 if [[ ! -f $CSS ]]; then
     echo "Error: $CSS not found" >&2
@@ -62,12 +68,22 @@ if [[ $NEW -eq $CURRENT ]]; then
     exit 0
 fi
 
-sed -i -E "s/font-size: *[0-9]+px/font-size: ${NEW}px/g" "$CSS"
+# Keep the base stylesheet and the generated themed copy in sync. Otherwise a
+# later theme switch (Mod4+F3) would regenerate style.theme.css from a stale
+# style.css and undo the scale change.
+for file in "$BASE_CSS" "$THEME_CSS"; do
+    [[ -f $file ]] || continue
+    sed -i -E "s/font-size: *[0-9]+px/font-size: ${NEW}px/g" "$file"
+done
 
 scale_config "$DIR/config"
 scale_config "$DIR/modules.json"
 
-killall waybar 2>/dev/null
-waybar -c "$DIR/config" -s "$CSS" &
+if [[ -x "$HOME/bin/launch_waybar" ]]; then
+    "$HOME/bin/launch_waybar"
+else
+    killall waybar 2>/dev/null
+    waybar -c "$DIR/config" -s "$CSS" &
+fi
 
 echo "Waybar font size: ${CURRENT}px -> ${NEW}px"
