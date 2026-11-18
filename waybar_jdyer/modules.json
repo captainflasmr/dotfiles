@@ -156,14 +156,6 @@
         "interval" : 4
     },
 
-    "custom/keyboard": {
-	     "format": "🎹",
-        "min-length": 1,
-        "max-length": 15,
-	     "interval": 10,
-	     "on-click": "toggle_wlr_keyboard.sh",
-    },
-
     "battery": {
         "interval": 1,
         "states": {

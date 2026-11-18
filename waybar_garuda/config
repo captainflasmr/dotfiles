@@ -6,9 +6,9 @@
     // "width": 40,
     "spacing": 0,
     "margin-top": 3,
-    "margin-bottom": -11,
-    "margin-right": 11,
-    "margin-left": 11,
+    "margin-bottom": -4,
+    "margin-right": 10,
+    "margin-left": 10,
     "include": [
         "~/.config/waybar_garuda/modules.json",
         "~/.config/waybar_garuda/tooltips-off.json"
@@ -22,7 +22,6 @@
         // "custom/browser",
         // "custom/files",
         // "custom/terminal",
-        "custom/keyboard",
         //        "custom/spacer",
         "sway/workspaces",
         "sway/mode",
@@ -200,6 +199,6 @@
         "tooltip": false,
     },
     "tray": {
-        "icon-size": 18
+        "icon-size": 17
     },
 }

@@ -21,7 +21,6 @@
         // "custom/browser",
         // "custom/files",
         // "custom/terminal",
-        "custom/keyboard",
         "sway/workspaces",
         "sway/mode",
         "sway/window"

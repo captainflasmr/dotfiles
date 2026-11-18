@@ -10,8 +10,9 @@ Usage:
     theme-switch THEME_NAME      # apply a theme directly
     theme-switch --list          # list installed themes
     theme-switch --current       # show the current theme
-    theme-switch --pywal         # follow wallpaper colours (Sway + Alacritty)
-    theme-switch --dry-run ...   # preview without changing anything
+    theme-switch --pywal           # follow wallpaper colours (Sway + Waybar + Alacritty)
+    theme-switch --pywal-waybar    # refresh Waybar from the current wallpaper palette
+    theme-switch --dry-run ...     # preview without changing anything
 """
 
 from __future__ import annotations
@@ -881,23 +882,80 @@ def apply_waybar(
         )
 
 
-def apply_pywal_sway(dry_run: bool, no_alacritty: bool = False) -> int:
+def read_pywal_colors() -> dict[str, object] | None:
     colors_path = HOME / ".cache" / "wal" / "colors.json"
     try:
-        colors = json.loads(colors_path.read_text(encoding="utf-8"))
-        foreground = colors["special"]["foreground"]
-        background = colors["special"]["background"]
-        red = colors["colors"]["color1"]
-        yellow = colors["colors"]["color5"]
-        blue = colors["colors"]["color6"]
+        return json.loads(colors_path.read_text(encoding="utf-8"))
     except (OSError, ValueError, KeyError):
         print(f"No usable pywal colours at {colors_path}", file=sys.stderr)
+        return None
+
+
+def pywal_palette(colors: dict[str, object]) -> dict[str, object]:
+    special: dict[str, str] = colors["special"]  # type: ignore[assignment]
+    values: dict[str, str] = colors["colors"]  # type: ignore[assignment]
+    background = to_rgb(special.get("background"), {}) or (0, 0, 0)
+    foreground = to_rgb(special.get("foreground"), {}) or (238, 238, 238)
+    accent = to_rgb(values.get("color4"), {}) or (53, 132, 228)
+    urgent = to_rgb(values.get("color1"), {}) or (224, 27, 36)
+    scheme = "dark" if luminance(background) < 0.45 else "light"
+
+    def contrast(candidate: tuple[int, int, int]) -> float:
+        high, low = sorted((luminance(accent), luminance(candidate)), reverse=True)
+        return (high + 0.05) / (low + 0.05)
+
+    return {
+        "name": "pywal",
+        "background": background,
+        "foreground": foreground,
+        "accent": accent,
+        "accent_fg": max((foreground, background), key=contrast),
+        "urgent": urgent,
+        "dim": blend(background, foreground, 0.30 if scheme == "dark" else 0.20),
+        "scheme": scheme,
+    }
+
+
+def apply_pywal_waybar(dry_run: bool, no_restart: bool = False) -> int:
+    colors = read_pywal_colors()
+    if colors is None:
+        return 1
+    try:
+        palette = pywal_palette(colors)
+    except (KeyError, TypeError):
+        print("The pywal palette is missing required colours.", file=sys.stderr)
+        return 1
+    apply_waybar(palette, dry_run, no_restart)
+    return 0
+
+
+def apply_pywal_sway(
+    dry_run: bool,
+    no_alacritty: bool = False,
+    no_waybar: bool = False,
+    no_restart: bool = False,
+) -> int:
+    colors = read_pywal_colors()
+    if colors is None:
+        return 1
+    try:
+        palette = pywal_palette(colors)
+        foreground = to_hex(palette["foreground"])  # type: ignore[arg-type]
+        background = to_hex(palette["background"])  # type: ignore[arg-type]
+        red = to_hex(palette["urgent"])  # type: ignore[arg-type]
+        color_values: dict[str, str] = colors["colors"]  # type: ignore[assignment]
+        yellow = color_values["color5"]
+        blue = color_values["color6"]
+    except (KeyError, TypeError):
+        print("The pywal palette is missing required colours.", file=sys.stderr)
         return 1
 
     if dry_run:
         print("Sway: would hand border colours back to pywal/wallpaper colours")
         if not no_alacritty:
             apply_pywal_alacritty(colors, True)
+        if not no_waybar:
+            apply_waybar(palette, True, True)
         return 0
 
     SWAY_DIR.mkdir(parents=True, exist_ok=True)
@@ -922,17 +980,23 @@ def apply_pywal_sway(dry_run: bool, no_alacritty: bool = False) -> int:
     ]
     for command in commands:
         run(["swaymsg", *command])
+    if not no_waybar:
+        apply_waybar(palette, False, no_restart)
     if not no_alacritty:
         apply_pywal_alacritty(colors, False)
-        run(
-            [
-                "notify-send",
-                "Wallpaper colours",
-                "Alacritty and Sway borders now follow the wallpaper",
-            ]
-        )
-    else:
-        run(["notify-send", "Sway borders", "Following wallpaper colours again"])
+
+    updated = ["Sway borders"]
+    if not no_waybar:
+        updated.append("Waybar")
+    if not no_alacritty:
+        updated.insert(0, "Alacritty")
+    run(
+        [
+            "notify-send",
+            "Wallpaper colours",
+            " and ".join(updated) + " now follow the wallpaper",
+        ]
+    )
     print("Sway borders now follow the pywal/wallpaper colours.")
     return 0
 
@@ -981,7 +1045,12 @@ def main() -> int:
     parser.add_argument(
         "--pywal",
         action="store_true",
-        help="follow the wallpaper palette again (Sway borders + Alacritty)",
+        help="follow the wallpaper palette again (Sway borders + Waybar + Alacritty)",
+    )
+    parser.add_argument(
+        "--pywal-waybar",
+        action="store_true",
+        help="refresh Waybar from the current pywal palette",
     )
     parser.add_argument(
         "--no-gtk", action="store_true", help="do not change GTK settings"
@@ -1000,8 +1069,15 @@ def main() -> int:
     )
     args = parser.parse_args()
 
+    if args.pywal_waybar:
+        return apply_pywal_waybar(args.dry_run, args.no_restart)
     if args.pywal:
-        return apply_pywal_sway(args.dry_run, args.no_alacritty)
+        return apply_pywal_sway(
+            args.dry_run,
+            args.no_alacritty,
+            args.no_waybar,
+            args.no_restart,
+        )
 
     themes = discover_themes()
     if args.list:
@@ -1034,7 +1110,12 @@ def main() -> int:
         if not theme:
             return 0
     if theme == PYWAL_MENU_ENTRY:
-        return apply_pywal_sway(args.dry_run, args.no_alacritty)
+        return apply_pywal_sway(
+            args.dry_run,
+            args.no_alacritty,
+            args.no_waybar,
+            args.no_restart,
+        )
     if theme not in themes:
         candidates = difflib.get_close_matches(theme, themes, n=3)
         print(f"Unknown theme: {theme}", file=sys.stderr)

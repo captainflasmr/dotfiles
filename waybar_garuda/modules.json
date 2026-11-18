@@ -89,14 +89,6 @@
         "max-length": 4
     },
 
-    "custom/keyboard": {
-	     "format": "",
-        "min-length": 3,
-        "max-length": 3,
-	     "interval": 10,
-	     "on-click": "toggle_wlr_keyboard.sh",
-    },
-
     "sway/window": {
         "format": "{title}",
         "min-length": 1,

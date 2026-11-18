@@ -14,7 +14,6 @@
     "custom/appmenu": { "tooltip": false },
     "custom/exit": { "tooltip": false },
     "custom/power": { "tooltip": false },
-    "custom/keyboard": { "tooltip": false },
     "custom/recorder": { "tooltip": false },
     "custom/screenshot": { "tooltip": false },
     "custom/caps_lock": { "tooltip": false },
