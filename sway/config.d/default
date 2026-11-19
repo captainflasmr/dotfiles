@@ -104,8 +104,11 @@ bindsym $mod+Ctrl+Left exec ~/.config/sway/scripts/move_waybar.sh left
 bindsym $mod+Ctrl+Right exec ~/.config/sway/scripts/move_waybar.sh right
 
 # Waybar scale (bigger/smaller)
-bindsym $mod+Ctrl+equal exec ~/.config/sway/scripts/waybar_scale.sh bigger
-bindsym $mod+Ctrl+minus exec ~/.config/sway/scripts/waybar_scale.sh smaller
+# --no-repeat: each press changes the size once. Without it, holding the key
+# fires key-repeat events, and every invocation restarts Waybar (launch_waybar
+# takes ~1s), so a short hold piles up dozens of restarts.
+bindsym --no-repeat $mod+Ctrl+equal exec ~/.config/sway/scripts/waybar_scale.sh bigger
+bindsym --no-repeat $mod+Ctrl+minus exec ~/.config/sway/scripts/waybar_scale.sh smaller
 
 bindsym $mod+t exec $term
 bindsym $mod+w exec swayr switch-window
